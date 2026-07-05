@@ -11,30 +11,25 @@ export default function RefundPolicyPage() {
         <p className="text-white/50 text-sm mt-3">Effective: June 1, 2025</p>
       </div>
 
-      {/* Prominent policy statement — required verbatim text */}
+      {/* Required verbatim clause — prominently displayed */}
       <div className="border-2 border-white/40 bg-neutral-950 p-6 shadow-[0_0_60px_rgba(255,255,255,0.04)]">
         <div className="text-[10px] tracking-[0.3em] uppercase text-white/60 mb-3">
           Our Refund Policy
         </div>
         <p className="text-white text-base sm:text-lg leading-relaxed tracking-tight">
-          Due to the intimate nature of our products and strict hygiene standards, we do not accept
-          returns or exchanges on any opened or used items. Unopened items may be returned within
-          14 days.
-        </p>
-        <p className="text-white text-base sm:text-lg leading-relaxed tracking-tight mt-4">
-          <span className="font-bold">Chargeback Policy:</span> We take credit card fraud
-          seriously. Contact us directly to resolve issues before contacting your bank.
+          Due to hygiene standards, all sales are final. Unopened items may be returned within 14
+          days. If an item arrives defective, contact support for a replacement.
         </p>
       </div>
 
       <section className="space-y-3 text-white/70 leading-relaxed">
-        <h2 className="text-xl text-white font-light">1. Non-Returnable Items (Final Sale)</h2>
+        <h2 className="text-xl text-white font-light">1. Final Sale Items</h2>
         <p>
           Any product that has been opened, unsealed, or used is FINAL SALE and cannot be returned,
-          exchanged, or refunded under any circumstance. This includes but is not limited to:
+          exchanged, or refunded under any circumstance. This is a strict hygiene requirement.
         </p>
         <ul className="list-disc pl-6 space-y-1 marker:text-white/40">
-          <li>All personal-use silicone, glass, metal, or textile products intended for intimate contact (including wands, massagers, and similar wellness objects).</li>
+          <li>All personal-use silicone, glass, metal, or textile products intended for intimate contact.</li>
           <li>Wearables such as blindfolds, restraints, and apparel that come into direct contact with the skin.</li>
           <li>Lubricants, oils, balms, and any topical or consumable products.</li>
           <li>Items whose factory hygiene seal has been broken, removed, or tampered with.</li>
@@ -48,19 +43,19 @@ export default function RefundPolicyPage() {
           Unopened items in their original, factory-sealed packaging may be returned for a refund
           within <span className="text-white font-medium">14 days</span> of the delivery date.
           Return shipping is the responsibility of the customer, and items must arrive in resalable
-          condition. Contact <span className="text-white">care@awholdings.example</span> with your
+          condition. Email <span className="text-white">care@awholdings.example</span> with your
           order number to initiate a return.
         </p>
       </section>
 
       <section className="space-y-3 text-white/70 leading-relaxed">
-        <h2 className="text-xl text-white font-light">3. Damaged or Defective Items</h2>
+        <h2 className="text-xl text-white font-light">3. Defective Items</h2>
         <p>
-          If your item arrives with a manufacturing defect or shipping damage that renders it
-          unusable, you must notify us within <span className="text-white font-medium">48 hours</span>{' '}
-          of delivery at <span className="text-white">care@awholdings.example</span> with
-          photographic evidence and your order number. Approved cases will receive a replacement of
-          the same item or a store credit.
+          If your item arrives defective, contact support for a replacement. Notify us within{' '}
+          <span className="text-white font-medium">48 hours</span> of delivery at{' '}
+          <span className="text-white">care@awholdings.example</span> with photographic evidence
+          and your order number. Approved cases receive a replacement of the same item or store
+          credit.
         </p>
       </section>
 
@@ -76,10 +71,8 @@ export default function RefundPolicyPage() {
       <section className="space-y-3 text-white/70 leading-relaxed">
         <h2 className="text-xl text-white font-light">5. Chargebacks</h2>
         <p>
-          As stated above, we take credit card fraud seriously and ask that you contact us directly
-          before initiating a chargeback with your bank. Fraudulent chargebacks on delivered,
-          non-returnable hygiene items will be contested with delivery evidence, this policy, and
-          your signed order confirmation. Your statement will appear as{' '}
+          We take credit card fraud seriously. Please contact us directly to resolve issues before
+          contacting your bank. Your statement will appear as{' '}
           <span className="text-white font-medium">AW Holdings LLC</span>.
         </p>
       </section>
@@ -87,8 +80,8 @@ export default function RefundPolicyPage() {
       <section className="space-y-3 text-white/70 leading-relaxed">
         <h2 className="text-xl text-white font-light">6. Acknowledgment</h2>
         <p>
-          By completing checkout, you acknowledge that you have read, understood, and expressly
-          agree to this hygiene-based Refund Policy, and to our{' '}
+          By completing checkout, you acknowledge that you have read and agree to this Refund
+          Policy and to our{' '}
           <Link href="/terms-of-service" className="underline text-white hover:text-white/80">
             Terms of Service
           </Link>

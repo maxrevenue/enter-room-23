@@ -14,8 +14,9 @@ export default function SiteHeader() {
         <nav className="hidden sm:flex items-center gap-8 text-xs tracking-[0.2em] uppercase text-white/70">
           <Link href="/#shop" className="hover:text-white">Shop</Link>
           <Link href="/#journal" className="hover:text-white">Journal</Link>
-          <Link href="/terms" className="hover:text-white">Terms</Link>
+          <Link href="/terms-of-service" className="hover:text-white">Terms</Link>
           <Link href="/refund-policy" className="hover:text-white">Refunds</Link>
+          <Link href="/privacy-policy" className="hover:text-white">Privacy</Link>
         </nav>
         <button
           onClick={() => setCartOpen(true)}

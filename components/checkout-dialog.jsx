@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import {
@@ -13,10 +14,13 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
-import { CheckCircle2, Loader2, Lock } from 'lucide-react'
+import { Loader2, Lock } from 'lucide-react'
 import { useCart } from '@/lib/cart-context'
 
+const genOrderId = () => 'AW-' + Math.floor(1000 + Math.random() * 9000)
+
 export default function CheckoutDialog() {
+  const router = useRouter()
   const {
     checkoutOpen,
     setCheckoutOpen,
@@ -26,8 +30,7 @@ export default function CheckoutDialog() {
     ageVerified,
   } = useCart()
 
-  const [stage, setStage] = useState('form') // 'form' | 'processing' | 'success'
-  const [orderId, setOrderId] = useState(null)
+  const [processing, setProcessing] = useState(false)
   const [form, setForm] = useState({
     email: '',
     name: '',
@@ -40,41 +43,50 @@ export default function CheckoutDialog() {
     cvc: '',
   })
 
+  // Reset processing flag when dialog re-opens.
   useEffect(() => {
-    if (checkoutOpen) {
-      setStage('form')
-      setOrderId(null)
-    }
+    if (checkoutOpen) setProcessing(false)
   }, [checkoutOpen])
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value })
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault()
-    setStage('processing')
-    try {
-      const res = await fetch('/api/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          items: cart.map((i) => ({ id: i.id, qty: i.qty, price: i.price })),
-          subtotal,
-          billing: { ...form, card: '****' + form.card.slice(-4) },
-        }),
-      })
-      const data = await res.json()
-      setOrderId(data.orderId || 'AW-DEMO')
-    } catch {
-      setOrderId('AW-DEMO')
-    }
-    setStage('success')
-    clearCart()
+    if (processing) return
+    setProcessing(true)
+
+    const orderId = genOrderId()
+
+    // Fire-and-forget the mock backend call in parallel.
+    fetch('/api/checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        items: cart.map((i) => ({ id: i.id, qty: i.qty, price: i.price })),
+        subtotal,
+        billing: { ...form, card: '****' + form.card.slice(-4) },
+        orderId,
+      }),
+    }).catch(() => {})
+
+    // Exactly 2 seconds of "Processing Payment..." then redirect.
+    setTimeout(() => {
+      clearCart()
+      setCheckoutOpen(false)
+      router.push(`/order-confirmed?order=${orderId}`)
+    }, 2000)
   }
 
   return (
-    <Dialog open={checkoutOpen && ageVerified} onOpenChange={setCheckoutOpen}>
+    <Dialog
+      open={checkoutOpen && ageVerified}
+      onOpenChange={(o) => {
+        if (processing) return // block close while processing
+        setCheckoutOpen(o)
+      }}
+    >
       <DialogContent className="w-[calc(100vw-2rem)] sm:w-full sm:max-w-2xl bg-black border border-white/15 text-white max-h-[calc(100vh-2rem)] sm:max-h-[90vh] overflow-y-auto p-5 sm:p-6">
-        {stage === 'form' && (
+        {!processing && (
           <>
             <DialogHeader>
               <div className="text-[10px] tracking-[0.3em] text-white/50 uppercase">
@@ -92,9 +104,7 @@ export default function CheckoutDialog() {
               <div className="space-y-3">
                 <div className="text-xs tracking-[0.2em] uppercase text-white/60">Contact</div>
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="text-xs text-white/70">
-                    Email
-                  </Label>
+                  <Label htmlFor="email" className="text-xs text-white/70">Email</Label>
                   <Input
                     id="email"
                     name="email"
@@ -174,53 +184,33 @@ export default function CheckoutDialog() {
                 <span className="text-lg font-light tabular-nums">${subtotal.toFixed(2)}</span>
               </div>
 
-              <Button type="submit" className="w-full rounded-none bg-white text-black hover:bg-white/90 h-12 font-medium tracking-wide">
-                Pay ${subtotal.toFixed(2)}
+              <Button
+                type="submit"
+                className="w-full rounded-none bg-white text-black hover:bg-white/90 h-12 font-medium tracking-wide"
+              >
+                Place Order · ${subtotal.toFixed(2)}
               </Button>
               <p className="text-[10px] text-white/40 text-center leading-relaxed">
                 By placing this order you agree to our{' '}
-                <Link href="/terms" className="underline hover:text-white">Terms of Service</Link> and{' '}
-                <Link href="/refund-policy" className="underline hover:text-white">Refund Policy</Link>.
+                <Link href="/terms-of-service" className="underline hover:text-white">Terms of Service</Link>,{' '}
+                <Link href="/refund-policy" className="underline hover:text-white">Refund Policy</Link>, and{' '}
+                <Link href="/privacy-policy" className="underline hover:text-white">Privacy Policy</Link>.
               </p>
             </form>
           </>
         )}
 
-        {stage === 'processing' && (
-          <div className="py-20 flex flex-col items-center justify-center gap-6">
+        {processing && (
+          <div
+            role="status"
+            aria-live="polite"
+            className="py-20 flex flex-col items-center justify-center gap-6"
+          >
             <Loader2 className="w-10 h-10 animate-spin text-white/70" />
             <div className="text-center space-y-2">
-              <div className="text-lg font-light">Processing your payment…</div>
+              <div className="text-lg font-light">Processing Payment…</div>
               <div className="text-xs text-white/50">Do not close this window.</div>
             </div>
-          </div>
-        )}
-
-        {stage === 'success' && (
-          <div className="py-12 flex flex-col items-center justify-center gap-6 text-center">
-            <div className="w-16 h-16 rounded-full border border-white/30 flex items-center justify-center">
-              <CheckCircle2 className="w-8 h-8 text-white" />
-            </div>
-            <div className="space-y-2">
-              <div className="text-[10px] tracking-[0.3em] text-white/50 uppercase">
-                Transaction Successful
-              </div>
-              <div className="text-2xl font-light tracking-tight">Thank you for your order.</div>
-              <div className="text-sm text-white/60">
-                Order <span className="text-white font-mono">{orderId}</span> — a confirmation was
-                sent to your email.
-              </div>
-            </div>
-            <div className="border border-white/10 bg-neutral-950 p-4 text-xs text-white/60 max-w-sm leading-relaxed">
-              Your package will ship in unmarked, opaque packaging. Your card statement will read{' '}
-              <span className="text-white font-medium">AW Holdings LLC</span>.
-            </div>
-            <Button
-              onClick={() => setCheckoutOpen(false)}
-              className="rounded-none bg-white text-black hover:bg-white/90 h-11 px-8"
-            >
-              Continue Shopping
-            </Button>
           </div>
         )}
       </DialogContent>
