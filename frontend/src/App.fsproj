@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>MidnightLounge</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Main.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Fable.Core" Version="5.2.0" />
+    <PackageReference Include="Fable.Elmish.React" Version="5.6.0" />
+    <PackageReference Include="Feliz" Version="3.3.3" />
+  </ItemGroup>
+
+</Project>

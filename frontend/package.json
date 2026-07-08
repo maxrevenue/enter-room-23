@@ -1,0 +1,20 @@
+{
+  "name": "midnight-lounge",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Midnight Lounge - premium e-commerce storefront built with Fable 5, Elmish and Feliz",
+  "scripts": {
+    "start": "dotnet tool restore && dotnet fable watch src/App.fsproj -o build --run vite --host 0.0.0.0 --port 3000",
+    "dev": "dotnet tool restore && dotnet fable watch src/App.fsproj -o build --run vite",
+    "build": "dotnet tool restore && dotnet fable src/App.fsproj -o build && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "vite": "^6.3.5"
+  }
+}
