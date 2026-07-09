@@ -1,5 +1,4 @@
 {
-  "name": "midnight-lounge",
   "buildCommand": "bash build.sh",
   "outputDirectory": "dist",
   "installCommand": "npm install",
