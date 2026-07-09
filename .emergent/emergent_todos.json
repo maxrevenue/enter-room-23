@@ -1,0 +1,38 @@
+[
+  {
+    "content": "Phase 1: Install .NET SDK + Fable 5 toolchain",
+    "status": "completed"
+  },
+  {
+    "content": "Phase 1: Scaffold minimal Fable+Elmish+Feliz POC, compile & render via Vite on port 3000",
+    "status": "completed"
+  },
+  {
+    "content": "Phase 1: Verify HMR + production build (dist/)",
+    "status": "completed"
+  },
+  {
+    "content": "Phase 2: Get design guidelines (design_agent)",
+    "status": "in_progress"
+  },
+  {
+    "content": "Phase 2: Product images (vision_expert)",
+    "status": "pending"
+  },
+  {
+    "content": "Phase 2: Full Elmish storefront (Types/State/Header/Hero/Grid/CartDrawer)",
+    "status": "pending"
+  },
+  {
+    "content": "Phase 2: E2E testing via testing_agent + fix all issues",
+    "status": "pending"
+  },
+  {
+    "content": "Phase 3: README with exact scaffold commands + vercel.json + .gitignore",
+    "status": "pending"
+  },
+  {
+    "content": "Phase 3: Verify production build locally",
+    "status": "pending"
+  }
+]

@@ -1,0 +1,20 @@
+{
+  "name": "room-23",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Room 23 — premium vintage archive and wellness collective built with Fable 5, Elmish and Feliz",
+  "scripts": {
+    "start": "dotnet tool restore && dotnet fable watch src/App.fsproj -o build --run vite --host 0.0.0.0 --port 3000",
+    "dev": "dotnet tool restore && dotnet fable watch src/App.fsproj -o build --run vite",
+    "build": "export PATH=\"$HOME/.dotnet:$PATH\" && dotnet tool restore && dotnet fable src/App.fsproj -o build && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "vite": "^6.3.5"
+  }
+}

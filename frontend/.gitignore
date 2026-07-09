@@ -1,0 +1,26 @@
+# --- Node / Vite -------------------------------------------------------------
+node_modules/
+dist/
+*.local
+
+# --- .NET / F# ---------------------------------------------------------------
+bin/
+obj/
+
+# --- Fable compiler output (regenerated on every build) ----------------------
+build/
+.fable/
+fable_modules/
+
+# --- Environment & editor -----------------------------------------------------
+.env.local
+.env.*.local
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# --- Logs ---------------------------------------------------------------------
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

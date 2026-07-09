@@ -1,0 +1,11 @@
+backend/
+memory/
+test_reports/
+tests/
+design_guidelines.md
+plan.md
+test_result.md
+.emergent/
+.gitconfig
+.gitignore
+*.md
