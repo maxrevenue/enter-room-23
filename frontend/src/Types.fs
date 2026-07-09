@@ -264,6 +264,7 @@ type Model =
       SelectedMagazineYear: int option
       SelectedMagazineCondition: string option
       MagazineSort: string
+      SearchQuery: string
       // ---- Product detail modal ----
       ActiveDetailProduct: Product option }
 
@@ -288,6 +289,7 @@ type Msg =
     | SetMagazineYear of int option
     | SetMagazineCondition of string option
     | SetMagazineSort of string
+    | SetSearchQuery of string
     // ---- Age gate ----
     | VerifyAge of bool
     // ---- Product detail modal ----
@@ -333,6 +335,7 @@ module Selectors =
 
     /// Sorted + filtered magazine list.
     let sortedMagazines (model: Model) =
+        let query = model.SearchQuery.Trim().ToLowerInvariant()
         let filtered =
             model.Magazines
             |> List.filter (fun m ->
@@ -346,7 +349,15 @@ module Selectors =
                 &&
                 (match model.SelectedMagazineCondition with
                  | None -> true
-                 | Some c -> m.Condition = c))
+                 | Some c -> m.Condition = c)
+                &&
+                (if query = "" then true
+                 else
+                     m.SKU.ToLowerInvariant().Contains(query)
+                     || (MagazineBrand.label m.Brand).ToLowerInvariant().Contains(query)
+                     || (match m.CoverFeature with Some f -> f.ToLowerInvariant().Contains(query) | None -> false)
+                     || sprintf "%s %d" m.MonthOrVolume m.Year |> fun s -> s.ToLowerInvariant().Contains(query)
+                ))
         match model.MagazineSort with
         | "price-asc" -> filtered |> List.sortBy (fun m -> m.Price)
         | "price-desc" -> filtered |> List.sortByDescending (fun m -> m.Price)

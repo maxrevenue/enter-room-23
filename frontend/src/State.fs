@@ -28,6 +28,7 @@ let init () : Model * Cmd<Msg> =
       SelectedMagazineYear = None
       SelectedMagazineCondition = None
       MagazineSort = "featured"
+      SearchQuery = ""
       ActiveDetailProduct = None },
     Cmd.none
 
@@ -130,6 +131,9 @@ let update (msg: Msg) (model: Model) : Model * Cmd<Msg> =
 
     | SetMagazineSort sort ->
         { model with MagazineSort = sort }, Cmd.none
+
+    | SetSearchQuery query ->
+        { model with SearchQuery = query }, Cmd.none
 
     // ---- Age gate ----
 

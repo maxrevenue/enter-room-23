@@ -4,7 +4,7 @@ open Feliz
 open Room23.Types
 
 // ---------------------------------------------------------------------------
-// Huckberry-style premium archive layout — sidebar filters + sortable grid.
+// Huckberry-style premium archive layout — sidebar filters + search + sortable grid.
 // ---------------------------------------------------------------------------
 
 let private sidebarFilterLabel (label: string) (isActive: bool) (onClick: unit -> unit) (count: int) =
@@ -18,12 +18,38 @@ let private sidebarFilterLabel (label: string) (isActive: bool) (onClick: unit -
     ]
 
 // ---------------------------------------------------------------------------
-// Premium magazine card — Huckberry anatomy.
+// Condition pill badge — subtle colour mapping
+// ---------------------------------------------------------------------------
+let private conditionBadge (condition: string) =
+    let cssClass =
+        match condition with
+        | "Fine" -> "condition-pill condition-pill--fine"
+        | "Very Good" -> "condition-pill condition-pill--verygood"
+        | "Good" -> "condition-pill condition-pill--good"
+        | _ -> "condition-pill"
+    Html.span [
+        prop.className cssClass
+        prop.text condition
+    ]
+
+// ---------------------------------------------------------------------------
+// Archive Verified badge — authenticity signal
+// ---------------------------------------------------------------------------
+let private archiveVerifiedBadge =
+    Html.span [
+        prop.className "archive-verified"
+        prop.children [
+            Html.span [ prop.className "archive-verified__icon"; prop.text "✓" ]
+            Html.span [ prop.text "Archive Verified" ]
+        ]
+    ]
+
+// ---------------------------------------------------------------------------
+// Premium magazine card — underwriter-ready anatomy.
+// Each card displays: thumbnail, SKU, brand/title, condition pill, price, Archive Verified badge.
 // ---------------------------------------------------------------------------
 
 let private magazineCard (dispatch: Msg -> unit) (m: MagazineIssue) =
-    let isRare = m.Condition = "Fine" || m.Condition = "Excellent"
-
     Html.article [
         prop.className "archive-card"
         prop.testId "magazine-card"
@@ -40,13 +66,7 @@ let private magazineCard (dispatch: Msg -> unit) (m: MagazineIssue) =
                         prop.alt (sprintf "%s — %s %d" (MagazineBrand.label m.Brand) m.MonthOrVolume m.Year)
                         prop.custom ("loading", "lazy")
                     ]
-                    // Condition badge — upper left
-                    if isRare then
-                        Html.span [
-                            prop.className "archive-card__badge"
-                            prop.text "Rare Archive"
-                        ]
-                    // Sold out or Quick-add overlay on hover
+                    // Sold out overlay
                     if m.IsSoldOut then
                         Html.span [
                             prop.className "archive-card__soldout"
@@ -61,26 +81,78 @@ let private magazineCard (dispatch: Msg -> unit) (m: MagazineIssue) =
                         ]
                 ]
             ]
-            // ---- Caption: Brand ----
-            Html.span [
-                prop.className "archive-card__brand"
-                prop.text (MagazineBrand.label m.Brand)
-            ]
-            // ---- Title ----
-            Html.h3 [
-                prop.className "archive-card__title"
-                prop.text (sprintf "%s %d" m.MonthOrVolume m.Year)
-            ]
-            // ---- Price ----
-            Html.span [
-                prop.className "archive-card__price"
-                prop.text (Selectors.formatPrice m.Price)
+            // ---- Card body ----
+            Html.div [
+                prop.className "archive-card__body"
+                prop.children [
+                    // SKU code
+                    Html.span [
+                        prop.className "archive-card__sku"
+                        prop.text m.SKU
+                    ]
+                    // Brand + Title
+                    Html.div [
+                        prop.className "archive-card__brand-row"
+                        prop.children [
+                            Html.span [
+                                prop.className "archive-card__brand"
+                                prop.text (MagazineBrand.label m.Brand)
+                            ]
+                        ]
+                    ]
+                    Html.h3 [
+                        prop.className "archive-card__title"
+                        prop.text (sprintf "%s %d" m.MonthOrVolume m.Year)
+                    ]
+                    // Meta row: condition pill + verified badge
+                    Html.div [
+                        prop.className "archive-card__meta"
+                        prop.children [
+                            conditionBadge m.Condition
+                            archiveVerifiedBadge
+                        ]
+                    ]
+                    // Price row
+                    Html.div [
+                        prop.className "archive-card__actions"
+                        prop.children [
+                            Html.span [
+                                prop.className "archive-card__price"
+                                prop.text (Selectors.formatPrice m.Price)
+                            ]
+                        ]
+                    ]
+                ]
             ]
         ]
     ]
 
 // ---------------------------------------------------------------------------
-// Main view — sidebar + grid layout.
+// Search input — real-time filtering via SetSearchQuery
+// ---------------------------------------------------------------------------
+let private searchBar (model: Model) (dispatch: Msg -> unit) =
+    Html.div [
+        prop.className "archive-search"
+        prop.children [
+            Html.span [ prop.className "archive-search__icon"; prop.text "🔍" ]
+            Html.input [
+                prop.className "archive-search__input"
+                prop.type' "search"
+                prop.placeholder "Search by SKU, brand, title or keyword..."
+                prop.value model.SearchQuery
+                prop.onChange (fun (v: string) -> dispatch (SetSearchQuery v))
+            ]
+            if model.SearchQuery <> "" then
+                Html.button [
+                    prop.className "archive-search__clear"
+                    prop.text "✕"
+                    prop.onClick (fun _ -> dispatch (SetSearchQuery ""))
+                ]
+        ]
+    ]
+
+// ---------------------------------------------------------------------------
+// Main view — sidebar + search + grid layout.
 // ---------------------------------------------------------------------------
 
 let view (model: Model) (dispatch: Msg -> unit) =
@@ -207,12 +279,28 @@ let view (model: Model) (dispatch: Msg -> unit) =
                                         ]
                                     ]
 
+                                    // ---- Search bar ----
+                                    searchBar model dispatch
+
                                     // ---- Product grid ----
-                                    Html.div [
-                                        prop.className "archive-grid"
-                                        prop.testId "magazine-grid"
-                                        prop.children (magazines |> List.map (magazineCard dispatch))
-                                    ]
+                                    if List.length magazines = 0 && model.SearchQuery <> "" then
+                                        Html.div [
+                                            prop.className "archive-empty"
+                                            prop.children [
+                                                Html.p [ prop.className "archive-empty__text"; prop.text (sprintf "No results for \"%s\"" model.SearchQuery) ]
+                                                Html.button [
+                                                    prop.className "archive-empty__reset"
+                                                    prop.text "Clear search"
+                                                    prop.onClick (fun _ -> dispatch (SetSearchQuery ""))
+                                                ]
+                                            ]
+                                        ]
+                                    else
+                                        Html.div [
+                                            prop.className "archive-grid"
+                                            prop.testId "magazine-grid"
+                                            prop.children (magazines |> List.map (magazineCard dispatch))
+                                        ]
                                 ]
                             ]
                         ]
