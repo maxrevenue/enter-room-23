@@ -6,6 +6,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Types.fs" />
+    <Compile Include="Data.fs" />
+    <Compile Include="State.fs" />
+    <Compile Include="Components/Header.fs" />
+    <Compile Include="Components/Hero.fs" />
+    <Compile Include="Components/ProductGrid.fs" />
+    <Compile Include="Components/CartDrawer.fs" />
+    <Compile Include="Components/Footer.fs" />
+    <Compile Include="App.fs" />
     <Compile Include="Main.fs" />
   </ItemGroup>
 
