@@ -7,7 +7,7 @@
   "scripts": {
     "start": "dotnet tool restore && dotnet fable watch src/App.fsproj -o build --run vite --host 0.0.0.0 --port 3000",
     "dev": "dotnet tool restore && dotnet fable watch src/App.fsproj -o build --run vite",
-    "build": "export PATH=\"$HOME/.dotnet:$PATH\" && dotnet tool restore && dotnet fable src/App.fsproj -o build && vite build",
+    "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
