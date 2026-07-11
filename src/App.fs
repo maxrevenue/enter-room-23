@@ -32,8 +32,8 @@ let view (model: Model) (dispatch: Msg -> unit) =
                     Html.main [
                         prop.children [
                             Hero.view dispatch
-                            ProductGrid.view model dispatch
                             MagazineCatalog.view model dispatch
+                            ProductGrid.view model dispatch
                         ]
                     ]
 
