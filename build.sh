@@ -2,7 +2,7 @@
 
 # Install .NET 8.0
 curl -sSL https://dot.net/v1/dotnet-install.sh -o dotnet-install.sh
-bash dotnet-install.sh --channel 8.0
+bash dotnet-install.sh --channel 10.0
 
 # Set environment variables
 export DOTNET_ROOT=$HOME/.dotnet
