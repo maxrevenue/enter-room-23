@@ -5,11 +5,11 @@ open Room23.Types
 open Room23.Components
 
 // ---------------------------------------------------------------------------
-// Root view — routes to the correct page based on model.CurrentPage.
+// Root view - routes to the correct page based on model.CurrentPage.
 // ---------------------------------------------------------------------------
 
 let view (model: Model) (dispatch: Msg -> unit) =
-    // Age gate — blocks entire site until verified
+    // Age gate - blocks entire site until verified
     if not model.IsAgeVerified then
         AgeGate.view dispatch
     else
@@ -32,7 +32,6 @@ let view (model: Model) (dispatch: Msg -> unit) =
                     Html.main [
                         prop.children [
                             Hero.view dispatch
-                            MagazineCatalog.view model dispatch
                             ProductGrid.view model dispatch
                         ]
                     ]

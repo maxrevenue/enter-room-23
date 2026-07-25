@@ -7,7 +7,7 @@ open Fable.Core.JsInterop
 open Room23.Types
 
 // ---------------------------------------------------------------------------
-// init / update — the entire application state machine lives here.
+// init / update - the entire application state machine lives here.
 // Every state transition is an explicit, exhaustive pattern match.
 // ---------------------------------------------------------------------------
 
@@ -23,12 +23,6 @@ let init () : Model * Cmd<Msg> =
       CurrentPage = if isAgeVerified then Storefront else NotYetVerified
       CheckoutForm = None
       OrderNumber = None
-      Magazines = Data.magazines
-      SelectedMagazineBrand = None
-      SelectedMagazineYear = None
-      SelectedMagazineCondition = None
-      MagazineSort = "featured"
-      SearchQuery = ""
       ActiveDetailProduct = None },
     Cmd.none
 
@@ -63,10 +57,6 @@ let update (msg: Msg) (model: Model) : Model * Cmd<Msg> =
             model.Catalog
             |> List.tryFind (fun p -> p.Id = pid)
             |> Option.map (fun p -> p)
-            |> Option.orElseWith (fun () ->
-                model.Magazines
-                |> List.tryFind (fun m -> ProductId.value (ProductId m.SKU) = ProductId.value pid)
-                |> Option.map MagazineIssue.toProduct)
 
         match findProduct () with
         | None -> model, Cmd.none
@@ -76,7 +66,7 @@ let update (msg: Msg) (model: Model) : Model * Cmd<Msg> =
                 model.Cart
                 |> updateLine pid (function
                     | Some line ->
-                        if line.Quantity + 1 > p.StockCount then Some line  // don't exceed stock
+                        if line.Quantity + 1 > p.StockCount then Some line
                         else Some { line with Quantity = line.Quantity + 1 }
                     | None ->
                         Some { Product = p; Quantity = 1 })
@@ -107,33 +97,6 @@ let update (msg: Msg) (model: Model) : Model * Cmd<Msg> =
 
     | ScrollToProducts ->
         model, scrollToProducts ()
-
-    | ScrollToMagazines ->
-        Cmd.ofEffect (fun _ ->
-            let el = document.getElementById "magazines"
-            if not (isNull el) then
-                el?scrollIntoView (createObj [ "behavior" ==> "smooth"; "block" ==> "start" ]))
-        |> fun cmd -> model, cmd
-
-    // ---- Magazine filters ----
-
-    | SetMagazineBrand brand ->
-        { model with
-            SelectedMagazineBrand = brand
-            SelectedMagazineYear = None },
-        Cmd.none
-
-    | SetMagazineYear year ->
-        { model with SelectedMagazineYear = year }, Cmd.none
-
-    | SetMagazineCondition condition ->
-        { model with SelectedMagazineCondition = condition }, Cmd.none
-
-    | SetMagazineSort sort ->
-        { model with MagazineSort = sort }, Cmd.none
-
-    | SetSearchQuery query ->
-        { model with SearchQuery = query }, Cmd.none
 
     // ---- Age gate ----
 
@@ -217,7 +180,6 @@ let update (msg: Msg) (model: Model) : Model * Cmd<Msg> =
                 model, Cmd.none
             else
                 let orderNumber = Selectors.generateOrderNumber ()
-                // Decrement stock for each item in the cart
                 let decrementedCatalog =
                     model.Catalog
                     |> List.map (fun p ->
@@ -225,20 +187,12 @@ let update (msg: Msg) (model: Model) : Model * Cmd<Msg> =
                         | None -> p
                         | Some line ->
                             { p with StockCount = max 0 (p.StockCount - line.Quantity) })
-                let decrementedMagazines =
-                    model.Magazines
-                    |> List.map (fun m ->
-                        match Map.tryFind m.SKU model.Cart with
-                        | None -> m
-                        | Some line ->
-                            { m with StockCount = max 0 (m.StockCount - line.Quantity) })
                 { model with
                     CurrentPage = Confirmation
                     IsCartOpen = false
                     OrderNumber = Some orderNumber
                     CheckoutForm = Some form
-                    Catalog = decrementedCatalog
-                    Magazines = decrementedMagazines },
+                    Catalog = decrementedCatalog },
                 scrollToTop ()
 
     // ---- Product detail modal ----
@@ -258,7 +212,7 @@ let update (msg: Msg) (model: Model) : Model * Cmd<Msg> =
         scrollToTop ()
 
 // ---------------------------------------------------------------------------
-// Subscriptions — Escape key handling adapts to current page.
+// Subscriptions - Escape key handling adapts to current page.
 // ---------------------------------------------------------------------------
 
 let subscribe (model: Model) : Sub<Msg> =

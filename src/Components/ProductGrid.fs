@@ -26,6 +26,12 @@ let private productCard (dispatch: Msg -> unit) (p: Product) =
                         prop.src p.ImageUrl
                         prop.alt p.Name
                         prop.custom ("loading", "lazy")
+                        prop.onError (fun e ->
+                            let el = e.target :?> Browser.Types.HTMLElement
+                            el?style?display <- "none"
+                            let fallback = Browser.Dom.document.createElement "div"
+                            fallback?className <- "product-card__img-fallback"
+                            el?parentNode?insertBefore(fallback, el) |> ignore)
                     ]
                 ]
             ]
@@ -97,9 +103,6 @@ let view (model: Model) (dispatch: Msg -> unit) =
                             filterChip "Intimate Wellness" "category-filter-intimate-wellness"
                                 (model.Filter = ByCategory IntimateWellness)
                                 (fun () -> dispatch (SetFilter (ByCategory IntimateWellness)))
-                            filterChip "Archive Essentials" "category-filter-archive-essentials"
-                                (model.Filter = ByCategory ArchiveEssentials)
-                                (fun () -> dispatch (SetFilter (ByCategory ArchiveEssentials)))
                         ]
                     ]
 

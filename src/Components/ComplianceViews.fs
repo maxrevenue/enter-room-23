@@ -120,7 +120,7 @@ let privacyPolicyView (dispatch: Msg -> unit) =
         p "Room 23 uses essential cookies for cart state persistence and session management. We do not use tracking cookies for advertising purposes. You may disable cookies in your browser, but some site features may not function."
 
         h2 "5. Your Rights (GDPR / CCPA)"
-        p "If you reside in the European Economic Area or California, you have the right to access, correct, delete, or port your personal data. To exercise these rights, contact us at privacy@room23.test."
+        p "If you reside in the European Economic Area or California, you have the right to access, correct, delete, or port your personal data. To exercise these rights, contact us at privacy@room23.net."
 
         h2 "6. Third-Party Services"
         p "We employ third-party payment processors and shipping carriers who may receive your data solely to complete your transaction. These partners are contractually bound to maintain the confidentiality and security of your information."
@@ -139,20 +139,14 @@ let refundPolicyView (dispatch: Msg -> unit) =
     legalShell dispatch "Refund & Return Policy" [
         p "Last updated: April 2026. Our policy reflects the unique nature of our inventory."
 
-        h2 "1. Vintage Media & Print Archives"
-        emphasis "Due to the rare, vintage, and collectible nature of our print archive, all magazine sales are final."
-        p "We make every effort to accurately describe each issue's condition (graded Fine, Very Good, Good, or Fair). If we ship an incorrect SKU — meaning you received a different issue than the one you ordered — we will issue a full refund or exchange upon return of the incorrect item. Please contact us within 7 days of delivery."
+        h2 "1. Intimate & Wellness Products"
+        emphasis "For hygiene and safety reasons, all intimate and wellness products are final sale once factory seals are broken."
+        p "If you receive a damaged or defective item with seals intact, we will issue a full refund or exchange within 14 days of delivery."
 
-        h2 "2. Wellness Products"
-        p "For hygiene and safety reasons, all wellness and intimate products are final sale once factory seals are broken. If you receive a damaged or defective item with seals intact, we will issue a full refund or exchange within 14 days of delivery."
+        h2 "2. Return Process"
+        p "To initiate a return, contact us at returns@room23.net with your order number and a brief description of the issue. We will provide a return authorization and shipping instructions. Refunds are processed within 5-10 business days of receiving the returned item."
 
-        h2 "3. Apparel & Essentials"
-        p "Unworn, unwashed apparel and essentials may be returned within 14 days of delivery for a refund or exchange. Items must have all original tags attached. Return shipping is the responsibility of the customer unless the return is due to our error."
-
-        h2 "4. Return Process"
-        p "To initiate a return, contact us at returns@room23.test with your order number and a brief description of the issue. We will provide a return authorization and shipping instructions. Refunds are processed within 5-10 business days of receiving the returned item."
-
-        h2 "5. Damaged Shipments"
+        h2 "3. Damaged Shipments"
         p "If your order arrives damaged, please photograph the packaging and item(s) before opening and contact us within 48 hours. We will file a claim with the carrier and arrange a replacement or refund."
 
         discreetShippingBlock

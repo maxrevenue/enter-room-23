@@ -47,12 +47,6 @@ let view (model: Model) (dispatch: Msg -> unit) =
                             navItem "Intimate Wellness" "header-nav-intimate-wellness"
                                 (model.Filter = ByCategory IntimateWellness)
                                 (fun () -> selectAndScroll (ByCategory IntimateWellness))
-                            navItem "Archive Essentials" "header-nav-archive-essentials"
-                                (model.Filter = ByCategory ArchiveEssentials)
-                                (fun () -> selectAndScroll (ByCategory ArchiveEssentials))
-                            navItem "Archive" "header-nav-archive"
-                                false
-                                (fun () -> dispatch ScrollToMagazines)
                         ]
                     ]
 

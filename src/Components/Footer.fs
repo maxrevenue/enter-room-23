@@ -49,7 +49,7 @@ let view (dispatch: Msg -> unit) =
                     Html.div [
                         prop.className "footer__compliance"
                         prop.children [
-                            Html.span [ prop.className "footer__compliance-text"; prop.text "Operated by AW Holdings LLC | Contact: support@room23.test" ]
+                            Html.span [ prop.className "footer__compliance-text"; prop.text "Operated by AW Holdings LLC | support@room23.net | Alec@room23.net | jacob@room23.net" ]
                         ]
                     ]
                 ]
