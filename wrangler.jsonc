@@ -1,5 +1,7 @@
 {
+  "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "enter-room-23",
+  "main": ".open-next/worker.js",
   "compatibility_date": "2026-07-23",
   "compatibility_flags": ["nodejs_compat"],
   "assets": {
