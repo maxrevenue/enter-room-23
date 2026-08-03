@@ -91,23 +91,22 @@ function HeroSection({ theme }) {
           ENTER YOUR PRIVATE SIDE
         </p>
 
-        {/* CTA button — bold outline, fills solid on hover, subtle scale */}
+        {/* CTA button — solid red fill, cream text, darkens on hover */}
         <button
           onClick={() => {
             const el = document.getElementById('enter-target')
             if (el) el.scrollIntoView({ behavior: 'smooth' })
           }}
-          className="mt-4 group inline-flex items-center gap-3 border-2 border-[var(--color-primary)] px-10 py-4 text-sm font-semibold uppercase tracking-[0.3em] text-[var(--color-primary)] transition-all duration-300 hover:scale-105 hover:shadow-lg active:scale-100"
+          className="mt-4 group inline-flex items-center gap-3 border-2 border-[var(--color-primary)] px-10 py-4 text-sm font-semibold uppercase tracking-[0.3em] transition-all duration-300 hover:scale-105 hover:shadow-lg active:scale-100"
           style={{
             backgroundColor: 'var(--color-cta-bg)',
+            color: 'var(--color-cta-text)',
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = 'var(--color-primary)'
-            e.currentTarget.style.color = 'var(--color-bg)'
+            e.currentTarget.style.backgroundColor = 'var(--color-cta-hover-bg)'
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.backgroundColor = 'var(--color-cta-bg)'
-            e.currentTarget.style.color = 'var(--color-primary)'
           }}
         >
           ENTER ROOM23
