@@ -1,0 +1,84 @@
+@import "tailwindcss";
+
+/* ── Tailwind v4 class-based dark mode variant ── */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ── Light theme (cream / navy / gold) ── */
+@theme {
+  --color-crimson: #8B0000;
+  --color-neon-red: #FF2020;
+  --color-near-black: #0A0A0A;
+  --color-dark-charcoal: #1A1A1A;
+  --color-warm-ivory: #F5ECD7;
+  --color-muted-gold: #C9A84C;
+
+  /* Light-theme palette */
+  --color-cream: #FAF7F0;
+  --color-navy: #0A1628;
+  --color-dark-blue: #1E3A5F;
+  --color-medium-blue: #3B6FA0;
+  --color-light-blue: #A8C8E0;
+  --color-cyan: #C5E0F0;
+  --color-gold: #C9A84C;
+}
+
+/* ── Light default (cream palette) ── */
+:root {
+  --color-bg: var(--color-cream);
+  --color-fg: var(--color-navy);
+  --color-card: #F0EBE0;
+  --color-card-border: rgba(10, 22, 40, 0.08);
+  --color-primary: var(--color-navy);
+  --color-accent: var(--color-gold);
+  --color-muted: rgba(10, 22, 40, 0.55);
+  --color-subtle: rgba(10, 22, 40, 0.35);
+  color-scheme: light;
+}
+
+/* ── Dark theme (neon / near-black palette) ── */
+.dark {
+  --color-bg: var(--color-near-black);
+  --color-fg: var(--color-warm-ivory);
+  --color-card: var(--color-dark-charcoal);
+  --color-card-border: rgba(255, 255, 255, 0.05);
+  --color-primary: var(--color-neon-red);
+  --color-accent: var(--color-muted-gold);
+  --color-muted: rgba(245, 236, 215, 0.55);
+  --color-subtle: rgba(245, 236, 215, 0.35);
+  color-scheme: dark;
+}
+
+/* ── Prefers reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ── Neon glow utilities (used in dark mode) ── */
+.neon-glow {
+  box-shadow:
+    0 0 7px rgba(255, 32, 32, 0.6),
+    0 0 20px rgba(255, 32, 32, 0.3),
+    0 0 40px rgba(255, 32, 32, 0.15);
+}
+
+.neon-glow-text {
+  text-shadow:
+    0 0 7px rgba(255, 32, 32, 0.7),
+    0 0 20px rgba(255, 32, 32, 0.3),
+    0 0 40px rgba(255, 32, 32, 0.1);
+}
