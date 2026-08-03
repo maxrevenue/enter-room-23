@@ -1,6 +1,6 @@
 'use client'
 
-import { useTheme } from '@/lib/theme-context'
+import { useTheme } from '../lib/theme-context'
 
 export default function HomePage() {
   const { theme, toggleTheme } = useTheme()

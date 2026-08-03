@@ -1,5 +1,5 @@
 import { Playfair_Display, Inter } from "next/font/google";
-import { ThemeProvider } from "@/lib/theme-context";
+import { ThemeProvider } from "../lib/theme-context";
 import "./globals.css";
 
 const playfair = Playfair_Display({
