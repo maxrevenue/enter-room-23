@@ -24,14 +24,16 @@
 
 /* ── Light default (cream palette) ── */
 :root {
-  --color-bg: var(--color-cream);
-  --color-fg: var(--color-navy);
-  --color-card: #F0EBE0;
-  --color-card-border: rgba(10, 22, 40, 0.08);
-  --color-primary: var(--color-navy);
-  --color-accent: var(--color-gold);
-  --color-muted: rgba(10, 22, 40, 0.55);
-  --color-subtle: rgba(10, 22, 40, 0.35);
+  --color-bg: #FBF8F2;
+  --color-fg: #1A0D00;
+  --color-card: #F4EFE6;
+  --color-card-border: rgba(107, 17, 17, 0.10);
+  --color-primary: #6B1111;
+  --color-accent: #C9A84C;
+  --color-muted: #7A6B5C;
+  --color-subtle: #A3947D;
+  --color-cta-bg: rgba(107, 17, 17, 0.06);
+  --color-cta-hover-bg: rgba(107, 17, 17, 0.14);
   color-scheme: light;
 }
 
@@ -45,6 +47,8 @@
   --color-accent: var(--color-muted-gold);
   --color-muted: rgba(245, 236, 215, 0.55);
   --color-subtle: rgba(245, 236, 215, 0.35);
+  --color-cta-bg: rgba(255, 32, 32, 0.10);
+  --color-cta-hover-bg: rgba(255, 32, 32, 0.20);
   color-scheme: dark;
 }
 

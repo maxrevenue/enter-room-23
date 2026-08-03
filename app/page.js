@@ -28,6 +28,7 @@ export default function HomePage() {
       <HeroSection theme={theme} />
 
       {/* ─── SHOP / ARCHIVE / VAULT ───────────────────── */}
+      <div id="enter-target" />
       <ThreeColumnSection />
 
       {/* ─── TRUST STRIP ──────────────────────────────── */}
@@ -45,11 +46,11 @@ export default function HomePage() {
 function HeroSection({ theme }) {
   return (
     <section className="relative flex min-h-screen flex-col items-center justify-center px-6 text-center">
-      {/* Light background — cream with subtle texture */}
+      {/* Light background — champagne radial glow with subtle noise texture */}
       <div className="absolute inset-0 dark:hidden"
         style={{
           background:
-            'radial-gradient(ellipse at 50% 30%, rgba(30,58,95,0.06) 0%, rgba(250,247,240,1) 70%)',
+            'radial-gradient(ellipse at 50% 30%, rgba(201,168,76,0.10) 0%, #FBF8F2 70%)',
         }}
       />
       {/* Dark background — cinematic near-black with red halo */}
@@ -64,14 +65,15 @@ function HeroSection({ theme }) {
       <div className="pointer-events-none absolute left-0 top-0 hidden h-[40vh] w-[40vh] rounded-full opacity-20 blur-[120px] dark:block"
         style={{ background: 'radial-gradient(circle, #FF2020, transparent)' }}
       />
-      {/* Light-only subtle gold accent */}
-      <div className="pointer-events-none absolute right-0 top-20 h-[30vh] w-[30vh] rounded-full opacity-10 blur-[100px] dark:hidden"
+      {/* Light-only subtle champagne glow */}
+      <div className="pointer-events-none absolute right-0 top-20 h-[40vh] w-[40vh] rounded-full opacity-15 blur-[100px] dark:hidden"
         style={{ background: 'radial-gradient(circle, #C9A84C, transparent)' }}
       />
 
       <div className="relative z-10 flex flex-col items-center gap-8">
-        {/* Wordmark */}
-        <h1 className="font-[family-name:var(--font-serif)] text-7xl font-bold tracking-[0.15em] sm:text-8xl md:text-9xl neon-glow-text dark:animate-pulse"
+        {/* Wordmark — clean oxblood in light, neon glow in dark */}
+        <h1
+          className="font-[family-name:var(--font-serif)] text-7xl font-bold tracking-[0.15em] sm:text-8xl md:text-9xl dark:neon-glow-text dark:animate-pulse"
           style={{
             animationDuration: '4s',
             color: 'var(--color-primary)',
@@ -82,20 +84,22 @@ function HeroSection({ theme }) {
           <span className="block text-6xl sm:text-7xl md:text-8xl">23</span>
         </h1>
 
-        {/* Tagline */}
+        {/* Tagline — warm taupe in light, muted ivory in dark */}
         <p className="max-w-md text-lg tracking-[0.25em] sm:text-xl"
           style={{ color: 'var(--color-muted)' }}
         >
           ENTER YOUR PRIVATE SIDE
         </p>
 
-        {/* CTA button */}
+        {/* CTA button — solid burgundy border in light, neon red in dark */}
         <button
-          className="mt-4 inline-flex items-center gap-3 border border-[var(--color-primary)] px-10 py-4 text-sm font-semibold uppercase tracking-[0.3em] text-[var(--color-primary)] transition-all duration-500 hover:bg-[var(--color-primary)] hover:bg-opacity-20"
+          onClick={() => {
+            const el = document.getElementById('enter-target')
+            if (el) el.scrollIntoView({ behavior: 'smooth' })
+          }}
+          className="mt-4 inline-flex items-center gap-3 border border-[var(--color-primary)] px-10 py-4 text-sm font-semibold uppercase tracking-[0.3em] text-[var(--color-primary)] transition-all duration-500"
           style={{
-            backgroundColor: theme === 'dark'
-              ? 'rgba(255,32,32,0.1)'
-              : 'rgba(10,22,40,0.04)',
+            backgroundColor: 'var(--color-cta-bg)',
           }}
         >
           ENTER ROOM23
