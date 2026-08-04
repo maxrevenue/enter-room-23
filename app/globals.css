@@ -1,89 +1,7 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-<<<<<<< HEAD
-/* ── Tailwind v4 class-based dark mode variant ── */
-@custom-variant dark (&:where(.dark, .dark *));
-
-/* ── Light theme (cream / navy / gold) ── */
-@theme {
-  --color-crimson: #8B0000;
-  --color-neon-red: #FF2020;
-  --color-near-black: #0A0A0A;
-  --color-dark-charcoal: #1A1A1A;
-  --color-warm-ivory: #F5ECD7;
-  --color-muted-gold: #C9A84C;
-
-  /* Light-theme palette */
-  --color-cream: #FAF7F0;
-  --color-navy: #0A1628;
-  --color-dark-blue: #1E3A5F;
-  --color-medium-blue: #3B6FA0;
-  --color-light-blue: #A8C8E0;
-  --color-cyan: #C5E0F0;
-  --color-gold: #C9A84C;
-}
-
-/* ── Light default (cream palette) ── */
-:root {
-  --color-bg: #FBF8F2;
-  --color-fg: #1A0D00;
-  --color-card: #F4EFE6;
-  --color-card-border: rgba(163, 0, 0, 0.12);
-  --color-primary: #A30000;
-  --color-accent: #C9A84C;
-  --color-muted: #4A4A4A;
-  --color-subtle: #A3947D;
-  --color-cta-bg: var(--color-primary);
-  --color-cta-text: var(--color-bg);
-  --color-cta-hover-bg: #7A0000;
-  --color-cta-hover-text: var(--color-bg);
-  color-scheme: light;
-}
-
-/* ── Dark theme (neon / near-black palette) ── */
-.dark {
-  --color-bg: var(--color-near-black);
-  --color-fg: var(--color-warm-ivory);
-  --color-card: var(--color-dark-charcoal);
-  --color-card-border: rgba(255, 255, 255, 0.05);
-  --color-primary: var(--color-neon-red);
-  --color-accent: var(--color-muted-gold);
-  --color-muted: #CCCCCC;
-  --color-subtle: rgba(245, 236, 215, 0.35);
-  --color-cta-bg: rgba(255, 32, 32, 0.15);
-  --color-cta-text: #FFFFFF;
-  --color-cta-hover-bg: rgba(255, 32, 32, 0.30);
-  --color-cta-hover-text: #FFFFFF;
-  color-scheme: dark;
-}
-
-/* ── Prefers reduced motion ── */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  background-color: var(--color-bg);
-  color: var(--color-fg);
-  font-family: var(--font-sans);
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-/* ── Neon glow utilities (used in dark mode) ── */
-.neon-glow {
-  box-shadow:
-    0 0 7px rgba(255, 32, 32, 0.6),
-    0 0 20px rgba(255, 32, 32, 0.3),
-    0 0 40px rgba(255, 32, 32, 0.15);
-=======
 /* ================================================================
    ROOM 23 — Crimson Neon Noir / Ivory Speakeasy Design System
    ================================================================ */
@@ -306,21 +224,12 @@ body {
     opacity: 1;
     transform: translateY(0);
   }
->>>>>>> 686c236 (feat: finalize luxury entrance landing page with atmospheric depth and levitating door animation)
 }
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
 }
 
-<<<<<<< HEAD
-.neon-glow-text {
-  text-shadow:
-    0 0 7px rgba(255, 32, 32, 0.7),
-    0 0 20px rgba(255, 32, 32, 0.3),
-    0 0 40px rgba(255, 32, 32, 0.1);
-}
-=======
 .animate-fade-in-up {
   animation: fadeInUp 0.6s ease-out forwards;
 }
@@ -372,4 +281,3 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--border-glow);
 }
->>>>>>> 686c236 (feat: finalize luxury entrance landing page with atmospheric depth and levitating door animation)
