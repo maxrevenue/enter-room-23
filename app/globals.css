@@ -27,14 +27,14 @@
   --color-bg: #FBF8F2;
   --color-fg: #1A0D00;
   --color-card: #F4EFE6;
-  --color-card-border: rgba(180, 16, 16, 0.10);
-  --color-primary: #8B0000;
+  --color-card-border: rgba(163, 0, 0, 0.12);
+  --color-primary: #A30000;
   --color-accent: #C9A84C;
-  --color-muted: #5A5A5A;
+  --color-muted: #4A4A4A;
   --color-subtle: #A3947D;
   --color-cta-bg: var(--color-primary);
   --color-cta-text: var(--color-bg);
-  --color-cta-hover-bg: #6B0000;
+  --color-cta-hover-bg: #7A0000;
   --color-cta-hover-text: var(--color-bg);
   color-scheme: light;
 }
