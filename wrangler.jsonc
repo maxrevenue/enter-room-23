@@ -1,7 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "main": ".open-next/worker.js",
-  "name": "enter-room-23",
+  "name": "room23-dark-theme",
   "compatibility_date": "2026-08-03",
   "compatibility_flags": [
     "nodejs_compat"
@@ -15,7 +15,7 @@
   "services": [
     {
       "binding": "WORKER_SELF_REFERENCE",
-      "service": "enter-room-23"
+      "service": "room23-dark-theme"
     }
   ],
 
