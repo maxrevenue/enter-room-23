@@ -10,8 +10,8 @@ export default function HomePage() {
       {/* ─── Theme Toggle ─────────────────────────────── */}
       <button
         onClick={toggleTheme}
-        aria-label="Toggle theme"
-        className="fixed top-6 right-6 z-50 p-2.5 rounded-full border border-[var(--color-card-border)] bg-[var(--color-card)] text-[var(--color-fg)] transition-all duration-300 hover:scale-110 focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-[var(--color-primary)]"
+        aria-label="Toggle dark mode"
+        className="fixed top-6 right-6 z-50 p-2.5 rounded-full border border-[var(--color-card-border)] bg-[var(--color-card)] text-[var(--color-fg)] transition-all duration-300 hover:scale-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current"
       >
         {theme === 'dark' ? (
           <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -97,16 +97,18 @@ function HeroSection({ theme }) {
             const el = document.getElementById('enter-target')
             if (el) el.scrollIntoView({ behavior: 'smooth' })
           }}
-          className="mt-4 group inline-flex items-center gap-3 border-2 border-[var(--color-primary)] px-10 py-4 text-sm font-semibold uppercase tracking-[0.3em] transition-all duration-300 hover:scale-105 hover:shadow-lg active:scale-100 focus:outline focus:outline-2 focus:outline-offset-4 focus:outline-[var(--color-primary)]"
+          className="mt-4 group inline-flex items-center gap-3 border-2 border-[var(--color-primary)] px-10 py-4 text-sm font-semibold uppercase tracking-[0.3em] transition-all duration-300 ease-in-out hover:scale-105 hover:-translate-y-0.5 hover:shadow-lg active:scale-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current"
           style={{
             backgroundColor: 'var(--color-cta-bg)',
             color: 'var(--color-cta-text)',
           }}
           onMouseEnter={(e) => {
             e.currentTarget.style.backgroundColor = 'var(--color-cta-hover-bg)'
+            e.currentTarget.style.borderWidth = '3px'
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.backgroundColor = 'var(--color-cta-bg)'
+            e.currentTarget.style.borderWidth = '2px'
           }}
         >
           ENTER ROOM23
@@ -206,7 +208,7 @@ function Card({ title, description, icon }) {
       </p>
 
       {/* CTA — structural hover feedback (scale + underline) for colorblind users */}
-      <button className="mt-2 border px-8 py-3 text-xs font-semibold uppercase tracking-[0.25em] transition-all duration-300 hover:scale-105 hover:underline focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-[var(--color-primary)]"
+      <button className="mt-2 border px-8 py-3 text-xs font-semibold uppercase tracking-[0.25em] transition-all duration-300 hover:scale-105 hover:underline hover:-translate-y-[1px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current"
         style={{
           borderColor: 'var(--color-muted)',
           color: 'var(--color-muted)',
@@ -273,7 +275,7 @@ function MinimalFooter() {
             <a
               key={link}
               href="#"
-              className="text-xs uppercase tracking-[0.2em] transition-all duration-300 hover:underline hover:scale-105 focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-[var(--color-primary)]"
+              className="text-xs uppercase tracking-[0.2em] transition-all duration-300 hover:underline hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current"
               style={{ color: 'var(--color-subtle)' }}
             >
               {link}
