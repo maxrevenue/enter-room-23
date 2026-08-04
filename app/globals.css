@@ -1,5 +1,6 @@
 @import "tailwindcss";
 
+<<<<<<< HEAD
 /* ── Tailwind v4 class-based dark mode variant ── */
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -82,11 +83,293 @@ body {
     0 0 7px rgba(255, 32, 32, 0.6),
     0 0 20px rgba(255, 32, 32, 0.3),
     0 0 40px rgba(255, 32, 32, 0.15);
+=======
+/* ================================================================
+   ROOM 23 — Crimson Neon Noir / Ivory Speakeasy Design System
+   ================================================================ */
+
+/* ── Base Layer ── */
+@layer base {
+  :root {
+    /* ── Shared tokens ── */
+    --radius: 0.625rem;
+
+    /* ── Dark Mode (Default — Neon Noir) ── */
+    --bg-base: #0A0508;
+    --bg-surface: #10090D;
+    --bg-elevated: #1A1118;
+    --bg-glass: rgba(16, 9, 13, 0.75);
+    --bg-glass-border: rgba(255, 0, 51, 0.15);
+
+    --text-primary: #FFFFFF;
+    --text-secondary: #C0C0C0;
+    --text-muted: #7A7A7A;
+    --text-accent: #FF0033;
+
+    --accent: #FF0033;
+    --accent-glow: #FF1A3C;
+    --accent-amber: #FF9900;
+    --accent-amber-glow: #FFB84D;
+
+    --border-soft: rgba(255, 255, 255, 0.08);
+    --border-accent: rgba(255, 0, 51, 0.3);
+    --border-glow: rgba(255, 0, 51, 0.5);
+
+    --neon-glow-sm: 0 0 8px rgba(255, 0, 51, 0.5), 0 0 16px rgba(255, 0, 51, 0.2);
+    --neon-glow: 0 0 12px rgba(255, 0, 51, 0.6), 0 0 30px rgba(255, 0, 51, 0.25);
+    --neon-glow-lg: 0 0 20px rgba(255, 0, 51, 0.7), 0 0 45px rgba(255, 0, 51, 0.3), 0 0 80px rgba(255, 0, 51, 0.15);
+    --neon-amber-glow: 0 0 10px rgba(255, 153, 0, 0.5), 0 0 25px rgba(255, 153, 0, 0.2);
+
+    --button-bg: rgba(255, 0, 51, 0.1);
+    --button-border: rgba(255, 0, 51, 0.5);
+    --button-hover-bg: rgba(255, 0, 51, 0.18);
+
+    --card-bg: rgba(16, 9, 13, 0.8);
+    --card-border: rgba(255, 0, 51, 0.15);
+    --card-hover-border: rgba(255, 0, 51, 0.4);
+
+    --divider: rgba(255, 0, 51, 0.25);
+    --divider-glow: rgba(255, 0, 51, 0.4);
+
+    --header-bg: rgba(10, 5, 8, 0.92);
+    --footer-bg: rgba(10, 5, 8, 0.96);
+
+    --bg-gradient-page: radial-gradient(ellipse at center, #1A0B12 0%, #070305 50%, #000000 100%);
+    --door-shadow-base: 0 0 40px rgba(0, 0, 0, 0.5);
+
+    scroll-behavior: smooth;
+  }
+
+  .light {
+    /* ── Light Mode (Ivory Speakeasy Noir) ── */
+    --bg-base: #F9F6F0;
+    --bg-surface: #F2EEE7;
+    --bg-elevated: #EBE5DC;
+    --bg-glass: rgba(249, 246, 240, 0.88);
+    --bg-glass-border: rgba(90, 14, 24, 0.1);
+
+    --text-primary: #110A0C;
+    --text-secondary: #3D2E30;
+    --text-muted: #6E6063;
+    --text-accent: #5A0E18;
+
+    --accent: #5A0E18;
+    --accent-glow: #800020;
+    --accent-amber: #C5A059;
+    --accent-amber-glow: #D9BF8A;
+
+    --border-soft: rgba(90, 14, 24, 0.08);
+    --border-accent: rgba(90, 14, 24, 0.2);
+    --border-glow: rgba(90, 14, 24, 0.35);
+
+    --door-frame-bg: #120A0E;
+    --door-frame-border: rgba(90, 14, 24, 0.30);
+    --door-frame-shadow: 0 4px 32px rgba(90, 14, 24, 0.10), 0 1px 4px rgba(0, 0, 0, 0.08);
+
+    --neon-glow-sm: 0 2px 12px rgba(90, 14, 24, 0.10), 0 0 2px rgba(90, 14, 24, 0.12);
+    --neon-glow: 0 4px 20px rgba(90, 14, 24, 0.12), 0 0 4px rgba(90, 14, 24, 0.10);
+    --neon-glow-lg: 0 6px 30px rgba(90, 14, 24, 0.15), 0 0 8px rgba(90, 14, 24, 0.08);
+    --neon-amber-glow: 0 1px 8px rgba(197, 160, 89, 0.25), 0 0 2px rgba(197, 160, 89, 0.15);
+
+    --button-bg: rgba(90, 14, 24, 0.05);
+    --button-border: rgba(90, 14, 24, 0.30);
+    --button-hover-bg: rgba(90, 14, 24, 0.10);
+
+    --card-bg: rgba(249, 246, 240, 0.9);
+    --card-border: rgba(90, 14, 24, 0.10);
+    --card-hover-border: rgba(90, 14, 24, 0.25);
+
+    --divider: rgba(90, 14, 24, 0.15);
+    --divider-glow: rgba(90, 14, 24, 0.25);
+
+    --header-bg: rgba(249, 246, 240, 0.94);
+    --footer-bg: rgba(242, 238, 231, 0.96);
+
+    --bg-gradient-page: radial-gradient(ellipse at center, #F4EFEB 0%, #E2DACD 50%, #C8BCAC 100%);
+    --door-shadow-base: 0 15px 35px rgba(40, 20, 10, 0.18);
+  }
+
+  /* Dark mode door frame tokens — invisible, image blends naturally */
+  :root {
+    --door-frame-bg: transparent;
+    --door-frame-border: transparent;
+    --door-frame-shadow: none;
+  }
 }
 
+/* ── Global element defaults ── */
+@layer base {
+  * {
+    @apply border-[var(--border-soft)];
+  }
+
+  html {
+    background-color: var(--bg-base);
+    color: var(--text-primary);
+  }
+
+  body {
+    @apply antialiased;
+    background-color: var(--bg-base);
+    color: var(--text-primary);
+    font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-syne), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  }
+}
+
+/* ── Utility classes ── */
+@layer utilities {
+  /* Neon glow text — dark mode */
+  .text-neon-glow {
+    text-shadow: 0 0 10px rgba(255, 0, 51, 0.6), 0 0 30px rgba(255, 0, 51, 0.3), 0 0 50px rgba(255, 0, 51, 0.1);
+  }
+  .text-neon-glow-lg {
+    text-shadow: 0 0 15px rgba(255, 0, 51, 0.7), 0 0 45px rgba(255, 0, 51, 0.4), 0 0 80px rgba(255, 0, 51, 0.2);
+  }
+
+  /* Neon border tube effect — dark mode */
+  .border-neon {
+    border-color: rgba(255, 0, 51, 0.5);
+    box-shadow: 0 0 8px rgba(255, 0, 51, 0.4), 0 0 20px rgba(255, 0, 51, 0.15), inset 0 0 8px rgba(255, 0, 51, 0.1);
+  }
+  .border-neon-lg {
+    border-color: rgba(255, 0, 51, 0.6);
+    box-shadow: 0 0 12px rgba(255, 0, 51, 0.5), 0 0 35px rgba(255, 0, 51, 0.2), inset 0 0 12px rgba(255, 0, 51, 0.08);
+  }
+
+  /* Glass morphism card */
+  .glass-card {
+    background: var(--bg-glass);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--bg-glass-border);
+    border-radius: var(--radius);
+  }
+  .glass-card-hover {
+    @apply transition-all duration-300;
+  }
+  .glass-card-hover:hover {
+    border-color: var(--card-hover-border);
+    box-shadow: var(--neon-glow-sm);
+  }
+
+  /* Neon divider line */
+  .neon-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, var(--divider) 20%, var(--divider-glow) 50%, var(--divider) 80%, transparent 100%);
+    border: none;
+  }
+
+  /* Obsidian texture overlay */
+  .obsidian-texture {
+    background-image:
+      radial-gradient(ellipse at 20% 50%, rgba(255, 0, 51, 0.03) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, rgba(255, 0, 51, 0.02) 0%, transparent 40%);
+  }
+
+  /* Ivory linen texture overlay */
+  .ivory-texture {
+    background-image:
+      radial-gradient(ellipse at 20% 50%, rgba(128, 0, 32, 0.02) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, rgba(197, 160, 89, 0.03) 0%, transparent 40%);
+  }
+
+  /* Clamp utility for responsive sizing */
+  .text-clamp-title {
+    font-size: clamp(2rem, 8vw, 5rem);
+  }
+  .text-clamp-subtitle {
+    font-size: clamp(0.8rem, 2.5vw, 1.25rem);
+  }
+
+  /* ── Door Arch Frame ──
+     Dark mode: invisible — door blends into obsidian void
+     Light mode: dark arched frame with crisp burgundy border & shadow
+     Arch shape is applied via Tailwind classes (rounded-t-full rounded-b-md) */
+  .door-arch {
+    background: var(--door-frame-bg);
+    border-color: var(--door-frame-border);
+    box-shadow: var(--door-frame-shadow);
+  }
+}
+
+/* ── Animations ── */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+>>>>>>> 686c236 (feat: finalize luxury entrance landing page with atmospheric depth and levitating door animation)
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+<<<<<<< HEAD
 .neon-glow-text {
   text-shadow:
     0 0 7px rgba(255, 32, 32, 0.7),
     0 0 20px rgba(255, 32, 32, 0.3),
     0 0 40px rgba(255, 32, 32, 0.1);
 }
+=======
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* ── Ambient dust mote float ── */
+@keyframes dustFloat {
+  0%, 100% {
+    transform: translateY(0) translateX(0);
+    opacity: 0.15;
+  }
+  25% {
+    transform: translateY(-12px) translateX(6px);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translateY(-4px) translateX(-4px);
+    opacity: 0.2;
+  }
+  75% {
+    transform: translateY(-16px) translateX(8px);
+    opacity: 0.45;
+  }
+}
+.animate-dust-float {
+  animation: dustFloat 8s ease-in-out infinite;
+}
+
+/* Stagger delays */
+.delay-100 { animation-delay: 0.1s; opacity: 0; }
+.delay-200 { animation-delay: 0.2s; opacity: 0; }
+.delay-300 { animation-delay: 0.3s; opacity: 0; }
+.delay-400 { animation-delay: 0.4s; opacity: 0; }
+.delay-500 { animation-delay: 0.5s; opacity: 0; }
+
+/* ── Scrollbar styling ── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-base);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-accent);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border-glow);
+}
+>>>>>>> 686c236 (feat: finalize luxury entrance landing page with atmospheric depth and levitating door animation)

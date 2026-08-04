@@ -11,10 +11,42 @@
     "directory": ".open-next/assets",
     "binding": "ASSETS"
   },
+<<<<<<< HEAD
   "services": [
     {
       "binding": "WORKER_SELF_REFERENCE",
       "service": "room23-dark-theme"
+=======
+  // ── Staging environment ──
+  // Deploy with: npx wrangler deploy --env staging
+  // Secrets (NMI_PRIVATE_KEY, RESEND_API_KEY, ADMIN_EMAIL) must be set separately:
+  //   npx wrangler secret put NMI_PRIVATE_KEY --env staging
+  //   npx wrangler secret put RESEND_API_KEY --env staging
+  //   npx wrangler secret put ADMIN_EMAIL --env staging
+  // Never store secrets in this file.
+  "env": {
+    "staging": {
+      "name": "enter-room-23-staging",
+      "main": ".open-next/worker.js",
+      "assets": {
+        "directory": ".open-next/assets",
+        "binding": "ASSETS"
+      },
+      "vars": {
+        "NEXT_PUBLIC_DEPLOYMENT_ENV": "staging"
+      }
+    },
+    "preview": {
+      "name": "enter-room-23-preview",
+      "main": ".open-next/worker.js",
+      "assets": {
+        "directory": ".open-next/assets",
+        "binding": "ASSETS"
+      },
+      "vars": {
+        "NEXT_PUBLIC_DEPLOYMENT_ENV": "production"
+      }
+>>>>>>> 686c236 (feat: finalize luxury entrance landing page with atmospheric depth and levitating door animation)
     }
   ],
   "images": {
