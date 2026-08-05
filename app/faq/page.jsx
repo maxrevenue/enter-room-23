@@ -123,12 +123,6 @@ export default function FAQPage() {
             >
               {faq.a}
             </p>
-            {/* CSS to rotate the + icon when open */}
-            <style jsx>{`
-              details[open] .summary-icon {
-                transform: rotate(45deg);
-              }
-            `}</style>
           </details>
         ))}
       </div>

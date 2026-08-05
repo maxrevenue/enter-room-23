@@ -625,3 +625,8 @@ body {
   animation: shimmer 1.5s ease-in-out infinite;
   border-radius: var(--radius-md);
 }
+
+/* ── FAQ Accordion ── */
+details[open] .summary-icon {
+  transform: rotate(45deg);
+}
