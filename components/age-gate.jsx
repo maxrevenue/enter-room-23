@@ -9,246 +9,212 @@ export default function AgeGate() {
 
   const handleEnter = () => {
     setExiting(true)
-    setTimeout(() => confirmAge(), 600)
+    setTimeout(() => confirmAge(), 900)
   }
 
   if (exiting) {
     return (
       <div
-        className="fixed inset-0 z-50 flex items-center justify-center transition-opacity duration-700 opacity-0 pointer-events-none"
-        style={{ backgroundColor: 'var(--bg-base)' }}
+        className="fixed inset-0 z-50 animate-door-enter pointer-events-none"
+        style={{ backgroundColor: '#050308' }}
       />
     )
   }
 
   return (
     <div
-      className="fixed inset-0 z-50 flex flex-col items-center select-none overflow-hidden animate-fade-in group/door"
-      style={{ background: 'var(--bg-gradient-page)' }}
+      className="fixed inset-0 z-50 flex flex-col items-center justify-center select-none overflow-hidden group/door"
+      style={{ backgroundColor: '#050308' }}
     >
-      {/* ── Ambient light leaks ── */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
-        {/* Top-left wine haze — subtle in light mode */}
-        <div className="absolute -top-[10%] -left-[10%] w-[60%] h-[60%] opacity-[0.05]"
-          style={{
-            background: 'radial-gradient(ellipse at 50% 50%, rgba(90, 14, 24, 0.7) 0%, transparent 70%)',
-          }}
-        />
-        {/* Bottom-right warm amber light leak */}
-        <div className="absolute -bottom-[10%] -right-[10%] w-[55%] h-[55%] opacity-[0.04]"
-          style={{
-            background: 'radial-gradient(ellipse at 50% 50%, rgba(197, 160, 89, 0.5) 0%, transparent 70%)',
-          }}
-        />
-        {/* Center-bottom accent wash */}
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[80%] h-[40%] opacity-[0.04]"
-          style={{
-            background: 'radial-gradient(ellipse at 50% 100%, rgba(90, 14, 24, 0.4) 0%, transparent 65%)',
-          }}
-        />
-      </div>
-
-      {/* ── Background watermark "23" ── */}
-      <div
-        className="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-0"
+      {/* ── Deep ambient background gradient ── */}
+      <div className="absolute inset-0 pointer-events-none"
         style={{
-          fontSize: 'min(50vw, 420px)',
-          fontFamily: 'var(--font-syne), serif',
-          fontWeight: 900,
-          color: 'var(--accent)',
-          opacity: 0.03,
-          lineHeight: 1,
+          background: `
+            radial-gradient(ellipse at 50% 0%, rgba(20,8,12,0.9) 0%, transparent 60%),
+            radial-gradient(ellipse at 50% 100%, rgba(180,130,50,0.08) 0%, transparent 50%),
+            radial-gradient(ellipse at center, #0A050A 0%, #030102 100%)
+          `,
         }}
-      >
-        23
-      </div>
+      />
 
-      {/* ── Floating ambient dust motes ── */}
+      {/* ── Vignette overlay ── */}
+      <div className="absolute inset-0 pointer-events-none z-0"
+        style={{
+          background: 'radial-gradient(ellipse at center, transparent 40%, rgba(3,1,2,0.7) 85%, rgba(0,0,0,0.95) 100%)',
+        }}
+      />
+
+      {/* ── Ambient under-glow light source ── */}
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 pointer-events-none z-0
+                      transition-all duration-[1200ms] ease-out
+                      group-hover/door:opacity-100 group-hover/door:scale-x-110"
+        style={{
+          width: 'min(70vw, 500px)',
+          height: '30vh',
+          background: 'radial-gradient(ellipse at 50% 100%, rgba(200,155,60,0.18) 0%, rgba(180,130,40,0.08) 30%, transparent 70%)',
+          opacity: 0.75,
+        }}
+      />
+
+      {/* ── Floor light reflection ── */}
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 pointer-events-none z-0
+                      transition-all duration-[1200ms] ease-out
+                      group-hover/door:opacity-100 group-hover/door:scale-x-120"
+        style={{
+          width: 'min(90vw, 700px)',
+          height: '6vh',
+          background: 'linear-gradient(to top, rgba(200,155,60,0.12) 0%, transparent 100%)',
+          opacity: 0.6,
+          filter: 'blur(4px)',
+        }}
+      />
+
+      {/* ── Dust motes in the light beam ── */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
         {[
-          { left: '12%', top: '22%', delay: '0s', size: 'w-1.5 h-1.5' },
-          { left: '78%', top: '35%', delay: '1.2s', size: 'w-1 h-1' },
-          { left: '25%', top: '65%', delay: '2.4s', size: 'w-1 h-1' },
-          { left: '68%', top: '72%', delay: '3.6s', size: 'w-1.5 h-1.5' },
-          { left: '40%', top: '15%', delay: '4.8s', size: 'w-1 h-1' },
-          { left: '85%', top: '55%', delay: '6s', size: 'w-1 h-1' },
-          { left: '15%', top: '48%', delay: '2s', size: 'w-1.5 h-1.5' },
-          { left: '55%', top: '82%', delay: '5s', size: 'w-1 h-1' },
+          { left: '38%', bottom: '8%', delay: '0s', size: '1.5px' },
+          { left: '55%', bottom: '12%', delay: '1.5s', size: '1px' },
+          { left: '48%', bottom: '5%', delay: '3s', size: '1.2px' },
+          { left: '62%', bottom: '16%', delay: '4.5s', size: '1px' },
+          { left: '35%', bottom: '10%', delay: '2s', size: '1.3px' },
+          { left: '52%', bottom: '20%', delay: '5.5s', size: '0.8px' },
+          { left: '44%', bottom: '14%', delay: '6.5s', size: '1px' },
         ].map((dot, i) => (
           <div
             key={i}
-            className={`absolute rounded-full animate-dust-float ${dot.size}`}
+            className="absolute rounded-full animate-dust-rise"
             style={{
               left: dot.left,
-              top: dot.top,
+              bottom: dot.bottom,
+              width: dot.size,
+              height: dot.size,
               animationDelay: dot.delay,
-              background: 'radial-gradient(circle, rgba(212, 175, 55, 0.35) 0%, rgba(255, 0, 51, 0.15) 50%, transparent 100%)',
-              boxShadow: '0 0 6px rgba(212, 175, 55, 0.2), 0 0 12px rgba(128, 0, 32, 0.1)',
+              background: 'radial-gradient(circle, rgba(212,175,55,0.6) 0%, rgba(200,155,60,0.2) 50%, transparent 100%)',
             }}
           />
         ))}
       </div>
 
-      {/* ── Corner frame accents ── */}
-      <div className="absolute inset-0 pointer-events-none z-0">
-        {/* Top-left corner */}
-        <div className="absolute top-6 left-6 w-12 h-12" style={{ borderTop: '1px solid var(--border-accent)', borderLeft: '1px solid var(--border-accent)' }} />
-        {/* Top-right corner */}
-        <div className="absolute top-6 right-6 w-12 h-12" style={{ borderTop: '1px solid var(--border-accent)', borderRight: '1px solid var(--border-accent)' }} />
-        {/* Bottom-left corner */}
-        <div className="absolute bottom-6 left-6 w-12 h-12" style={{ borderBottom: '1px solid var(--border-accent)', borderLeft: '1px solid var(--border-accent)' }} />
-        {/* Bottom-right corner */}
-        <div className="absolute bottom-6 right-6 w-12 h-12" style={{ borderBottom: '1px solid var(--border-accent)', borderRight: '1px solid var(--border-accent)' }} />
-      </div>
-
-      {/* ── Keyhole icon ── */}
-      <div className="mt-[4vh] sm:mt-[3vh] relative animate-fade-in-up z-10">
-        <svg
-          width="48" height="48"
-          viewBox="0 0 48 48" fill="none"
-          className="w-10 h-10 sm:w-12 sm:h-12"
-        >
-          {/* Outer ring */}
-          <circle
-            cx="24" cy="24" r="20"
-            fill="none" strokeWidth="1"
-            style={{ stroke: 'var(--accent)', opacity: 0.4 }}
-          />
-          {/* Inner ring */}
-          <circle
-            cx="24" cy="24" r="16"
-            fill="none" strokeWidth="0.8"
-            style={{ stroke: 'var(--accent)', opacity: 0.25 }}
-          />
-          {/* Keyhole: circle + stem */}
-          <circle
-            cx="24" cy="19" r="5"
-            fill="none" strokeWidth="1.2"
-            style={{ stroke: 'var(--accent)', opacity: 0.7 }}
-          />
-          <path
-            d="M21.5 23L22.5 33H25.5L26.5 23"
-            strokeWidth="1.2" strokeLinecap="round"
-            style={{ stroke: 'var(--accent)', opacity: 0.7 }}
-          />
-          {/* 23 */}
-          <text x="24" y="36" textAnchor="middle"
-            className="text-[9px] font-bold font-syne"
-            style={{ fill: 'var(--accent)', opacity: 0.6 }}
-          >
-            23
-          </text>
-        </svg>
-      </div>
-
-      {/* ── Subtitle — top header since door image has its own "ROOM 23" title ── */}
+      {/* ── "DISCREET. CURATED. EXCLUSIVE." — top header ── */}
       <p
-        className="mt-[1.5vh] sm:mt-[1.5vh] text-clamp-subtitle font-syne tracking-[0.28em] uppercase text-center px-6 max-w-[90vw] sm:max-w-[70vw] animate-fade-in-up delay-100"
+        className="relative z-10 mb-[3vh] text-center px-6 animate-fade-in-up
+                   font-[var(--font-syne)] tracking-[0.32em] uppercase"
         style={{
-          color: 'var(--text-secondary)',
-          letterSpacing: '0.3em',
+          fontSize: 'clamp(0.65rem, 1.4vw, 0.85rem)',
+          color: 'rgba(200,180,150,0.7)',
+          fontWeight: 400,
+          letterSpacing: '0.35em',
         }}
       >
         DISCREET. CURATED. EXCLUSIVE.
       </p>
 
-      {/* ── Door — sleek rectangular frame, tall proportions ── */}
+      {/* ── Door container ── */}
       <div
-        className="relative z-10 mt-[2vh] sm:mt-[2vh] mb-8 animate-fade-in-up delay-200
-                   w-[280px] sm:w-[320px] mx-auto
-                   h-[480px] sm:h-[520px]
-                   rounded-sm
-                   border border-[#800020]/20
-                   overflow-hidden
-                   bg-[#070305]
-                   transition-all duration-[1000ms] ease-out
-                   group-hover/door:shadow-[0_0_60px_rgba(128,0,32,0.6)]
-                   group-hover/door:-translate-y-2"
+        className="relative z-10 animate-fade-in-up delay-100
+                   transition-all duration-[1200ms] ease-out
+                   group-hover/door:scale-[1.015]"
         style={{
-          boxShadow: 'var(--door-shadow-base)',
+          width: 'min(85vw, 380px)',
+          maxHeight: '62vh',
+          aspectRatio: '2/3',
         }}
       >
+        {/* Halo behind door — amber glow ring */}
+        <div
+          className="absolute -inset-4 rounded-sm pointer-events-none
+                      transition-opacity duration-[1200ms] ease-out
+                      opacity-40 group-hover/door:opacity-70"
+          style={{
+            background: 'radial-gradient(ellipse at 50% 50%, rgba(180,130,40,0.08) 0%, rgba(180,130,40,0.03) 50%, transparent 80%)',
+            filter: 'blur(20px)',
+          }}
+        />
+
+        {/* Door button — the entire door is interactive */}
         <button
           onClick={handleEnter}
-          className="relative bg-transparent border-0 outline-none cursor-pointer group flex w-full h-full"
+          className="relative w-full h-full bg-transparent border-0 outline-none cursor-pointer group/btn p-0"
           aria-label="Enter Room 23"
-          style={{ background: 'none', border: 'none', outline: 'none' }}
+          style={{
+            background: 'none',
+            border: 'none',
+            outline: 'none',
+            boxShadow: `
+              0 0 80px rgba(0,0,0,0.6),
+              0 0 120px rgba(0,0,0,0.4)
+            `,
+          }}
         >
-          {/* Hover glow overlay */}
-          <div
-            className="absolute inset-0 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
-            style={{
-              background: 'radial-gradient(ellipse at 50% 44%, transparent 30%, rgba(90,14,24,0.05) 55%, transparent 75%)',
-              filter: 'blur(8px)',
-            }}
-          />
-
+          {/* ── The door image ── */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/door.png"
+            src="/new door.png"
             alt="Enter Room 23"
             width={600}
             height={900}
-            className="relative z-0 w-full h-full object-cover object-bottom scale-125 block
-                       transition-all duration-[1500ms] ease-out
-                       group-hover/door:scale-[1.28] group-hover/door:brightness-110"
+            className="relative w-full h-full object-contain block
+                       transition-all duration-[1200ms] ease-out
+                       group-hover/btn:brightness-[1.06]"
+            style={{ filter: 'contrast(1.02) saturate(0.95)' }}
+          />
+
+          {/* ── Keyhole glow spot (centered ~43% from top) ── */}
+          <div
+            className="absolute pointer-events-none
+                        transition-all duration-[1000ms] ease-out
+                        opacity-0 group-hover/btn:opacity-100"
+            style={{
+              left: '50%',
+              top: '41%',
+              transform: 'translate(-50%, -50%)',
+              width: '18%',
+              height: '14%',
+              background: 'radial-gradient(ellipse at center, rgba(212,175,55,0.25) 0%, rgba(180,140,40,0.12) 40%, transparent 70%)',
+              filter: 'blur(6px)',
+              borderRadius: '50%',
+            }}
+          />
+
+          {/* ── Under-glow enhancement on hover ── */}
+          <div
+            className="absolute bottom-0 left-0 right-0 pointer-events-none
+                        transition-all duration-[1200ms] ease-out
+                        opacity-0 group-hover/btn:opacity-100
+                        group-hover/btn:h-[22%]"
+            style={{
+              height: '15%',
+              background: 'linear-gradient(to top, rgba(200,155,50,0.30) 0%, rgba(180,130,40,0.10) 40%, transparent 100%)',
+            }}
+          />
+
+          {/* ── Subtle top spotlight ── */}
+          <div
+            className="absolute top-0 left-0 right-0 pointer-events-none
+                        transition-opacity duration-[1000ms] ease-out
+                        opacity-0 group-hover/btn:opacity-60"
+            style={{
+              height: '20%',
+              background: 'linear-gradient(to bottom, rgba(255,255,255,0.03) 0%, transparent 100%)',
+            }}
           />
         </button>
       </div>
 
-      {/* ── Tagline ── */}
+      {/* ── Tagline — below the door ── */}
       <p
-        className="mt-[1.5vh] sm:mt-[2vh] text-[2.5vw] sm:text-[1.3vw] md:text-[1vw] lg:text-[0.85vw] tracking-[0.2em] uppercase text-center px-6 max-w-[90vw] sm:max-w-[65vw] animate-fade-in-up delay-300"
+        className="relative z-10 mt-[3vh] mb-[4vh] text-center px-6 animate-fade-in-up delay-200
+                   font-[var(--font-syne)]"
         style={{
-          fontFamily: 'var(--font-syne), serif',
-          color: 'var(--text-secondary)',
-          letterSpacing: '0.22em',
+          fontSize: 'clamp(0.7rem, 1.3vw, 0.82rem)',
+          color: 'rgba(180,160,130,0.55)',
+          fontWeight: 400,
+          letterSpacing: '0.18em',
+          maxWidth: 'min(70vw, 500px)',
         }}
       >
         An exclusive sanctuary for sensual well&shy;being
       </p>
-
-      {/* ── CTA Button ── */}
-      <button
-        onClick={handleEnter}
-        className="mt-[2vh] sm:mt-[2.5vh] mb-[4vh] sm:mb-[3vh] px-10 sm:px-16 py-3 sm:py-4 rounded-full border cursor-pointer transition-all duration-500 ease-out hover:-translate-y-0.5 active:scale-[0.97] group/cta animate-fade-in-up delay-400 relative overflow-hidden"
-        style={{
-          borderColor: 'var(--button-border)',
-          backgroundColor: 'var(--button-bg)',
-          backdropFilter: 'blur(8px)',
-        }}
-      >
-        {/* Hover glow background */}
-        <div className="absolute inset-0 opacity-0 group-hover/cta:opacity-100 transition-opacity duration-500 pointer-events-none"
-          style={{ backgroundColor: 'var(--button-hover-bg)' }}
-        />
-        {/* Animated laser sweep */}
-        <div className="absolute inset-0 opacity-0 group-hover/cta:opacity-100 transition-opacity duration-500 pointer-events-none overflow-hidden">
-          <div className="absolute top-0 left-0 w-[200%] h-[1px] animate-laser-sweep"
-            style={{ background: 'linear-gradient(90deg, transparent 0%, var(--accent) 50%, transparent 100%)' }}
-          />
-        </div>
-
-        <span
-          className="relative z-10 text-[3vw] sm:text-[1.2vw] md:text-[0.9vw] lg:text-[0.8vw] font-syne font-bold tracking-[0.18em] uppercase whitespace-nowrap"
-          style={{ color: 'var(--text-primary)' }}
-        >
-          <span className="relative inline-block">
-            ENTER ROOM 23
-            {/* Button text glow */}
-            <span
-              className="absolute inset-0 blur-sm pointer-events-none opacity-60 group-hover/cta:opacity-90 transition-opacity duration-500"
-              aria-hidden="true"
-              style={{
-                color: 'transparent',
-                textShadow: '0 0 8px var(--accent), 0 0 20px var(--accent)',
-              }}
-            >
-              ENTER ROOM 23
-            </span>
-          </span>
-        </span>
-      </button>
     </div>
   )
 }

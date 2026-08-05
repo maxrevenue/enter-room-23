@@ -237,6 +237,48 @@
   animation: fadeIn 0.5s ease-out forwards;
 }
 
+/* ── Door enter transition — zoom + fade ── */
+@keyframes doorEnter {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  30% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.15);
+  }
+}
+.animate-door-enter {
+  animation: doorEnter 0.9s ease-in forwards;
+}
+
+/* ── Dust motes rising in the door under-glow beam ── */
+@keyframes dustRise {
+  0%, 100% {
+    transform: translateY(0) translateX(0);
+    opacity: 0.1;
+  }
+  30% {
+    transform: translateY(-20px) translateX(4px);
+    opacity: 0.5;
+  }
+  60% {
+    transform: translateY(-8px) translateX(-3px);
+    opacity: 0.25;
+  }
+  85% {
+    transform: translateY(-25px) translateX(2px);
+    opacity: 0.4;
+  }
+}
+.animate-dust-rise {
+  animation: dustRise 7s ease-in-out infinite;
+}
+
 /* ── Ambient dust mote float ── */
 @keyframes dustFloat {
   0%, 100% {
