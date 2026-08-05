@@ -3,7 +3,7 @@
 import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import { useCart } from '@/lib/cart-context'
-import { products } from '@/lib/products'
+import { PRODUCTS as products } from '@/lib/products'
 import { ShoppingBag, Filter, X } from 'lucide-react'
 
 const CATEGORIES = ['All', 'Wellness', 'Accessories', 'Essentials']
