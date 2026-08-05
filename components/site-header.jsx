@@ -7,10 +7,8 @@ import { Sun, Moon, Menu, X, ShoppingBag } from 'lucide-react'
 
 const NAV_LINKS = [
   { href: '/shop', label: 'SHOP' },
-  { href: '/archive', label: 'THE ARCHIVE' },
-  { href: '/vault', label: 'THE VAULT' },
-  { href: '/essentials', label: 'ESSENTIALS' },
-  { href: '/new', label: 'NEW ARRIVALS' },
+  { href: '/faq', label: 'FAQ' },
+  { href: '/contact', label: 'CONTACT' },
 ]
 
 export default function SiteHeader() {

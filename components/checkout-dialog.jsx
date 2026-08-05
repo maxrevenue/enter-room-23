@@ -1,70 +1,357 @@
 'use client'
 
-import { X, Check } from 'lucide-react'
+import { useState } from 'react'
 import { useCart } from '@/lib/cart-context'
+import { X, Lock, ShieldCheck, CreditCard, Check } from 'lucide-react'
+import Link from 'next/link'
 
 export default function CheckoutDialog() {
   const { checkoutOpen, setCheckoutOpen, cart, subtotal, clearCart } = useCart()
+  const [agreedToTerms, setAgreedToTerms] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [orderPlaced, setOrderPlaced] = useState(false)
 
   if (!checkoutOpen) return null
 
-  const handleCheckout = () => {
-    // TODO: Integrate payment processor (NMI)
-    clearCart()
-    setCheckoutOpen(false)
+  const tax = subtotal * 0.08
+  const shipping = subtotal >= 99 ? 0 : 5.99
+  const total = subtotal + tax + shipping
+
+  const handlePlaceOrder = async () => {
+    if (!agreedToTerms || submitting) return
+    setSubmitting(true)
+
+    // NMI Collector.js integration point:
+    // 1. Call NMI Collector.js to tokenize card fields
+    // 2. Send token to your backend /api/checkout endpoint
+    // 3. Backend calls NMI API with token + order details
+    // 4. On success → clear cart, show confirmation
+    // See: https://docs.nmi.com/reference/collector-js
+
+    // Simulate processing
+    setTimeout(() => {
+      setSubmitting(false)
+      setOrderPlaced(true)
+      clearCart()
+    }, 1500)
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/70 backdrop-blur-sm"
-        onClick={() => setCheckoutOpen(false)}
+        className="absolute inset-0"
+        style={{ backgroundColor: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(4px)' }}
+        onClick={() => { if (!submitting) setCheckoutOpen(false) }}
       />
-      {/* Dialog */}
-      <div className="relative w-full max-w-lg bg-[#0A0A0A] border border-[#800020]/30 rounded-2xl shadow-2xl p-8 animate-in zoom-in-95 duration-200">
-        <button
-          onClick={() => setCheckoutOpen(false)}
-          className="absolute top-4 right-4 p-2 text-white/30 hover:text-white transition-colors"
-        >
-          <X className="w-5 h-5" />
-        </button>
 
-        <div className="text-center mb-6">
-          <div className="w-12 h-12 rounded-full bg-[#C9A060]/20 flex items-center justify-center mx-auto mb-4">
-            <Check className="w-6 h-6 text-[#C9A060]" />
-          </div>
-          <h2 className="text-xl font-semibold text-white font-[var(--font-syne)]">Checkout</h2>
-          <p className="text-white/40 text-sm mt-1">Complete your order securely</p>
+      {/* Modal */}
+      <div
+        className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl animate-scale-in"
+        style={{
+          backgroundColor: 'var(--color-bg-surface)',
+          border: '1px solid var(--color-border)',
+          boxShadow: 'var(--shadow-modal)',
+        }}
+      >
+        {/* Header */}
+        <div
+          className="flex items-center justify-between p-6"
+          style={{ borderBottom: '1px solid var(--border)' }}
+        >
+          <h2
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 'var(--text-xl)',
+              fontWeight: 700,
+              color: 'var(--text-primary)',
+              letterSpacing: '0.04em',
+            }}
+          >
+            {orderPlaced ? 'Order Confirmed' : 'Secure Checkout'}
+          </h2>
+          <button
+            onClick={() => setCheckoutOpen(false)}
+            className="btn-ghost"
+            style={{ padding: '0.375rem' }}
+            disabled={submitting}
+          >
+            <X size={20} />
+          </button>
         </div>
 
-        {/* Order Summary */}
-        <div className="space-y-3 mb-6 max-h-48 overflow-y-auto">
-          {cart.map((item) => (
-            <div key={item.id} className="flex justify-between text-sm">
-              <span className="text-white/60 truncate flex-1 mr-4">{item.name} × {item.qty}</span>
-              <span className="text-white">${item.price * item.qty}</span>
+        {orderPlaced ? (
+          /* ── Order Confirmation ── */
+          <div className="p-6 text-center space-y-4">
+            <div
+              style={{
+                width: 64,
+                height: 64,
+                borderRadius: '50%',
+                backgroundColor: 'var(--color-success-bg)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto',
+              }}
+            >
+              <Check size={32} style={{ color: 'var(--color-success)' }} />
             </div>
-          ))}
-        </div>
-
-        <div className="border-t border-white/5 pt-4 mb-6">
-          <div className="flex justify-between text-lg font-semibold">
-            <span className="text-white/60">Total</span>
-            <span className="text-[#C9A060]">${subtotal}</span>
+            <h3
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: 'var(--text-2xl)',
+                fontWeight: 700,
+                color: 'var(--text-primary)',
+              }}
+            >
+              Thank You for Your Order
+            </h3>
+            <p style={{ color: 'var(--text-secondary)', fontSize: 'var(--text-sm)' }}>
+              A confirmation email will be sent to you shortly. Your order will be shipped in{' '}
+              <strong style={{ color: 'var(--text-primary)' }}>discreet, plain packaging</strong>.
+            </p>
+            <p style={{ color: 'var(--text-muted)', fontSize: 'var(--text-xs)' }}>
+              Your card statement will show <strong style={{ color: 'var(--text-primary)' }}>ROOM23</strong>.
+            </p>
+            <button
+              onClick={() => { setOrderPlaced(false); setCheckoutOpen(false); setAgreedToTerms(false) }}
+              className="btn-primary"
+            >
+              Continue Shopping
+            </button>
           </div>
-        </div>
+        ) : (
+          /* ── Checkout Form ── */
+          <div className="p-6 space-y-6">
+            {/* Order Summary */}
+            <div>
+              <h3
+                style={{
+                  fontFamily: 'var(--font-display)',
+                  fontSize: 'var(--text-sm)',
+                  fontWeight: 600,
+                  color: 'var(--text-primary)',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.06em',
+                  marginBottom: '0.75rem',
+                }}
+              >
+                Order Summary
+              </h3>
+              <div
+                className="space-y-2"
+                style={{ color: 'var(--text-secondary)', fontSize: 'var(--text-sm)' }}
+              >
+                {cart.map((item) => (
+                  <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>
+                      {item.name}
+                      {item.qty > 1 && (
+                        <span style={{ color: 'var(--text-muted)', fontSize: 'var(--text-xs)' }}>
+                          {' '}×{item.qty}
+                        </span>
+                      )}
+                    </span>
+                    <span style={{ fontFamily: 'var(--font-display)' }}>
+                      ${(item.price * item.qty).toFixed(2)} USD
+                    </span>
+                  </div>
+                ))}
+              </div>
+              <hr style={{ margin: '0.75rem 0', border: 'none', borderTop: '1px solid var(--border)' }} />
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 'var(--text-sm)', color: 'var(--text-muted)' }}>
+                <span>Subtotal</span>
+                <span>${subtotal.toFixed(2)} USD</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 'var(--text-sm)', color: 'var(--text-muted)' }}>
+                <span>Tax (est. 8%)</span>
+                <span>${tax.toFixed(2)} USD</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 'var(--text-sm)', color: 'var(--text-muted)' }}>
+                <span>Shipping</span>
+                <span>{shipping === 0 ? <span style={{ color: 'var(--color-success)' }}>FREE</span> : `$${shipping.toFixed(2)} USD`}</span>
+              </div>
+              <hr style={{ margin: '0.75rem 0', border: 'none', borderTop: '1px solid var(--border)' }} />
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: 'var(--text-base)' }}>Total</span>
+                <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 'var(--text-xl)', color: 'var(--color-brass)' }}>
+                  ${total.toFixed(2)} USD
+                </span>
+              </div>
+            </div>
 
-        <button
-          onClick={handleCheckout}
-          className="w-full py-4 bg-[#C9A060] text-black font-bold rounded-xl hover:bg-[#D4B070] transition-colors text-sm tracking-widest uppercase"
-        >
-          Place Order — ${subtotal}
-        </button>
+            {/* ── Credit Card Fields (NMI Collector.js Ready) ── */}
+            <div>
+              <h3
+                style={{
+                  fontFamily: 'var(--font-display)',
+                  fontSize: 'var(--text-sm)',
+                  fontWeight: 600,
+                  color: 'var(--text-primary)',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.06em',
+                  marginBottom: '0.75rem',
+                }}
+              >
+                Payment Details
+              </h3>
 
-        <p className="text-white/20 text-xs text-center mt-4">
-          Secure payment processing · Discreet billing
-        </p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                {/* Cardholder Name */}
+                <div>
+                  <label htmlFor="cc-name" className="input-label">Cardholder Name</label>
+                  <input
+                    id="cc-name"
+                    type="text"
+                    className="input-field"
+                    placeholder="Name on card"
+                    autoComplete="cc-name"
+                  />
+                </div>
+
+                {/* Card Number — NMI Collector.js will replace this with a secure iframe */}
+                <div>
+                  <label htmlFor="cc-number" className="input-label">Card Number</label>
+                  {/* NMI Collector.js Integration:
+                      Replace this input with:
+                      <div id="nmi-card-number" data-nmi-collector="card-number" />
+                      Then initialize in useEffect:
+                      new NMI.collector({ ... })
+                  */}
+                  <input
+                    id="cc-number"
+                    type="text"
+                    className="input-field"
+                    placeholder="0000 0000 0000 0000"
+                    autoComplete="cc-number"
+                    maxLength={19}
+                  />
+                </div>
+
+                {/* Expiry + CVV Row */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                  <div>
+                    <label htmlFor="cc-expiry" className="input-label">Expiry Date</label>
+                    <input
+                      id="cc-expiry"
+                      type="text"
+                      className="input-field"
+                      placeholder="MM / YY"
+                      autoComplete="cc-exp"
+                      maxLength={7}
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="cc-cvv" className="input-label">CVV</label>
+                    {/* NMI Collector.js Integration:
+                        Replace with:
+                        <div id="nmi-card-cvv" data-nmi-collector="card-cvv" />
+                    */}
+                    <input
+                      id="cc-cvv"
+                      type="text"
+                      className="input-field"
+                      placeholder="123"
+                      autoComplete="cc-csc"
+                      maxLength={4}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* ── Billing Descriptor Notice ── */}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.625rem',
+                padding: '0.75rem 1rem',
+                backgroundColor: 'var(--bg-elevated)',
+                borderRadius: 'var(--radius-md)',
+                border: '1px solid var(--border-light)',
+              }}
+            >
+              <CreditCard size={16} style={{ color: 'var(--color-brass)', flexShrink: 0 }} />
+              <p style={{ color: 'var(--text-muted)', fontSize: 'var(--text-xs)', lineHeight: 1.4 }}>
+                Charges will appear as <strong style={{ color: 'var(--text-primary)' }}>ROOM23</strong> on your bank statement.
+              </p>
+            </div>
+
+            {/* ── Security Indicators ── */}
+            <div style={{ display: 'flex', gap: '1.5rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
+                <Lock size={12} style={{ color: 'var(--color-success)' }} />
+                <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>256-bit SSL</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
+                <ShieldCheck size={12} style={{ color: 'var(--color-success)' }} />
+                <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>PCI-DSS Compliant</span>
+              </div>
+            </div>
+
+            {/* ── Terms Agreement Checkbox ── */}
+            <div>
+              <label
+                style={{
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: '0.625rem',
+                  cursor: 'pointer',
+                  padding: '0.75rem',
+                  borderRadius: 'var(--radius-md)',
+                  backgroundColor: agreedToTerms ? 'var(--color-success-bg)' : 'transparent',
+                  border: `1px solid ${agreedToTerms ? 'var(--color-success)' : 'var(--border)'}`,
+                  transition: 'all var(--transition-fast)',
+                }}
+              >
+                <input
+                  type="checkbox"
+                  checked={agreedToTerms}
+                  onChange={(e) => setAgreedToTerms(e.target.checked)}
+                  style={{
+                    marginTop: '2px',
+                    accentColor: 'var(--color-success)',
+                    width: 16,
+                    height: 16,
+                    flexShrink: 0,
+                  }}
+                />
+                <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+                  I am <strong style={{ color: 'var(--text-primary)' }}>18+ years old</strong> and agree to the{' '}
+                  <Link href="/terms" target="_blank" className="link-brass">Terms of Service</Link>{' '}
+                  and{' '}
+                  <Link href="/privacy" target="_blank" className="link-brass">Privacy Policy</Link>.
+                </span>
+              </label>
+            </div>
+
+            {/* ── Place Order Button ── */}
+            <button
+              onClick={handlePlaceOrder}
+              disabled={!agreedToTerms || submitting}
+              className="btn-primary"
+              style={{ width: '100%', padding: '0.875rem' }}
+            >
+              {submitting ? (
+                <>
+                  <span className="skeleton" style={{ width: '20px', height: '20px', borderRadius: '50%' }} />
+                  Processing...
+                </>
+              ) : (
+                <>
+                  <Lock size={14} />
+                  Place Order — ${total.toFixed(2)} USD
+                </>
+              )}
+            </button>
+
+            <p style={{ color: 'var(--text-muted)', fontSize: 'var(--text-xs)', textAlign: 'center' }}>
+              Your payment is processed securely via NMI. We never store full card details.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   )

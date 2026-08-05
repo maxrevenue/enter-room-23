@@ -1,191 +1,219 @@
 'use client'
 
-import { useState } from 'react'
 import Link from 'next/link'
+import { Shield, Lock, CreditCard } from 'lucide-react'
 
 export default function SiteFooter() {
-  const [email, setEmail] = useState('')
-  const [submitted, setSubmitted] = useState(false)
-
-  const handleSubscribe = (e) => {
-    e.preventDefault()
-    if (email) setSubmitted(true)
-  }
+  const year = new Date().getFullYear()
 
   return (
-    <footer
-      className="w-full border-t mt-auto"
-      style={{
-        backgroundColor: 'var(--footer-bg)',
-        borderColor: 'var(--border-soft)',
-      }}
-    >
-      {/* ── Trust Badge Banner ── */}
-      <div
-        className="w-full py-3 sm:py-4 px-4 text-center border-b overflow-hidden relative"
-        style={{
-          borderColor: 'var(--border-soft)',
-        }}
-      >
-        {/* Neon glow background line */}
-        <div className="absolute left-0 right-0 top-0 h-[1px] pointer-events-none"
+    <footer style={{ backgroundColor: 'var(--color-bg-surface)', borderTop: '1px solid var(--color-border)' }}>
+      <div className="container-page" style={{ paddingTop: '3rem', paddingBottom: '2rem' }}>
+
+        {/* ── 4-Column Grid ── */}
+        <div
           style={{
-            background: 'linear-gradient(90deg, transparent 0%, var(--divider-glow) 30%, var(--accent) 50%, var(--divider-glow) 70%, transparent 100%)',
+            display: 'grid',
+            gridTemplateColumns: '1fr',
+            gap: '2.5rem',
           }}
-        />
-
-        <div className="flex flex-wrap items-center justify-center gap-x-6 sm:gap-x-10 gap-y-1.5 text-[10px] sm:text-xs tracking-[0.15em] uppercase font-medium"
-          style={{ color: 'var(--text-secondary)' }}
+          className="sm:grid-cols-2 lg:grid-cols-4"
         >
-          {[
-            { icon: '✓', label: 'DISCREET PACKAGING' },
-            { icon: '✓', label: 'PRIVATE BILLING' },
-            { icon: '✓', label: 'SECURE CHECKOUT' },
-          ].map((item) => (
-            <span key={item.label} className="flex items-center gap-1.5 animate-fade-in">
-              <span className="text-sm sm:text-base" style={{ color: 'var(--accent)' }}>
-                {item.icon}
-              </span>
-              {item.label}
-            </span>
-          ))}
-        </div>
-      </div>
-
-      {/* ── Main Footer Content ── */}
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 py-8 sm:py-10">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* Brand */}
+          {/* ── Column 1: Brand & Legal Entity ── */}
           <div>
-            <h3
-              className="font-syne text-lg font-bold tracking-[0.12em] uppercase mb-3"
-              style={{ color: 'var(--accent)' }}
+            <h4
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: 'var(--text-lg)',
+                fontWeight: 700,
+                color: 'var(--color-brass)',
+                letterSpacing: '0.08em',
+                marginBottom: '1rem',
+              }}
             >
               ROOM 23
-            </h3>
-            <p className="text-sm leading-relaxed" style={{ color: 'var(--text-muted)' }}>
-              An exclusive sanctuary for sensual well-being. Discover curated essentials for your private side.
-            </p>
-          </div>
-
-          {/* Quick Links */}
-          <div>
-            <h4
-              className="font-syne text-xs font-semibold tracking-[0.15em] uppercase mb-4"
-              style={{ color: 'var(--text-secondary)' }}
-            >
-              EXPLORE
             </h4>
-            <ul className="space-y-2">
-              {[
-                { href: '/shop', label: 'Shop' },
-                { href: '/archive', label: 'The Archive' },
-                { href: '/vault', label: 'The Vault' },
-                { href: '/essentials', label: 'Essentials' },
-                { href: '/new', label: 'New Arrivals' },
-              ].map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-sm transition-colors duration-200 hover:text-[var(--accent)]"
-                    style={{ color: 'var(--text-muted)' }}
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Support Links */}
-          <div>
-            <h4
-              className="font-syne text-xs font-semibold tracking-[0.15em] uppercase mb-4"
-              style={{ color: 'var(--text-secondary)' }}
-            >
-              SUPPORT
-            </h4>
-            <ul className="space-y-2">
-              {[
-                { href: '/faq', label: 'FAQ' },
-                { href: '/shipping', label: 'Shipping & Returns' },
-                { href: '/privacy', label: 'Privacy Policy' },
-                { href: '/terms', label: 'Terms of Service' },
-                { href: '/contact', label: 'Contact Us' },
-              ].map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-sm transition-colors duration-200 hover:text-[var(--accent)]"
-                    style={{ color: 'var(--text-muted)' }}
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Newsletter */}
-          <div>
-            <h4
-              className="font-syne text-xs font-semibold tracking-[0.15em] uppercase mb-4"
-              style={{ color: 'var(--text-secondary)' }}
-            >
-              STAY CONNECTED
-            </h4>
-            <p className="text-sm mb-3" style={{ color: 'var(--text-muted)' }}>
-              Private previews, member-only offers, and exclusive collections.
-            </p>
-            {submitted ? (
-              <p
-                className="text-sm font-medium animate-fade-in py-2"
-                style={{ color: 'var(--accent)' }}
-              >
-                You&rsquo;re on the list.
+            <div style={{ color: 'var(--text-muted)', fontSize: 'var(--text-sm)', lineHeight: 1.8 }}>
+              <p style={{ marginBottom: '0.75rem', color: 'var(--text-secondary)' }}>
+                Premium Adult Wellness<br />
+                Discreet · Private · Curated
               </p>
-            ) : (
-              <form onSubmit={handleSubscribe} className="flex gap-2">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Your email"
-                  required
-                  className="flex-1 px-3 py-2 text-sm rounded-md border transition-all duration-300 outline-none focus:border-[var(--border-glow)] focus:shadow-[var(--neon-glow-sm)]"
-                  style={{
-                    backgroundColor: 'var(--bg-surface)',
-                    borderColor: 'var(--border-accent)',
-                    color: 'var(--text-primary)',
-                  }}
-                />
-                <button
-                  type="submit"
-                  className="px-4 py-2 text-xs font-semibold tracking-[0.1em] uppercase rounded-md border transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.97]"
-                  style={{
-                    borderColor: 'var(--button-border)',
-                    backgroundColor: 'var(--button-bg)',
-                    color: 'var(--accent)',
-                  }}
-                >
-                  JOIN
-                </button>
-              </form>
-            )}
+              <p style={{ marginBottom: '0.25rem' }}>
+                <strong style={{ color: 'var(--text-secondary)', fontSize: 'var(--text-xs)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Registered Entity:</strong>
+              </p>
+              <p style={{ marginBottom: '0.75rem' }}>
+                Room 23<br />
+                [Business Street Address]<br />
+                [City, State ZIP]<br />
+                United States
+              </p>
+              <p style={{ marginBottom: '0.25rem' }}>
+                <strong style={{ color: 'var(--text-secondary)', fontSize: 'var(--text-xs)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Support Email:</strong>
+              </p>
+              <a href="mailto:support@room23.net" className="link-brass" style={{ fontSize: 'var(--text-sm)' }}>
+                support@room23.net
+              </a>
+              <p style={{ marginTop: '0.75rem', marginBottom: '0.25rem' }}>
+                <strong style={{ color: 'var(--text-secondary)', fontSize: 'var(--text-xs)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Phone:</strong>
+              </p>
+              <p style={{ color: 'var(--text-primary)', fontSize: 'var(--text-sm)' }}>[Phone Number]</p>
+              <p style={{ marginTop: '0.5rem', fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
+                Mon–Fri 9:00 AM–6:00 PM ET
+              </p>
+            </div>
+          </div>
+
+          {/* ── Column 2: Legal Links ── */}
+          <div>
+            <h4
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: 'var(--text-sm)',
+                fontWeight: 600,
+                color: 'var(--text-primary)',
+                textTransform: 'uppercase',
+                letterSpacing: '0.08em',
+                marginBottom: '1rem',
+              }}
+            >
+              Legal
+            </h4>
+            <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
+              <Link href="/terms" className="link-muted" style={{ fontSize: 'var(--text-sm)' }}>
+                Terms of Service
+              </Link>
+              <Link href="/privacy" className="link-muted" style={{ fontSize: 'var(--text-sm)' }}>
+                Privacy Policy
+              </Link>
+              <Link href="/shipping" className="link-muted" style={{ fontSize: 'var(--text-sm)' }}>
+                Shipping &amp; Returns
+              </Link>
+            </nav>
+          </div>
+
+          {/* ── Column 3: Customer Care ── */}
+          <div>
+            <h4
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: 'var(--text-sm)',
+                fontWeight: 600,
+                color: 'var(--text-primary)',
+                textTransform: 'uppercase',
+                letterSpacing: '0.08em',
+                marginBottom: '1rem',
+              }}
+            >
+              Customer Care
+            </h4>
+            <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
+              <Link href="/faq" className="link-muted" style={{ fontSize: 'var(--text-sm)' }}>
+                FAQ
+              </Link>
+              <Link href="/contact" className="link-muted" style={{ fontSize: 'var(--text-sm)' }}>
+                Contact Us
+              </Link>
+              <Link href="/shop" className="link-muted" style={{ fontSize: 'var(--text-sm)' }}>
+                Shop
+              </Link>
+            </nav>
+          </div>
+
+          {/* ── Column 4: Gateway & Trust Badges ── */}
+          <div>
+            <h4
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: 'var(--text-sm)',
+                fontWeight: 600,
+                color: 'var(--text-primary)',
+                textTransform: 'uppercase',
+                letterSpacing: '0.08em',
+                marginBottom: '1rem',
+              }}
+            >
+              Trust &amp; Security
+            </h4>
+            <div style={{ color: 'var(--text-muted)', fontSize: 'var(--text-sm)' }}>
+
+              {/* Statement Descriptor */}
+              <div
+                style={{
+                  backgroundColor: 'var(--bg-elevated)',
+                  borderRadius: 'var(--radius-md)',
+                  padding: '0.75rem',
+                  marginBottom: '1rem',
+                  border: '1px solid var(--border-light)',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+                  <CreditCard size={16} style={{ color: 'var(--color-brass)', marginTop: '1px', flexShrink: 0 }} />
+                  <p style={{ fontSize: 'var(--text-xs)', lineHeight: 1.5 }}>
+                    Charges will appear as <strong style={{ color: 'var(--text-primary)' }}>ROOM23</strong> on your card statement.
+                  </p>
+                </div>
+              </div>
+
+              {/* SSL Badge */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
+                <Lock size={14} style={{ color: 'var(--color-success)', flexShrink: 0 }} />
+                <span style={{ fontSize: 'var(--text-xs)' }}>256-bit SSL Encrypted</span>
+              </div>
+
+              {/* PCI Badge */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
+                <Shield size={14} style={{ color: 'var(--color-success)', flexShrink: 0 }} />
+                <span style={{ fontSize: 'var(--text-xs)' }}>PCI-DSS Level 1 Compliant</span>
+              </div>
+
+              {/* Payment Badges */}
+              <div>
+                <p style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600 }}>
+                  Accepted Payments
+                </p>
+                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                  {['Visa', 'Mastercard', 'Amex', 'Discover'].map((card) => (
+                    <span
+                      key={card}
+                      style={{
+                        display: 'inline-block',
+                        padding: '0.25rem 0.6rem',
+                        fontSize: 'var(--text-xs)',
+                        fontWeight: 600,
+                        color: 'var(--text-secondary)',
+                        backgroundColor: 'var(--bg-elevated)',
+                        border: '1px solid var(--border)',
+                        borderRadius: 'var(--radius-sm)',
+                      }}
+                    >
+                      {card}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* ── Bottom bar ── */}
-      <div
-        className="border-t py-4 px-4 sm:px-6"
-        style={{ borderColor: 'var(--border-soft)' }}
-      >
-        <div className="mx-auto max-w-7xl flex flex-col sm:flex-row items-center justify-between gap-2 text-xs"
-          style={{ color: 'var(--text-muted)' }}
+        {/* ── Bottom Bar ── */}
+        <div
+          style={{
+            marginTop: '2.5rem',
+            paddingTop: '1.5rem',
+            borderTop: '1px solid var(--border)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '0.5rem',
+          }}
+          className="md:flex-row md:justify-between"
         >
-          <span>&copy; {new Date().getFullYear()} Room 23. All rights reserved.</span>
-          <span>DISCREET · CURATED · EXCLUSIVE</span>
+          <p style={{ color: 'var(--text-muted)', fontSize: 'var(--text-xs)' }}>
+            &copy; {year} Room 23. All rights reserved. For adults 18+ only.
+          </p>
+          <p style={{ color: 'var(--text-muted)', fontSize: 'var(--text-xs)', opacity: 0.6 }}>
+            Discreet packaging · Private billing · Secure checkout
+          </p>
         </div>
       </div>
     </footer>

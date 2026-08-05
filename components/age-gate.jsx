@@ -1,220 +1,175 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useCart } from '@/lib/cart-context'
 
 export default function AgeGate() {
-  const { confirmAge } = useCart()
-  const [exiting, setExiting] = useState(false)
+  const { confirmAge, declineAge } = useCart()
+  const [visible, setVisible] = useState(false)
 
-  const handleEnter = () => {
-    setExiting(true)
-    setTimeout(() => confirmAge(), 900)
-  }
-
-  if (exiting) {
-    return (
-      <div
-        className="fixed inset-0 z-50 animate-door-enter pointer-events-none"
-        style={{ backgroundColor: '#050308' }}
-      />
-    )
-  }
+  useEffect(() => {
+    // Trigger entrance animation after mount
+    const t = setTimeout(() => setVisible(true), 100)
+    return () => clearTimeout(t)
+  }, [])
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex flex-col items-center justify-center select-none overflow-hidden group/door"
-      style={{ backgroundColor: '#050308' }}
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+      style={{ backgroundColor: 'var(--color-bg-primary)' }}
     >
-      {/* ── Deep ambient background gradient ── */}
-      <div className="absolute inset-0 pointer-events-none"
-        style={{
-          background: `
-            radial-gradient(ellipse at 50% 0%, rgba(20,8,12,0.9) 0%, transparent 60%),
-            radial-gradient(ellipse at 50% 100%, rgba(180,130,50,0.08) 0%, transparent 50%),
-            radial-gradient(ellipse at center, #0A050A 0%, #030102 100%)
-          `,
-        }}
-      />
-
-      {/* ── Vignette overlay ── */}
-      <div className="absolute inset-0 pointer-events-none z-0"
-        style={{
-          background: 'radial-gradient(ellipse at center, transparent 40%, rgba(3,1,2,0.7) 85%, rgba(0,0,0,0.95) 100%)',
-        }}
-      />
-
-      {/* ── Ambient under-glow light source ── */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 pointer-events-none z-0
-                      transition-all duration-[1200ms] ease-out
-                      group-hover/door:opacity-100 group-hover/door:scale-x-110"
-        style={{
-          width: 'min(70vw, 500px)',
-          height: '30vh',
-          background: 'radial-gradient(ellipse at 50% 100%, rgba(200,155,60,0.18) 0%, rgba(180,130,40,0.08) 30%, transparent 70%)',
-          opacity: 0.75,
-        }}
-      />
-
-      {/* ── Floor light reflection ── */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 pointer-events-none z-0
-                      transition-all duration-[1200ms] ease-out
-                      group-hover/door:opacity-100 group-hover/door:scale-x-120"
-        style={{
-          width: 'min(90vw, 700px)',
-          height: '6vh',
-          background: 'linear-gradient(to top, rgba(200,155,60,0.12) 0%, transparent 100%)',
-          opacity: 0.6,
-          filter: 'blur(4px)',
-        }}
-      />
-
-      {/* ── Dust motes in the light beam ── */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
-        {[
-          { left: '38%', bottom: '8%', delay: '0s', size: '1.5px' },
-          { left: '55%', bottom: '12%', delay: '1.5s', size: '1px' },
-          { left: '48%', bottom: '5%', delay: '3s', size: '1.2px' },
-          { left: '62%', bottom: '16%', delay: '4.5s', size: '1px' },
-          { left: '35%', bottom: '10%', delay: '2s', size: '1.3px' },
-          { left: '52%', bottom: '20%', delay: '5.5s', size: '0.8px' },
-          { left: '44%', bottom: '14%', delay: '6.5s', size: '1px' },
-        ].map((dot, i) => (
-          <div
-            key={i}
-            className="absolute rounded-full animate-dust-rise"
-            style={{
-              left: dot.left,
-              bottom: dot.bottom,
-              width: dot.size,
-              height: dot.size,
-              animationDelay: dot.delay,
-              background: 'radial-gradient(circle, rgba(212,175,55,0.6) 0%, rgba(200,155,60,0.2) 50%, transparent 100%)',
-            }}
-          />
-        ))}
-      </div>
-
-      {/* ── "DISCREET. CURATED. EXCLUSIVE." — top header ── */}
-      <p
-        className="relative z-10 mb-[3vh] text-center px-6 animate-fade-in-up
-                   font-[var(--font-syne)] tracking-[0.32em] uppercase"
-        style={{
-          fontSize: 'clamp(0.65rem, 1.4vw, 0.85rem)',
-          color: 'rgba(200,180,150,0.7)',
-          fontWeight: 400,
-          letterSpacing: '0.35em',
-        }}
-      >
-        DISCREET. CURATED. EXCLUSIVE.
-      </p>
-
-      {/* ── Door container ── */}
+      {/* Subtle ambient background glow */}
       <div
-        className="relative z-10 animate-fade-in-up delay-100
-                   transition-all duration-[1200ms] ease-out
-                   group-hover/door:scale-[1.015]"
+        className="absolute inset-0 pointer-events-none"
         style={{
-          width: 'min(85vw, 380px)',
-          maxHeight: '62vh',
-          aspectRatio: '2/3',
+          background: 'radial-gradient(ellipse at 50% 50%, rgba(212,168,83,0.04) 0%, transparent 70%)',
         }}
-      >
-        {/* Halo behind door — amber glow ring */}
-        <div
-          className="absolute -inset-4 rounded-sm pointer-events-none
-                      transition-opacity duration-[1200ms] ease-out
-                      opacity-40 group-hover/door:opacity-70"
-          style={{
-            background: 'radial-gradient(ellipse at 50% 50%, rgba(180,130,40,0.08) 0%, rgba(180,130,40,0.03) 50%, transparent 80%)',
-            filter: 'blur(20px)',
-          }}
-        />
+      />
 
-        {/* Door button — the entire door is interactive */}
-        <button
-          onClick={handleEnter}
-          className="relative w-full h-full bg-transparent border-0 outline-none cursor-pointer group/btn p-0"
-          aria-label="Enter Room 23"
+      {/* Modal Card */}
+      <div
+        className={`
+          relative w-full max-w-lg mx-auto
+          transition-all duration-700 ease-out
+          ${visible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-6 scale-[0.98]'}
+        `}
+      >
+        {/* Card Body */}
+        <div
+          className="rounded-2xl p-8 sm:p-10 text-center"
           style={{
-            background: 'none',
-            border: 'none',
-            outline: 'none',
-            boxShadow: `
-              0 0 80px rgba(0,0,0,0.6),
-              0 0 120px rgba(0,0,0,0.4)
-            `,
+            backgroundColor: 'var(--color-bg-surface)',
+            border: '1px solid var(--color-border)',
+            boxShadow: '0 0 60px rgba(200,16,46,0.06), 0 0 120px rgba(212,168,83,0.04)',
           }}
         >
-          {/* ── The door image ── */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/new door.png"
-            alt="Enter Room 23"
-            width={600}
-            height={900}
-            className="relative w-full h-full object-contain block
-                       transition-all duration-[1200ms] ease-out
-                       group-hover/btn:brightness-[1.06]"
-            style={{ filter: 'contrast(1.02) saturate(0.95)' }}
-          />
+          {/* ── Brand Mark ── */}
+          <div className="mb-6">
+            <div
+              className="inline-flex items-center justify-center w-20 h-20 rounded-full mb-5"
+              style={{
+                backgroundColor: 'rgba(200,16,46,0.08)',
+                border: '1px solid var(--color-border-accent)',
+              }}
+            >
+              <span
+                className="text-3xl tracking-widest select-none"
+                style={{
+                  fontFamily: 'var(--font-display)',
+                  fontWeight: 700,
+                  color: 'var(--color-brass)',
+                }}
+              >
+                R23
+              </span>
+            </div>
 
-          {/* ── Keyhole glow spot (centered ~43% from top) ── */}
-          <div
-            className="absolute pointer-events-none
-                        transition-all duration-[1000ms] ease-out
-                        opacity-0 group-hover/btn:opacity-100"
-            style={{
-              left: '50%',
-              top: '41%',
-              transform: 'translate(-50%, -50%)',
-              width: '18%',
-              height: '14%',
-              background: 'radial-gradient(ellipse at center, rgba(212,175,55,0.25) 0%, rgba(180,140,40,0.12) 40%, transparent 70%)',
-              filter: 'blur(6px)',
-              borderRadius: '50%',
-            }}
-          />
+            <h2
+              className="text-2xl sm:text-3xl mb-2 tracking-widest select-none"
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontWeight: 700,
+                color: 'var(--color-text-primary)',
+                letterSpacing: '0.15em',
+              }}
+            >
+              ROOM 23
+            </h2>
 
-          {/* ── Under-glow enhancement on hover ── */}
-          <div
-            className="absolute bottom-0 left-0 right-0 pointer-events-none
-                        transition-all duration-[1200ms] ease-out
-                        opacity-0 group-hover/btn:opacity-100
-                        group-hover/btn:h-[22%]"
-            style={{
-              height: '15%',
-              background: 'linear-gradient(to top, rgba(200,155,50,0.30) 0%, rgba(180,130,40,0.10) 40%, transparent 100%)',
-            }}
-          />
+            <div
+              className="w-16 h-px mx-auto"
+              style={{ background: 'linear-gradient(90deg, transparent, var(--color-accent), transparent)' }}
+            />
+          </div>
 
-          {/* ── Subtle top spotlight ── */}
+          {/* ── Age Notice ── */}
+          <div className="mb-8 space-y-3">
+            <h3
+              className="text-lg sm:text-xl tracking-wide"
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontWeight: 600,
+                color: 'var(--color-text-primary)',
+              }}
+            >
+              AGE VERIFICATION REQUIRED
+            </h3>
+
+            <p
+              className="text-sm leading-relaxed max-w-sm mx-auto"
+              style={{ color: 'var(--color-text-secondary)' }}
+            >
+              This website contains adult-oriented products and content.
+              You must be at least <strong style={{ color: 'var(--color-text-primary)' }}>18 years of age</strong> (or
+              the legal age of majority in your jurisdiction) to enter.
+            </p>
+
+            <p
+              className="text-xs max-w-sm mx-auto"
+              style={{ color: 'var(--color-text-muted)' }}
+            >
+              By clicking &ldquo;ENTER&rdquo; below, you affirm under penalty of
+              law that you meet the minimum age requirement.
+            </p>
+          </div>
+
+          {/* ── Action Buttons ── */}
+          <div className="flex flex-col sm:flex-row gap-3 justify-center mb-6">
+            {/* ENTER — Primary CTA */}
+            <button
+              onClick={confirmAge}
+              className="btn-primary w-full sm:w-auto min-w-[200px] py-3 text-sm relative overflow-hidden group"
+              type="button"
+            >
+              <span className="relative z-10">I AM 18 OR OLDER — ENTER</span>
+              {/* Subtle glow on hover */}
+              <div
+                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(200,16,46,0.4), rgba(212,168,83,0.2))',
+                }}
+              />
+            </button>
+
+            {/* EXIT — Secondary */}
+            <button
+              onClick={declineAge}
+              className="btn-secondary w-full sm:w-auto min-w-[180px] py-3 text-sm"
+              type="button"
+            >
+              I AM UNDER 18 — EXIT
+            </button>
+          </div>
+
+          {/* ── Legal Disclaimer ── */}
           <div
-            className="absolute top-0 left-0 right-0 pointer-events-none
-                        transition-opacity duration-[1000ms] ease-out
-                        opacity-0 group-hover/btn:opacity-60"
-            style={{
-              height: '20%',
-              background: 'linear-gradient(to bottom, rgba(255,255,255,0.03) 0%, transparent 100%)',
-            }}
-          />
-        </button>
+            className="text-xs space-y-1 max-w-sm mx-auto"
+            style={{ color: 'var(--color-text-muted)' }}
+          >
+            <p>
+              Room 23 is a <strong style={{ color: 'var(--color-text-secondary)' }}>restricted-access</strong> website
+              intended for consenting adults only.
+            </p>
+            <p>
+              We use <strong style={{ color: 'var(--color-text-secondary)' }}>age verification</strong> and do not
+              knowingly collect information from individuals under the age of 18.
+            </p>
+            <p>
+              By proceeding, you agree to our{' '}
+              <a href="/terms" className="link-brass">Terms of Service</a>{' '}
+              and{' '}
+              <a href="/privacy" className="link-brass">Privacy Policy</a>.
+            </p>
+          </div>
+        </div>
+
+        {/* ── Bottom Fine Print ── */}
+        <p
+          className="text-center text-xs mt-4"
+          style={{ color: 'var(--color-text-muted)', opacity: 0.5 }}
+        >
+          &copy; {new Date().getFullYear()} Room 23. All rights reserved.
+        </p>
       </div>
-
-      {/* ── Tagline — below the door ── */}
-      <p
-        className="relative z-10 mt-[3vh] mb-[4vh] text-center px-6 animate-fade-in-up delay-200
-                   font-[var(--font-syne)]"
-        style={{
-          fontSize: 'clamp(0.7rem, 1.3vw, 0.82rem)',
-          color: 'rgba(180,160,130,0.55)',
-          fontWeight: 400,
-          letterSpacing: '0.18em',
-          maxWidth: 'min(70vw, 500px)',
-        }}
-      >
-        An exclusive sanctuary for sensual well&shy;being
-      </p>
     </div>
   )
 }

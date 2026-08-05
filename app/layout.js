@@ -17,9 +17,41 @@ const syne = Syne({
 })
 
 export const metadata = {
-  title: 'ROOM 23 — Discreet. Curated. Exclusive.',
-  description: 'An exclusive sanctuary for sensual well-being. Enter your private side.',
-  metadataBase: new URL('https://enterroom23.com'),
+  metadataBase: new URL('https://room23.net'),
+  title: {
+    default: 'Room 23 — Premium Adult Wellness · Discreet & Private',
+    template: '%s | Room 23',
+  },
+  description:
+    'Room 23 offers premium adult wellness products with discreet packaging and private billing. 18+ only. Secure, private, and judgment-free.',
+  keywords: [
+    'adult wellness',
+    'premium intimacy',
+    'discreet shipping',
+    'private billing',
+    'luxury wellness products',
+  ],
+  authors: [{ name: 'Room 23' }],
+  creator: 'Room 23',
+  publisher: 'Room 23',
+  robots: {
+    index: false,
+    follow: true,
+  },
+  openGraph: {
+    title: 'Room 23 — Premium Adult Wellness',
+    description:
+      'Premium adult wellness products. Discreet packaging. Private billing. 18+ only.',
+    url: 'https://room23.net',
+    siteName: 'Room 23',
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Room 23 — Premium Adult Wellness',
+    description: 'Discreet packaging. Private billing. 18+ only.',
+  },
 }
 
 export default function RootLayout({ children }) {
@@ -35,7 +67,6 @@ export default function RootLayout({ children }) {
               (function(){
                 try {
                   var t = localStorage.getItem('aw_theme');
-                  // Default to dark (neon noir) if no stored preference
                   if (t === 'light') {
                     document.documentElement.classList.remove('dark');
                     document.documentElement.classList.add('light');
