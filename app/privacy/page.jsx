@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { SITE_CONFIG } from '@/config/site'
 
 export const metadata = {
   title: 'Privacy Policy',
@@ -214,7 +215,7 @@ export default function PrivacyPage() {
       <ul>
         <li>Email: <a href="mailto:privacy@room23.net">privacy@room23.net</a></li>
         <li>General Support: <a href="mailto:support@room23.net">support@room23.net</a></li>
-        <li>Mail: Room 23, [Business Address], USA</li>
+        <li>Mail: Room 23, {SITE_CONFIG.bizAddressFull}, USA</li>
       </ul>
       <p>
         Visit our <Link href="/contact" className="link-brass">Contact Page</Link> for additional
