@@ -58,7 +58,7 @@ export default function RootLayout({ children }) {
   const fontVars = `${inter.variable} ${syne.variable}`
 
   return (
-    <html lang="en" className={`dark ${fontVars}`} suppressHydrationWarning>
+    <html lang="en" className={`dark ${fontVars}`} data-theme="brass-noir" suppressHydrationWarning>
       <head>
         {/* Inline theme init — matches React default of 'dark' to avoid flash */}
         <script
@@ -81,6 +81,10 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body>
+        {/* WCAG: skip-to-content link */}
+        <a href="#main-content" className="skip-to-content" aria-label="Skip to main content">
+          Skip to content
+        </a>
         <CartProvider>
           <SiteShell>{children}</SiteShell>
         </CartProvider>

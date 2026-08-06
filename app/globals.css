@@ -630,3 +630,166 @@ body {
 details[open] .summary-icon {
   transform: rotate(45deg);
 }
+
+/* ===================================================================
+   BRASS NOIR THEME (V3) — Espresso · Brass · Ivory
+   Apply via data-theme="brass-noir" on <html>
+   Coexists with Crimson & Brass Noir — toggle for A/B comparison.
+   =================================================================== */
+
+[data-theme='brass-noir'] {
+  /* ── Palette ── */
+  --bne-espresso:        #14100d;
+  --bne-espresso-surface:#1c1814;
+  --bne-espresso-elevated:#241f1a;
+  --bne-ivory:           #f3ede0;
+  --bne-ivory-muted:     #a0988a;
+  --bne-ivory-subtle:    #605a52;
+  --bne-brass:           #c8a34e;
+  --bne-brass-hover:     #d4b564;
+  --bne-brass-dim:       #a0823a;
+  --bne-brass-glow:      rgba(200, 163, 78, 0.18);
+  --bne-border:          #2c2620;
+  --bne-border-light:    #3a342c;
+
+  /* ── Semantic mappings ── */
+  --bg-base:             var(--bne-espresso);
+  --bg-surface:          var(--bne-espresso-surface);
+  --bg-elevated:         var(--bne-espresso-elevated);
+  --bg-hover:            var(--bne-espresso-elevated);
+  --text-primary:        var(--bne-ivory);
+  --text-secondary:      var(--bne-ivory-muted);
+  --text-muted:          var(--bne-ivory-subtle);
+  --text-inverse:        var(--bne-espresso);
+  --accent:              var(--bne-brass);
+  --accent-hover:        var(--bne-brass-hover);
+  --brass:               var(--bne-brass);
+  --brass-hover:         var(--bne-brass-hover);
+  --border:              var(--bne-border);
+  --border-light:        var(--bne-border-light);
+  --color-bg-primary:    var(--bne-espresso);
+  --color-bg-surface:    var(--bne-espresso-surface);
+  --color-bg-elevated:   var(--bne-espresso-elevated);
+  --color-text-primary:  var(--bne-ivory);
+  --color-text-secondary:var(--bne-ivory-muted);
+  --color-text-muted:    var(--bne-ivory-subtle);
+  --color-accent:        var(--bne-brass);
+  --color-accent-hover:  var(--bne-brass-hover);
+  --color-brass:         var(--bne-brass);
+  --color-brass-hover:   var(--bne-brass-hover);
+  --color-border:        var(--bne-border);
+  --color-border-light:  var(--bne-border-light);
+
+  /* Adjust button & form vars to use brass tones */
+  --color-accent-glow:   var(--bne-brass-glow);
+  --color-brass-glow:    var(--bne-brass-glow);
+  --glow-accent:         0 0 20px var(--bne-brass-glow);
+  --glow-brass:          0 0 20px var(--bne-brass-glow);
+
+  /* Soften the selection color */
+  --color-accent-muted:  var(--bne-brass-dim);
+}
+
+/* ── WCAG Focus Ring (brass-noir theme) ── */
+[data-theme='brass-noir'] :focus-visible {
+  outline: 2px solid var(--bne-brass);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+[data-theme='brass-noir'] .btn-primary {
+  background-color: var(--bne-brass);
+  color: var(--bne-espresso);
+}
+[data-theme='brass-noir'] .btn-primary:hover {
+  background-color: var(--bne-brass-hover);
+  color: var(--bne-espresso);
+  box-shadow: 0 0 24px var(--bne-brass-glow);
+}
+
+[data-theme='brass-noir'] .btn-secondary:hover {
+  border-color: var(--bne-brass);
+  color: var(--bne-brass);
+}
+
+[data-theme='brass-noir'] .btn-brass {
+  background-color: var(--bne-brass);
+  color: var(--bne-espresso);
+}
+[data-theme='brass-noir'] .btn-brass:hover {
+  background-color: var(--bne-brass-hover);
+  box-shadow: 0 0 24px var(--bne-brass-glow);
+}
+
+[data-theme='brass-noir'] .input-field:focus {
+  border-color: var(--bne-brass);
+  box-shadow: 0 0 0 3px var(--bne-brass-glow);
+}
+
+[data-theme='brass-noir'] .link-brass,
+[data-theme='brass-noir'] .link-accent {
+  color: var(--bne-brass);
+}
+[data-theme='brass-noir'] .link-brass:hover,
+[data-theme='brass-noir'] .link-accent:hover {
+  color: var(--bne-brass-hover);
+}
+
+[data-theme='brass-noir'] .badge-accent {
+  background-color: var(--bne-brass-glow);
+  color: var(--bne-brass);
+}
+[data-theme='brass-noir'] .badge-brass {
+  background-color: var(--bne-brass-glow);
+  color: var(--bne-brass);
+}
+[data-theme='brass-noir'] .surface-card-accent {
+  border-color: rgba(200, 163, 78, 0.18);
+}
+
+[data-theme='brass-noir'] ::-webkit-scrollbar-thumb {
+  background: var(--bne-ivory-subtle);
+}
+[data-theme='brass-noir'] ::-webkit-scrollbar-thumb:hover {
+  background: var(--bne-ivory-muted);
+}
+
+[data-theme='brass-noir'] ::selection {
+  background-color: var(--bne-brass);
+  color: var(--bne-espresso);
+}
+
+[data-theme='brass-noir'] .text-accent {
+  color: var(--bne-brass);
+}
+[data-theme='brass-noir'] .text-brass {
+  color: var(--bne-brass);
+}
+
+[data-theme='brass-noir'] .divider-accent {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--bne-brass) 50%,
+    transparent 100%
+  );
+}
+
+/* ── Skip to content (WCAG) ── */
+.skip-to-content {
+  position: absolute;
+  top: -100%;
+  left: 0;
+  z-index: 9999;
+  padding: 0.75rem 1.5rem;
+  background: var(--bne-brass, var(--color-brass));
+  color: var(--bne-espresso, var(--color-text-inverse));
+  font-weight: 600;
+  font-size: var(--text-sm);
+  text-decoration: none;
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+  transition: top var(--transition-fast);
+}
+.skip-to-content:focus {
+  top: 0;
+}

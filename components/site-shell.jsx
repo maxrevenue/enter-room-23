@@ -20,7 +20,7 @@ export default function SiteShell({ children }) {
         className={`flex flex-col min-h-screen transition-[filter] duration-500 ${!ageVerified ? 'blur-sm pointer-events-none select-none' : ''}`}
       >
         <SiteHeader />
-        <main className="flex-1">{children}</main>
+        <main id="main-content" className="flex-1" tabIndex={-1}>{children}</main>
         <SiteFooter />
       </div>
 

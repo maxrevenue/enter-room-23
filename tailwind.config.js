@@ -88,6 +88,27 @@ module.exports = {
           500: '#C5A059',
           600: '#A8853E',
         },
+
+        // ── Brass Noir V3 (Espresso · Brass · Ivory) ──
+        'bne-espresso': {
+          DEFAULT: '#14100d',
+          surface: '#1c1814',
+          elevated: '#241f1a',
+        },
+        'bne-ivory': {
+          DEFAULT: '#f3ede0',
+          muted: '#a0988a',
+          subtle: '#605a52',
+        },
+        'bne-brass': {
+          DEFAULT: '#c8a34e',
+          hover: '#d4b564',
+          dim: '#a0823a',
+        },
+        'bne-border': {
+          DEFAULT: '#2c2620',
+          light: '#3a342c',
+        },
       },
       boxShadow: {
         // Dark mode neon glows
