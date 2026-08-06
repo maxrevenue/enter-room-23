@@ -7,6 +7,7 @@ import { Sun, Moon, Menu, X, ShoppingBag } from 'lucide-react'
 
 const NAV_LINKS = [
   { href: '/shop', label: 'SHOP' },
+  { href: '/journal', label: 'THE COLUMN' },
   { href: '/faq', label: 'FAQ' },
   { href: '/contact', label: 'CONTACT' },
 ]

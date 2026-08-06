@@ -24,7 +24,7 @@
     "BIZ_ADDRESS_STREET": "Address pending",
     "BIZ_ADDRESS_CITY_STATE": "Address pending",
     "BIZ_PHONE": "Phone number pending",
-    "SITE_INDEXABLE": "false"
+    "SITE_INDEXABLE": "true"
   },
 
   // ── Staging environment ──

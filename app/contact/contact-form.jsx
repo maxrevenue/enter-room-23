@@ -1,11 +1,13 @@
 'use client'
 
+import { SITE_CONFIG } from '@/config/site'
+
 export default function ContactForm() {
   return (
     <form
       onSubmit={(e) => {
         e.preventDefault()
-        alert('Thank you for your message. We will respond within 24 hours. For immediate assistance, email support@room23.net.')
+        alert(`Thank you for your message. We will respond within 24 hours. For immediate assistance, email ${SITE_CONFIG.supportEmail}.`)
       }}
       style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
     >

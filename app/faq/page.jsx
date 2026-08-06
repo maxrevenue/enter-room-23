@@ -16,7 +16,7 @@ const faqs = [
   },
   {
     q: 'How long does shipping take?',
-    a: 'Standard shipping (USPS Ground) takes 5–8 business days. Expedited (USPS Priority) takes 2–4 business days. Express (UPS Next Day Air) delivers the next business day. Orders are processed within 1–2 business days. See our Shipping & Returns page for full details.',
+    a: 'Standard (USPS Ground / FedEx Ground) takes 5–8 business days. Expedited (USPS Priority) takes 2–4 business days. Express (UPS Next Day Air) delivers the next business day. Orders are processed within 1–2 business days. See our Shipping & Returns page for full details.',
   },
   {
     q: 'Do you ship internationally?',

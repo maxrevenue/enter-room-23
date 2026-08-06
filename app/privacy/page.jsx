@@ -9,7 +9,7 @@ export default function PrivacyPage() {
   return (
     <div className="container-narrow legal-content animate-fade-in-up">
       <div className="mb-10">
-        <p className="last-updated">Last Updated: August 5, 2026</p>
+        <p className="last-updated">Last Updated: {SITE_CONFIG.legalLastUpdated}</p>
         <h1>Privacy Policy</h1>
         <p>
           At <strong>Room 23</strong>, your privacy is foundational to our business. We handle

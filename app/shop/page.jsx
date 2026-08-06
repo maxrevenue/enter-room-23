@@ -8,6 +8,13 @@ import { ShoppingBag, Filter, X } from 'lucide-react'
 
 const CATEGORIES = ['All', 'Wellness', 'Accessories', 'Essentials']
 
+function slugify(str) {
+  return str
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+}
+
 export default function ShopPage() {
   const { addToCart } = useCart()
   const [activeCategory, setActiveCategory] = useState('All')
@@ -107,15 +114,16 @@ export default function ShopPage() {
           {filteredProducts.map((product, idx) => (
             <div
               key={product.id}
-              className="surface-card animate-fade-in-up"
+              className="surface-card animate-fade-in-up group"
               style={{
                 animationDelay: `${idx * 80}ms`,
                 display: 'flex',
                 flexDirection: 'column',
               }}
             >
-              {/* Image Placeholder */}
-              <div
+              {/* Image Placeholder — clickable PDP link */}
+              <Link
+                href={`/shop/${slugify(product.name)}`}
                 style={{
                   width: '100%',
                   aspectRatio: '1 / 1',
@@ -127,6 +135,7 @@ export default function ShopPage() {
                   justifyContent: 'center',
                   border: '1px solid var(--border)',
                   overflow: 'hidden',
+                  cursor: 'pointer',
                 }}
               >
                 {product.image ? (
@@ -150,7 +159,7 @@ export default function ShopPage() {
                     R23
                   </span>
                 )}
-              </div>
+              </Link>
 
               {/* Category Badge */}
               {product.category && (
@@ -162,18 +171,22 @@ export default function ShopPage() {
                 </span>
               )}
 
-              {/* Product Name */}
-              <h3
-                style={{
-                  fontFamily: 'var(--font-display)',
-                  fontSize: 'var(--text-lg)',
-                  fontWeight: 600,
-                  color: 'var(--text-primary)',
-                  marginBottom: '0.25rem',
-                }}
-              >
-                {product.name}
-              </h3>
+              {/* Product Name — clickable PDP link */}
+              <Link href={`/shop/${slugify(product.name)}`}>
+                <h3
+                  style={{
+                    fontFamily: 'var(--font-display)',
+                    fontSize: 'var(--text-lg)',
+                    fontWeight: 600,
+                    color: 'var(--text-primary)',
+                    marginBottom: '0.25rem',
+                    cursor: 'pointer',
+                  }}
+                  className="hover:text-[var(--color-brass)] transition-colors"
+                >
+                  {product.name}
+                </h3>
+              </Link>
 
               {/* Description */}
               {product.description && (

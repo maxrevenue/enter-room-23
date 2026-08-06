@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { BUSINESS_ADDRESS_FULL, LEGAL_LAST_UPDATED } from '@/lib/contact-info'
+import { SITE_CONFIG } from '@/config/site'
 
 export const metadata = {
   title: 'Terms of Service',
@@ -170,7 +170,7 @@ export default function TermsPage() {
       </p>
       <ul>
         <li>Email: <a href="mailto:support@room23.net">support@room23.net</a></li>
-        <li>Mail: Room 23, {BUSINESS_ADDRESS_FULL}, USA</li>
+        <li>Mail: {SITE_CONFIG.legalName}, {SITE_CONFIG.bizAddressFull}, {SITE_CONFIG.location}</li>
       </ul>
       <p>
         You may also visit our <Link href="/contact" className="link-brass">Contact Page</Link> for

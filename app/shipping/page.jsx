@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { SITE_CONFIG } from '@/config/site'
 
 export const metadata = {
   title: 'Shipping & Returns',
@@ -9,7 +10,7 @@ export default function ShippingPage() {
   return (
     <div className="container-narrow legal-content animate-fade-in-up">
       <div className="mb-10">
-        <p className="last-updated">Last Updated: August 5, 2026</p>
+        <p className="last-updated">Last Updated: {SITE_CONFIG.legalLastUpdated}</p>
         <h1>Shipping &amp; Returns</h1>
         <p>
           We take <strong>discretion seriously</strong>. Every order is handled with the privacy you expect.
@@ -49,11 +50,12 @@ export default function ShippingPage() {
           <tbody style={{ color: 'var(--text-secondary)', fontSize: 'var(--text-sm)' }}>
             <tr style={{ borderBottom: '1px solid var(--border)' }}><td style={{ padding: '0.75rem 0.5rem' }}>Standard (USPS Ground)</td><td style={{ padding: '0.75rem 0.5rem' }}>5–8 business days</td><td style={{ padding: '0.75rem 0.5rem' }}>$5.99 USD</td></tr>
             <tr style={{ borderBottom: '1px solid var(--border)' }}><td style={{ padding: '0.75rem 0.5rem' }}>Expedited (USPS Priority)</td><td style={{ padding: '0.75rem 0.5rem' }}>2–4 business days</td><td style={{ padding: '0.75rem 0.5rem' }}>$12.99 USD</td></tr>
+            <tr style={{ borderBottom: '1px solid var(--border)' }}><td style={{ padding: '0.75rem 0.5rem' }}>Express (FedEx 2Day)</td><td style={{ padding: '0.75rem 0.5rem' }}>2 business days</td><td style={{ padding: '0.75rem 0.5rem' }}>$24.99 USD</td></tr>
             <tr><td style={{ padding: '0.75rem 0.5rem' }}>Express (UPS Next Day Air)</td><td style={{ padding: '0.75rem 0.5rem' }}>Next business day</td><td style={{ padding: '0.75rem 0.5rem' }}>$29.99 USD</td></tr>
           </tbody>
         </table>
       </div>
-      <ul><li>Free standard shipping on orders over <strong>$99.00 USD</strong></li></ul>
+      <ul><li>Free standard shipping on orders over <strong>${SITE_CONFIG.freeShippingThreshold.toFixed(2)} USD</strong></li></ul>
 
       <h2>4. Returns Policy</h2>
       <h3>4.1 Final Sale Items (Non-Returnable)</h3>

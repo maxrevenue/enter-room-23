@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import ContactForm from './contact-form'
-import { BUSINESS_STREET, BUSINESS_CITY_STATE, BUSINESS_PHONE, LEGAL_LAST_UPDATED } from '@/lib/contact-info'
+import { SITE_CONFIG } from '@/config/site'
 
 export const metadata = {
   title: 'Contact Us',
@@ -11,7 +11,7 @@ export default function ContactPage() {
   return (
     <div className="container-narrow" style={{ paddingTop: '3rem', paddingBottom: '4rem' }}>
       <div className="mb-10 animate-fade-in-up">
-        <p className="last-updated" style={{ marginBottom: '0.25rem' }}>Last Updated: {LEGAL_LAST_UPDATED}</p>
+        <p className="last-updated" style={{ marginBottom: '0.25rem' }}>Last Updated: {SITE_CONFIG.legalLastUpdated}</p>
         <h1 style={{
           fontFamily: 'var(--font-display)',
           fontSize: 'var(--text-4xl)',
@@ -85,7 +85,7 @@ export default function ContactPage() {
                   Phone
                 </h4>
                 <p style={{ color: 'var(--text-primary)', fontSize: 'var(--text-base)' }}>
-                  {BUSINESS_PHONE}
+                  {SITE_CONFIG.supportPhone}
                 </p>
               </div>
 
@@ -95,9 +95,7 @@ export default function ContactPage() {
                   Operating Hours
                 </h4>
                 <p style={{ color: 'var(--text-primary)', fontSize: 'var(--text-sm)' }}>
-                  Monday – Friday: 9:00 AM – 6:00 PM ET<br />
-                  Saturday: 10:00 AM – 4:00 PM ET<br />
-                  Sunday: Closed
+                  {SITE_CONFIG.hours}
                 </p>
                 <p style={{ color: 'var(--text-muted)', fontSize: 'var(--text-xs)', marginTop: '0.25rem' }}>
                   Response within 24 hours on business days.
