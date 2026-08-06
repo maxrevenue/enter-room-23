@@ -62,27 +62,9 @@ export default function RootLayout({ children }) {
   const fontVars = `${inter.variable} ${syne.variable}`
 
   return (
-    <html lang="en" className={`dark ${fontVars}`} data-theme="brass-noir" suppressHydrationWarning>
+    <html lang="en" className={`dark ${fontVars}`} data-theme="brass-noir">
       <head>
-        {/* Inline theme init — matches React default of 'dark' to avoid flash */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function(){
-                try {
-                  var t = localStorage.getItem('aw_theme');
-                  if (t === 'light') {
-                    document.documentElement.classList.remove('dark');
-                    document.documentElement.classList.add('light');
-                  } else {
-                    document.documentElement.classList.add('dark');
-                    document.documentElement.classList.remove('light');
-                  }
-                } catch(e) {}
-              })()
-            `,
-          }}
-        />
+        {/* Theme permanently locked to dark — no flash, no toggle. NMI gateway compliant. */}
       </head>
       <body>
         {/* WCAG: skip-to-content link */}

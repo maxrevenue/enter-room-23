@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useCart } from '@/lib/cart-context'
-import { Sun, Moon, Menu, X, ShoppingBag } from 'lucide-react'
+import { Menu, X, ShoppingBag } from 'lucide-react'
 
 const NAV_LINKS = [
   { href: '/shop', label: 'SHOP' },
@@ -13,7 +13,7 @@ const NAV_LINKS = [
 ]
 
 export default function SiteHeader() {
-  const { theme, toggleTheme, cart, cartOpen, setCartOpen } = useCart()
+  const { cart, cartOpen, setCartOpen } = useCart()
   const [mobileOpen, setMobileOpen] = useState(false)
   const itemCount = cart.reduce((s, i) => s + i.qty, 0)
 
@@ -71,25 +71,6 @@ export default function SiteHeader() {
                 {itemCount}
               </span>
             )}
-          </button>
-
-          {/* Theme Toggle */}
-          <button
-            onClick={toggleTheme}
-            className="relative p-2 rounded-full transition-all duration-300 hover:bg-[var(--button-bg)] hover:shadow-[var(--neon-glow-sm)]"
-            aria-label="Toggle theme"
-            style={{ color: 'var(--text-secondary)' }}
-          >
-            {/* Sun icon — visible in light mode (click to switch to dark) */}
-            <Sun
-              className="h-5 w-5 transition-all duration-500 dark:hidden"
-              style={{ color: 'var(--accent-amber)' }}
-            />
-            {/* Moon icon — visible in dark mode (click to switch to light) */}
-            <Moon
-              className="hidden h-5 w-5 transition-all duration-500 dark:block"
-              style={{ color: 'var(--accent)' }}
-            />
           </button>
 
           {/* Mobile hamburger */}

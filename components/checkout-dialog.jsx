@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useCart } from '@/lib/cart-context'
+import { SITE_CONFIG } from '@/config/site'
 import { X, Lock, ShieldCheck, CreditCard, Check } from 'lucide-react'
 import Link from 'next/link'
 
@@ -14,7 +15,7 @@ export default function CheckoutDialog() {
   if (!checkoutOpen) return null
 
   const tax = subtotal * 0.08
-  const shipping = subtotal >= 99 ? 0 : 5.99
+  const shipping = subtotal >= SITE_CONFIG.freeShippingThreshold ? 0 : SITE_CONFIG.flatShippingRate
   const total = subtotal + tax + shipping
 
   const handlePlaceOrder = async () => {
@@ -112,7 +113,7 @@ export default function CheckoutDialog() {
               <strong style={{ color: 'var(--text-primary)' }}>discreet, plain packaging</strong>.
             </p>
             <p style={{ color: 'var(--text-muted)', fontSize: 'var(--text-xs)' }}>
-              Your card statement will show <strong style={{ color: 'var(--text-primary)' }}>ROOM23</strong>.
+              Your card statement will show <strong style={{ color: 'var(--text-primary)' }}>{SITE_CONFIG.billingDescriptor}</strong>.
             </p>
             <button
               onClick={() => { setOrderPlaced(false); setCheckoutOpen(false); setAgreedToTerms(false) }}
@@ -275,7 +276,7 @@ export default function CheckoutDialog() {
             >
               <CreditCard size={16} style={{ color: 'var(--color-brass)', flexShrink: 0 }} />
               <p style={{ color: 'var(--text-muted)', fontSize: 'var(--text-xs)', lineHeight: 1.4 }}>
-                Charges will appear as <strong style={{ color: 'var(--text-primary)' }}>ROOM23</strong> on your bank statement.
+                Charges will appear as <strong style={{ color: 'var(--text-primary)' }}>{SITE_CONFIG.billingDescriptor}</strong> on your bank statement.
               </p>
             </div>
 

@@ -1,8 +1,20 @@
 import Link from 'next/link'
+import { useState } from 'react'
 import { SITE_CONFIG } from '@/config/site'
-import { ShieldCheck, Truck, CreditCard } from 'lucide-react'
+import { ShieldCheck, Truck, CreditCard, Mail, ArrowRight, Check } from 'lucide-react'
 
 export default function SiteFooter() {
+  const [email, setEmail] = useState('')
+  const [subscribed, setSubscribed] = useState(false)
+
+  const handleSubscribe = (e) => {
+    e.preventDefault()
+    if (email && email.includes('@')) {
+      setSubscribed(true)
+      setEmail('')
+    }
+  }
+
   return (
     <footer
       className="border-t px-4 py-14 sm:py-20"
@@ -147,6 +159,52 @@ export default function SiteFooter() {
           </div>
         </div>
 
+        {/* ── Newsletter ── */}
+        <div className="text-center mb-10">
+          <h4
+            className="font-syne text-sm font-semibold tracking-[0.1em] uppercase mb-3"
+            style={{ color: 'var(--text-primary)' }}
+          >
+            <Mail className="inline w-4 h-4 mr-2" style={{ color: 'var(--accent)' }} />
+            The Room 23 Dispatch
+          </h4>
+          <p className="text-xs mb-4" style={{ color: 'var(--text-muted)' }}>
+            Product drops, curated editorial, and member-only offers. No spam, adults only.
+          </p>
+          {subscribed ? (
+            <p className="text-sm" style={{ color: 'var(--color-success)' }}>
+              <Check className="inline w-4 h-4 mr-1" /> Subscribed — thank you.
+            </p>
+          ) : (
+            <form onSubmit={handleSubscribe} className="flex gap-2 max-w-xs mx-auto">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="your@email.com"
+                required
+                className="flex-1 px-3 py-2 text-sm rounded-md border"
+                style={{
+                  backgroundColor: 'var(--bg-surface)',
+                  color: 'var(--text-primary)',
+                  borderColor: 'var(--border)',
+                }}
+              />
+              <button
+                type="submit"
+                className="p-2 rounded-md transition-colors"
+                style={{
+                  backgroundColor: 'var(--accent)',
+                  color: 'var(--text-primary)',
+                }}
+                aria-label="Subscribe"
+              >
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </form>
+          )}
+        </div>
+
         {/* ── Trust Strip ── */}
         <div
           className="flex flex-wrap justify-center gap-6 sm:gap-8 mb-10 py-4 border-y text-xs"
@@ -175,6 +233,7 @@ export default function SiteFooter() {
           style={{ color: 'var(--text-muted)' }}
         >
           &copy; {new Date().getFullYear()} {SITE_CONFIG.legalName}. All rights reserved.
+          Billing descriptor: {SITE_CONFIG.billingDescriptor}
           <br />
           <span className="opacity-60">
             Last updated: {SITE_CONFIG.legalLastUpdated}

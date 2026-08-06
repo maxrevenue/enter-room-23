@@ -32,6 +32,7 @@ export const SITE_CONFIG = {
   // ── Shipping ──
   carriers: ['USPS', 'UPS', 'FedEx'],
   freeShippingThreshold: 99.0,
+  flatShippingRate: 8.0,
 
   // ── Legal ──
   /** Date the legal text was last materially revised (authored 2026-08-05). */

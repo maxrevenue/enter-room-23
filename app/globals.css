@@ -6,24 +6,28 @@
    ROOM 23 — CRIMSON & BRASS NOIR DESIGN SYSTEM
    High-Risk Adult Wellness E-Commerce
    Underwriting Ready · NMI Gateway Compliant
+   Dark Theme Permanently Locked — No Light Mode
    =================================================================== */
 
 :root {
+  /* ── Color Scheme ── */
+  color-scheme: dark;
+
   /* ── Brand Palette ── */
-  --color-bg-primary:       #0a0a0a;
-  --color-bg-surface:       #141414;
-  --color-bg-elevated:      #1a1a1a;
-  --color-bg-hover:         #1f1f1f;
+  --color-bg-primary:       #050505;
+  --color-bg-surface:       #0A0A0A;
+  --color-bg-elevated:      #141414;
+  --color-bg-hover:         #1a1a1a;
 
   --color-text-primary:     #f5f5f5;
   --color-text-secondary:   #b0b0b0;
   --color-text-muted:       #8a8580;
-  --color-text-inverse:     #0a0a0a;
+  --color-text-inverse:     #050505;
 
-  --color-accent:           #c8102e;  /* Luxury Crimson */
-  --color-accent-hover:     #e0143a;
-  --color-accent-muted:     #8b0c20;  /* Darkened crimson for hover states */
-  --color-accent-glow:      rgba(200, 16, 46, 0.25);
+  --color-accent:           #FF1A1A;  /* Neon Crimson */
+  --color-accent-hover:     #ff3b3b;
+  --color-accent-muted:     #b31212;
+  --color-accent-glow:      rgba(255, 26, 26, 0.30);
 
   --color-brass:            #d4a853;  /* Aged Brass */
   --color-brass-hover:      #e0bc6a;
@@ -32,7 +36,7 @@
 
   --color-border:           #262626;
   --color-border-light:     #333333;
-  --color-border-accent:    rgba(200, 16, 46, 0.20);
+  --color-border-accent:    rgba(255, 26, 26, 0.20);
   --color-border-brass:     rgba(212, 168, 83, 0.15);
 
   /* ── Status Colors ── */
@@ -40,8 +44,8 @@
   --color-success-bg:       rgba(45, 138, 78, 0.10);
   --color-warning:          #d4a853;
   --color-warning-bg:       rgba(212, 168, 83, 0.10);
-  --color-error:            #c8102e;
-  --color-error-bg:         rgba(200, 16, 46, 0.10);
+  --color-error:            #FF1A1A;
+  --color-error-bg:         rgba(255, 26, 26, 0.10);
 
   /* ── Shadows & Glows ── */
   --shadow-card:            0 1px 3px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.3);
@@ -75,11 +79,8 @@
   --transition-fast:        150ms ease;
   --transition-base:        250ms ease;
   --transition-slow:        400ms ease;
-}
 
-/* ── Dark Theme (default) ── */
-.dark,
-:root {
+  /* ── Semantic Mappings (dark only) ── */
   --bg-base:                var(--color-bg-primary);
   --bg-surface:             var(--color-bg-surface);
   --bg-elevated:            var(--color-bg-elevated);
@@ -96,24 +97,6 @@
   --border-light:           var(--color-border-light);
 }
 
-/* ── Light Theme ── */
-.light {
-  --bg-base:                #fafafa;
-  --bg-surface:             #ffffff;
-  --bg-elevated:            #f5f5f5;
-  --bg-hover:               #ebebeb;
-  --text-primary:           #1a1a1a;
-  --text-secondary:         #555555;
-  --text-muted:             #7a7370;
-  --text-inverse:           #f5f5f5;
-  --accent:                 #b01b34;
-  --accent-hover:           #c8102e;
-  --brass:                  #b8933c;
-  --brass-hover:            #d4a853;
-  --border:                 #e0e0e0;
-  --border-light:           #eeeeee;
-}
-
 /* ===================================================================
    BASE RESETS
    =================================================================== */
@@ -125,6 +108,7 @@
 }
 
 html {
+  color-scheme: dark;
   -webkit-text-size-adjust: 100%;
   -moz-tab-size: 4;
   tab-size: 4;
@@ -238,6 +222,43 @@ body {
 
   .text-muted {
     color: var(--text-muted);
+  }
+}
+
+/* ===================================================================
+   NEON GLOW UTILITIES
+   =================================================================== */
+
+@layer components {
+  .neon-text-glow {
+    text-shadow:
+      0 0 7px var(--color-accent-glow),
+      0 0 10px var(--color-accent-glow),
+      0 0 21px var(--color-accent-glow),
+      0 0 42px rgba(255, 26, 26, 0.15);
+  }
+
+  .neon-box-glow {
+    box-shadow:
+      0 0 7px var(--color-accent-glow),
+      0 0 10px var(--color-accent-glow),
+      0 0 21px var(--color-accent-glow),
+      inset 0 0 7px rgba(255, 26, 26, 0.05);
+  }
+
+  .neon-box-glow-brass {
+    box-shadow:
+      0 0 7px var(--color-brass-glow),
+      0 0 10px var(--color-brass-glow),
+      0 0 21px var(--color-brass-glow),
+      inset 0 0 7px rgba(212, 168, 83, 0.05);
+  }
+
+  .neon-border-glow {
+    border-color: var(--color-accent);
+    box-shadow:
+      0 0 7px var(--color-accent-glow),
+      0 0 14px var(--color-accent-glow);
   }
 }
 
@@ -597,6 +618,11 @@ body {
 }
 
 @keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 4px var(--color-accent-glow); }
+  50%      { box-shadow: 0 0 16px var(--color-accent-glow); }
+}
+
+@keyframes pulseGlowBrass {
   0%, 100% { box-shadow: 0 0 4px var(--color-brass-glow); }
   50%      { box-shadow: 0 0 16px var(--color-brass-glow); }
 }
@@ -606,12 +632,28 @@ body {
   100% { background-position: 200% 0; }
 }
 
+@keyframes neonPulse {
+  0%, 100% {
+    text-shadow:
+      0 0 4px var(--color-accent-glow),
+      0 0 8px var(--color-accent-glow);
+  }
+  50% {
+    text-shadow:
+      0 0 7px var(--color-accent-glow),
+      0 0 10px var(--color-accent-glow),
+      0 0 21px var(--color-accent-glow),
+      0 0 42px rgba(255, 26, 26, 0.2);
+  }
+}
+
 .animate-fade-in      { animation: fadeIn var(--transition-base) ease forwards; }
 .animate-fade-in-up   { animation: fadeInUp var(--transition-base) ease forwards; }
 .animate-fade-in-down { animation: fadeInDown var(--transition-base) ease forwards; }
 .animate-scale-in     { animation: scaleIn var(--transition-base) ease forwards; }
 .animate-slide-in-r   { animation: slideInRight var(--transition-base) ease forwards; }
 .animate-pulse-glow   { animation: pulseGlow 2s ease-in-out infinite; }
+.animate-neon-pulse   { animation: neonPulse 2s ease-in-out infinite; }
 
 /* ── Skeleton Loading ── */
 .skeleton {
@@ -632,148 +674,9 @@ details[open] .summary-icon {
 }
 
 /* ===================================================================
-   BRASS NOIR THEME (V3) — Espresso · Brass · Ivory
-   Apply via data-theme="brass-noir" on <html>
-   Coexists with Crimson & Brass Noir — toggle for A/B comparison.
+   BRASS NOIR THEME — Espresso · Brass · Ivory
+   Permanent dark luxury palette (default theme)
    =================================================================== */
-
-[data-theme='brass-noir'] {
-  /* ── Palette ── */
-  --bne-espresso:        #14100d;
-  --bne-espresso-surface:#1c1814;
-  --bne-espresso-elevated:#241f1a;
-  --bne-ivory:           #f3ede0;
-  --bne-ivory-muted:     #a0988a;
-  --bne-ivory-subtle:    #605a52;
-  --bne-brass:           #c8a34e;
-  --bne-brass-hover:     #d4b564;
-  --bne-brass-dim:       #a0823a;
-  --bne-brass-glow:      rgba(200, 163, 78, 0.18);
-  --bne-border:          #2c2620;
-  --bne-border-light:    #3a342c;
-
-  /* ── Semantic mappings ── */
-  --bg-base:             var(--bne-espresso);
-  --bg-surface:          var(--bne-espresso-surface);
-  --bg-elevated:         var(--bne-espresso-elevated);
-  --bg-hover:            var(--bne-espresso-elevated);
-  --text-primary:        var(--bne-ivory);
-  --text-secondary:      var(--bne-ivory-muted);
-  --text-muted:          var(--bne-ivory-subtle);
-  --text-inverse:        var(--bne-espresso);
-  --accent:              var(--bne-brass);
-  --accent-hover:        var(--bne-brass-hover);
-  --brass:               var(--bne-brass);
-  --brass-hover:         var(--bne-brass-hover);
-  --border:              var(--bne-border);
-  --border-light:        var(--bne-border-light);
-  --color-bg-primary:    var(--bne-espresso);
-  --color-bg-surface:    var(--bne-espresso-surface);
-  --color-bg-elevated:   var(--bne-espresso-elevated);
-  --color-text-primary:  var(--bne-ivory);
-  --color-text-secondary:var(--bne-ivory-muted);
-  --color-text-muted:    var(--bne-ivory-subtle);
-  --color-accent:        var(--bne-brass);
-  --color-accent-hover:  var(--bne-brass-hover);
-  --color-brass:         var(--bne-brass);
-  --color-brass-hover:   var(--bne-brass-hover);
-  --color-border:        var(--bne-border);
-  --color-border-light:  var(--bne-border-light);
-
-  /* Adjust button & form vars to use brass tones */
-  --color-accent-glow:   var(--bne-brass-glow);
-  --color-brass-glow:    var(--bne-brass-glow);
-  --glow-accent:         0 0 20px var(--bne-brass-glow);
-  --glow-brass:          0 0 20px var(--bne-brass-glow);
-
-  /* Soften the selection color */
-  --color-accent-muted:  var(--bne-brass-dim);
-}
-
-/* ── WCAG Focus Ring (brass-noir theme) ── */
-[data-theme='brass-noir'] :focus-visible {
-  outline: 2px solid var(--bne-brass);
-  outline-offset: 2px;
-  border-radius: 2px;
-}
-
-[data-theme='brass-noir'] .btn-primary {
-  background-color: var(--bne-brass);
-  color: var(--bne-espresso);
-}
-[data-theme='brass-noir'] .btn-primary:hover {
-  background-color: var(--bne-brass-hover);
-  color: var(--bne-espresso);
-  box-shadow: 0 0 24px var(--bne-brass-glow);
-}
-
-[data-theme='brass-noir'] .btn-secondary:hover {
-  border-color: var(--bne-brass);
-  color: var(--bne-brass);
-}
-
-[data-theme='brass-noir'] .btn-brass {
-  background-color: var(--bne-brass);
-  color: var(--bne-espresso);
-}
-[data-theme='brass-noir'] .btn-brass:hover {
-  background-color: var(--bne-brass-hover);
-  box-shadow: 0 0 24px var(--bne-brass-glow);
-}
-
-[data-theme='brass-noir'] .input-field:focus {
-  border-color: var(--bne-brass);
-  box-shadow: 0 0 0 3px var(--bne-brass-glow);
-}
-
-[data-theme='brass-noir'] .link-brass,
-[data-theme='brass-noir'] .link-accent {
-  color: var(--bne-brass);
-}
-[data-theme='brass-noir'] .link-brass:hover,
-[data-theme='brass-noir'] .link-accent:hover {
-  color: var(--bne-brass-hover);
-}
-
-[data-theme='brass-noir'] .badge-accent {
-  background-color: var(--bne-brass-glow);
-  color: var(--bne-brass);
-}
-[data-theme='brass-noir'] .badge-brass {
-  background-color: var(--bne-brass-glow);
-  color: var(--bne-brass);
-}
-[data-theme='brass-noir'] .surface-card-accent {
-  border-color: rgba(200, 163, 78, 0.18);
-}
-
-[data-theme='brass-noir'] ::-webkit-scrollbar-thumb {
-  background: var(--bne-ivory-subtle);
-}
-[data-theme='brass-noir'] ::-webkit-scrollbar-thumb:hover {
-  background: var(--bne-ivory-muted);
-}
-
-[data-theme='brass-noir'] ::selection {
-  background-color: var(--bne-brass);
-  color: var(--bne-espresso);
-}
-
-[data-theme='brass-noir'] .text-accent {
-  color: var(--bne-brass);
-}
-[data-theme='brass-noir'] .text-brass {
-  color: var(--bne-brass);
-}
-
-[data-theme='brass-noir'] .divider-accent {
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    var(--bne-brass) 50%,
-    transparent 100%
-  );
-}
 
 /* ── Skip to content (WCAG) ── */
 .skip-to-content {
@@ -782,8 +685,8 @@ details[open] .summary-icon {
   left: 0;
   z-index: 9999;
   padding: 0.75rem 1.5rem;
-  background: var(--bne-brass, var(--color-brass));
-  color: var(--bne-espresso, var(--color-text-inverse));
+  background: var(--brass);
+  color: var(--text-inverse);
   font-weight: 600;
   font-size: var(--text-sm);
   text-decoration: none;
