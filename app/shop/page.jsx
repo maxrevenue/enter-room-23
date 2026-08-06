@@ -8,12 +8,7 @@ import { ShoppingBag, Filter, X } from 'lucide-react'
 
 const CATEGORIES = ['All', 'Wellness', 'Accessories', 'Essentials']
 
-function slugify(str) {
-  return str
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '')
-}
+
 
 export default function ShopPage() {
   const { addToCart } = useCart()
@@ -123,7 +118,7 @@ export default function ShopPage() {
             >
               {/* Image Placeholder — clickable PDP link */}
               <Link
-                href={`/shop/${slugify(product.name)}`}
+                href={`/products/${product.id}`}
                 style={{
                   width: '100%',
                   aspectRatio: '1 / 1',
@@ -172,7 +167,7 @@ export default function ShopPage() {
               )}
 
               {/* Product Name — clickable PDP link */}
-              <Link href={`/shop/${slugify(product.name)}`}>
+              <Link href={`/products/${product.id}`}>
                 <h3
                   style={{
                     fontFamily: 'var(--font-display)',

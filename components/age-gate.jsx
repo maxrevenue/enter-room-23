@@ -4,14 +4,20 @@ import { useEffect, useState } from 'react'
 import { useCart } from '@/lib/cart-context'
 
 export default function AgeGate() {
-  const { confirmAge, declineAge } = useCart()
+  const { mounted, ageVerified, confirmAge, declineAge } = useCart()
   const [visible, setVisible] = useState(false)
 
+  // Trigger entrance animation after mount
   useEffect(() => {
-    // Trigger entrance animation after mount
+    if (!mounted || ageVerified) return
     const t = setTimeout(() => setVisible(true), 100)
     return () => clearTimeout(t)
-  }, [])
+  }, [mounted, ageVerified])
+
+  // ── Defense-in-depth: never render the overlay after age is verified.
+  //     The fixed inset-0 z-[9999] wrapper blocks ALL pointer events on
+  //     the page when visible — this guard is non-negotiable.
+  if (!mounted || ageVerified) return null
 
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
