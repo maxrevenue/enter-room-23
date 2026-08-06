@@ -20,6 +20,7 @@ export function middleware(request) {
     pathname.startsWith('/faq') ||
     pathname.startsWith('/contact') ||
     pathname.startsWith('/journal') ||
+    pathname.startsWith('/api') ||
     pathname.startsWith('/_next') ||
     pathname.includes('.')
 

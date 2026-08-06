@@ -8,16 +8,19 @@ import CheckoutDialog from '@/components/checkout-dialog'
 import { useCart } from '@/lib/cart-context'
 
 export default function SiteShell({ children }) {
-  const { ageVerified } = useCart()
+  const { mounted, ageVerified } = useCart()
+
+  // Never render age gate during SSR/hydration — prevents content flash
+  const showAgeGate = mounted && !ageVerified
 
   return (
     <div className="relative flex flex-col min-h-screen" style={{ backgroundColor: 'var(--bg-base)' }}>
-      {/* ── Age Gate Overlay ── */}
-      {!ageVerified && <AgeGate />}
+      {/* ── Age Gate Overlay (renders only after client hydration) ── */}
+      {showAgeGate && <AgeGate />}
 
       {/* ── Main content (blurred while age gate is showing) ── */}
       <div
-        className={`flex flex-col min-h-screen transition-[filter] duration-500 ${!ageVerified ? 'blur-sm pointer-events-none select-none' : ''}`}
+        className={`flex flex-col min-h-screen transition-[filter] duration-500 ${showAgeGate ? 'blur-sm pointer-events-none select-none' : ''}`}
       >
         <SiteHeader />
         <main id="main-content" className="flex-1" tabIndex={-1}>{children}</main>
