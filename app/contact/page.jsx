@@ -109,8 +109,8 @@ export default function ContactPage() {
                 </h4>
                 <p style={{ color: 'var(--text-primary)', fontSize: 'var(--text-sm)' }}>
                   Room 23<br />
-                  {BUSINESS_STREET}<br />
-                  {BUSINESS_CITY_STATE}<br />
+                  {SITE_CONFIG.bizStreet}<br />
+                  {SITE_CONFIG.bizCityState}<br />
                   United States
                 </p>
               </div>
