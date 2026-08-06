@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { SITE_CONFIG } from '@/config/site'
 
 export const metadata = {
   title: 'Frequently Asked Questions',
@@ -32,7 +33,7 @@ const faqs = [
   },
   {
     q: 'How long does the age verification last?',
-    a: 'Upon confirming your age, a cookie is set for 24 hours. After that, you will be asked to re-verify on your next visit. This re-verification is intentionally designed to satisfy high-risk merchant compliance requirements.',
+    a: 'Upon confirming your age, a session cookie is set for your current browser session. If you close your browser and reopen it, you will be asked to re-verify. This session-based verification is intentionally designed to satisfy high-risk merchant compliance requirements.',
   },
   {
     q: 'Can I return an item?',
@@ -60,7 +61,7 @@ export default function FAQPage() {
   return (
     <div className="container-narrow" style={{ paddingTop: '3rem', paddingBottom: '4rem' }}>
       <div className="mb-10 animate-fade-in-up">
-        <p className="last-updated" style={{ marginBottom: '0.25rem' }}>Last Updated: August 5, 2026</p>
+        <p className="last-updated" style={{ marginBottom: '0.25rem' }}>Last Updated: {SITE_CONFIG.lastUpdated}</p>
         <h1 style={{
           fontFamily: 'var(--font-display)',
           fontSize: 'var(--text-4xl)',

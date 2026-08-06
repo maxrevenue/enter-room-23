@@ -14,7 +14,7 @@ export const SITE_CONFIG = {
 
   // ── Contact ──
   supportEmail: process.env.ADMIN_EMAIL || 'support@room23.net',
-  supportPhone: process.env.BIZ_PHONE || 'Available via Email Support',
+  supportPhone: 'Phone pending',
   hours: 'Mon–Fri 9:00 AM – 6:00 PM ET',
 
   // ── Location ──
@@ -36,5 +36,5 @@ export const SITE_CONFIG = {
 
   // ── Legal ──
   /** Date the legal text was last materially revised (authored 2026-08-05). */
-  legalLastUpdated: 'August 5, 2026',
+  lastUpdated: 'August 1, 2026',
 }

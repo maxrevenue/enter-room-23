@@ -10,7 +10,7 @@ export default function PrivacyPage() {
   return (
     <div className="container-narrow legal-content animate-fade-in-up">
       <div className="mb-10">
-        <p className="last-updated">Last Updated: {SITE_CONFIG.legalLastUpdated}</p>
+        <p className="last-updated">Last Updated: {SITE_CONFIG.lastUpdated}</p>
         <h1>Privacy Policy</h1>
         <p>
           At <strong>Room 23</strong>, your privacy is foundational to our business. We handle
@@ -44,9 +44,10 @@ export default function PrivacyPage() {
 
       <h3>1.3 Age Verification Data</h3>
       <p>
-        We set a temporary <strong>age_verified</strong> cookie upon entry confirmation. This cookie
-        contains no personal information — it simply indicates that you affirmed being 18+. It expires
-        after 24 hours and is used solely to re-verify age compliance on return visits.
+        We set a session <strong>age_verified</strong> cookie upon entry confirmation. This cookie
+        contains no personal information — it simply indicates that you affirmed being 18+. It is a
+        session cookie that expires when you close your browser and is used solely to re-verify
+        age compliance on return visits.
       </p>
 
       {/* ── Section 2 ── */}
@@ -115,7 +116,7 @@ export default function PrivacyPage() {
       <p>We use the following categories of cookies:</p>
       <ul>
         <li><strong>Essential Cookies:</strong> Age verification status, cart contents, and session management. These are required for Site functionality and cannot be disabled.</li>
-        <li><strong>Preference Cookies:</strong> Theme preference (dark/light mode). Purely functional.</li>
+        <li><strong>Preference Cookies:</strong> UI preference persistence. Purely functional.</li>
         <li><strong>Analytics Cookies:</strong> Anonymous usage statistics (pages viewed, referral sources). No personal identifiers are included.</li>
       </ul>
       <p>
@@ -132,7 +133,7 @@ export default function PrivacyPage() {
       <ul>
         <li><strong>Order data:</strong> Retained for tax and accounting purposes (typically 7 years per IRS requirements).</li>
         <li><strong>Account data:</strong> Retained until you request deletion or your account is inactive for 24 months.</li>
-        <li><strong>Age verification cookie:</strong> Expires after 24 hours.</li>
+        <li><strong>Age verification cookie:</strong> Session cookie (expires when browser is closed).</li>
         <li><strong>Analytics data:</strong> Aggregated and anonymized; raw logs purged after 30 days.</li>
       </ul>
 

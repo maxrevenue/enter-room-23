@@ -11,7 +11,7 @@ export default function TermsPage() {
     <div className="container-narrow legal-content animate-fade-in-up">
       {/* ── Header ── */}
       <div className="mb-10">
-        <p className="last-updated">Last Updated: {SITE_CONFIG.legalLastUpdated}</p>
+        <p className="last-updated">Last Updated: {SITE_CONFIG.lastUpdated}</p>
         <h1>Terms of Service</h1>
         <p>
           Welcome to <strong>Room 23</strong> (&ldquo;we,&rdquo; &ldquo;our,&rdquo; or &ldquo;us&rdquo;). By accessing

@@ -236,7 +236,7 @@ export default function SiteFooter() {
           Billing descriptor: {SITE_CONFIG.billingDescriptor}
           <br />
           <span className="opacity-60">
-            Last updated: {SITE_CONFIG.legalLastUpdated}
+            Last updated: {SITE_CONFIG.lastUpdated}
           </span>
         </p>
       </div>

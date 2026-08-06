@@ -11,7 +11,7 @@ export default function ContactPage() {
   return (
     <div className="container-narrow" style={{ paddingTop: '3rem', paddingBottom: '4rem' }}>
       <div className="mb-10 animate-fade-in-up">
-        <p className="last-updated" style={{ marginBottom: '0.25rem' }}>Last Updated: {SITE_CONFIG.legalLastUpdated}</p>
+        <p className="last-updated" style={{ marginBottom: '0.25rem' }}>Last Updated: {SITE_CONFIG.lastUpdated}</p>
         <h1 style={{
           fontFamily: 'var(--font-display)',
           fontSize: 'var(--text-4xl)',

@@ -10,7 +10,7 @@ export default function ShippingPage() {
   return (
     <div className="container-narrow legal-content animate-fade-in-up">
       <div className="mb-10">
-        <p className="last-updated">Last Updated: {SITE_CONFIG.legalLastUpdated}</p>
+        <p className="last-updated">Last Updated: {SITE_CONFIG.lastUpdated}</p>
         <h1>Shipping &amp; Returns</h1>
         <p>
           We take <strong>discretion seriously</strong>. Every order is handled with the privacy you expect.
