@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { BUSINESS_STREET, BUSINESS_CITY_STATE, BUSINESS_ADDRESS_FULL, BUSINESS_PHONE, SUPPORT_EMAIL } from '@/lib/contact-info'
 import { Shield, Lock, CreditCard } from 'lucide-react'
 
 export default function SiteFooter() {
@@ -43,8 +44,8 @@ export default function SiteFooter() {
               </p>
               <p style={{ marginBottom: '0.75rem' }}>
                 Room 23<br />
-                [Business Street Address]<br />
-                [City, State ZIP]<br />
+                {BUSINESS_STREET}<br />
+                {BUSINESS_CITY_STATE}<br />
                 United States
               </p>
               <p style={{ marginBottom: '0.25rem' }}>
@@ -56,7 +57,7 @@ export default function SiteFooter() {
               <p style={{ marginTop: '0.75rem', marginBottom: '0.25rem' }}>
                 <strong style={{ color: 'var(--text-secondary)', fontSize: 'var(--text-xs)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Phone:</strong>
               </p>
-              <p style={{ color: 'var(--text-primary)', fontSize: 'var(--text-sm)' }}>[Phone Number]</p>
+              <p style={{ color: 'var(--text-primary)', fontSize: 'var(--text-sm)' }}>{BUSINESS_PHONE}</p>
               <p style={{ marginTop: '0.5rem', fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
                 Mon–Fri 9:00 AM–6:00 PM ET
               </p>

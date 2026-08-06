@@ -19,6 +19,14 @@
     }
   ],
 
+  "vars": {
+    "ADMIN_EMAIL": "support@room23.net",
+    "BIZ_ADDRESS_STREET": "Address pending",
+    "BIZ_ADDRESS_CITY_STATE": "Address pending",
+    "BIZ_PHONE": "Phone number pending",
+    "SITE_INDEXABLE": "false"
+  },
+
   // ── Staging environment ──
   // Deploy with: npx wrangler deploy --env staging
   // Secrets (NMI_PRIVATE_KEY, RESEND_API_KEY, ADMIN_EMAIL) must be set separately:

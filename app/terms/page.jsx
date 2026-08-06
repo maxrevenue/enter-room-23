@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { BUSINESS_ADDRESS_FULL, LEGAL_LAST_UPDATED } from '@/lib/contact-info'
 
 export const metadata = {
   title: 'Terms of Service',
@@ -10,7 +11,7 @@ export default function TermsPage() {
     <div className="container-narrow legal-content animate-fade-in-up">
       {/* ── Header ── */}
       <div className="mb-10">
-        <p className="last-updated">Last Updated: August 5, 2026</p>
+        <p className="last-updated">Last Updated: {LEGAL_LAST_UPDATED}</p>
         <h1>Terms of Service</h1>
         <p>
           Welcome to <strong>Room 23</strong> (&ldquo;we,&rdquo; &ldquo;our,&rdquo; or &ldquo;us&rdquo;). By accessing
@@ -169,7 +170,7 @@ export default function TermsPage() {
       </p>
       <ul>
         <li>Email: <a href="mailto:support@room23.net">support@room23.net</a></li>
-        <li>Mail: Room 23, [Business Address], USA</li>
+        <li>Mail: Room 23, {BUSINESS_ADDRESS_FULL}, USA</li>
       </ul>
       <p>
         You may also visit our <Link href="/contact" className="link-brass">Contact Page</Link> for

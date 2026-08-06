@@ -35,8 +35,8 @@ export const metadata = {
   creator: 'Room 23',
   publisher: 'Room 23',
   robots: {
-    index: false,
-    follow: true,
+    index: process.env.SITE_INDEXABLE === 'true',
+    follow: process.env.SITE_INDEXABLE === 'true',
   },
   openGraph: {
     title: 'Room 23 — Premium Adult Wellness',

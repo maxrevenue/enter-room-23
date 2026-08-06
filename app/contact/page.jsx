@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import ContactForm from './contact-form'
+import { BUSINESS_STREET, BUSINESS_CITY_STATE, BUSINESS_PHONE, LEGAL_LAST_UPDATED } from '@/lib/contact-info'
 
 export const metadata = {
   title: 'Contact Us',
@@ -10,7 +11,7 @@ export default function ContactPage() {
   return (
     <div className="container-narrow" style={{ paddingTop: '3rem', paddingBottom: '4rem' }}>
       <div className="mb-10 animate-fade-in-up">
-        <p className="last-updated" style={{ marginBottom: '0.25rem' }}>Last Updated: August 5, 2026</p>
+        <p className="last-updated" style={{ marginBottom: '0.25rem' }}>Last Updated: {LEGAL_LAST_UPDATED}</p>
         <h1 style={{
           fontFamily: 'var(--font-display)',
           fontSize: 'var(--text-4xl)',
@@ -84,7 +85,7 @@ export default function ContactPage() {
                   Phone
                 </h4>
                 <p style={{ color: 'var(--text-primary)', fontSize: 'var(--text-base)' }}>
-                  [Phone Number]
+                  {BUSINESS_PHONE}
                 </p>
               </div>
 
@@ -110,8 +111,8 @@ export default function ContactPage() {
                 </h4>
                 <p style={{ color: 'var(--text-primary)', fontSize: 'var(--text-sm)' }}>
                   Room 23<br />
-                  [Business Street Address]<br />
-                  [City, State ZIP]<br />
+                  {BUSINESS_STREET}<br />
+                  {BUSINESS_CITY_STATE}<br />
                   United States
                 </p>
               </div>

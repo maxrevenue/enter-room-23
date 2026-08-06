@@ -185,10 +185,9 @@ export default function ShopPage() {
                     marginBottom: '0.75rem',
                     flex: 1,
                   }}
+                  className="line-clamp-2"
                 >
-                  {product.description.length > 80
-                    ? product.description.slice(0, 80) + '...'
-                    : product.description}
+                  {product.description}
                 </p>
               )}
 
