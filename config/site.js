@@ -2,8 +2,7 @@
  * Centralized Site Configuration — single source of truth for all
  * business constants, legal text, and carrier information.
  *
- * Address & phone are populated from Cloudflare env vars.
- * Falls back to honest pending notices for NMI underwriting transparency.
+ * Entity: California LLC — Filing B20260165153
  */
 
 export const SITE_CONFIG = {
@@ -13,18 +12,20 @@ export const SITE_CONFIG = {
   domain: 'room23.net',
 
   // ── Contact ──
-  supportEmail: process.env.ADMIN_EMAIL || 'support@room23.net',
-  supportPhone: 'Phone pending',
+  supportEmail: 'support@room23.net',
+  supportPhone: '(425) 505-3528',
   hours: 'Mon–Fri 9:00 AM – 6:00 PM ET',
 
-  // ── Location ──
+  // ── Location (CA SOS Filing B20260165153) ──
+  principalAddress: '6010 Fulcher Ave, North Hollywood, CA 91606',
+  mailingAddress: '5482 Wilshire Blvd #333, Los Angeles, CA 90036',
+  address: '5482 Wilshire Blvd #333, Los Angeles, CA 90036', // Primary public
   location: 'United States',
-  bizStreet: process.env.BIZ_ADDRESS_STREET || 'Address pending',
-  bizCityState: process.env.BIZ_ADDRESS_CITY_STATE || 'Address pending',
-  bizAddressFull:
-    [process.env.BIZ_ADDRESS_STREET, process.env.BIZ_ADDRESS_CITY_STATE]
-      .filter(Boolean)
-      .join(', ') || 'Address pending',
+
+  // Backward-compatible aliases for existing components
+  bizStreet: '5482 Wilshire Blvd #333',
+  bizCityState: 'Los Angeles, CA 90036',
+  bizAddressFull: '5482 Wilshire Blvd #333, Los Angeles, CA 90036',
 
   // ── Billing ──
   billingDescriptor: 'ROOM23',
@@ -35,6 +36,5 @@ export const SITE_CONFIG = {
   flatShippingRate: 8.0,
 
   // ── Legal ──
-  /** Date the legal text was last materially revised (authored 2026-08-05). */
   lastUpdated: 'August 1, 2026',
 }
