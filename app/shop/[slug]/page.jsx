@@ -4,6 +4,8 @@ import { AddToCartButton, RelatedProductButton } from '@/components/add-to-cart-
 import { Shield, Truck, Package } from 'lucide-react'
 import Link from 'next/link'
 
+export const dynamic = 'force-dynamic'
+
 function slugify(str) {
   return str
     .toLowerCase()
