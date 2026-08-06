@@ -7,6 +7,7 @@ import { Menu, X, ShoppingBag } from 'lucide-react'
 
 const NAV_LINKS = [
   { href: '/shop', label: 'SHOP' },
+  { href: '/search', label: 'SEARCH' },
   { href: '/journal', label: 'THE COLUMN' },
   { href: '/faq', label: 'FAQ' },
   { href: '/contact', label: 'CONTACT' },
@@ -20,13 +21,25 @@ export default function SiteHeader() {
   const closeMobile = () => setMobileOpen(false)
 
   return (
-    <header
-      className="sticky top-0 z-40 w-full border-b backdrop-blur-xl transition-colors duration-300"
-      style={{
-        backgroundColor: 'var(--header-bg)',
-        borderColor: 'var(--border-soft)',
-      }}
-    >
+    <header className="sticky top-0 z-40 w-full">
+      {/* ── Announcement Banner ── */}
+      <div
+        className="w-full text-center py-1.5"
+        style={{ backgroundColor: '#FF1A1A' }}
+      >
+        <span className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-white">
+          FREE DISCREET SHIPPING ON ORDERS OVER $75
+        </span>
+      </div>
+
+      {/* ── Main Nav Bar ── */}
+      <div
+        className="w-full border-b backdrop-blur-xl transition-colors duration-300"
+        style={{
+          backgroundColor: 'var(--header-bg, #0A0A0A)',
+          borderColor: 'var(--border-soft, var(--border))',
+        }}
+      >
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6">
         {/* ── Left: Logo ── */}
         <Link
@@ -112,6 +125,7 @@ export default function SiteHeader() {
 
       {/* ── Neon Divider ── */}
       <hr className="neon-divider" />
+      </div>
     </header>
   )
 }
