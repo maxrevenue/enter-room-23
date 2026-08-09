@@ -114,7 +114,7 @@ export default function HomePage() {
             <Link
               key={card.href}
               href={card.href}
-              className="group relative flex flex-col items-center text-center p-6 sm:p-8 cursor-pointer transition-all duration-300 hover:-translate-y-1"
+              className="group relative flex flex-col items-center text-center p-6 sm:p-8 cursor-pointer transition-all duration-300 hover:-translate-y-1 animate-fade-in-up"
               style={{
                 backgroundColor: 'var(--bg-surface)',
                 borderRadius: 'var(--radius-lg)',

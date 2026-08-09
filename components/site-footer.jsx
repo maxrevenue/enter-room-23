@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { SITE_CONFIG } from '@/config/site'
 import { ShieldCheck, Truck, CreditCard, Mail, ArrowRight, Check } from 'lucide-react'
+import { track } from '@/lib/analytics-client'
 
 export default function SiteFooter() {
   const [email, setEmail] = useState('')
@@ -10,6 +11,7 @@ export default function SiteFooter() {
   const handleSubscribe = (e) => {
     e.preventDefault()
     if (email && email.includes('@')) {
+      track('newsletter_signup', { email })
       setSubscribed(true)
       setEmail('')
     }

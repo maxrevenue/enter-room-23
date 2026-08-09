@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { ArrowRight, Star } from 'lucide-react'
 
 export default function EditorChoice() {
@@ -117,16 +118,17 @@ export default function EditorChoice() {
                   $89.00<span style={{ fontSize: 'var(--text-sm)', color: 'var(--text-muted)' }}> USD</span>
                 </span>
 
-                <button
+                <Link
+                  href="/shop"
                   className="btn-brass inline-flex items-center gap-2 px-5 py-2.5 rounded-md text-sm font-semibold tracking-[0.08em] uppercase transition-all duration-300 hover:gap-3"
                   style={{
                     backgroundColor: 'var(--bne-brass, var(--accent))',
                     color: 'var(--bne-espresso, #14100d)',
                   }}
-                  aria-label="View Product of the Month details"
+                  aria-label="View Product of the Month details in Shop"
                 >
                   View Details <ArrowRight className="w-4 h-4" aria-hidden="true" />
-                </button>
+                </Link>
               </div>
             </div>
           </div>

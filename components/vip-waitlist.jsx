@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { Mail, Lock, ArrowRight } from 'lucide-react'
+import { track } from '@/lib/analytics-client'
 
 export default function VipWaitlist() {
   const [email, setEmail] = useState('')
@@ -10,6 +11,7 @@ export default function VipWaitlist() {
   const handleSubmit = (e) => {
     e.preventDefault()
     if (!email.trim()) return
+    track('vip_signup', { email: email.trim() })
     setSubmitted(true)
   }
 

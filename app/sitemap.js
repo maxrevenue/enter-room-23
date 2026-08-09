@@ -28,7 +28,7 @@ export default function sitemap() {
   }))
 
   const productEntries = PRODUCTS.map((product) => ({
-    url: `https://${SITE_CONFIG.domain}/shop/${slugify(product.name)}`,
+    url: `https://${SITE_CONFIG.domain}/products/${product.id}`,
     lastModified: new Date('2026-08-05'),
     changeFrequency: 'weekly',
     priority: 0.7,
