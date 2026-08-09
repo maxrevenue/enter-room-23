@@ -1,4 +1,7 @@
+const path = require('path');
+
 const nextConfig = {
+  outputFileTracingRoot: path.join(__dirname, './'),
   images: {
     unoptimized: true,
     remotePatterns: [

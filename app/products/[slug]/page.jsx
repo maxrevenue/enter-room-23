@@ -6,6 +6,8 @@ import { Minus, Plus, Truck, Heart, ChevronDown, ChevronUp, Waves, Droplets, Shi
 import { PRODUCTS } from '@/lib/products'
 import { useCart } from '@/lib/cart-context'
 
+import ProductArtwork from '@/components/product-artwork'
+
 // Map icon names from product features to actual Lucide components
 const ICON_MAP = {
   Waves, Droplets, Shield, ShieldCheck, Leaf, Heart, Smartphone, Sparkles, Blend,
@@ -60,7 +62,7 @@ export default function ProductDetailPage({ params }) {
       name: variantLabel ? `${product.name} — ${variantLabel}` : product.name,
       price: currentPrice,
       image: product.image,
-      qty: 1,
+      qty: qty,
       ...(variantLabel && { variant: variantLabel }),
     })
 
@@ -102,20 +104,7 @@ export default function ProductDetailPage({ params }) {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="flex flex-col items-center gap-3 text-center px-6">
-                  <span
-                    className="text-xl font-syne font-bold uppercase tracking-[0.2em]"
-                    style={{ color: 'var(--accent)' }}
-                  >
-                    Room 23
-                  </span>
-                  <span
-                    className="text-xs uppercase tracking-[0.12em]"
-                    style={{ color: 'var(--text-muted)' }}
-                  >
-                    {product.category || 'Premium Product'}
-                  </span>
-                </div>
+                <ProductArtwork productId={product.id} category={product.category} className="w-full h-full" />
               )}
             </div>
 

@@ -7,7 +7,7 @@ const ARTICLES = [
     title: 'Building a Considered Collection',
     excerpt:
       'Where to begin — and why fewer, better pieces make a more meaningful private ritual.',
-    href: '/shop',
+    href: '/journal/wellness-maintenance',
     accentColor: 'var(--bne-brass, var(--accent))',
   },
   {
@@ -15,7 +15,7 @@ const ARTICLES = [
     title: 'The Ritual of Self-Care',
     excerpt:
       'How intentional routines transform ordinary moments into acts of self-regard.',
-    href: '/shop',
+    href: '/journal/lubricant-formulations',
     accentColor: 'var(--bne-brass, var(--accent))',
   },
   {
@@ -23,7 +23,7 @@ const ARTICLES = [
     title: 'Designing for Desire',
     excerpt:
       'When objects are made with care, they invite a different kind of attention.',
-    href: '/shop',
+    href: '/journal/discreet-luxury',
     accentColor: 'var(--bne-brass, var(--accent))',
   },
 ]

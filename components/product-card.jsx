@@ -4,6 +4,8 @@ import Link from 'next/link'
 import { Plus } from 'lucide-react'
 import { useCart } from '@/lib/cart-context'
 
+import ProductArtwork from '@/components/product-artwork'
+
 const BADGE_VARIANTS = {
   'BEST SELLER': {
     bg: '#FF1A1A',
@@ -64,20 +66,7 @@ export default function ProductCard({ product }) {
             loading="lazy"
           />
         ) : (
-          <div className="flex flex-col items-center gap-2 text-center px-4">
-            <span
-              className="text-[10px] font-syne font-bold uppercase tracking-[0.15em]"
-              style={{ color: 'var(--brass)' }}
-            >
-              Room 23
-            </span>
-            <span
-              className="text-xs uppercase tracking-[0.08em]"
-              style={{ color: 'var(--text-muted)' }}
-            >
-              {product.category && product.category !== 'all' ? product.category : 'Essentials'}
-            </span>
-          </div>
+          <ProductArtwork productId={product.id} category={product.category} />
         )}
 
         {/* Quick-add button (appears on hover) */}

@@ -34,8 +34,36 @@ export default function CartSheet() {
   } = useCart()
 
   const [addedAddons, setAddedAddons] = useState([])
+  const [promoCode, setPromoCode] = useState('')
+  const [appliedPromo, setAppliedPromo] = useState('')
+  const [discountPercent, setDiscountPercent] = useState(0)
+  const [promoError, setPromoError] = useState('')
 
   if (!cartOpen) return null
+
+  // ── Promo Code Logic ──
+  const handleApplyPromo = () => {
+    setPromoError('')
+    const code = promoCode.trim().toUpperCase()
+    if (!code) return
+    if (code === 'SOFTLAUNCH10' || code === 'ROOM23' || code === 'WELCOME10') {
+      setAppliedPromo(code)
+      setDiscountPercent(10)
+      setPromoError('')
+    } else {
+      setPromoError('Invalid code. Try "SOFTLAUNCH10"')
+    }
+  }
+
+  const handleRemovePromo = () => {
+    setAppliedPromo('')
+    setDiscountPercent(0)
+    setPromoCode('')
+    setPromoError('')
+  }
+
+  const discountAmount = (subtotal * discountPercent) / 100
+  const finalTotal = Math.max(0, subtotal - discountAmount)
 
   // ── Free Shipping Progress ──
   const THRESHOLD = SITE_CONFIG.freeShippingThreshold
@@ -202,10 +230,51 @@ export default function CartSheet() {
         {/* Footer */}
         {cart.length > 0 && (
           <div className="px-6 py-4 border-t border-[#800020]/20 space-y-3">
-            <div className="flex justify-between text-white">
+            {/* Promo Code Input */}
+            <div className="space-y-1.5">
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="Promo Code (e.g. SOFTLAUNCH10)"
+                  value={promoCode}
+                  onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+                  className="flex-1 px-3 py-1.5 text-xs bg-white/5 border border-white/10 rounded text-white placeholder-white/30 focus:outline-none focus:border-[#C9A060]"
+                />
+                <button
+                  onClick={handleApplyPromo}
+                  className="px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-black bg-[#C9A060] rounded hover:bg-[#D4B070] transition-colors"
+                >
+                  Apply
+                </button>
+              </div>
+              {promoError && (
+                <p className="text-[11px] text-red-400">{promoError}</p>
+              )}
+              {discountPercent > 0 && (
+                <div className="flex items-center justify-between text-xs text-[#C9A060]">
+                  <span>Promo ({appliedPromo} — {discountPercent}% OFF)</span>
+                  <button onClick={handleRemovePromo} className="text-white/40 hover:text-white ml-2">×</button>
+                </div>
+              )}
+            </div>
+
+            <div className="flex justify-between text-white text-sm">
               <span className="text-white/60">Subtotal</span>
               <span className="font-semibold">${subtotal.toFixed(2)}</span>
             </div>
+
+            {discountPercent > 0 && (
+              <div className="flex justify-between text-xs text-[#C9A060]">
+                <span>Discount ({discountPercent}%)</span>
+                <span>-${discountAmount.toFixed(2)}</span>
+              </div>
+            )}
+
+            <div className="flex justify-between text-white font-semibold text-base pt-1 border-t border-white/10">
+              <span>Estimated Total</span>
+              <span className="text-[#C9A060]">${finalTotal.toFixed(2)}</span>
+            </div>
+
             <button
               onClick={() => { setCartOpen(false); setCheckoutOpen(true) }}
               className="w-full py-3 bg-[#C9A060] text-black font-semibold rounded-lg hover:bg-[#D4B070] transition-colors text-sm tracking-wide"

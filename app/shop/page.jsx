@@ -4,19 +4,29 @@ import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import { useCart } from '@/lib/cart-context'
 import { PRODUCTS as products } from '@/lib/products'
-import { ShoppingBag, Filter, X } from 'lucide-react'
+import { ShoppingBag, ArrowUpDown } from 'lucide-react'
+import ProductArtwork from '@/components/product-artwork'
 
 const CATEGORIES = ['All', 'Essentials', 'Accessories']
 
 export default function ShopPage() {
   const { addToCart } = useCart()
   const [activeCategory, setActiveCategory] = useState('All')
+  const [sortOrder, setSortOrder] = useState('featured')
   const [addedId, setAddedId] = useState(null)
 
   const filteredProducts = useMemo(() => {
-    if (activeCategory === 'All') return products
-    return products.filter((p) => p.category?.toLowerCase() === activeCategory.toLowerCase())
-  }, [activeCategory])
+    let list = activeCategory === 'All'
+      ? [...products]
+      : products.filter((p) => p.category?.toLowerCase() === activeCategory.toLowerCase())
+
+    if (sortOrder === 'price-low') {
+      list.sort((a, b) => a.price - b.price)
+    } else if (sortOrder === 'price-high') {
+      list.sort((a, b) => b.price - a.price)
+    }
+    return list
+  }, [activeCategory, sortOrder])
 
   const handleAddToCart = (product) => {
     addToCart(product)
@@ -44,43 +54,57 @@ export default function ShopPage() {
         </p>
       </div>
 
-      {/* ── Category Filter Pills ── */}
-      <div
-        className="mb-10 animate-fade-in-up"
-        style={{
-          display: 'flex',
-          gap: '0.5rem',
-          flexWrap: 'wrap',
-          animationDelay: '100ms',
-        }}
-      >
-        {CATEGORIES.map((cat) => (
-          <button
-            key={cat}
-            onClick={() => setActiveCategory(cat)}
-            style={{
-              padding: '0.5rem 1.25rem',
-              fontSize: 'var(--text-sm)',
-              fontWeight: 600,
-              letterSpacing: '0.04em',
-              textTransform: 'uppercase',
-              borderRadius: 'var(--radius-full)',
-              border: cat === activeCategory
-                ? '1px solid var(--color-brass)'
-                : '1px solid var(--border)',
-              backgroundColor: cat === activeCategory
-                ? 'var(--color-brass-glow)'
-                : 'transparent',
-              color: cat === activeCategory
-                ? 'var(--color-brass)'
-                : 'var(--text-muted)',
-              cursor: 'pointer',
-              transition: 'all var(--transition-fast)',
-            }}
+      {/* ── Category Filter Pills & Sort Bar ── */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10 animate-fade-in-up">
+        <div
+          style={{
+            display: 'flex',
+            gap: '0.5rem',
+            flexWrap: 'wrap',
+          }}
+        >
+          {CATEGORIES.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setActiveCategory(cat)}
+              style={{
+                padding: '0.5rem 1.25rem',
+                fontSize: 'var(--text-sm)',
+                fontWeight: 600,
+                letterSpacing: '0.04em',
+                textTransform: 'uppercase',
+                borderRadius: 'var(--radius-full)',
+                border: cat === activeCategory
+                  ? '1px solid var(--color-brass)'
+                  : '1px solid var(--border)',
+                backgroundColor: cat === activeCategory
+                  ? 'var(--color-brass-glow)'
+                  : 'transparent',
+                color: cat === activeCategory
+                  ? 'var(--color-brass)'
+                  : 'var(--text-muted)',
+                cursor: 'pointer',
+                transition: 'all var(--transition-fast)',
+              }}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+
+        {/* Sort Select */}
+        <div className="flex items-center gap-2">
+          <ArrowUpDown className="w-4 h-4 text-white/50" />
+          <select
+            value={sortOrder}
+            onChange={(e) => setSortOrder(e.target.value)}
+            className="px-3 py-1.5 text-xs font-semibold uppercase tracking-wider bg-black/40 border border-white/10 rounded text-white focus:outline-none focus:border-[#C9A060]"
           >
-            {cat}
-          </button>
-        ))}
+            <option value="featured">Sort by: Featured</option>
+            <option value="price-low">Price: Low to High</option>
+            <option value="price-high">Price: High to Low</option>
+          </select>
+        </div>
       </div>
 
       {/* ── Product Grid ── */}
@@ -139,18 +163,7 @@ export default function ShopPage() {
                     loading="lazy"
                   />
                 ) : (
-                  <span
-                    style={{
-                      fontSize: 'var(--text-4xl)',
-                      opacity: 0.15,
-                      color: 'var(--color-brass)',
-                      fontFamily: 'var(--font-display)',
-                      fontWeight: 700,
-                      letterSpacing: '0.1em',
-                    }}
-                  >
-                    R23
-                  </span>
+                  <ProductArtwork productId={product.id} category={product.category} />
                 )}
               </Link>
 
