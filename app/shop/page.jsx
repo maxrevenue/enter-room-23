@@ -6,9 +6,7 @@ import { useCart } from '@/lib/cart-context'
 import { PRODUCTS as products } from '@/lib/products'
 import { ShoppingBag, Filter, X } from 'lucide-react'
 
-const CATEGORIES = ['All', 'Wellness', 'Accessories', 'Essentials']
-
-
+const CATEGORIES = ['All', 'Essentials', 'Accessories']
 
 export default function ShopPage() {
   const { addToCart } = useCart()

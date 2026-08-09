@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { use, useState } from 'react'
 import { notFound, useRouter } from 'next/navigation'
 import { Minus, Plus, Truck, Heart, ChevronDown, ChevronUp, Waves, Droplets, Shield, ShieldCheck, Leaf, Heart as HeartSolid, Smartphone, Sparkles, Blend } from 'lucide-react'
 import { PRODUCTS } from '@/lib/products'
@@ -15,7 +15,8 @@ const ICON_MAP = {
 export const dynamicParams = true
 
 export default function ProductDetailPage({ params }) {
-  const { slug } = params
+  const resolvedParams = typeof params?.then === 'function' ? use(params) : params
+  const slug = resolvedParams?.slug || params?.slug
   const { addToCart } = useCart()
   const router = useRouter()
 

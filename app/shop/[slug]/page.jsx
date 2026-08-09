@@ -30,10 +30,11 @@ const TRUST_BADGES = [
   { icon: Truck, label: `Free Shipping $${SITE_CONFIG.freeShippingThreshold}+` },
 ]
 
-export default function PDP({ params }) {
-  const { slug } = params
+export default async function PDP({ params }) {
+  const resolvedParams = typeof params?.then === 'function' ? await params : params
+  const slug = resolvedParams?.slug || params?.slug
   const product = products.find(
-    (p) => slugify(p.name) === slug
+    (p) => slugify(p.name) === slug || p.id === slug
   )
 
   if (!product) {
