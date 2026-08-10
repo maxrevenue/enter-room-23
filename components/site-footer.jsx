@@ -1,7 +1,9 @@
+'use client'
+
 import Link from 'next/link'
 import { useState } from 'react'
 import { SITE_CONFIG } from '@/config/site'
-import { ShieldCheck, Truck, CreditCard, Mail, ArrowRight, Check } from 'lucide-react'
+import { ShieldCheck, Truck, CreditCard, Mail, ArrowRight, Check, ArrowUp } from 'lucide-react'
 import { track } from '@/lib/analytics-client'
 
 export default function SiteFooter() {
@@ -29,16 +31,22 @@ export default function SiteFooter() {
         {/* ── Top: Logo + Short descriptor ── */}
         <div className="text-center mb-12 sm:mb-14">
           <p
-            className="font-syne text-xl font-bold tracking-[0.15em] uppercase mb-3"
-            style={{ color: 'var(--accent)' }}
+            className="font-syne text-xl font-bold tracking-[0.15em] uppercase mb-2"
+            style={{ color: 'var(--color-accent)' }}
           >
             {SITE_CONFIG.name}
           </p>
           <p
-            className="text-sm max-w-sm mx-auto"
+            className="text-sm max-w-sm mx-auto mb-2"
             style={{ color: 'var(--text-secondary)' }}
           >
             Discreet delivery. Private billing. Curated for adults 18+ only.
+          </p>
+          <p
+            className="text-xs"
+            style={{ color: 'var(--text-muted)', opacity: 0.6 }}
+          >
+            Serving discerning adults since 2024
           </p>
         </div>
 
@@ -162,20 +170,28 @@ export default function SiteFooter() {
         </div>
 
         {/* ── Newsletter ── */}
-        <div className="text-center mb-10">
-          <h4
-            className="font-syne text-sm font-semibold tracking-[0.1em] uppercase mb-3"
-            style={{ color: 'var(--text-primary)' }}
-          >
-            <Mail className="inline w-4 h-4 mr-2" style={{ color: 'var(--accent)' }} />
-            The Room 23 Dispatch
-          </h4>
-          <p className="text-xs mb-4" style={{ color: 'var(--text-muted)' }}>
+        <div
+          className="text-center mb-10 p-7 rounded-xl"
+          style={{
+            background: 'linear-gradient(135deg, rgba(212,168,83,0.06) 0%, rgba(212,168,83,0.02) 100%)',
+            border: '1px solid rgba(212,168,83,0.12)',
+          }}
+        >
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <Mail className="inline w-4 h-4" style={{ color: 'var(--color-accent)' }} />
+            <h4
+              className="font-syne text-sm font-semibold tracking-[0.1em] uppercase"
+              style={{ color: 'var(--text-primary)' }}
+            >
+              The Room 23 Dispatch
+            </h4>
+          </div>
+          <p className="text-xs mb-5" style={{ color: 'var(--text-muted)' }}>
             Product drops, curated editorial, and member-only offers. No spam, adults only.
           </p>
           {subscribed ? (
-            <p className="text-sm" style={{ color: 'var(--color-success)' }}>
-              <Check className="inline w-4 h-4 mr-1" /> Subscribed — thank you.
+            <p className="text-sm flex items-center justify-center gap-2" style={{ color: 'var(--color-success)' }}>
+              <Check className="w-4 h-4" /> Subscribed — thank you.
             </p>
           ) : (
             <form onSubmit={handleSubscribe} className="flex gap-2 max-w-xs mx-auto">
@@ -185,19 +201,21 @@ export default function SiteFooter() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="your@email.com"
                 required
-                className="flex-1 px-3 py-2 text-sm rounded-md border"
+                className="flex-1 px-3 py-2 text-sm rounded-md border outline-none"
                 style={{
-                  backgroundColor: 'var(--bg-surface)',
+                  backgroundColor: 'var(--bg-elevated)',
                   color: 'var(--text-primary)',
                   borderColor: 'var(--border)',
                 }}
+                onFocus={(e) => e.target.style.borderColor = 'var(--color-brass)'}
+                onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
               />
               <button
                 type="submit"
                 className="p-2 rounded-md transition-colors"
                 style={{
-                  backgroundColor: 'var(--accent)',
-                  color: 'var(--text-primary)',
+                  backgroundColor: 'var(--color-accent)',
+                  color: '#fff',
                 }}
                 aria-label="Subscribe"
               >
@@ -230,17 +248,23 @@ export default function SiteFooter() {
         </div>
 
         {/* ── Bottom ── */}
-        <p
-          className="text-xs text-center"
-          style={{ color: 'var(--text-muted)' }}
-        >
-          &copy; {new Date().getFullYear()} {SITE_CONFIG.legalName}. All rights reserved.
-          Billing descriptor: {SITE_CONFIG.billingDescriptor}
-          <br />
-          <span className="opacity-60">
-            Last updated: {SITE_CONFIG.lastUpdated}
-          </span>
-        </p>
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+          <p
+            className="text-xs"
+            style={{ color: 'var(--text-muted)' }}
+          >
+            &copy; {new Date().getFullYear()} {SITE_CONFIG.legalName}. All rights reserved.
+            {' '}Billing: {SITE_CONFIG.billingDescriptor}
+          </p>
+          <button
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="flex items-center gap-1.5 text-xs transition-colors duration-200 hover:text-[var(--color-brass)]"
+            style={{ color: 'var(--text-muted)' }}
+          >
+            <ArrowUp size={12} />
+            Back to top
+          </button>
+        </div>
       </div>
     </footer>
   )

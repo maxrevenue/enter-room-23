@@ -1,133 +1,186 @@
 'use client'
 
 import Link from 'next/link'
-import { ArrowRight, Star } from 'lucide-react'
+import { ArrowRight, Zap, Shield, Droplets } from 'lucide-react'
+import { PRODUCTS } from '@/lib/products'
+import ProductArtwork from '@/components/product-artwork'
+
+// Wire to the Premium Silicone Wand — our best featured product
+const FEATURED = PRODUCTS.find((p) => p.id === 'toy-wand-01') || PRODUCTS[0]
+
+const FEATURE_ICONS = { Waves: Zap, Droplets, ShieldCheck: Shield, Shield }
 
 export default function EditorChoice() {
   return (
     <section
-      className="relative px-4 py-12 sm:py-16"
-      style={{ backgroundColor: 'var(--bne-espresso-surface, var(--bg-surface))' }}
+      className="relative px-4 py-14 sm:py-20 overflow-hidden"
+      style={{ backgroundColor: 'var(--bg-surface)' }}
       aria-labelledby="editor-choice-heading"
     >
-      <div className="mx-auto max-w-4xl">
+      {/* Background depth */}
+      <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+        <div
+          className="absolute top-0 right-0 w-[50%] h-full opacity-[0.03]"
+          style={{
+            background: 'radial-gradient(ellipse at 100% 50%, #d4a853 0%, transparent 70%)',
+          }}
+        />
+      </div>
+
+      <div className="mx-auto max-w-5xl relative z-10">
         {/* ── Section Header ── */}
-        <div className="text-center mb-8 sm:mb-10">
+        <div className="text-center mb-10 sm:mb-12 animate-fade-in-up">
           <p
             className="text-xs font-semibold tracking-[0.2em] uppercase mb-3"
-            style={{ color: 'var(--bne-brass, var(--accent))' }}
+            style={{ color: 'var(--color-brass)' }}
             aria-hidden="true"
           >
-            Featured
+            Featured This Month
           </p>
           <h2
             id="editor-choice-heading"
-            className="font-syne text-2xl sm:text-3xl font-bold tracking-[0.08em] uppercase"
+            className="font-syne text-2xl sm:text-3xl font-bold tracking-[0.06em] uppercase"
             style={{ color: 'var(--text-primary)' }}
           >
             Editor&rsquo;s Choice
           </h2>
           <div
             className="mx-auto mt-4 h-[1px] w-16"
-            style={{ backgroundColor: 'var(--bne-brass, var(--accent))', opacity: 0.5 }}
+            style={{ backgroundColor: 'var(--color-brass)', opacity: 0.5 }}
           />
         </div>
 
         {/* ── Featured Product Card ── */}
         <article
-          className="relative overflow-hidden group"
+          className="relative overflow-hidden group animate-fade-in-up"
           style={{
-            backgroundColor: 'var(--bg-elevated, var(--bg-surface))',
+            backgroundColor: 'var(--bg-elevated)',
             borderRadius: 'var(--radius-lg)',
             border: '1px solid var(--border)',
           }}
-          aria-label="Product of the Month"
+          aria-label={`Featured: ${FEATURED.name}`}
         >
           {/* Brass top accent */}
           <div
             className="absolute top-0 left-0 right-0 h-[2px]"
-            style={{ backgroundColor: 'var(--bne-brass, var(--accent))', opacity: 0.6 }}
+            style={{
+              background: 'linear-gradient(90deg, transparent, var(--color-brass), transparent)',
+              opacity: 0.7,
+            }}
           />
 
           <div className="grid grid-cols-1 md:grid-cols-5 gap-0">
             {/* ── Image Area ── */}
             <div
-              className="md:col-span-2 relative aspect-square md:aspect-auto min-h-[240px]"
-              style={{ backgroundColor: 'var(--bne-espresso, var(--bg-base))' }}
+              className="md:col-span-2 relative aspect-square md:aspect-auto min-h-[260px] overflow-hidden"
+              style={{ backgroundColor: 'var(--bg-base)' }}
             >
-              {/* Placeholder visual */}
-              <div
-                className="absolute inset-0 flex flex-col items-center justify-center"
-                aria-hidden="true"
-              >
-                <Star
-                  className="w-10 h-10 mb-2 opacity-20"
-                  style={{ color: 'var(--bne-brass, var(--accent))' }}
-                />
-                <span
-                  className="text-xs tracking-[0.15em] uppercase opacity-30"
-                  style={{ color: 'var(--text-secondary)' }}
-                >
-                  Product Image
-                </span>
+              <div className="absolute inset-0">
+                <ProductArtwork productId={FEATURED.id} category={FEATURED.category} />
               </div>
 
               {/* Badge */}
               <span
-                className="absolute top-3 left-3 px-3 py-1 text-[10px] font-semibold tracking-[0.15em] uppercase rounded-full"
+                className="absolute top-3 left-3 px-3 py-1 text-[10px] font-bold tracking-[0.15em] uppercase rounded-full"
                 style={{
-                  backgroundColor: 'var(--bne-brass, var(--accent))',
-                  color: 'var(--bne-espresso, #14100d)',
+                  backgroundColor: 'var(--color-brass)',
+                  color: '#14100d',
                 }}
                 role="status"
               >
-                Product of the Month
+                Editor&rsquo;s Choice
               </span>
+
+              {FEATURED.badge && (
+                <span
+                  className="absolute top-3 right-3 px-2.5 py-0.5 text-[9px] font-bold tracking-[0.12em] uppercase rounded-sm"
+                  style={{
+                    backgroundColor: 'var(--color-accent)',
+                    color: '#fff',
+                  }}
+                >
+                  {FEATURED.badge}
+                </span>
+              )}
             </div>
 
             {/* ── Content ── */}
-            <div className="md:col-span-3 p-6 sm:p-8 flex flex-col justify-center">
+            <div className="md:col-span-3 p-7 sm:p-10 flex flex-col justify-center">
               <p
                 className="text-[11px] font-semibold tracking-[0.18em] uppercase mb-2"
-                style={{ color: 'var(--bne-brass-dim, var(--text-muted))' }}
+                style={{ color: 'var(--text-muted)' }}
               >
-                Curated Wellness
+                {FEATURED.category}
               </p>
 
               <h3
-                className="font-syne text-xl sm:text-2xl font-bold tracking-[0.06em] uppercase mb-3"
-                style={{ color: 'var(--text-primary)' }}
+                className="font-syne text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight uppercase mb-3"
+                style={{ color: 'var(--text-primary)', lineHeight: 1.1 }}
               >
-                The Signature Collection
+                {FEATURED.name}
               </h3>
 
               <p
-                className="text-sm leading-relaxed mb-5 max-w-md"
+                className="text-xs font-semibold tracking-[0.08em] uppercase mb-4"
+                style={{ color: 'var(--color-brass)' }}
+              >
+                {FEATURED.tagline}
+              </p>
+
+              <p
+                className="text-sm leading-relaxed mb-6 max-w-md"
                 style={{ color: 'var(--text-secondary)' }}
               >
-                Hand-selected each month by our curators. A revolving spotlight on
-                exceptional craftsmanship, intimate design, and the finest materials.
+                {FEATURED.description}
               </p>
+
+              {/* Feature pills */}
+              {FEATURED.features && (
+                <div className="flex flex-wrap gap-2 mb-7">
+                  {FEATURED.features.map((feat) => (
+                    <span
+                      key={feat.label}
+                      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold"
+                      style={{
+                        backgroundColor: 'var(--color-brass-glow)',
+                        color: 'var(--color-brass)',
+                        border: '1px solid var(--color-border-brass)',
+                      }}
+                    >
+                      {feat.label}
+                    </span>
+                  ))}
+                </div>
+              )}
 
               {/* Price + CTA */}
               <div className="flex flex-wrap items-center gap-4">
-                <span
-                  className="font-syne text-2xl font-bold tracking-[0.04em]"
-                  style={{ color: 'var(--bne-brass, var(--accent))' }}
-                >
-                  $89.00<span style={{ fontSize: 'var(--text-sm)', color: 'var(--text-muted)' }}> USD</span>
-                </span>
+                <div>
+                  <span
+                    className="font-syne text-2xl sm:text-3xl font-bold"
+                    style={{ color: 'var(--color-brass)' }}
+                  >
+                    ${FEATURED.price.toFixed(2)}
+                  </span>
+                  <span
+                    className="ml-1"
+                    style={{ fontSize: 'var(--text-sm)', color: 'var(--text-muted)' }}
+                  >
+                    USD
+                  </span>
+                </div>
 
                 <Link
-                  href="/shop"
-                  className="btn-brass inline-flex items-center gap-2 px-5 py-2.5 rounded-md text-sm font-semibold tracking-[0.08em] uppercase transition-all duration-300 hover:gap-3"
-                  style={{
-                    backgroundColor: 'var(--bne-brass, var(--accent))',
-                    color: 'var(--bne-espresso, #14100d)',
-                  }}
-                  aria-label="View Product of the Month details in Shop"
+                  href={`/products/${FEATURED.id}`}
+                  className="btn-brass inline-flex items-center gap-2 group/cta"
+                  style={{ padding: '0.75rem 1.75rem', fontSize: 'var(--text-sm)' }}
+                  aria-label={`View details for ${FEATURED.name}`}
                 >
-                  View Details <ArrowRight className="w-4 h-4" aria-hidden="true" />
+                  View Details{' '}
+                  <ArrowRight
+                    className="w-4 h-4 group-hover/cta:translate-x-1 transition-transform duration-200"
+                    aria-hidden="true"
+                  />
                 </Link>
               </div>
             </div>

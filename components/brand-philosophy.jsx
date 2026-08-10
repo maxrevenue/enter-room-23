@@ -1,33 +1,33 @@
 export default function BrandPhilosophy() {
   return (
     <section
-      className="relative px-4 py-14 sm:py-20 overflow-hidden"
-      style={{ backgroundColor: 'var(--bne-espresso, var(--bg-base))' }}
+      className="relative px-4 py-16 sm:py-24 overflow-hidden"
+      style={{ backgroundColor: 'var(--bg-base)' }}
       aria-labelledby="philosophy-heading"
     >
-      {/* Subtle brass glow in background */}
+      {/* Ambient glow */}
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
         <div
-          className="absolute top-1/2 left-1/2 w-[60%] max-w-2xl aspect-square -translate-x-1/2 -translate-y-1/2 rounded-full opacity-[0.025]"
+          className="absolute top-1/2 left-1/2 w-[70%] max-w-2xl aspect-square -translate-x-1/2 -translate-y-1/2 rounded-full"
           style={{
-            background: 'radial-gradient(ellipse, var(--bne-brass, #c8a34e) 0%, transparent 70%)',
+            background: 'radial-gradient(ellipse, rgba(212,168,83,0.04) 0%, transparent 70%)',
           }}
         />
       </div>
 
       <div className="mx-auto max-w-3xl text-center relative z-10">
-        {/* Lock icon / "23" mark */}
+        {/* Brand mark */}
         <div
-          className="inline-flex items-center justify-center w-14 h-14 rounded-full mx-auto mb-8 border"
+          className="inline-flex items-center justify-center w-14 h-14 rounded-full mx-auto mb-8 border animate-brass-ring"
           style={{
-            borderColor: 'var(--bne-brass, var(--accent))',
-            backgroundColor: 'var(--bg-elevated, var(--bg-surface))',
+            borderColor: 'rgba(212,168,83,0.35)',
+            backgroundColor: 'var(--bg-elevated)',
           }}
           aria-hidden="true"
         >
           <span
-            className="font-syne text-xl font-bold tracking-[0.05em]"
-            style={{ color: 'var(--bne-brass, var(--accent))' }}
+            className="font-syne text-xl font-bold"
+            style={{ color: 'var(--color-brass)', letterSpacing: '0.05em' }}
           >
             23
           </span>
@@ -35,13 +35,14 @@ export default function BrandPhilosophy() {
 
         <h2
           id="philosophy-heading"
-          className="font-syne text-2xl sm:text-3xl font-bold tracking-[0.08em] uppercase mb-6"
-          style={{ color: 'var(--text-primary)' }}
+          className="font-syne text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight uppercase mb-6"
+          style={{ color: 'var(--text-primary)', letterSpacing: '-0.01em' }}
         >
-          Considered pleasure. Discreet delivery.
+          Considered pleasure.{' '}
+          <span style={{ color: 'var(--color-brass)' }}>Discreet delivery.</span>
         </h2>
 
-        <div className="space-y-5">
+        <div className="space-y-5 mb-12">
           <p
             className="text-sm sm:text-base leading-relaxed"
             style={{ color: 'var(--text-secondary)' }}
@@ -62,32 +63,49 @@ export default function BrandPhilosophy() {
           </p>
         </div>
 
-        {/* ── Three Pillars ── */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-10 pt-10 border-t"
-          style={{ borderColor: 'var(--border)' }}
-        >
+        {/* ── Three Pillars — elevated with bordered boxes ── */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5">
           {[
             {
+              icon: '◈',
               title: 'Curated',
               body: 'Hand-selected, not warehouse-sourced. Every piece earns its place.',
             },
             {
+              icon: '◻',
               title: 'Discreet',
               body: 'Plain packaging. Private billing. Appears as ROOM23 on your statement.',
             },
             {
+              icon: '◆',
               title: 'Elevated',
               body: 'Materials and design that belong in a gallery, not a novelty shop.',
             },
           ].map((pillar) => (
-            <div key={pillar.title} className="text-center">
+            <div
+              key={pillar.title}
+              className="text-center p-5 rounded-lg transition-all duration-300 hover:-translate-y-0.5"
+              style={{
+                backgroundColor: 'var(--bg-surface)',
+                border: '1px solid var(--border)',
+              }}
+            >
+              <div
+                className="text-2xl mb-3"
+                style={{ color: 'var(--color-brass)', opacity: 0.7 }}
+              >
+                {pillar.icon}
+              </div>
               <h3
                 className="font-syne text-sm font-bold tracking-[0.12em] uppercase mb-2"
-                style={{ color: 'var(--bne-brass, var(--accent))' }}
+                style={{ color: 'var(--color-brass)' }}
               >
                 {pillar.title}
               </h3>
-              <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+              <p
+                className="text-xs leading-relaxed"
+                style={{ color: 'var(--text-muted)' }}
+              >
                 {pillar.body}
               </p>
             </div>
@@ -96,9 +114,9 @@ export default function BrandPhilosophy() {
 
         {/* Divider */}
         <div
-          className="mx-auto mt-10 h-[1px] max-w-xs"
+          className="mx-auto mt-12 h-[1px] max-w-xs"
           style={{
-            background: 'linear-gradient(90deg, transparent, var(--bne-brass, var(--accent)), transparent)',
+            background: 'linear-gradient(90deg, transparent, var(--color-brass), transparent)',
           }}
         />
       </div>

@@ -1,55 +1,91 @@
 'use client'
 
 import { useState } from 'react'
-import { Mail, Lock, ArrowRight } from 'lucide-react'
+import { Mail, Lock, ArrowRight, Check, Sparkles } from 'lucide-react'
 import { track } from '@/lib/analytics-client'
+
+const SPOTS_REMAINING = 47
 
 export default function VipWaitlist() {
   const [email, setEmail] = useState('')
   const [submitted, setSubmitted] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const handleSubmit = (e) => {
     e.preventDefault()
     if (!email.trim()) return
-    track('vip_signup', { email: email.trim() })
-    setSubmitted(true)
+    setLoading(true)
+    // Simulate slight delay for feel
+    setTimeout(() => {
+      track('vip_signup', { email: email.trim() })
+      setSubmitted(true)
+      setLoading(false)
+    }, 600)
   }
 
   return (
     <section
-      className="relative px-4 py-14 sm:py-20 overflow-hidden"
-      style={{ backgroundColor: 'var(--bne-espresso-surface, var(--bg-surface))' }}
+      className="relative px-4 py-16 sm:py-24 overflow-hidden"
+      style={{ backgroundColor: 'var(--bg-surface)' }}
       aria-labelledby="vip-heading"
     >
-      {/* Subtle brass glow */}
+      {/* Ambient background */}
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
         <div
-          className="absolute bottom-0 left-1/2 w-[70%] h-[40%] -translate-x-1/2 opacity-[0.03]"
+          className="absolute bottom-0 left-1/2 w-[80%] h-[60%] -translate-x-1/2"
           style={{
-            background: 'radial-gradient(ellipse at 50% 100%, var(--bne-brass, #c8a34e) 0%, transparent 70%)',
+            background: 'radial-gradient(ellipse at 50% 100%, rgba(212,168,83,0.05) 0%, transparent 65%)',
+          }}
+        />
+        <div
+          className="absolute top-0 left-0 right-0 h-[1px]"
+          style={{
+            background: 'linear-gradient(90deg, transparent, rgba(212,168,83,0.2), transparent)',
           }}
         />
       </div>
 
       <div className="mx-auto max-w-lg text-center relative z-10">
-        {/* Lock icon */}
+        {/* Lock icon with glow */}
         <div
-          className="inline-flex items-center justify-center w-14 h-14 rounded-full mx-auto mb-6 border"
+          className="inline-flex items-center justify-center w-16 h-16 rounded-full mx-auto mb-6 border animate-brass-ring"
           style={{
-            borderColor: 'var(--bne-brass, var(--accent))',
-            backgroundColor: 'var(--bg-elevated, var(--bg-base))',
+            borderColor: 'rgba(212,168,83,0.3)',
+            backgroundColor: 'var(--bg-elevated)',
           }}
           aria-hidden="true"
         >
           <Lock
             className="w-6 h-6"
-            style={{ color: 'var(--bne-brass, var(--accent))' }}
+            style={{ color: 'var(--color-brass)' }}
           />
+        </div>
+
+        {/* Urgency pill */}
+        <div
+          className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full mb-5"
+          style={{
+            backgroundColor: 'rgba(212,168,83,0.08)',
+            border: '1px solid rgba(212,168,83,0.15)',
+          }}
+        >
+          <Sparkles size={10} style={{ color: 'var(--color-brass)' }} />
+          <span
+            style={{
+              fontSize: '10px',
+              fontWeight: 700,
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase',
+              color: 'var(--color-brass)',
+            }}
+          >
+            {SPOTS_REMAINING} spots remaining
+          </span>
         </div>
 
         <h2
           id="vip-heading"
-          className="font-syne text-2xl sm:text-3xl font-bold tracking-[0.08em] uppercase mb-4"
+          className="font-syne text-2xl sm:text-3xl font-bold tracking-tight uppercase mb-4"
           style={{ color: 'var(--text-primary)' }}
         >
           Join the Inner Circle
@@ -91,7 +127,7 @@ export default function VipWaitlist() {
                   color: 'var(--text-primary)',
                   border: '1px solid var(--border)',
                   borderRadius: 'var(--radius-md)',
-                  padding: '0.75rem 1rem',
+                  padding: '0.75rem 1rem 0.75rem 2.5rem',
                   fontSize: 'var(--text-sm)',
                 }}
                 aria-required="true"
@@ -100,30 +136,61 @@ export default function VipWaitlist() {
 
             <button
               type="submit"
-              className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-md text-sm font-semibold tracking-[0.08em] uppercase transition-all duration-300 hover:gap-3 whitespace-nowrap"
-              style={{
-                backgroundColor: 'var(--bne-brass, var(--accent))',
-                color: 'var(--bne-espresso, #14100d)',
-              }}
+              disabled={loading}
+              className="btn-brass inline-flex items-center justify-center gap-2 whitespace-nowrap"
+              style={{ padding: '0.75rem 1.5rem', fontSize: 'var(--text-sm)', opacity: loading ? 0.7 : 1 }}
               aria-label="Submit email to join VIP waitlist"
             >
-              Subscribe <ArrowRight className="w-4 h-4" aria-hidden="true" />
+              {loading ? (
+                <>
+                  <span
+                    className="w-3.5 h-3.5 rounded-full border-2 border-black/30 border-t-black animate-spin"
+                    style={{ display: 'inline-block' }}
+                  />
+                  Joining...
+                </>
+              ) : (
+                <>
+                  Subscribe <ArrowRight className="w-4 h-4" aria-hidden="true" />
+                </>
+              )}
             </button>
           </form>
         ) : (
           <div
-            className="px-6 py-4 rounded-md text-sm animate-fade-in-up"
+            className="px-6 py-5 rounded-xl text-sm animate-fade-in-up"
             style={{
-              backgroundColor: 'var(--bne-brass-glow, rgba(200,163,78,0.1))',
-              border: '1px solid var(--bne-brass, var(--accent))',
-              color: 'var(--bne-brass, var(--accent))',
+              backgroundColor: 'rgba(212,168,83,0.08)',
+              border: '1px solid rgba(212,168,83,0.25)',
             }}
             role="status"
             aria-live="polite"
           >
-            You&rsquo;re on the list. We&rsquo;ll be in touch.
+            <div
+              className="inline-flex items-center justify-center w-10 h-10 rounded-full mb-3"
+              style={{ backgroundColor: 'rgba(212,168,83,0.15)' }}
+            >
+              <Check size={18} style={{ color: 'var(--color-brass)' }} />
+            </div>
+            <p
+              className="font-syne font-semibold mb-1"
+              style={{ color: 'var(--color-brass)' }}
+            >
+              You&rsquo;re on the list.
+            </p>
+            <p style={{ color: 'var(--text-muted)', fontSize: 'var(--text-xs)' }}>
+              We&rsquo;ll reach out when a spot opens up. Keep it private.
+            </p>
           </div>
         )}
+
+        {/* Privacy note */}
+        <p
+          className="mt-4 text-xs"
+          style={{ color: 'var(--text-muted)', opacity: 0.7 }}
+        >
+          No spam. Unsubscribe any time. 18+ adults only.
+        </p>
       </div>
     </section>
   )

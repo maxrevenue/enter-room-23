@@ -4,6 +4,7 @@ import { X, Minus, Plus, ShoppingBag, Truck, Sparkles } from 'lucide-react'
 import { useCart } from '@/lib/cart-context'
 import { SITE_CONFIG } from '@/config/site'
 import { useState } from 'react'
+import ProductArtwork from '@/components/product-artwork'
 
 // ── Instant Cross-sell Addons ──
 const CROSS_SELLS = [
@@ -108,8 +109,8 @@ export default function CartSheet() {
           ) : (
             cart.map((item) => (
               <div key={item.id} className="flex gap-4 p-3 rounded-lg border border-white/5 bg-white/[0.02]">
-                <div className="w-16 h-16 rounded bg-[#800020]/10 flex items-center justify-center flex-shrink-0">
-                  <span className="text-[#C9A060] text-xs font-mono">{item.id.slice(-4)}</span>
+              <div className="w-16 h-16 rounded-lg overflow-hidden bg-[#0A0A0A] flex-shrink-0 border border-white/5">
+                  <ProductArtwork productId={item.id} category={item.category} />
                 </div>
                 <div className="flex-1 min-w-0">
                   <h4 className="text-sm font-medium text-white truncate">{item.name}</h4>
