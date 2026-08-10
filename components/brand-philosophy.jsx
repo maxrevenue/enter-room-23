@@ -16,22 +16,15 @@ export default function BrandPhilosophy() {
       </div>
 
       <div className="mx-auto max-w-3xl text-center relative z-10">
-        {/* Brand mark */}
-        <div
-          className="inline-flex items-center justify-center w-14 h-14 rounded-full mx-auto mb-8 border animate-brass-ring"
-          style={{
-            borderColor: 'rgba(212,168,83,0.35)',
-            backgroundColor: 'var(--bg-elevated)',
-          }}
-          aria-hidden="true"
-        >
-          <span
-            className="font-syne text-xl font-bold"
-            style={{ color: 'var(--color-brass)', letterSpacing: '0.05em' }}
-          >
-            23
-          </span>
+        {/* Official Brand Emblem */}
+        <div className="flex justify-center mb-6">
+          <img
+            src="/new door.png"
+            alt="Room 23 Logo"
+            className="h-20 w-auto object-contain animate-float drop-shadow-[0_4px_16px_rgba(0,134,107,0.12)]"
+          />
         </div>
+
 
         <h2
           id="philosophy-heading"

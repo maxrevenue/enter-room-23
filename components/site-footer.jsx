@@ -28,14 +28,16 @@ export default function SiteFooter() {
       }}
     >
       <div className="mx-auto max-w-5xl">
-        {/* ── Top: Logo + Short descriptor ── */}
-        <div className="text-center mb-12 sm:mb-14">
-          <p
-            className="font-syne text-xl font-bold tracking-[0.15em] uppercase mb-2"
-            style={{ color: 'var(--color-accent)' }}
-          >
-            {SITE_CONFIG.name}
-          </p>
+        {/* ── Top: Official Logo + Short descriptor ── */}
+        <div className="text-center mb-12 sm:mb-14 flex flex-col items-center">
+          <Link href="/" className="inline-block mb-3 focus:outline-none" aria-label="Room 23 Home">
+            <img
+              src="/new door.png"
+              alt="Room 23 Logo"
+              className="h-16 w-auto object-contain transition-transform duration-300 hover:scale-105"
+            />
+          </Link>
+
           <p
             className="text-sm max-w-sm mx-auto mb-2"
             style={{ color: 'var(--text-secondary)' }}

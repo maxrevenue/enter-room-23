@@ -97,28 +97,38 @@ export default function HomePage() {
           />
         </div>
 
+        {/* Official Brand Emblem Crest */}
+        <div className="flex justify-center mb-6 animate-fade-in-up">
+          <img
+            src="/new door.png"
+            alt="Room 23 Door & Keyhole Logo"
+            className="h-28 sm:h-36 w-auto object-contain drop-shadow-[0_10px_25px_rgba(0,134,107,0.12)] transition-transform duration-500 hover:scale-105"
+          />
+        </div>
+
         {/* Eyebrow */}
         <div
           className="inline-flex items-center gap-2 mb-6 animate-fade-in-up"
           style={{
-            padding: '0.3rem 1rem',
+            padding: '0.35rem 1.25rem',
             borderRadius: '9999px',
-            border: '1px solid rgba(212,168,83,0.2)',
-            backgroundColor: 'rgba(212,168,83,0.06)',
+            border: '1px solid rgba(0,134,107,0.25)',
+            backgroundColor: 'rgba(0,134,107,0.06)',
           }}
         >
           <span
             style={{
               fontSize: '10px',
               fontWeight: 700,
-              letterSpacing: '0.15em',
+              letterSpacing: '0.18em',
               textTransform: 'uppercase',
-              color: 'var(--color-brass)',
+              color: 'var(--color-emerald)',
             }}
           >
             ✦ Private. Curated. Discreet. ✦
           </span>
         </div>
+
 
         <h1
           className="font-syne font-bold tracking-tight animate-fade-in-up"

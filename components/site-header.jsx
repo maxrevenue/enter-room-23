@@ -73,26 +73,15 @@ export default function SiteHeader() {
         }}
       >
         <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6">
-          {/* ── Logo ── */}
-          <Link
-            href="/"
-            className="font-syne font-bold tracking-[0.15em] uppercase select-none transition-all duration-300 hover:opacity-70 flex items-center gap-2"
-            style={{ color: 'var(--color-emerald)', fontSize: '1.125rem' }}
-          >
-            <span
-              className="text-xs font-bold px-1.5 py-0.5 rounded"
-              style={{
-                backgroundColor: 'rgba(0,134,107,0.10)',
-                border: '1px solid rgba(0,134,107,0.25)',
-                color: 'var(--color-emerald)',
-                fontFamily: 'monospace',
-                letterSpacing: '0.05em',
-              }}
-            >
-              R23
-            </span>
-            ROOM 23
+          {/* ── Official Brand Logo ── */}
+          <Link href="/" className="flex items-center gap-2 group focus:outline-none" aria-label="Room 23 Home">
+            <img
+              src="/new door.png"
+              alt="Room 23 Logo"
+              className="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+            />
           </Link>
+
 
           {/* ── Desktop Nav ── */}
           <nav className="hidden md:flex items-center gap-1 lg:gap-2">

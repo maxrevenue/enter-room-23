@@ -71,38 +71,21 @@ export default function AgeGate() {
             }}
           />
 
-          {/* ── Brand Mark ── */}
-          <div className="mb-7">
+          {/* ── Official Brand Emblem ── */}
+          <div className="mb-6 flex flex-col items-center">
+            <img
+              src="/new door.png"
+              alt="Room 23 Door & Keyhole Logo"
+              className="h-28 w-auto object-contain mb-3 animate-float drop-shadow-[0_8px_20px_rgba(0,134,107,0.15)]"
+            />
             <div
-              className="inline-flex items-center justify-center w-20 h-20 rounded-full mx-auto mb-5 animate-brass-ring animate-float"
+              className="w-16 h-px mx-auto mt-1"
               style={{
-                backgroundColor: 'rgba(212,168,83,0.06)',
-                border: '1px solid rgba(212,168,83,0.25)',
+                background: 'linear-gradient(90deg, transparent, var(--color-emerald), transparent)',
               }}
-            >
-              <span
-                className="text-3xl tracking-widest select-none"
-                style={{
-                  fontFamily: 'var(--font-display)',
-                  fontWeight: 700,
-                  color: 'var(--color-brass)',
-                }}
-              >
-                R23
-              </span>
-            </div>
+            />
+          </div>
 
-            <h2
-              className="text-2xl sm:text-3xl mb-2 tracking-widest select-none"
-              style={{
-                fontFamily: 'var(--font-display)',
-                fontWeight: 700,
-                color: 'var(--color-text-primary)',
-                letterSpacing: '0.15em',
-              }}
-            >
-              ROOM 23
-            </h2>
 
             <div
               className="w-16 h-px mx-auto"
