@@ -23,7 +23,7 @@ export default function BrandLogo({
       {variant !== 'text-only' && (
         <div className="relative flex items-center justify-center">
           <Image
-            src="/new door.png"
+            src="/new logo 2.png"
             alt="Room 23 — Private Members Club"
             width={logoDimensions.imgWidth}
             height={logoDimensions.imgHeight}

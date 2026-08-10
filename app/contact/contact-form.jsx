@@ -17,19 +17,20 @@ export default function ContactForm() {
 
   if (submitted) {
     return (
-      <div className="text-center py-8 px-6 rounded-xl border border-[#C9A060]/30 bg-[#C9A060]/5 space-y-4 animate-in fade-in duration-300">
-        <CheckCircle2 className="w-12 h-12 text-[#C9A060] mx-auto" />
-        <h3 className="text-xl font-bold font-[var(--font-syne)] text-white">Message Received</h3>
-        <p className="text-sm text-white/70">
+      <div className="text-center py-8 px-6 rounded-xl space-y-4 animate-in fade-in duration-300" style={{ border: '1px solid var(--color-border)', backgroundColor: 'var(--color-bg-elevated)' }}>
+        <CheckCircle2 className="w-12 h-12 mx-auto" style={{ color: 'var(--color-emerald)' }} />
+        <h3 className="text-xl font-bold font-[var(--font-syne)]" style={{ color: 'var(--color-text-primary)' }}>Message Received</h3>
+        <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
           Thank you for contacting Room 23. Your request has been assigned confidential Reference ID{' '}
-          <strong className="text-[#C9A060] font-mono">{refNum}</strong>.
+          <strong className="font-mono" style={{ color: 'var(--color-emerald)' }}>{refNum}</strong>.
         </p>
-        <p className="text-xs text-white/50">
+        <p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>
           Our concierge support team will respond to your email within 24 hours with complete discretion.
         </p>
         <button
           onClick={() => setSubmitted(false)}
-          className="text-xs font-semibold uppercase tracking-wider text-[#C9A060] underline underline-offset-4 hover:text-white pt-2"
+          className="text-xs font-semibold uppercase tracking-wider underline underline-offset-4 pt-2"
+          style={{ color: 'var(--color-emerald)' }}
         >
           Send Another Message
         </button>

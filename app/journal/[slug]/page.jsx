@@ -68,59 +68,97 @@ export default async function JournalArticlePage({ params }) {
   )
 
   return (
-    <article className="py-12 sm:py-16 min-h-screen bg-[var(--bg-base)]">
+    <article className="py-12 sm:py-16 min-h-screen" style={{ backgroundColor: 'var(--color-bg-primary)' }}>
       <div className="mx-auto max-w-3xl px-4 sm:px-6">
+
         {/* Back Link */}
         <Link
           href="/journal"
-          className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-[var(--text-muted)] hover:text-[#C9A060] transition-colors mb-8"
+          className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest transition-colors mb-8"
+          style={{ color: 'var(--color-text-muted)' }}
+          onMouseOver={e => e.currentTarget.style.color = 'var(--color-emerald)'}
+          onMouseOut={e => e.currentTarget.style.color = 'var(--color-text-muted)'}
         >
           <ArrowLeft className="w-4 h-4" /> Back to The Column
         </Link>
 
         {/* Category Badge */}
         <div className="mb-4">
-          <span className="px-3 py-1 text-[11px] font-bold uppercase tracking-[0.15em] rounded-full border border-[#C9A060]/40 text-[#C9A060] bg-[#C9A060]/10">
+          <span
+            className="px-3 py-1 text-[11px] font-bold uppercase tracking-[0.15em] rounded-full"
+            style={{
+              border: '1px solid rgba(0,134,107,0.35)',
+              color: 'var(--color-emerald)',
+              backgroundColor: 'rgba(0,134,107,0.07)',
+            }}
+          >
             {article.category}
           </span>
         </div>
 
         {/* Article Title */}
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold font-[var(--font-syne)] text-white leading-tight mb-4">
+        <h1
+          className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight mb-4"
+          style={{
+            fontFamily: 'var(--font-display)',
+            color: 'var(--color-text-primary)',
+          }}
+        >
           {article.title}
         </h1>
 
         {/* Subtitle */}
-        <p className="text-lg text-white/70 leading-relaxed mb-6 font-light">
+        <p
+          className="text-lg leading-relaxed mb-6 font-light"
+          style={{ color: 'var(--color-text-secondary)' }}
+        >
           {article.subtitle}
         </p>
 
         {/* Metadata Bar */}
-        <div className="flex flex-wrap items-center justify-between gap-4 py-4 border-y border-white/10 text-xs text-white/50 mb-10">
+        <div
+          className="flex flex-wrap items-center justify-between gap-4 py-4 border-y text-xs mb-10"
+          style={{
+            borderColor: 'var(--color-border)',
+            color: 'var(--color-text-muted)',
+          }}
+        >
           <div className="flex items-center gap-4">
-            <span className="flex items-center gap-1.5 text-white/80">
-              <Calendar className="w-3.5 h-3.5 text-[#C9A060]" /> {article.date}
+            <span className="flex items-center gap-1.5" style={{ color: 'var(--color-text-secondary)' }}>
+              <Calendar className="w-3.5 h-3.5" style={{ color: 'var(--color-emerald)' }} /> {article.date}
             </span>
             <span className="flex items-center gap-1.5">
-              <Clock className="w-3.5 h-3.5 text-[#C9A060]" /> {article.readTime}
+              <Clock className="w-3.5 h-3.5" style={{ color: 'var(--color-emerald)' }} /> {article.readTime}
             </span>
           </div>
-          <span className="text-[#C9A060] font-semibold">{article.author}</span>
+          <span className="font-semibold" style={{ color: 'var(--color-emerald)' }}>{article.author}</span>
         </div>
 
         {/* Article Content Paragraphs */}
-        <div className="prose prose-invert max-w-none space-y-6 text-base sm:text-lg leading-relaxed text-white/80 font-normal">
+        <div
+          className="prose max-w-none space-y-6 text-base sm:text-lg leading-relaxed font-normal"
+          style={{ color: 'var(--color-text-secondary)' }}
+        >
           {article.content.map((paragraph, idx) => (
-            <p key={idx}>{paragraph}</p>
+            <p key={idx} style={{ color: 'var(--color-text-secondary)', lineHeight: 1.85 }}>{paragraph}</p>
           ))}
         </div>
 
         {/* Recommended Products Bar */}
         {recommendedProducts.length > 0 && (
-          <div className="mt-14 pt-10 border-t border-white/10">
+          <div
+            className="mt-14 pt-10 border-t"
+            style={{ borderColor: 'var(--color-border)' }}
+          >
             <div className="flex items-center gap-2 mb-6">
-              <Sparkles className="w-5 h-5 text-[#C9A060]" />
-              <h3 className="text-lg font-bold text-white font-[var(--font-syne)] uppercase tracking-wider">
+              <Sparkles className="w-5 h-5" style={{ color: 'var(--color-accent)' }} />
+              <h3
+                className="text-lg font-bold uppercase tracking-wider"
+                style={{
+                  fontFamily: 'var(--font-display)',
+                  color: 'var(--color-text-primary)',
+                }}
+              >
                 Featured in this Article
               </h3>
             </div>

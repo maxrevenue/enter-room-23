@@ -57,11 +57,7 @@ export function AddToCartButton({ product }) {
       {qtyControls}
       <button
         onClick={handleAddToCart}
-        className={`w-full py-3 px-6 rounded-lg font-medium text-sm uppercase tracking-widest transition-all duration-200 flex items-center justify-center gap-2 ${
-          added
-            ? 'bg-green-600 text-white'
-            : 'bg-neutral-900 text-white hover:bg-neutral-800 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-200'
-        }`}
+        className={`w-full btn-primary ${added ? 'bg-green-600' : ''}`}
       >
         <ShoppingBag size={16} />
         {added ? 'Added to Cart' : `Add to Cart — $${(product.price * quantity).toFixed(2)}`}

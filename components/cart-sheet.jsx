@@ -87,16 +87,19 @@ export default function CartSheet() {
       />
 
       {/* Sheet */}
-      <div className="absolute right-0 top-0 h-full w-full max-w-md bg-black border-l border-[#00866b]/30 shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
+      <div className="absolute right-0 top-0 h-full w-full max-w-md border-l shadow-2xl flex flex-col animate-in slide-in-from-right duration-300" style={{ backgroundColor: 'var(--color-bg-surface)', borderColor: 'var(--color-border)' }}>
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#00866b]/20">
+        <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: 'var(--color-border)' }}>
           <div className="flex items-center gap-2">
             <ShoppingBag className="w-5 h-5 text-[#eb6824]" />
-            <h2 className="text-lg font-semibold text-white font-[var(--font-syne)]">Your Cart</h2>
+            <h2 className="text-lg font-semibold font-[var(--font-syne)]" style={{ color: 'var(--color-text-primary)' }}>Your Cart</h2>
           </div>
           <button
             onClick={() => setCartOpen(false)}
-            className="p-2 text-[#5C786E] hover:text-white transition-colors"
+            className="p-2 transition-colors"
+            style={{ color: 'var(--color-text-muted)' }}
+            onMouseOver={e => e.currentTarget.style.color = 'var(--color-emerald)'}
+            onMouseOut={e => e.currentTarget.style.color = 'var(--color-text-muted)'}
           >
             <X className="w-5 h-5" />
           </button>
@@ -108,24 +111,30 @@ export default function CartSheet() {
             <p className="text-[#5C786E] text-center py-12">Your cart is empty.</p>
           ) : (
             cart.map((item) => (
-              <div key={item.id} className="flex gap-4 p-3 rounded-lg border border-black/5 bg-black/[0.02]">
-              <div className="w-16 h-16 rounded-lg overflow-hidden bg-[#F4EEE4] flex-shrink-0 border border-black/5">
+              <div key={item.id} className="flex gap-4 p-3 rounded-lg border" style={{ backgroundColor: 'var(--color-bg-elevated)', borderColor: 'var(--color-border-light)' }}>
+              <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 border" style={{ backgroundColor: 'var(--color-bg-primary)', borderColor: 'var(--color-border-light)' }}>
                   <ProductArtwork productId={item.id} category={item.category} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h4 className="text-sm font-medium text-white truncate">{item.name}</h4>
+                  <h4 className="text-sm font-medium truncate" style={{ color: 'var(--color-text-primary)' }}>{item.name}</h4>
                   <p className="text-[#eb6824] text-sm mt-0.5">${item.price}</p>
                   <div className="flex items-center gap-2 mt-2">
                     <button
                       onClick={() => updateQty(item.id, item.qty - 1)}
-                      className="w-6 h-6 rounded-full border border-black/8 flex items-center justify-center text-[#2E4A40] hover:text-white hover:border-white/30 transition-colors"
+                      className="w-6 h-6 rounded-full border flex items-center justify-center transition-colors"
+                      style={{ color: 'var(--color-text-secondary)', borderColor: 'var(--color-border)' }}
+                      onMouseOver={e => e.currentTarget.style.color = 'var(--color-emerald)'}
+                      onMouseOut={e => e.currentTarget.style.color = 'var(--color-text-secondary)'}
                     >
                       <Minus className="w-3 h-3" />
                     </button>
-                    <span className="text-[#122720] text-sm w-6 text-center">{item.qty}</span>
+                    <span className="text-sm w-6 text-center" style={{ color: 'var(--color-text-primary)' }}>{item.qty}</span>
                     <button
                       onClick={() => updateQty(item.id, item.qty + 1)}
-                      className="w-6 h-6 rounded-full border border-black/8 flex items-center justify-center text-[#2E4A40] hover:text-white hover:border-white/30 transition-colors"
+                      className="w-6 h-6 rounded-full border flex items-center justify-center transition-colors"
+                      style={{ color: 'var(--color-text-secondary)', borderColor: 'var(--color-border)' }}
+                      onMouseOver={e => e.currentTarget.style.color = 'var(--color-emerald)'}
+                      onMouseOut={e => e.currentTarget.style.color = 'var(--color-text-secondary)'}
                     >
                       <Plus className="w-3 h-3" />
                     </button>
@@ -133,7 +142,10 @@ export default function CartSheet() {
                 </div>
                 <button
                   onClick={() => removeItem(item.id)}
-                  className="text-white/20 hover:text-[#eb6824] transition-colors self-start mt-1"
+                  className="transition-colors self-start mt-1"
+                  style={{ color: 'var(--color-text-muted)' }}
+                  onMouseOver={e => e.currentTarget.style.color = 'var(--color-accent)'}
+                  onMouseOut={e => e.currentTarget.style.color = 'var(--color-text-muted)'}
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -144,30 +156,30 @@ export default function CartSheet() {
 
         {/* ── Cart Upgrades ── */}
         {cart.length > 0 && (
-          <div className="px-6 space-y-4 border-t border-[#00866b]/20 pt-4">
+          <div className="px-6 space-y-4 border-t pt-4" style={{ borderColor: 'var(--color-border)' }}>
             {/* ── Free Shipping Progress Bar ── */}
             <div
-              className="rounded-xl p-3.5 border border-black/8"
-              style={{ backgroundColor: freeUnlocked ? 'rgba(235,104,36,0.1)' : 'rgba(255,255,255,0.02)' }}
+              className="rounded-xl p-3.5 border"
+              style={{ backgroundColor: freeUnlocked ? 'rgba(235,104,36,0.1)' : 'transparent', borderColor: 'var(--color-border)' }}
             >
               <div className="flex items-center gap-2 mb-2">
                 <Truck
                   className="w-4 h-4 flex-shrink-0"
-                  style={{ color: freeUnlocked ? '#eb6824' : 'rgba(255,255,255,0.4)' }}
+                  style={{ color: freeUnlocked ? '#eb6824' : 'var(--color-text-muted)' }}
                 />
                 {freeUnlocked ? (
                   <span className="text-sm font-semibold text-[#eb6824]">
                     Free Shipping Unlocked!
                   </span>
                 ) : (
-                  <span className="text-sm text-[#2E4A40]">
+                  <span className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
                     Add <strong className="text-[#eb6824]">${remaining.toFixed(2)}</strong> more for{' '}
                     <strong>FREE Discreet Shipping</strong>
                   </span>
                 )}
               </div>
               {/* Progress bar */}
-              <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
+              <div className="h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--color-bg-primary)' }}>
                 <div
                   className="h-full rounded-full transition-all duration-500 ease-out"
                   style={{
@@ -197,11 +209,12 @@ export default function CartSheet() {
                   return (
                     <div
                       key={addon.id}
-                      className="flex items-center gap-3 p-3 rounded-lg border border-black/5 bg-black/[0.02]"
+                      className="flex items-center gap-3 p-3 rounded-lg border"
+                      style={{ backgroundColor: 'var(--color-bg-elevated)', borderColor: 'var(--color-border-light)' }}
                     >
                       <div className="flex-1 min-w-0">
-                        <h4 className="text-sm font-medium text-white truncate">{addon.name}</h4>
-                        <p className="text-xs text-white/30 mt-0.5">{addon.desc}</p>
+                        <h4 className="text-sm font-medium truncate" style={{ color: 'var(--color-text-primary)' }}>{addon.name}</h4>
+                        <p className="text-xs mt-0.5" style={{ color: 'var(--color-text-muted)' }}>{addon.desc}</p>
                       </div>
                       <div className="text-right flex-shrink-0">
                         <p className="text-sm font-semibold text-[#eb6824] mb-1">
@@ -230,7 +243,7 @@ export default function CartSheet() {
 
         {/* Footer */}
         {cart.length > 0 && (
-          <div className="px-6 py-4 border-t border-[#00866b]/20 space-y-3">
+          <div className="px-6 py-4 border-t space-y-3" style={{ borderColor: 'var(--color-border)' }}>
             {/* Promo Code Input */}
             <div className="space-y-1.5">
               <div className="flex gap-2">
@@ -239,11 +252,13 @@ export default function CartSheet() {
                   placeholder="Promo Code (e.g. SOFTLAUNCH10)"
                   value={promoCode}
                   onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
-                  className="flex-1 px-3 py-1.5 text-xs bg-white/5 border border-black/8 rounded text-white placeholder-[#5C786E] focus:outline-none focus:border-[#eb6824]"
+                  className="flex-1 px-3 py-1.5 text-xs border rounded focus:outline-none focus:border-[#eb6824]"
+                  style={{ backgroundColor: 'var(--color-bg-elevated)', borderColor: 'var(--color-border)', color: 'var(--color-text-primary)' }}
                 />
                 <button
                   onClick={handleApplyPromo}
-                  className="px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-black bg-[#eb6824] rounded hover:bg-[#d95816] transition-colors"
+                  className="px-3 py-1.5 text-xs font-semibold uppercase tracking-wider bg-[#eb6824] rounded hover:bg-[#d95816] transition-colors"
+                  style={{ color: '#FFFFFF' }}
                 >
                   Apply
                 </button>
@@ -254,13 +269,13 @@ export default function CartSheet() {
               {discountPercent > 0 && (
                 <div className="flex items-center justify-between text-xs text-[#eb6824]">
                   <span>Promo ({appliedPromo} — {discountPercent}% OFF)</span>
-                  <button onClick={handleRemovePromo} className="text-[#5C786E] hover:text-white ml-2">×</button>
+                  <button onClick={handleRemovePromo} className="ml-2 transition-colors" style={{ color: 'var(--color-text-muted)' }} onMouseOver={e => e.currentTarget.style.color = 'var(--color-accent)'} onMouseOut={e => e.currentTarget.style.color = 'var(--color-text-muted)'}>×</button>
                 </div>
               )}
             </div>
 
-            <div className="flex justify-between text-[#122720] text-sm">
-              <span className="text-[#2E4A40]">Subtotal</span>
+            <div className="flex justify-between text-sm" style={{ color: 'var(--color-text-primary)' }}>
+              <span style={{ color: 'var(--color-text-secondary)' }}>Subtotal</span>
               <span className="font-semibold">${subtotal.toFixed(2)}</span>
             </div>
 
@@ -271,14 +286,14 @@ export default function CartSheet() {
               </div>
             )}
 
-            <div className="flex justify-between text-[#122720] font-semibold text-base pt-1 border-t border-black/8">
+            <div className="flex justify-between font-semibold text-base pt-1 border-t" style={{ color: 'var(--color-text-primary)', borderColor: 'var(--color-border)' }}>
               <span>Estimated Total</span>
               <span className="text-[#eb6824]">${finalTotal.toFixed(2)}</span>
             </div>
 
             <button
               onClick={() => { setCartOpen(false); setCheckoutOpen(true) }}
-              className="w-full py-3 bg-[#eb6824] text-black font-semibold rounded-lg hover:bg-[#d95816] transition-colors text-sm tracking-wide"
+              className="w-full btn-primary py-3"
             >
               Proceed to Checkout
             </button>

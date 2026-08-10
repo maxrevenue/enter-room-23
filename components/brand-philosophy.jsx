@@ -19,9 +19,10 @@ export default function BrandPhilosophy() {
         {/* Official Brand Emblem */}
         <div className="flex justify-center mb-6">
           <img
-            src="/new door.png"
-            alt="Room 23 Logo"
-            className="h-20 w-auto object-contain animate-float drop-shadow-[0_4px_16px_rgba(0,134,107,0.12)]"
+            src="/new logo 2.png"
+            alt="Room 23 — Private Wellness"
+            className="h-24 w-auto object-contain animate-float"
+            style={{ filter: 'drop-shadow(0 4px 16px rgba(0,134,107,0.12))' }}
           />
         </div>
 

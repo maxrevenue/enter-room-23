@@ -32,9 +32,10 @@ export default function SiteFooter() {
         <div className="text-center mb-12 sm:mb-14 flex flex-col items-center">
           <Link href="/" className="inline-block mb-3 focus:outline-none" aria-label="Room 23 Home">
             <img
-              src="/new door.png"
-              alt="Room 23 Logo"
-              className="h-16 w-auto object-contain transition-transform duration-300 hover:scale-105"
+              src="/new logo 2.png"
+              alt="Room 23 — Private Wellness"
+              className="h-24 w-auto object-contain animate-float"
+              style={{ filter: 'drop-shadow(0 4px 16px rgba(0,134,107,0.12))' }}
             />
           </Link>
 

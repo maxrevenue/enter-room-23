@@ -61,6 +61,16 @@ export default function SiteHeader() {
         </div>
       )}
 
+      {/* ── Tricolor brand top accent ── */}
+      <div
+        className="w-full h-[3px]"
+        style={{
+          background: 'linear-gradient(90deg, #00866b 0%, #ffaf1f 50%, #eb6824 100%)',
+          opacity: scrolled ? 1 : 0.85,
+          transition: 'opacity 0.3s ease',
+        }}
+      />
+
       {/* ── Main Nav Bar ── */}
       <div
         className="w-full border-b transition-all duration-300"
@@ -72,16 +82,16 @@ export default function SiteHeader() {
           boxShadow: scrolled ? '0 4px 20px rgba(18,39,32,0.08)' : 'none',
         }}
       >
-        <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6">
-          {/* ── Official Brand Logo ── */}
-          <Link href="/" className="flex items-center gap-2 group focus:outline-none" aria-label="Room 23 Home">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
+          {/* ── Official Brand Logo (full lockup) ── */}
+          <Link href="/" className="flex items-center group focus:outline-none" aria-label="Room 23 Home">
             <img
-              src="/new door.png"
-              alt="Room 23 Logo"
-              className="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+              src="/new logo 2.png"
+              alt="Room 23 — Private Wellness"
+              className="h-12 w-auto object-contain transition-all duration-300 group-hover:scale-105 group-hover:opacity-90"
+              style={{ filter: 'drop-shadow(0 2px 6px rgba(0,134,107,0.08))' }}
             />
           </Link>
-
 
           {/* ── Desktop Nav ── */}
           <nav className="hidden md:flex items-center gap-1 lg:gap-2">

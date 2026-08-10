@@ -97,67 +97,55 @@ export default function HomePage() {
           />
         </div>
 
-        {/* Official Brand Emblem Crest */}
-        <div className="flex justify-center mb-6 animate-fade-in-up">
+        {/* Official Brand Logo — Full Lockup Crest */}
+        <div className="flex justify-center mb-5 animate-fade-in-up">
           <img
-            src="/new door.png"
-            alt="Room 23 Door & Keyhole Logo"
-            className="h-28 sm:h-36 w-auto object-contain drop-shadow-[0_10px_25px_rgba(0,134,107,0.12)] transition-transform duration-500 hover:scale-105"
+            src="/new logo 2.png"
+            alt="Room 23 — Private Wellness"
+            className="h-40 sm:h-52 w-auto object-contain transition-transform duration-500 hover:scale-[1.03]"
+            style={{ filter: 'drop-shadow(0 12px 32px rgba(0,134,107,0.13))' }}
           />
         </div>
 
-        {/* Eyebrow */}
+        {/* Eyebrow pill */}
         <div
-          className="inline-flex items-center gap-2 mb-6 animate-fade-in-up"
+          className="inline-flex items-center gap-2 mb-7 animate-fade-in-up"
           style={{
-            padding: '0.35rem 1.25rem',
+            padding: '0.4rem 1.4rem',
             borderRadius: '9999px',
-            border: '1px solid rgba(0,134,107,0.25)',
+            border: '1px solid rgba(0,134,107,0.28)',
             backgroundColor: 'rgba(0,134,107,0.06)',
+            animationDelay: '0.05s',
           }}
         >
           <span
             style={{
               fontSize: '10px',
               fontWeight: 700,
-              letterSpacing: '0.18em',
+              letterSpacing: '0.2em',
               textTransform: 'uppercase',
               color: 'var(--color-emerald)',
             }}
           >
-            ✦ Private. Curated. Discreet. ✦
+            ✦ Private · Curated · Discreet ✦
           </span>
         </div>
 
-
-        <h1
-          className="font-syne font-bold tracking-tight animate-fade-in-up"
-          style={{
-            fontSize: 'clamp(2.5rem, 7vw, 5rem)',
-            color: 'var(--text-primary)',
-            lineHeight: 1.05,
-            letterSpacing: '-0.02em',
-            marginBottom: '1.25rem',
-            animationDelay: '0.05s',
-          }}
-        >
-          Welcome to{' '}
-          <span className="text-gradient-brass">Room 23</span>
-        </h1>
-
+        {/* Hero Tagline — refined, no duplicate "Room 23" since logo already has it */}
         <p
-          className="max-w-xl mx-auto animate-fade-in-up"
+          className="max-w-lg mx-auto animate-fade-in-up"
           style={{
-            fontSize: 'clamp(1rem, 2.5vw, 1.125rem)',
+            fontSize: 'clamp(1.05rem, 2.5vw, 1.2rem)',
             color: 'var(--text-secondary)',
-            lineHeight: 1.7,
+            lineHeight: 1.75,
             letterSpacing: '0.02em',
             marginBottom: '2.5rem',
             animationDelay: '0.1s',
+            fontStyle: 'italic',
           }}
         >
-          Considered pleasure. Discreet delivery. — Exclusive collections for those
-          who appreciate refinement behind closed doors.
+          Considered pleasure. Discreet delivery. — Exclusive collections for those who
+          appreciate refinement behind closed doors.
         </p>
 
         {/* CTAs */}

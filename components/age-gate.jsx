@@ -67,7 +67,7 @@ export default function AgeGate() {
           {/* Official Brand Emblem */}
           <div className="mb-6 flex flex-col items-center">
             <img
-              src="/new door.png"
+              src="/new logo 2.png"
               alt="Room 23 — Private Wellness"
               className="h-28 w-auto object-contain mb-3 animate-float"
               style={{ filter: 'drop-shadow(0 6px 18px rgba(0,134,107,0.12))' }}
