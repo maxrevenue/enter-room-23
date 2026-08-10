@@ -74,10 +74,8 @@ export default async function JournalArticlePage({ params }) {
         {/* Back Link */}
         <Link
           href="/journal"
-          className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest transition-colors mb-8"
+          className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest transition-colors mb-8 hover:text-[color:var(--color-emerald)]"
           style={{ color: 'var(--color-text-muted)' }}
-          onMouseOver={e => e.currentTarget.style.color = 'var(--color-emerald)'}
-          onMouseOut={e => e.currentTarget.style.color = 'var(--color-text-muted)'}
         >
           <ArrowLeft className="w-4 h-4" /> Back to The Column
         </Link>
