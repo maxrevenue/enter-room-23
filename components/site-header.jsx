@@ -8,8 +8,10 @@ import { Menu, X, ShoppingBag } from 'lucide-react'
 
 const NAV_LINKS = [
   { href: '/shop', label: 'SHOP' },
-  { href: '/search', label: 'SEARCH' },
-  { href: '/journal', label: 'THE COLUMN' },
+  { href: '/journal', label: 'THE ARCHIVE' },
+  { href: '#', label: 'THE VAULT' },
+  { href: '#', label: 'ESSENTIALS' },
+  { href: '#', label: 'NEW ARRIVALS' },
   { href: '/faq', label: 'FAQ' },
   { href: '/contact', label: 'CONTACT' },
 ]
@@ -17,12 +19,11 @@ const NAV_LINKS = [
 export default function SiteHeader() {
   const { cart, cartOpen, setCartOpen } = useCart()
   const pathname = usePathname()
-  const [mobileOpen, setMobileOpen] = useState(false)
-  const [bannerVisible, setBannerVisible] = useState(true)
+  const [drawerOpen, setDrawerOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const itemCount = cart.reduce((s, i) => s + i.qty, 0)
 
-  const closeMobile = () => setMobileOpen(false)
+  const closeDrawer = () => setDrawerOpen(false)
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10)
@@ -31,167 +32,146 @@ export default function SiteHeader() {
   }, [])
 
   // Close mobile menu on route change
-  useEffect(() => { setMobileOpen(false) }, [pathname])
+  useEffect(() => { setDrawerOpen(false) }, [pathname])
 
   return (
-    <header className="sticky top-0 z-40 w-full">
-      {/* ── Announcement Banner ── */}
-      {bannerVisible && (
+    <>
+      <header className="sticky top-0 z-40 w-full">
+        {/* ── Main Nav Bar ── */}
         <div
-          className="w-full flex items-center justify-center gap-3 py-2 relative"
-          style={{ backgroundColor: 'var(--color-accent)' }}
+          className="w-full transition-all duration-300 border-b"
+          style={{
+            backgroundColor: scrolled ? 'rgba(11, 11, 12, 0.95)' : '#0B0B0C',
+            borderColor: scrolled ? 'var(--color-border)' : 'transparent',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            boxShadow: scrolled ? '0 4px 20px rgba(0,0,0,0.4)' : 'none',
+          }}
         >
-          <span className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-white">
-            FREE DISCREET SHIPPING ON ORDERS OVER $75 · USE CODE{' '}
-            <span
-              className="px-1.5 py-0.5 rounded"
-              style={{ backgroundColor: 'rgba(0,0,0,0.2)', fontFamily: 'monospace' }}
+          <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
+            
+            {/* ── Left: Hamburger Menu ── */}
+            <button
+              onClick={() => setDrawerOpen(true)}
+              className="p-2 -ml-2 rounded-full transition-colors focus:outline-none"
+              style={{ color: 'var(--color-text-primary)' }}
+              onMouseOver={e => e.currentTarget.style.color = 'var(--color-text-muted)'}
+              onMouseOut={e => e.currentTarget.style.color = 'var(--color-text-primary)'}
+              aria-label="Open menu"
             >
-              SOFTLAUNCH10
-            </span>{' '}
-            FOR 10% OFF
-          </span>
-          <button
-            onClick={() => setBannerVisible(false)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-white/70 hover:text-white transition-colors"
-            aria-label="Dismiss announcement"
-          >
-            <X size={14} />
-          </button>
-        </div>
-      )}
+              <Menu className="h-6 w-6 stroke-[1.5]" />
+            </button>
 
-      {/* ── Tricolor brand top accent ── */}
-      <div
-        className="w-full h-[3px]"
-        style={{
-          background: 'linear-gradient(90deg, #00866b 0%, #ffaf1f 50%, #eb6824 100%)',
-          opacity: scrolled ? 1 : 0.85,
-          transition: 'opacity 0.3s ease',
-        }}
-      />
+            {/* ── Center: Bold Text Logo ── */}
+            <Link href="/" className="flex items-center group focus:outline-none" aria-label="Room 23 Home">
+              <span 
+                className="font-bold text-2xl tracking-widest uppercase transition-transform duration-300 group-hover:scale-105"
+                style={{ 
+                  color: 'var(--color-emerald)', // Crimson Red
+                  fontFamily: 'var(--font-display)',
+                }}
+              >
+                ROOM 23
+              </span>
+            </Link>
 
-      {/* ── Main Nav Bar ── */}
-      <div
-        className="w-full border-b transition-all duration-300"
-        style={{
-          backgroundColor: scrolled ? 'rgba(250,247,242,0.97)' : 'rgba(250,247,242,0.98)',
-          borderColor: 'var(--color-border)',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
-          boxShadow: scrolled ? '0 4px 20px rgba(18,39,32,0.08)' : 'none',
-        }}
-      >
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
-          {/* ── Official Brand Logo (full lockup) ── */}
-          <Link href="/" className="flex items-center group focus:outline-none" aria-label="Room 23 Home">
-            <img
-              src="/new logo 2.png"
-              alt="Room 23 — Private Wellness"
-              className="h-12 w-auto object-contain transition-all duration-300 group-hover:scale-105 group-hover:opacity-90"
-              style={{ filter: 'drop-shadow(0 2px 6px rgba(0,134,107,0.08))' }}
-            />
-          </Link>
-
-          {/* ── Desktop Nav ── */}
-          <nav className="hidden md:flex items-center gap-1 lg:gap-2">
-            {NAV_LINKS.map((link) => {
-              const isActive = pathname === link.href || pathname?.startsWith(link.href + '/')
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="relative px-3 py-1.5 text-xs font-semibold tracking-[0.12em] uppercase transition-all duration-200 rounded-sm"
-                  style={{
-                    color: isActive ? 'var(--color-emerald)' : 'var(--text-secondary)',
-                  }}
-                >
-                  {link.label}
-                  {/* Underline indicator */}
-                  <span
-                    className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[1.5px] rounded-full transition-all duration-200"
-                    style={{
-                      width: isActive ? '60%' : '0%',
-                      backgroundColor: 'var(--color-emerald)',
-                    }}
-                  />
-                  {/* Hover underline via CSS */}
-                  <style>{`
-                    .nav-link-${link.href.replace('/', '')}:hover .nav-underline {
-                      width: 60%;
-                    }
-                  `}</style>
-                </Link>
-              )
-            })}
-          </nav>
-
-          {/* ── Right Controls ── */}
-          <div className="flex items-center gap-1">
-            {/* Cart */}
+            {/* ── Right: Cart ── */}
             <button
               onClick={() => setCartOpen(!cartOpen)}
-              className="relative p-2.5 rounded-full transition-all duration-200 hover:bg-black/5"
+              className="relative p-2 -mr-2 rounded-full transition-colors focus:outline-none"
+              style={{ color: 'var(--color-text-primary)' }}
+              onMouseOver={e => e.currentTarget.style.color = 'var(--color-text-muted)'}
+              onMouseOut={e => e.currentTarget.style.color = 'var(--color-text-primary)'}
               aria-label={`Open cart${itemCount > 0 ? ` (${itemCount} items)` : ''}`}
-              style={{ color: 'var(--text-secondary)' }}
             >
-              <ShoppingBag className="h-5 w-5" />
+              <ShoppingBag className="h-5 w-5 stroke-[1.5]" />
               {itemCount > 0 && (
                 <span
-                  className="absolute -top-0.5 -right-0.5 flex h-[18px] w-[18px] items-center justify-center rounded-full text-[10px] font-bold animate-scale-in"
-                  style={{ backgroundColor: 'var(--color-accent)', color: '#fff' }}
+                  className="absolute top-0 right-0 flex h-[16px] w-[16px] items-center justify-center rounded-full text-[9px] font-bold"
+                  style={{ backgroundColor: 'var(--color-emerald)', color: '#F4F4F6' }}
                 >
                   {itemCount > 9 ? '9+' : itemCount}
                 </span>
               )}
             </button>
-
-            {/* Mobile hamburger */}
-            <button
-              onClick={() => setMobileOpen(!mobileOpen)}
-              className="md:hidden p-2.5 rounded-full transition-all duration-200 hover:bg-black/5"
-              aria-label="Toggle menu"
-              aria-expanded={mobileOpen}
-              style={{ color: 'var(--text-secondary)' }}
-            >
-              {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </button>
           </div>
         </div>
+      </header>
 
-        {/* ── Mobile Menu ── */}
-        {mobileOpen && (
+      {/* ── Left Slide-Out Drawer Navigation ── */}
+      {drawerOpen && (
+        <div className="fixed inset-0 z-50 flex">
+          {/* Backdrop overlay */}
+          <div 
+            className="fixed inset-0 transition-opacity duration-300"
+            style={{ backgroundColor: 'rgba(0,0,0,0.6)' }}
+            onClick={closeDrawer}
+            aria-hidden="true"
+          />
+          
+          {/* Drawer Panel */}
           <nav
-            className="md:hidden border-t animate-slide-down"
-            style={{
-              backgroundColor: 'rgba(250,247,242,0.98)',
-              borderColor: 'var(--color-border)',
-              backdropFilter: 'blur(20px)',
-            }}
+            className="relative flex w-full max-w-xs flex-col shadow-2xl overflow-y-auto animate-in slide-in-from-left duration-300"
+            style={{ backgroundColor: 'var(--color-bg-primary)', borderRight: '1px solid var(--color-border)' }}
           >
-            <div className="flex flex-col px-4 py-4 gap-0.5">
+            {/* Drawer Header */}
+            <div className="flex items-center justify-between px-6 py-5 border-b" style={{ borderColor: 'var(--color-border)' }}>
+              <Link href="/" onClick={closeDrawer} className="focus:outline-none">
+                <span 
+                  className="font-bold text-xl tracking-widest uppercase"
+                  style={{ 
+                    color: 'var(--color-emerald)',
+                    fontFamily: 'var(--font-display)',
+                  }}
+                >
+                  ROOM 23
+                </span>
+              </Link>
+              <button
+                onClick={closeDrawer}
+                className="p-2 -mr-2 transition-colors focus:outline-none"
+                style={{ color: 'var(--color-text-primary)' }}
+                onMouseOver={e => e.currentTarget.style.color = 'var(--color-text-muted)'}
+                onMouseOut={e => e.currentTarget.style.color = 'var(--color-text-primary)'}
+                aria-label="Close menu"
+              >
+                <X className="h-6 w-6 stroke-[1.5]" />
+              </button>
+            </div>
+
+            {/* Drawer Links */}
+            <div className="flex flex-col px-6 py-8 space-y-6">
               {NAV_LINKS.map((link) => {
                 const isActive = pathname === link.href
                 return (
                   <Link
-                    key={link.href}
+                    key={link.label}
                     href={link.href}
-                    onClick={closeMobile}
-                    className="px-3 py-3 text-sm font-semibold tracking-[0.1em] uppercase rounded-md transition-all duration-200"
+                    onClick={closeDrawer}
+                    className="text-sm tracking-[0.2em] uppercase font-semibold transition-colors duration-200"
                     style={{
-                      color: isActive ? 'var(--color-emerald)' : 'var(--text-secondary)',
-                      backgroundColor: isActive ? 'rgba(0,134,107,0.08)' : 'transparent',
+                      color: isActive ? 'var(--color-emerald)' : 'var(--color-text-primary)',
+                      fontFamily: 'var(--font-sans)',
                     }}
+                    onMouseOver={e => e.currentTarget.style.color = 'var(--color-emerald)'}
+                    onMouseOut={e => e.currentTarget.style.color = isActive ? 'var(--color-emerald)' : 'var(--color-text-primary)'}
                   >
-                    {isActive && <span className="mr-2 text-xs">▸</span>}
                     {link.label}
                   </Link>
                 )
               })}
             </div>
+            
+            {/* Optional lower links / legal */}
+            <div className="mt-auto px-6 py-8 border-t" style={{ borderColor: 'var(--color-border)' }}>
+              <div className="flex gap-4">
+                <Link href="/privacy" className="text-[10px] tracking-widest uppercase" style={{ color: 'var(--color-text-muted)' }} onClick={closeDrawer}>Privacy</Link>
+                <Link href="/terms" className="text-[10px] tracking-widest uppercase" style={{ color: 'var(--color-text-muted)' }} onClick={closeDrawer}>Terms</Link>
+              </div>
+            </div>
           </nav>
-        )}
-      </div>
-    </header>
+        </div>
+      )}
+    </>
   )
 }

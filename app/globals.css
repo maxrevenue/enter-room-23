@@ -13,55 +13,55 @@
   /* ── Color Scheme ── */
   color-scheme: light;
 
-  /* ── Brand Palette (Warm Botanical Ivory) ── */
-  --color-bg-primary:       #FAF7F2;  /* Warm Ivory Cream */
-  --color-bg-surface:       #FFFFFF;  /* Pure Crisp White */
-  --color-bg-elevated:      #F4EEE4;  /* Warm Parchment Panel */
-  --color-bg-hover:         #EAE1D3;  /* Warm Sand Hover */
+  /* ── Brand Palette (Dark Luxury Noir) ── */
+  --color-bg-primary:       #0B0B0C;  /* Matte Obsidian Black */
+  --color-bg-surface:       #161618;  /* Dark Velvet */
+  --color-bg-elevated:      #1c1c1f;  /* Slightly elevated Dark Velvet */
+  --color-bg-hover:         #26262A;  /* Hover state for panels */
 
-  --color-text-primary:     #122720;  /* Deep Emerald Charcoal */
-  --color-text-secondary:   #2E4A40;  /* Botanical Forest Green */
-  --color-text-muted:       #5C786E;  /* Muted Sage */
-  --color-text-inverse:     #FFFFFF;
+  --color-text-primary:     #F4F4F6;  /* Crisp Off-White */
+  --color-text-secondary:   #D1D1D6;  /* Softer Off-White */
+  --color-text-muted:       #8E8E93;  /* Muted Ash */
+  --color-text-inverse:     #0B0B0C;  /* Matte Obsidian Black */
 
-  /* ── Swatch 1: Deep Emerald Teal (#00866b) ── */
-  --color-emerald:          #00866b;
-  --color-emerald-hover:    #006e58;
-  --color-emerald-muted:    #005242;
-  --color-emerald-glow:     rgba(0, 134, 107, 0.15);
+  /* ── Swatch 1: Crimson Red (#C8102E) — Primary CTA & Highlights ── */
+  --color-emerald:          #C8102E;
+  --color-emerald-hover:    #A30D25;
+  --color-emerald-muted:    #7D0A1C;
+  --color-emerald-glow:     rgba(200, 16, 46, 0.15);
 
-  /* ── Swatch 2: Terracotta Sunset Orange (#eb6824) — Primary CTA ── */
-  --color-accent:           #eb6824;  /* Terracotta Sunset */
-  --color-accent-hover:     #d95816;
-  --color-accent-muted:     #c44a0b;
-  --color-accent-glow:      rgba(235, 104, 36, 0.25);
+  /* ── Swatch 2: Darker Crimson — For secondary accents ── */
+  --color-accent:           #A30D25;
+  --color-accent-hover:     #7D0A1C;
+  --color-accent-muted:     #520612;
+  --color-accent-glow:      rgba(163, 13, 37, 0.25);
 
-  /* ── Swatch 3: Honey Amber Gold (#ffaf1f) — Highlights & Badges ── */
-  --color-brass:            #ffaf1f;  /* Honey Amber Gold */
-  --color-brass-hover:      #f09d0a;
-  --color-brass-muted:      #d98e00;
-  --color-brass-glow:       rgba(255, 175, 31, 0.25);
+  /* ── Swatch 3: Pale Muted Ash — For subtle borders & badges ── */
+  --color-brass:            #8E8E93;
+  --color-brass-hover:      #D1D1D6;
+  --color-brass-muted:      #636366;
+  --color-brass-glow:       rgba(142, 142, 147, 0.15);
 
-  --color-border:           #E5DDD0;
-  --color-border-light:     #D6CAB8;
-  --color-border-accent:    rgba(235, 104, 36, 0.35);
-  --color-border-brass:     rgba(255, 175, 31, 0.35);
-  --color-border-emerald:   rgba(0, 134, 107, 0.25);
+  --color-border:           #26262A;
+  --color-border-light:     #3A3A3C;
+  --color-border-accent:    rgba(200, 16, 46, 0.35);
+  --color-border-brass:     rgba(142, 142, 147, 0.35);
+  --color-border-emerald:   rgba(200, 16, 46, 0.25);
 
   /* ── Status Colors ── */
-  --color-success:          #00866b;
-  --color-success-bg:       rgba(0, 134, 107, 0.10);
-  --color-warning:          #ffaf1f;
-  --color-warning-bg:       rgba(255, 175, 31, 0.10);
-  --color-error:            #eb6824;
-  --color-error-bg:         rgba(235, 104, 36, 0.10);
+  --color-success:          #8E8E93;
+  --color-success-bg:       rgba(142, 142, 147, 0.10);
+  --color-warning:          #D1D1D6;
+  --color-warning-bg:       rgba(209, 209, 214, 0.10);
+  --color-error:            #C8102E;
+  --color-error-bg:         rgba(200, 16, 46, 0.10);
 
   /* ── Shadows & Glows ── */
-  --shadow-card:            0 4px 20px rgba(18, 39, 32, 0.05), 0 1px 3px rgba(18, 39, 32, 0.04);
-  --shadow-elevated:        0 10px 30px rgba(18, 39, 32, 0.08);
-  --shadow-modal:           0 20px 50px rgba(18, 39, 32, 0.15);
-  --glow-accent:            0 4px 20px rgba(235, 104, 36, 0.35);
-  --glow-brass:             0 4px 20px rgba(255, 175, 31, 0.35);
+  --shadow-card:            0 8px 32px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.2);
+  --shadow-elevated:        0 16px 48px rgba(0, 0, 0, 0.6);
+  --shadow-modal:           0 24px 64px rgba(0, 0, 0, 0.8);
+  --glow-accent:            0 4px 24px rgba(200, 16, 46, 0.4);
+  --glow-brass:             0 4px 24px rgba(142, 142, 147, 0.2);
 
   /* ── Typography Scale ── */
   --font-sans:              'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;

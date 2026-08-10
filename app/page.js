@@ -9,6 +9,7 @@ import BrandPhilosophy from '@/components/brand-philosophy'
 import TheColumn from '@/components/the-column'
 import VipWaitlist from '@/components/vip-waitlist'
 import ComplianceStrip from '@/components/compliance-strip'
+import Testimonials from '@/components/testimonials'
 
 const COLLECTION_CARDS = [
   {
@@ -307,6 +308,7 @@ export default function HomePage() {
       {/* ══════════════════════════════════════════
           6. VIP WAITLIST
           ══════════════════════════════════════════ */}
+      <Testimonials />
       <VipWaitlist />
 
       {/* ══════════════════════════════════════════
