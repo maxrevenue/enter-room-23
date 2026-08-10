@@ -299,7 +299,7 @@ body::before {
     gap: 0.5rem;
     padding: 0.75rem 1.75rem;
     background-color: var(--accent);
-    color: var(--color-text-primary);
+    color: #FFFFFF;
     font-family: var(--font-display);
     font-size: var(--text-sm);
     font-weight: 600;
@@ -496,12 +496,13 @@ body::before {
   }
 
   .link-brass {
-    color: var(--brass);
-    text-decoration: none;
+    color: var(--color-emerald);
+    text-decoration: underline;
+    text-underline-offset: 2px;
     transition: color var(--transition-fast);
   }
   .link-brass:hover {
-    color: var(--brass-hover);
+    color: var(--color-emerald-hover);
   }
 
   .link-accent {
@@ -582,13 +583,13 @@ body::before {
     line-height: 1.65;
   }
   .legal-content a {
-    color: var(--brass);
+    color: var(--color-emerald);
     text-decoration: underline;
     text-underline-offset: 2px;
     transition: color var(--transition-fast);
   }
   .legal-content a:hover {
-    color: var(--brass-hover);
+    color: var(--color-emerald-hover);
   }
   .legal-content strong {
     color: var(--text-primary);

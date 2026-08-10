@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useCart } from '@/lib/cart-context'
-import { Lock, ShieldCheck } from 'lucide-react'
+import { ShieldCheck } from 'lucide-react'
 
 export default function AgeGate() {
   const { mounted, ageVerified, confirmAge, declineAge } = useCart()
@@ -19,26 +19,26 @@ export default function AgeGate() {
   return (
     <div
       className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
-      style={{ backgroundColor: 'var(--color-bg-primary)' }}
+      style={{ backgroundColor: 'rgba(250,247,242,0.97)', backdropFilter: 'blur(16px)' }}
     >
-      {/* Layered ambient glows */}
+      {/* Ambient glow backdrop */}
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
         <div
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full"
           style={{
-            background: 'radial-gradient(ellipse at center, rgba(212,168,83,0.05) 0%, transparent 60%)',
+            background: 'radial-gradient(ellipse at center, rgba(0,134,107,0.06) 0%, transparent 65%)',
           }}
         />
         <div
-          className="absolute top-0 left-0 right-0 h-[1px]"
+          className="absolute top-0 left-0 right-0 h-[2px]"
           style={{
-            background: 'linear-gradient(90deg, transparent, rgba(212,168,83,0.3), transparent)',
+            background: 'linear-gradient(90deg, transparent, rgba(0,134,107,0.3), transparent)',
           }}
         />
         <div
           className="absolute bottom-0 left-0 right-0 h-[1px]"
           style={{
-            background: 'linear-gradient(90deg, transparent, rgba(255,26,26,0.15), transparent)',
+            background: 'linear-gradient(90deg, transparent, rgba(235,104,36,0.2), transparent)',
           }}
         />
       </div>
@@ -51,139 +51,136 @@ export default function AgeGate() {
         <div
           className="rounded-2xl p-8 sm:p-10 text-center relative overflow-hidden"
           style={{
-            backgroundColor: 'var(--color-bg-surface)',
-            border: '1px solid var(--color-border)',
-            boxShadow: '0 0 0 1px rgba(212,168,83,0.08), 0 0 80px rgba(212,168,83,0.06), 0 32px 64px rgba(0,0,0,0.7)',
+            backgroundColor: '#FFFFFF',
+            border: '1px solid #E5DDD0',
+            boxShadow: '0 4px 40px rgba(18,39,32,0.10), 0 1px 3px rgba(18,39,32,0.06)',
           }}
         >
-          {/* Top brass line */}
+          {/* Top emerald accent line */}
           <div
-            className="absolute top-0 left-0 right-0 h-[2px]"
+            className="absolute top-0 left-0 right-0 h-[3px] rounded-t-2xl"
             style={{
-              background: 'linear-gradient(90deg, transparent, var(--color-brass), transparent)',
-            }}
-          />
-          {/* Bottom accent line */}
-          <div
-            className="absolute bottom-0 left-8 right-8 h-[1px]"
-            style={{
-              background: 'linear-gradient(90deg, transparent, rgba(255,26,26,0.3), transparent)',
+              background: 'linear-gradient(90deg, #00866b, #ffaf1f, #eb6824)',
             }}
           />
 
-          {/* ── Official Brand Emblem ── */}
+          {/* Official Brand Emblem */}
           <div className="mb-6 flex flex-col items-center">
             <img
               src="/new door.png"
-              alt="Room 23 Door & Keyhole Logo"
-              className="h-28 w-auto object-contain mb-3 animate-float drop-shadow-[0_8px_20px_rgba(0,134,107,0.15)]"
+              alt="Room 23 — Private Wellness"
+              className="h-28 w-auto object-contain mb-3 animate-float"
+              style={{ filter: 'drop-shadow(0 6px 18px rgba(0,134,107,0.12))' }}
             />
             <div
-              className="w-16 h-px mx-auto mt-1"
+              className="w-20 h-px mx-auto"
               style={{
-                background: 'linear-gradient(90deg, transparent, var(--color-emerald), transparent)',
+                background: 'linear-gradient(90deg, transparent, #00866b, transparent)',
               }}
             />
           </div>
 
-
-            <div
-              className="w-16 h-px mx-auto"
-              style={{
-                background: 'linear-gradient(90deg, transparent, var(--color-accent), transparent)',
-              }}
-            />
-          </div>
-
-          {/* ── Age Notice ── */}
+          {/* Age Notice */}
           <div className="mb-7 space-y-3">
-            <h3
+            <h2
               className="text-base sm:text-lg tracking-wide"
               style={{
                 fontFamily: 'var(--font-display)',
-                fontWeight: 600,
-                color: 'var(--color-text-primary)',
-                letterSpacing: '0.06em',
+                fontWeight: 700,
+                color: '#122720',
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
               }}
             >
-              AGE VERIFICATION REQUIRED
-            </h3>
+              Age Verification Required
+            </h2>
 
             <p
               className="text-sm leading-relaxed max-w-sm mx-auto"
-              style={{ color: 'var(--color-text-secondary)' }}
+              style={{ color: '#2E4A40' }}
             >
-              This website contains adult-oriented products and content.
-              You must be at least{' '}
-              <strong style={{ color: 'var(--color-text-primary)' }}>18 years of age</strong>{' '}
+              This site contains adult wellness products and content. You must be at least{' '}
+              <strong style={{ color: '#122720', fontWeight: 700 }}>18 years of age</strong>{' '}
               (or the legal age of majority in your jurisdiction) to enter.
             </p>
 
             <p
               className="text-xs max-w-sm mx-auto"
-              style={{ color: 'var(--color-text-muted)' }}
+              style={{ color: '#5C786E' }}
             >
-              By clicking &ldquo;ENTER&rdquo; below, you affirm under penalty of
-              law that you meet the minimum age requirement.
+              By clicking &ldquo;ENTER&rdquo; below, you affirm that you meet the minimum age requirement.
             </p>
           </div>
 
-          {/* ── Action Buttons ── */}
+          {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-3 justify-center mb-6">
             <button
               onClick={confirmAge}
-              className="btn-primary w-full sm:w-auto min-w-[200px] py-3 text-sm relative overflow-hidden group"
+              className="w-full sm:w-auto min-w-[200px] py-3 px-6 text-sm font-semibold tracking-widest uppercase rounded-lg transition-all duration-200"
+              style={{
+                backgroundColor: '#eb6824',
+                color: '#FFFFFF',
+                border: 'none',
+                cursor: 'pointer',
+                fontFamily: 'var(--font-display)',
+                boxShadow: '0 2px 12px rgba(235,104,36,0.25)',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#d95816'; e.currentTarget.style.boxShadow = '0 4px 20px rgba(235,104,36,0.35)' }}
+              onMouseLeave={e => { e.currentTarget.style.backgroundColor = '#eb6824'; e.currentTarget.style.boxShadow = '0 2px 12px rgba(235,104,36,0.25)' }}
               type="button"
             >
-              <span className="relative z-10">I AM 18 OR OLDER — ENTER</span>
-              <div
-                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                style={{
-                  background: 'linear-gradient(135deg, rgba(255,26,26,0.35), rgba(212,168,83,0.2))',
-                }}
-              />
+              I Am 18+ — Enter
             </button>
             <button
               onClick={declineAge}
-              className="btn-secondary w-full sm:w-auto min-w-[160px] py-3 text-sm"
+              className="w-full sm:w-auto min-w-[160px] py-3 px-6 text-sm font-semibold tracking-widest uppercase rounded-lg transition-all duration-200"
+              style={{
+                backgroundColor: 'transparent',
+                color: '#5C786E',
+                border: '1px solid #E5DDD0',
+                cursor: 'pointer',
+                fontFamily: 'var(--font-display)',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = '#5C786E'; e.currentTarget.style.color = '#122720' }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = '#E5DDD0'; e.currentTarget.style.color = '#5C786E' }}
               type="button"
             >
-              I AM UNDER 18 — EXIT
+              I Am Under 18 — Exit
             </button>
           </div>
 
-          {/* ── Privacy Reassurance ── */}
+          {/* Privacy Reassurance */}
           <div
-            className="flex items-center justify-center gap-2 mb-5 px-4 py-2.5 rounded-md"
+            className="flex items-center justify-center gap-2 mb-5 px-4 py-2.5 rounded-lg"
             style={{
-              backgroundColor: 'rgba(212,168,83,0.06)',
-              border: '1px solid rgba(212,168,83,0.1)',
+              backgroundColor: 'rgba(0,134,107,0.06)',
+              border: '1px solid rgba(0,134,107,0.15)',
             }}
           >
-            <ShieldCheck size={13} style={{ color: 'var(--color-brass)', flexShrink: 0 }} />
+            <ShieldCheck size={13} style={{ color: '#00866b', flexShrink: 0 }} />
             <span
               className="text-xs"
-              style={{ color: 'var(--color-text-muted)', letterSpacing: '0.02em' }}
+              style={{ color: '#2E4A40', letterSpacing: '0.02em' }}
             >
               Your visit is private — no tracking, no judgment
             </span>
           </div>
 
-          {/* ── Legal Disclaimer ── */}
+          {/* Legal Disclaimer */}
           <div
             className="text-xs space-y-1 max-w-sm mx-auto"
-            style={{ color: 'var(--color-text-muted)' }}
+            style={{ color: '#5C786E' }}
           >
             <p>
               Room 23 is a{' '}
-              <strong style={{ color: 'var(--color-text-secondary)' }}>restricted-access</strong>{' '}
+              <strong style={{ color: '#2E4A40' }}>restricted-access</strong>{' '}
               website intended for consenting adults only.
             </p>
             <p>
               By proceeding, you agree to our{' '}
-              <a href="/terms" className="link-brass">Terms of Service</a>{' '}
+              <a href="/terms" style={{ color: '#00866b', textDecoration: 'underline' }}>Terms of Service</a>{' '}
               and{' '}
-              <a href="/privacy" className="link-brass">Privacy Policy</a>.
+              <a href="/privacy" style={{ color: '#00866b', textDecoration: 'underline' }}>Privacy Policy</a>.
             </p>
           </div>
         </div>
@@ -191,7 +188,7 @@ export default function AgeGate() {
         {/* Bottom fine print */}
         <p
           className="text-center text-xs mt-4"
-          style={{ color: 'var(--color-text-muted)', opacity: 0.45 }}
+          style={{ color: '#5C786E', opacity: 0.7 }}
         >
           &copy; {new Date().getFullYear()} Room 23. All rights reserved.
         </p>
