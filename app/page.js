@@ -73,49 +73,51 @@ export default function HomePage() {
           1. HERO
           ══════════════════════════════════════════ */}
       <section
-        className="relative px-4 py-16 sm:py-24 md:py-32 text-center overflow-hidden"
+        className="relative min-h-[75vh] flex flex-col items-center justify-center px-4 py-20 sm:py-32 text-center overflow-hidden"
         aria-label="Welcome to Room 23"
         style={{ backgroundColor: 'var(--bg-base)' }}
       >
-        {/* Multi-layer ambient glows */}
+        {/* Hero background image */}
         <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
           <div
-            className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] opacity-[0.06]"
+            className="absolute inset-0"
             style={{
-              background: 'radial-gradient(ellipse at 50% 0%, #d4a853 0%, transparent 65%)',
+              backgroundImage: 'url(/hero.jpg)',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center 30%',
+              opacity: 0.18,
             }}
           />
           <div
-            className="absolute bottom-0 left-1/4 w-[400px] h-[250px] opacity-[0.04]"
-            style={{
-              background: 'radial-gradient(ellipse at 50% 100%, #FF1A1A 0%, transparent 70%)',
-            }}
+            className="absolute inset-0"
+            style={{ background: 'linear-gradient(to bottom, rgba(11,11,12,0.3) 0%, rgba(11,11,12,0.5) 50%, rgba(11,11,12,0.95) 100%)' }}
           />
-          {/* Subtle horizontal rule glows */}
           <div
-            className="absolute top-[60%] left-0 right-0 h-[1px] opacity-[0.06]"
-            style={{ background: 'linear-gradient(90deg, transparent, #d4a853, transparent)' }}
+            className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px]"
+            style={{
+              background: 'radial-gradient(ellipse at 50% 0%, rgba(200,16,46,0.08) 0%, transparent 70%)',
+            }}
           />
         </div>
 
-        {/* Official Brand Logo — Full Lockup Crest */}
-        <div className="flex justify-center mb-5 animate-fade-in-up">
+        {/* Brand Logo */}
+        <div className="relative z-10 flex justify-center mb-6 animate-fade-in-up">
           <img
-            src="/new logo 2.png"
+            src="/logo.jpg"
             alt="Room 23 — Private Wellness"
-            className="h-40 sm:h-52 w-auto object-contain transition-transform duration-500 hover:scale-[1.03]"
-            style={{ filter: 'drop-shadow(0 12px 32px rgba(0,134,107,0.13))' }}
+            className="h-36 sm:h-48 w-auto object-contain transition-transform duration-500 hover:scale-[1.03]"
+            style={{ filter: 'drop-shadow(0 12px 40px rgba(200,16,46,0.25))' }}
           />
         </div>
 
         {/* Eyebrow pill */}
         <div
-          className="inline-flex items-center gap-2 mb-7 animate-fade-in-up"
+          className="relative z-10 inline-flex items-center gap-2 mb-6 animate-fade-in-up"
           style={{
             padding: '0.4rem 1.4rem',
             borderRadius: '9999px',
-            border: '1px solid rgba(0,134,107,0.28)',
-            backgroundColor: 'rgba(0,134,107,0.06)',
+            border: '1px solid rgba(200,16,46,0.3)',
+            backgroundColor: 'rgba(200,16,46,0.06)',
             animationDelay: '0.05s',
           }}
         >
@@ -123,22 +125,22 @@ export default function HomePage() {
             style={{
               fontSize: '10px',
               fontWeight: 700,
-              letterSpacing: '0.2em',
+              letterSpacing: '0.25em',
               textTransform: 'uppercase',
-              color: 'var(--color-emerald)',
+              color: '#C8102E',
             }}
           >
             ✦ Private · Curated · Discreet ✦
           </span>
         </div>
 
-        {/* Hero Tagline — refined, no duplicate "Room 23" since logo already has it */}
+        {/* Hero Tagline */}
         <p
-          className="max-w-lg mx-auto animate-fade-in-up"
+          className="relative z-10 max-w-lg mx-auto animate-fade-in-up"
           style={{
             fontSize: 'clamp(1.05rem, 2.5vw, 1.2rem)',
             color: 'var(--text-secondary)',
-            lineHeight: 1.75,
+            lineHeight: 1.8,
             letterSpacing: '0.02em',
             marginBottom: '2.5rem',
             animationDelay: '0.1s',
@@ -151,35 +153,35 @@ export default function HomePage() {
 
         {/* CTAs */}
         <div
-          className="flex flex-col sm:flex-row items-center justify-center gap-3 animate-fade-in-up"
+          className="relative z-10 flex flex-col sm:flex-row items-center justify-center gap-3 animate-fade-in-up"
           style={{ animationDelay: '0.15s' }}
         >
           <Link
             href="/shop"
-            className="btn-brass inline-flex items-center gap-2 group"
-            style={{ padding: '0.875rem 2rem', fontSize: 'var(--text-sm)' }}
+            className="inline-flex items-center gap-2 group rounded-lg font-semibold uppercase tracking-widest text-sm transition-all duration-200"
+            style={{ padding: '0.875rem 2rem', backgroundColor: '#C8102E', color: '#FFFFFF', boxShadow: '0 4px 24px rgba(200,16,46,0.3)' }}
+            onMouseOver={e => { e.currentTarget.style.backgroundColor = '#A30D25'; e.currentTarget.style.boxShadow = '0 6px 32px rgba(200,16,46,0.5)' }}
+            onMouseOut={e => { e.currentTarget.style.backgroundColor = '#C8102E'; e.currentTarget.style.boxShadow = '0 4px 24px rgba(200,16,46,0.3)' }}
           >
             SHOP NOW
-            <ArrowRight
-              size={16}
-              className="group-hover:translate-x-1 transition-transform duration-200"
-            />
+            <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform duration-200" />
           </Link>
           <Link
-            href="/faq"
-            className="btn-secondary"
-            style={{ padding: '0.875rem 1.75rem', fontSize: 'var(--text-sm)' }}
+            href="/collections/vault"
+            className="inline-flex items-center gap-2 group rounded-lg font-semibold uppercase tracking-widest text-sm transition-all duration-200"
+            style={{ padding: '0.875rem 1.75rem', backgroundColor: 'transparent', color: '#F4F4F6', border: '1px solid rgba(244,244,246,0.2)' }}
+            onMouseOver={e => e.currentTarget.style.borderColor = 'rgba(200,16,46,0.5)'}
+            onMouseOut={e => e.currentTarget.style.borderColor = 'rgba(244,244,246,0.2)'}
           >
-            HOW IT WORKS
+            THE VAULT
           </Link>
         </div>
 
-        {/* Animated brass divider */}
+        {/* Crimson divider */}
         <div
-          className="mx-auto mt-14 h-[1px] max-w-xs animate-pulse-glow"
+          className="relative z-10 mx-auto mt-16 h-[1px] max-w-xs"
           style={{
-            background: 'linear-gradient(90deg, transparent, var(--color-brass), transparent)',
-            boxShadow: '0 0 12px rgba(212,168,83,0.4)',
+            background: 'linear-gradient(90deg, transparent, #C8102E, transparent)',
           }}
         />
       </section>

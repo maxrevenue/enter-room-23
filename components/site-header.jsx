@@ -4,14 +4,14 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useCart } from '@/lib/cart-context'
-import { Menu, X, ShoppingBag } from 'lucide-react'
+import { Menu, X, ShoppingBag, Lock } from 'lucide-react'
 
 const NAV_LINKS = [
   { href: '/shop', label: 'SHOP' },
+  { href: '/collections/essentials', label: 'ESSENTIALS' },
+  { href: '/collections/vault', label: 'THE VAULT', icon: Lock },
+  { href: '/collections/new-arrivals', label: 'NEW ARRIVALS' },
   { href: '/journal', label: 'THE ARCHIVE' },
-  { href: '#', label: 'THE VAULT' },
-  { href: '#', label: 'ESSENTIALS' },
-  { href: '#', label: 'NEW ARRIVALS' },
   { href: '/faq', label: 'FAQ' },
   { href: '/contact', label: 'CONTACT' },
 ]
@@ -31,7 +31,6 @@ export default function SiteHeader() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Close mobile menu on route change
   useEffect(() => { setDrawerOpen(false) }, [pathname])
 
   return (
@@ -41,54 +40,51 @@ export default function SiteHeader() {
         <div
           className="w-full transition-all duration-300 border-b"
           style={{
-            backgroundColor: scrolled ? 'rgba(11, 11, 12, 0.95)' : '#0B0B0C',
-            borderColor: scrolled ? 'var(--color-border)' : 'transparent',
+            backgroundColor: scrolled ? 'rgba(11, 11, 12, 0.97)' : '#0B0B0C',
+            borderColor: scrolled ? 'rgba(200,16,46,0.2)' : 'transparent',
             backdropFilter: 'blur(20px)',
             WebkitBackdropFilter: 'blur(20px)',
-            boxShadow: scrolled ? '0 4px 20px rgba(0,0,0,0.4)' : 'none',
+            boxShadow: scrolled ? '0 4px 30px rgba(0,0,0,0.6)' : 'none',
           }}
         >
           <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
-            
+
             {/* ── Left: Hamburger Menu ── */}
             <button
               onClick={() => setDrawerOpen(true)}
-              className="p-2 -ml-2 rounded-full transition-colors focus:outline-none"
+              className="p-2 -ml-2 rounded-full transition-all duration-200 focus:outline-none"
               style={{ color: 'var(--color-text-primary)' }}
-              onMouseOver={e => e.currentTarget.style.color = 'var(--color-text-muted)'}
+              onMouseOver={e => e.currentTarget.style.color = '#C8102E'}
               onMouseOut={e => e.currentTarget.style.color = 'var(--color-text-primary)'}
               aria-label="Open menu"
             >
               <Menu className="h-6 w-6 stroke-[1.5]" />
             </button>
 
-            {/* ── Center: Bold Text Logo ── */}
+            {/* ── Center: Logo ── */}
             <Link href="/" className="flex items-center group focus:outline-none" aria-label="Room 23 Home">
-              <span 
-                className="font-bold text-2xl tracking-widest uppercase transition-transform duration-300 group-hover:scale-105"
-                style={{ 
-                  color: 'var(--color-emerald)', // Crimson Red
-                  fontFamily: 'var(--font-display)',
-                }}
-              >
-                ROOM 23
-              </span>
+              <img
+                src="/logo.jpg"
+                alt="ROOM 23"
+                className="h-10 w-auto object-contain transition-all duration-300 group-hover:scale-105"
+                style={{ filter: 'drop-shadow(0 2px 8px rgba(200,16,46,0.3))' }}
+              />
             </Link>
 
             {/* ── Right: Cart ── */}
             <button
               onClick={() => setCartOpen(!cartOpen)}
-              className="relative p-2 -mr-2 rounded-full transition-colors focus:outline-none"
+              className="relative p-2 -mr-2 rounded-full transition-all duration-200 focus:outline-none"
               style={{ color: 'var(--color-text-primary)' }}
-              onMouseOver={e => e.currentTarget.style.color = 'var(--color-text-muted)'}
+              onMouseOver={e => e.currentTarget.style.color = '#C8102E'}
               onMouseOut={e => e.currentTarget.style.color = 'var(--color-text-primary)'}
               aria-label={`Open cart${itemCount > 0 ? ` (${itemCount} items)` : ''}`}
             >
               <ShoppingBag className="h-5 w-5 stroke-[1.5]" />
               {itemCount > 0 && (
                 <span
-                  className="absolute top-0 right-0 flex h-[16px] w-[16px] items-center justify-center rounded-full text-[9px] font-bold"
-                  style={{ backgroundColor: 'var(--color-emerald)', color: '#F4F4F6' }}
+                  className="absolute top-0 right-0 flex h-[16px] w-[16px] items-center justify-center rounded-full text-[9px] font-bold animate-in zoom-in duration-200"
+                  style={{ backgroundColor: '#C8102E', color: '#F4F4F6' }}
                 >
                   {itemCount > 9 ? '9+' : itemCount}
                 </span>
@@ -102,71 +98,80 @@ export default function SiteHeader() {
       {drawerOpen && (
         <div className="fixed inset-0 z-50 flex">
           {/* Backdrop overlay */}
-          <div 
+          <div
             className="fixed inset-0 transition-opacity duration-300"
-            style={{ backgroundColor: 'rgba(0,0,0,0.6)' }}
+            style={{ backgroundColor: 'rgba(0,0,0,0.75)' }}
             onClick={closeDrawer}
             aria-hidden="true"
           />
-          
+
           {/* Drawer Panel */}
           <nav
             className="relative flex w-full max-w-xs flex-col shadow-2xl overflow-y-auto animate-in slide-in-from-left duration-300"
-            style={{ backgroundColor: 'var(--color-bg-primary)', borderRight: '1px solid var(--color-border)' }}
+            style={{ backgroundColor: '#0B0B0C', borderRight: '1px solid rgba(200,16,46,0.2)' }}
           >
-            {/* Drawer Header */}
-            <div className="flex items-center justify-between px-6 py-5 border-b" style={{ borderColor: 'var(--color-border)' }}>
+            {/* Drawer Header with Logo */}
+            <div className="flex items-center justify-between px-6 py-5 border-b" style={{ borderColor: 'rgba(200,16,46,0.15)' }}>
               <Link href="/" onClick={closeDrawer} className="focus:outline-none">
-                <span 
-                  className="font-bold text-xl tracking-widest uppercase"
-                  style={{ 
-                    color: 'var(--color-emerald)',
-                    fontFamily: 'var(--font-display)',
-                  }}
-                >
-                  ROOM 23
-                </span>
+                <img
+                  src="/logo.jpg"
+                  alt="ROOM 23"
+                  className="h-9 w-auto object-contain"
+                />
               </Link>
               <button
                 onClick={closeDrawer}
                 className="p-2 -mr-2 transition-colors focus:outline-none"
-                style={{ color: 'var(--color-text-primary)' }}
-                onMouseOver={e => e.currentTarget.style.color = 'var(--color-text-muted)'}
-                onMouseOut={e => e.currentTarget.style.color = 'var(--color-text-primary)'}
+                style={{ color: 'var(--color-text-muted)' }}
+                onMouseOver={e => e.currentTarget.style.color = '#F4F4F6'}
+                onMouseOut={e => e.currentTarget.style.color = 'var(--color-text-muted)'}
                 aria-label="Close menu"
               >
-                <X className="h-6 w-6 stroke-[1.5]" />
+                <X className="h-5 w-5 stroke-[1.5]" />
               </button>
             </div>
 
             {/* Drawer Links */}
-            <div className="flex flex-col px-6 py-8 space-y-6">
+            <div className="flex flex-col px-6 py-8 space-y-1">
               {NAV_LINKS.map((link) => {
                 const isActive = pathname === link.href
+                const Icon = link.icon
                 return (
                   <Link
                     key={link.label}
                     href={link.href}
                     onClick={closeDrawer}
-                    className="text-sm tracking-[0.2em] uppercase font-semibold transition-colors duration-200"
+                    className="flex items-center gap-2 py-3 text-sm tracking-[0.2em] uppercase font-semibold transition-all duration-200 border-b"
                     style={{
-                      color: isActive ? 'var(--color-emerald)' : 'var(--color-text-primary)',
+                      color: isActive ? '#C8102E' : 'var(--color-text-primary)',
+                      borderColor: 'rgba(255,255,255,0.04)',
                       fontFamily: 'var(--font-sans)',
                     }}
-                    onMouseOver={e => e.currentTarget.style.color = 'var(--color-emerald)'}
-                    onMouseOut={e => e.currentTarget.style.color = isActive ? 'var(--color-emerald)' : 'var(--color-text-primary)'}
+                    onMouseOver={e => { e.currentTarget.style.color = '#C8102E'; e.currentTarget.style.paddingLeft = '8px' }}
+                    onMouseOut={e => { e.currentTarget.style.color = isActive ? '#C8102E' : 'var(--color-text-primary)'; e.currentTarget.style.paddingLeft = '0px' }}
                   >
+                    {Icon && <Icon className="w-3.5 h-3.5 opacity-60" />}
                     {link.label}
                   </Link>
                 )
               })}
             </div>
-            
-            {/* Optional lower links / legal */}
-            <div className="mt-auto px-6 py-8 border-t" style={{ borderColor: 'var(--color-border)' }}>
-              <div className="flex gap-4">
-                <Link href="/privacy" className="text-[10px] tracking-widest uppercase" style={{ color: 'var(--color-text-muted)' }} onClick={closeDrawer}>Privacy</Link>
-                <Link href="/terms" className="text-[10px] tracking-widest uppercase" style={{ color: 'var(--color-text-muted)' }} onClick={closeDrawer}>Terms</Link>
+
+            {/* Bottom section */}
+            <div className="mt-auto px-6 py-8 border-t" style={{ borderColor: 'rgba(200,16,46,0.1)' }}>
+              {/* Tagline */}
+              <p className="text-[10px] tracking-widest uppercase mb-6 leading-relaxed" style={{ color: 'var(--color-text-muted)' }}>
+                Private. Curated.<br />For discerning adults only.
+              </p>
+              <div className="flex gap-6">
+                <Link href="/privacy" className="text-[10px] tracking-widest uppercase transition-colors" style={{ color: 'var(--color-text-muted)' }} onClick={closeDrawer}
+                  onMouseOver={e => e.currentTarget.style.color = '#C8102E'}
+                  onMouseOut={e => e.currentTarget.style.color = 'var(--color-text-muted)'}
+                >Privacy</Link>
+                <Link href="/terms" className="text-[10px] tracking-widest uppercase transition-colors" style={{ color: 'var(--color-text-muted)' }} onClick={closeDrawer}
+                  onMouseOver={e => e.currentTarget.style.color = '#C8102E'}
+                  onMouseOut={e => e.currentTarget.style.color = 'var(--color-text-muted)'}
+                >Terms</Link>
               </div>
             </div>
           </nav>
