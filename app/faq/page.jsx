@@ -9,53 +9,54 @@ export const metadata = {
 const faqs = [
   {
     q: 'What will appear on my credit card statement?',
-    a: 'All charges appear discreetly as ROOM23 on your bank or credit card statement. There will never be any reference to specific products, adult content, or wellness \u2014 your billing record remains entirely private.',
+    a: 'Charges will discreetly appear as ROOM23 or a similar unidentifiable descriptor on your bank statement. Your privacy is paramount; no references to products, adult items, or wellness will ever be visible on your billing record.',
   },
   {
-    q: 'Is the packaging truly discreet?',
-    a: 'Without exception. Every order ships in a plain, unmarked box or padded mailer \u2014 no logos, no branding, no indication of the contents whatsoever. The return address displays a generic business name, never "Room 23." Your privacy is guaranteed from our warehouse to your door.',
+    q: 'Is the packaging really discreet?',
+    a: 'Absolutely. Every order is shipped in a plain, unbranded box or padded mailer, completely free of external logos, branding, or any indication of the contents. The return address will show a generic entity name, never "Room 23," ensuring total privacy from our warehouse to your doorstep.',
   },
   {
     q: 'How long does shipping take?',
-    a: 'Standard shipping (USPS Ground / FedEx Ground) arrives in 5\u20138 business days. Expedited (USPS Priority) delivers in 2\u20134 business days. Express (UPS Next Day Air) arrives the very next business day. All orders are processed and dispatched within 1\u20132 business days.',
+    a: 'Standard shipping (USPS Ground / FedEx Ground) arrives in 5-8 business days. Expedited shipping (USPS Priority) takes 2-4 business days, and Express shipping (UPS Next Day Air) delivers the very next business day. All orders are processed within 1-2 business days.',
   },
   {
     q: 'Do you ship internationally?',
-    a: 'At this time, we ship exclusively within the United States \u2014 all 50 states, US territories, and APO/FPO military addresses. International shipping is not yet available.',
+    a: 'At this time, we exclusively ship within the United States, which includes all 50 states, US territories, and APO/FPO addresses. International shipping is currently unavailable.',
   },
   {
     q: 'Can I track my order?',
-    a: 'Absolutely. The moment your order ships, you will receive an email with your tracking number and a direct link to the carrier\'s tracking portal. Please allow up to 24 hours for tracking information to become active.',
+    a: 'Yes. The moment your order ships, you will receive an email containing your tracking number and a direct link to the carrier\'s tracking portal. Please allow up to 24 hours for the tracking information to activate.',
   },
   {
     q: 'Why is there an age verification?',
-    a: 'Room 23 exclusively serves adults aged 18 and older. Age verification is a legal requirement for adult wellness commerce and reflects our unwavering commitment to responsible, compliant business practices. We do not knowingly serve minors under any circumstances.',
+    a: 'Room 23 curates adult wellness products strictly for individuals 18 years of age and older. Age verification is a legal requirement and reflects our core commitment to responsible commerce. We do not knowingly serve minors.',
   },
   {
     q: 'How long does the age verification last?',
-    a: 'Your verification persists for the duration of your current browser session. If you close your browser entirely, you will be asked to re-verify upon returning. This session-based approach is intentionally designed to meet strict regulatory compliance standards.',
+    a: 'Once confirmed, your age is verified for the duration of your current browser session. If you close and reopen your browser, you will be prompted to re-verify. This session-based approach ensures strict compliance with high-risk merchant standards.',
   },
   {
     q: 'Can I return an item?',
-    a: 'Due to the intimate nature of our products, any opened or used item is strictly final sale. Unopened, factory-sealed products may be returned within 14 calendar days of delivery. Please visit our Shipping & Returns page for complete details.',
+    a: 'Due to the intimate nature of our collection, opened or used items are strictly final sale and cannot be returned. However, unopened, factory-sealed products may be eligible for return within 14 calendar days of delivery.',
   },
   {
     q: 'What if I receive a defective item?',
-    a: 'Contact us within 48 hours of delivery at support@room23.net with your order number and photos of the issue. We will promptly arrange either a free replacement or a full refund \u2014 no hassle, no questions.',
+    a: 'If a product arrives damaged or defective, please contact us within 48 hours of delivery at support@room23.net, including your order number and photos of the item. We will swiftly arrange a free replacement or a full refund.',
   },
   {
     q: 'What payment methods do you accept?',
-    a: 'We accept Visa, Mastercard, American Express, and Discover. Every transaction is processed through PCI-DSS Level 1 compliant payment infrastructure with 256-bit TLS encryption. Room 23 never stores your full credit card number.',
+    a: 'We proudly accept Visa, Mastercard, American Express, and Discover. All transactions are processed securely through a PCI-DSS Level 1 compliant payment gateway. Room 23 never stores full credit card numbers.',
   },
   {
     q: 'Is my payment information secure?',
-    a: 'Completely. All transactions are secured with 256-bit TLS encryption and processed through PCI-DSS Level 1 compliant infrastructure \u2014 the highest standard in payment security. We use tokenized payment fields, meaning your full card number never touches our servers.',
+    a: 'Yes, completely. All transactions are routed through a PCI-DSS Level 1 compliant infrastructure utilizing advanced 256-bit TLS encryption. We use tokenized payment fields to ensure your full card number never touches our servers.',
   },
   {
     q: 'How do I contact customer support?',
-    a: 'Reach us anytime at support@room23.net. Our team responds to every inquiry within 24 hours on business days. You can also visit our Contact page for additional ways to get in touch.',
+    a: 'You can reach us directly at support@room23.net. Our dedicated team responds to all inquiries within 24 hours during normal business days.',
   },
 ]
+
 
 export default function FAQPage() {
   return (
