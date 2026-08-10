@@ -16,7 +16,7 @@ const ARTICLES = [
     readTime: '6 min read',
     author: 'Room 23 Editorial',
     excerpt:
-      'Beyond soap and water — a modern guide to pH-aware hygiene, barrier-friendly routines, and why the skin south of the belt deserves formulations as considered as the rest of your body.',
+      'Beyond soap and water \u2014 a modern guide to pH-conscious care, barrier-friendly routines, and why the most sensitive skin on your body deserves formulations as considered as the rest of your regimen.',
     category: 'Wellness',
   },
   {
@@ -26,7 +26,7 @@ const ARTICLES = [
     readTime: '8 min read',
     author: 'Room 23 Editorial',
     excerpt:
-      'Water-based. Silicone. Hybrid. Aloe. We demystify the ingredient decks and explain how osmolality, pH, and preservatives impact comfort and safety for every body.',
+      'Water-based. Silicone. Hybrid. Aloe. A clear-eyed breakdown of ingredient decks, osmolality science, and material compatibility \u2014 so you can choose with confidence.',
     category: 'Education',
   },
   {
@@ -36,7 +36,7 @@ const ARTICLES = [
     readTime: '4 min read',
     author: 'Room 23 Editorial',
     excerpt:
-      'In a world of unboxing hauls and social-media oversharing, there is power in privacy. A meditation on how discreet packaging, private billing, and quiet curation reclaim intimacy.',
+      'In a world of performative transparency and digital oversharing, deliberate privacy has become the most refined statement of all. A meditation on how unbranded packaging and private billing reclaim intimacy.',
     category: 'Lifestyle',
   },
 ]

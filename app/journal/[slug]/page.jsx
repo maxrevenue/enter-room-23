@@ -12,12 +12,12 @@ const ARTICLES = {
     readTime: '6 min read',
     author: 'Room 23 Editorial',
     category: 'Wellness',
-    subtitle: 'Beyond soap and water — a modern guide to pH-aware hygiene, barrier-friendly routines, and why skin south of the belt deserves considered formulations.',
+    subtitle: 'Beyond soap and water \u2014 a modern guide to pH-conscious care, barrier-friendly routines, and why the most sensitive skin on your body deserves considered formulations.',
     content: [
-      'For decades, intimate care was relegated to afterthought status in personal grooming. Standard body washes—formulated with harsh surfactants like sodium lauryl sulfate and high pH levels—were routinely applied to delicate mucosal membranes that thrive in a tightly controlled acidic microenvironment.',
-      'The modern understanding of barrier function and skin microbiome health has revolutionized intimate care. Intimate skin possesses a natural pH range of 3.8 to 4.5. When exposed to conventional alkaline soaps (pH 9-10), this natural acid mantle is stripped, opening the door to irritation, dryness, and imbalance.',
-      'A considered intimate wellness routine prioritizes three core pillars: gentle pH alignment, moisture barrier support, and ingredient integrity. Formulations containing organic aloe vera, plant-derived propanediol, and bio-identical lactic acid respect the natural ecology of your body while delivering high-performance comfort.',
-      'When selecting personal products, look for non-comedogenic water-soluble formulas, absence of parabens and synthetic fragrances, and clear ingredient transparency. Taking extra care behind closed doors is not luxury—it is fundamental self-regard.'
+      'For decades, intimate care was treated as an afterthought \u2014 an extension of the shower routine rather than a discipline in its own right. Standard body washes, formulated with aggressive surfactants like sodium lauryl sulfate and calibrated to heavily alkaline pH levels, were routinely applied to delicate mucosal tissue. These are areas that require a tightly controlled, acidic microenvironment to function at their best.',
+      'Today, a modern understanding of barrier function and microbiome health has fundamentally rewritten the rules of intimate care. Intimate skin naturally maintains a pH range of 3.8 to 4.5 \u2014 a carefully balanced acidic environment. Conventional alkaline soaps, which often register a pH between 9 and 10, strip away this protective acid mantle, creating conditions for irritation, dryness, and microbial imbalance.',
+      'A thoughtful intimate wellness routine is built on three essential pillars: gentle pH alignment, moisture barrier support, and uncompromising ingredient integrity. Seek out formulations enriched with organic aloe vera, plant-derived propanediol, and bio-identical lactic acid \u2014 ingredients that respect your body\'s natural ecology while delivering genuine, high-performance comfort.',
+      'When choosing personal care products, always prioritize non-comedogenic, water-soluble formulas that are entirely free from parabens and synthetic fragrances. Demand transparent ingredient lists from every brand you trust. Taking considered care behind closed doors is not an indulgence \u2014 it is a fundamental act of self-regard.'
     ],
     recommendedProductIds: ['lube-water-01', 'lube-aloe-01']
   },
@@ -27,12 +27,12 @@ const ARTICLES = {
     readTime: '8 min read',
     author: 'Room 23 Editorial',
     category: 'Education',
-    subtitle: 'Water-based. Silicone. Hybrid. Aloe. Demystifying ingredient decks, osmolality, and material compatibility.',
+    subtitle: 'Water-based. Silicone. Hybrid. Aloe. A clear-eyed breakdown of the chemistry, compatibility, and performance behind every formulation type.',
     content: [
-      'Not all lubricants are created equal. The market is saturated with options, yet few consumers understand the fundamental chemistry distinguishing water-based, silicone, hybrid, and aloe-based formulations.',
-      'Water-based lubricants are the gold standard for daily versatility and universal toy compatibility. Formulated with purified water and plant cellulose, high-grade water lubricants provide effortless glide and rinse cleanly with water. Crucially, osmolality (the concentration of dissolved particles) must be calibrated to match body fluids (under 1200 mOsm/kg) to prevent cellular dehydration.',
-      'Platinum silicone lubricants, by contrast, offer an ultra-concentrated, waterproof glide using medical-grade dimethicone. A single drop lasts indefinitely, making silicone the preferred choice for shower intimacy and massage. Because silicone does not evaporate or absorb into skin, it requires mild soap for cleanup and should not be used with silicone-based wellness devices.',
-      'Hybrid formulas blend the best of both worlds—infusing purified water with a whisper of dimethicone for long-lasting silkiness that still washes off easily. Aloe-based organic formulas substitute water with certified aloe vera juice, offering soothing moisture for sensitive skin.'
+      'Not all personal lubricants are created equal. While the market overflows with options, remarkably few consumers understand the fundamental chemistry that separates a premium formulation from a mass-market compromise. Here is what actually matters.',
+      'Water-based lubricants remain the gold standard for everyday versatility and universal material compatibility. Formulated from purified water and plant-derived cellulose, high-grade water-based options deliver an effortless, natural glide and rinse away cleanly with water alone. The critical factor few brands discuss: osmolality \u2014 the concentration of dissolved particles \u2014 must be carefully calibrated to remain under 1,200 mOsm/kg to match the body\'s own fluids and prevent cellular dehydration.',
+      'Platinum silicone lubricants occupy a different tier entirely. Using medical-grade dimethicone, they deliver an ultra-concentrated, waterproof glide from a single drop. Because silicone neither evaporates nor absorbs into the skin, it is the definitive choice for shower intimacy and full-body massage. Cleanup requires a mild cleanser, and one essential rule applies: silicone lubricants should never be paired with silicone-based wellness devices.',
+      'Hybrid formulas bridge both worlds \u2014 blending purified water with a measured addition of dimethicone for long-lasting silkiness that still washes off with ease. For those with heightened sensitivity, organic aloe-based formulas replace water entirely with certified aloe vera juice, delivering deeply soothing, plant-powered moisture designed for the most delicate skin.'
     ],
     recommendedProductIds: ['lube-water-01', 'lube-silicone-01', 'lube-hybrid-01']
   },
@@ -42,15 +42,16 @@ const ARTICLES = {
     readTime: '4 min read',
     author: 'Room 23 Editorial',
     category: 'Lifestyle',
-    subtitle: 'In an era of social-media oversharing, quiet privacy and unbranded packaging represent true refinement.',
+    subtitle: 'In an era of performative transparency and digital oversharing, deliberate privacy has become the most refined statement of all.',
     content: [
-      'In today\'s digital landscape, privacy has become the rarest luxury. Between public unboxing videos, targeted advertising, and data harvesting, the intimate corners of personal life are increasingly exposed.',
-      'Room 23 was founded on the radical premise that true luxury lives behind closed doors. You should never have to compromise your privacy to access world-class intimate wellness products.',
-      'From plain, unbranded shipping boxes that give no hint of their contents to neutral credit card statement descriptors, discreet logistics are built into our foundation. We believe that what happens in Room 23 belongs solely to you.'
+      'In today\'s digital landscape, genuine privacy has become the scarcest luxury of all. Between public unboxing culture, relentless algorithmic advertising, and pervasive data harvesting, the most intimate dimensions of personal life are increasingly \u2014 and often involuntarily \u2014 laid bare.',
+      'Room 23 was built on a conviction that true luxury belongs behind closed doors. You should never have to sacrifice personal privacy to access world-class intimate wellness products. That principle informs every decision we make \u2014 from product sourcing to the moment your order reaches your hands.',
+      'From completely plain, unmarked shipping boxes that reveal nothing about their contents, to neutral credit card descriptors that protect your statement, privacy logistics are woven into the very architecture of our business. What happens in Room 23 stays in Room 23 \u2014 because we believe the most intimate parts of your life belong exclusively to you.'
     ],
     recommendedProductIds: ['toy-wand-01', 'toy-couples-01']
   }
 }
+
 
 export function generateStaticParams() {
   return Object.keys(ARTICLES).map((slug) => ({ slug }))

@@ -82,21 +82,21 @@ export default function CartSheet() {
     <div className="fixed inset-0 z-50">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/20 backdrop-blur-sm"
         onClick={() => setCartOpen(false)}
       />
 
       {/* Sheet */}
-      <div className="absolute right-0 top-0 h-full w-full max-w-md bg-black border-l border-[#800020]/30 shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
+      <div className="absolute right-0 top-0 h-full w-full max-w-md bg-black border-l border-[#00866b]/30 shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#800020]/20">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#00866b]/20">
           <div className="flex items-center gap-2">
-            <ShoppingBag className="w-5 h-5 text-[#C9A060]" />
+            <ShoppingBag className="w-5 h-5 text-[#eb6824]" />
             <h2 className="text-lg font-semibold text-white font-[var(--font-syne)]">Your Cart</h2>
           </div>
           <button
             onClick={() => setCartOpen(false)}
-            className="p-2 text-white/50 hover:text-white transition-colors"
+            className="p-2 text-[#5C786E] hover:text-white transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -105,27 +105,27 @@ export default function CartSheet() {
         {/* Items */}
         <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
           {cart.length === 0 ? (
-            <p className="text-white/40 text-center py-12">Your cart is empty.</p>
+            <p className="text-[#5C786E] text-center py-12">Your cart is empty.</p>
           ) : (
             cart.map((item) => (
-              <div key={item.id} className="flex gap-4 p-3 rounded-lg border border-white/5 bg-white/[0.02]">
-              <div className="w-16 h-16 rounded-lg overflow-hidden bg-[#0A0A0A] flex-shrink-0 border border-white/5">
+              <div key={item.id} className="flex gap-4 p-3 rounded-lg border border-black/5 bg-black/[0.02]">
+              <div className="w-16 h-16 rounded-lg overflow-hidden bg-[#F4EEE4] flex-shrink-0 border border-black/5">
                   <ProductArtwork productId={item.id} category={item.category} />
                 </div>
                 <div className="flex-1 min-w-0">
                   <h4 className="text-sm font-medium text-white truncate">{item.name}</h4>
-                  <p className="text-[#C9A060] text-sm mt-0.5">${item.price}</p>
+                  <p className="text-[#eb6824] text-sm mt-0.5">${item.price}</p>
                   <div className="flex items-center gap-2 mt-2">
                     <button
                       onClick={() => updateQty(item.id, item.qty - 1)}
-                      className="w-6 h-6 rounded-full border border-white/10 flex items-center justify-center text-white/60 hover:text-white hover:border-white/30 transition-colors"
+                      className="w-6 h-6 rounded-full border border-black/8 flex items-center justify-center text-[#2E4A40] hover:text-white hover:border-white/30 transition-colors"
                     >
                       <Minus className="w-3 h-3" />
                     </button>
-                    <span className="text-white text-sm w-6 text-center">{item.qty}</span>
+                    <span className="text-[#122720] text-sm w-6 text-center">{item.qty}</span>
                     <button
                       onClick={() => updateQty(item.id, item.qty + 1)}
-                      className="w-6 h-6 rounded-full border border-white/10 flex items-center justify-center text-white/60 hover:text-white hover:border-white/30 transition-colors"
+                      className="w-6 h-6 rounded-full border border-black/8 flex items-center justify-center text-[#2E4A40] hover:text-white hover:border-white/30 transition-colors"
                     >
                       <Plus className="w-3 h-3" />
                     </button>
@@ -133,7 +133,7 @@ export default function CartSheet() {
                 </div>
                 <button
                   onClick={() => removeItem(item.id)}
-                  className="text-white/20 hover:text-red-400 transition-colors self-start mt-1"
+                  className="text-white/20 hover:text-[#eb6824] transition-colors self-start mt-1"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -144,24 +144,24 @@ export default function CartSheet() {
 
         {/* ── Cart Upgrades ── */}
         {cart.length > 0 && (
-          <div className="px-6 space-y-4 border-t border-[#800020]/20 pt-4">
+          <div className="px-6 space-y-4 border-t border-[#00866b]/20 pt-4">
             {/* ── Free Shipping Progress Bar ── */}
             <div
-              className="rounded-xl p-3.5 border border-white/10"
-              style={{ backgroundColor: freeUnlocked ? 'rgba(201,160,96,0.1)' : 'rgba(255,255,255,0.02)' }}
+              className="rounded-xl p-3.5 border border-black/8"
+              style={{ backgroundColor: freeUnlocked ? 'rgba(235,104,36,0.1)' : 'rgba(255,255,255,0.02)' }}
             >
               <div className="flex items-center gap-2 mb-2">
                 <Truck
                   className="w-4 h-4 flex-shrink-0"
-                  style={{ color: freeUnlocked ? '#C9A060' : 'rgba(255,255,255,0.4)' }}
+                  style={{ color: freeUnlocked ? '#eb6824' : 'rgba(255,255,255,0.4)' }}
                 />
                 {freeUnlocked ? (
-                  <span className="text-sm font-semibold text-[#C9A060]">
+                  <span className="text-sm font-semibold text-[#eb6824]">
                     Free Shipping Unlocked!
                   </span>
                 ) : (
-                  <span className="text-sm text-white/70">
-                    Add <strong className="text-[#C9A060]">${remaining.toFixed(2)}</strong> more for{' '}
+                  <span className="text-sm text-[#2E4A40]">
+                    Add <strong className="text-[#eb6824]">${remaining.toFixed(2)}</strong> more for{' '}
                     <strong>FREE Discreet Shipping</strong>
                   </span>
                 )}
@@ -172,7 +172,7 @@ export default function CartSheet() {
                   className="h-full rounded-full transition-all duration-500 ease-out"
                   style={{
                     width: `${pct}%`,
-                    backgroundColor: freeUnlocked ? '#C9A060' : '#C9A060',
+                    backgroundColor: freeUnlocked ? '#eb6824' : '#eb6824',
                     opacity: freeUnlocked ? 1 : 0.7,
                   }}
                 />
@@ -182,8 +182,8 @@ export default function CartSheet() {
             {/* ── One-Click Cross-Sells ── */}
             <div className="space-y-2">
               <div className="flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-[#C9A060]" />
-                <span className="text-xs font-semibold uppercase tracking-[0.1em] text-white/50">
+                <Sparkles className="w-3.5 h-3.5 text-[#eb6824]" />
+                <span className="text-xs font-semibold uppercase tracking-[0.1em] text-[#5C786E]">
                   Complete Your Order
                 </span>
               </div>
@@ -197,14 +197,14 @@ export default function CartSheet() {
                   return (
                     <div
                       key={addon.id}
-                      className="flex items-center gap-3 p-3 rounded-lg border border-white/5 bg-white/[0.02]"
+                      className="flex items-center gap-3 p-3 rounded-lg border border-black/5 bg-black/[0.02]"
                     >
                       <div className="flex-1 min-w-0">
                         <h4 className="text-sm font-medium text-white truncate">{addon.name}</h4>
                         <p className="text-xs text-white/30 mt-0.5">{addon.desc}</p>
                       </div>
                       <div className="text-right flex-shrink-0">
-                        <p className="text-sm font-semibold text-[#C9A060] mb-1">
+                        <p className="text-sm font-semibold text-[#eb6824] mb-1">
                           ${addon.price.toFixed(2)}
                         </p>
                         <button
@@ -212,9 +212,9 @@ export default function CartSheet() {
                           disabled={justAdded}
                           className="text-xs font-semibold uppercase tracking-wide px-2.5 py-1 rounded-full transition-all duration-200 border"
                           style={{
-                            borderColor: justAdded ? '#C9A060' : 'rgba(201,160,96,0.4)',
-                            color: justAdded ? '#C9A060' : '#C9A060',
-                            backgroundColor: justAdded ? 'rgba(201,160,96,0.1)' : 'transparent',
+                            borderColor: justAdded ? '#eb6824' : 'rgba(235,104,36,0.4)',
+                            color: justAdded ? '#eb6824' : '#eb6824',
+                            backgroundColor: justAdded ? 'rgba(235,104,36,0.1)' : 'transparent',
                           }}
                         >
                           {justAdded ? 'Added!' : 'Add'}
@@ -230,7 +230,7 @@ export default function CartSheet() {
 
         {/* Footer */}
         {cart.length > 0 && (
-          <div className="px-6 py-4 border-t border-[#800020]/20 space-y-3">
+          <div className="px-6 py-4 border-t border-[#00866b]/20 space-y-3">
             {/* Promo Code Input */}
             <div className="space-y-1.5">
               <div className="flex gap-2">
@@ -239,46 +239,46 @@ export default function CartSheet() {
                   placeholder="Promo Code (e.g. SOFTLAUNCH10)"
                   value={promoCode}
                   onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
-                  className="flex-1 px-3 py-1.5 text-xs bg-white/5 border border-white/10 rounded text-white placeholder-white/30 focus:outline-none focus:border-[#C9A060]"
+                  className="flex-1 px-3 py-1.5 text-xs bg-white/5 border border-black/8 rounded text-white placeholder-[#5C786E] focus:outline-none focus:border-[#eb6824]"
                 />
                 <button
                   onClick={handleApplyPromo}
-                  className="px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-black bg-[#C9A060] rounded hover:bg-[#D4B070] transition-colors"
+                  className="px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-black bg-[#eb6824] rounded hover:bg-[#d95816] transition-colors"
                 >
                   Apply
                 </button>
               </div>
               {promoError && (
-                <p className="text-[11px] text-red-400">{promoError}</p>
+                <p className="text-[11px] text-[#eb6824]">{promoError}</p>
               )}
               {discountPercent > 0 && (
-                <div className="flex items-center justify-between text-xs text-[#C9A060]">
+                <div className="flex items-center justify-between text-xs text-[#eb6824]">
                   <span>Promo ({appliedPromo} — {discountPercent}% OFF)</span>
-                  <button onClick={handleRemovePromo} className="text-white/40 hover:text-white ml-2">×</button>
+                  <button onClick={handleRemovePromo} className="text-[#5C786E] hover:text-white ml-2">×</button>
                 </div>
               )}
             </div>
 
-            <div className="flex justify-between text-white text-sm">
-              <span className="text-white/60">Subtotal</span>
+            <div className="flex justify-between text-[#122720] text-sm">
+              <span className="text-[#2E4A40]">Subtotal</span>
               <span className="font-semibold">${subtotal.toFixed(2)}</span>
             </div>
 
             {discountPercent > 0 && (
-              <div className="flex justify-between text-xs text-[#C9A060]">
+              <div className="flex justify-between text-xs text-[#eb6824]">
                 <span>Discount ({discountPercent}%)</span>
                 <span>-${discountAmount.toFixed(2)}</span>
               </div>
             )}
 
-            <div className="flex justify-between text-white font-semibold text-base pt-1 border-t border-white/10">
+            <div className="flex justify-between text-[#122720] font-semibold text-base pt-1 border-t border-black/8">
               <span>Estimated Total</span>
-              <span className="text-[#C9A060]">${finalTotal.toFixed(2)}</span>
+              <span className="text-[#eb6824]">${finalTotal.toFixed(2)}</span>
             </div>
 
             <button
               onClick={() => { setCartOpen(false); setCheckoutOpen(true) }}
-              className="w-full py-3 bg-[#C9A060] text-black font-semibold rounded-lg hover:bg-[#D4B070] transition-colors text-sm tracking-wide"
+              className="w-full py-3 bg-[#eb6824] text-black font-semibold rounded-lg hover:bg-[#d95816] transition-colors text-sm tracking-wide"
             >
               Proceed to Checkout
             </button>

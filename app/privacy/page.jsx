@@ -29,7 +29,7 @@ export default function PrivacyPage() {
       <p>When you make a purchase, create an account, or contact us, we may collect:</p>
       <ul>
         <li><strong>Identity &amp; Contact Data:</strong> Full name, email address, shipping address, billing address, and phone number.</li>
-        <li><strong>Payment Data:</strong> Credit/debit card information, billing ZIP code, and cardholder name. <strong>Note:</strong> Full card numbers are tokenized and processed exclusively by our PCI-DSS compliant payment gateway (NMI). Room 23 never stores complete card numbers on its servers.</li>
+        <li><strong>Payment Data:</strong> Credit/debit card information, billing ZIP code, and cardholder name. <strong>Note:</strong> Full card numbers are tokenized and processed exclusively by our PCI-DSS Level 1 compliant payment gateway. Room 23 never stores complete card numbers on its servers.</li>
         <li><strong>Account Credentials:</strong> Email and hashed password if you create an account.</li>
         <li><strong>Communication Data:</strong> Messages, inquiries, and feedback sent to our support team.</li>
       </ul>
@@ -79,11 +79,11 @@ export default function PrivacyPage() {
       <h2>4. Third-Party Sharing &amp; Processors</h2>
       <p>We share information only as strictly necessary to operate the Site and fulfill orders:</p>
 
-      <h3>4.1 Payment Processor (NMI)</h3>
+      <h3>4.1 Payment Processing</h3>
       <p>
-        Payment transactions are processed by <strong>NMI</strong> (Network Merchants, Inc.), a
-        PCI-DSS Level 1 compliant payment gateway. NMI receives cardholder data directly through
-        tokenized fields; we do not have access to complete card numbers. NMI&rsquo;s privacy policy
+        Payment transactions are processed through a
+        PCI-DSS Level 1 compliant payment gateway utilizing 256-bit TLS encryption. Cardholder data is received directly through
+        tokenized fields; Room 23 does not have access to complete card numbers. Our payment processor&rsquo;s privacy policy
         governs their handling of your payment data.
       </p>
 
@@ -175,7 +175,7 @@ export default function PrivacyPage() {
       </p>
       <ul>
         <li><strong>Encryption:</strong> All data transmitted between your browser and our servers is encrypted via TLS 1.3 (256-bit SSL).</li>
-        <li><strong>PCI Compliance:</strong> Payment data is handled exclusively by NMI&rsquo;s PCI-DSS Level 1 compliant infrastructure.</li>
+        <li><strong>PCI Compliance:</strong> Payment data is handled exclusively through PCI-DSS Level 1 compliant infrastructure with 256-bit TLS encryption.</li>
         <li><strong>Access Controls:</strong> Personal data access is restricted to authorized personnel on a need-to-know basis.</li>
         <li><strong>Security Headers:</strong> Strict Content Security Policy, HSTS, X-Frame-Options, and other defensive headers are enforced.</li>
       </ul>

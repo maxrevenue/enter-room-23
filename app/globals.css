@@ -11,48 +11,57 @@
 
 :root {
   /* ── Color Scheme ── */
-  color-scheme: dark;
+  color-scheme: light;
 
-  /* ── Brand Palette ── */
-  --color-bg-primary:       #050505;
-  --color-bg-surface:       #0A0A0A;
-  --color-bg-elevated:      #141414;
-  --color-bg-hover:         #1a1a1a;
+  /* ── Brand Palette (Warm Botanical Ivory) ── */
+  --color-bg-primary:       #FAF7F2;  /* Warm Ivory Cream */
+  --color-bg-surface:       #FFFFFF;  /* Pure Crisp White */
+  --color-bg-elevated:      #F4EEE4;  /* Warm Parchment Panel */
+  --color-bg-hover:         #EAE1D3;  /* Warm Sand Hover */
 
-  --color-text-primary:     #f5f5f5;
-  --color-text-secondary:   #b0b0b0;
-  --color-text-muted:       #8a8580;
-  --color-text-inverse:     #050505;
+  --color-text-primary:     #122720;  /* Deep Emerald Charcoal */
+  --color-text-secondary:   #2E4A40;  /* Botanical Forest Green */
+  --color-text-muted:       #5C786E;  /* Muted Sage */
+  --color-text-inverse:     #FFFFFF;
 
-  --color-accent:           #FF1A1A;  /* Neon Crimson */
-  --color-accent-hover:     #ff3b3b;
-  --color-accent-muted:     #b31212;
-  --color-accent-glow:      rgba(255, 26, 26, 0.30);
+  /* ── Swatch 1: Deep Emerald Teal (#00866b) ── */
+  --color-emerald:          #00866b;
+  --color-emerald-hover:    #006e58;
+  --color-emerald-muted:    #005242;
+  --color-emerald-glow:     rgba(0, 134, 107, 0.15);
 
-  --color-brass:            #d4a853;  /* Aged Brass */
-  --color-brass-hover:      #e0bc6a;
-  --color-brass-muted:      #a67c3a;
-  --color-brass-glow:       rgba(212, 168, 83, 0.20);
+  /* ── Swatch 2: Terracotta Sunset Orange (#eb6824) — Primary CTA ── */
+  --color-accent:           #eb6824;  /* Terracotta Sunset */
+  --color-accent-hover:     #d95816;
+  --color-accent-muted:     #c44a0b;
+  --color-accent-glow:      rgba(235, 104, 36, 0.25);
 
-  --color-border:           #262626;
-  --color-border-light:     #333333;
-  --color-border-accent:    rgba(255, 26, 26, 0.20);
-  --color-border-brass:     rgba(212, 168, 83, 0.15);
+  /* ── Swatch 3: Honey Amber Gold (#ffaf1f) — Highlights & Badges ── */
+  --color-brass:            #ffaf1f;  /* Honey Amber Gold */
+  --color-brass-hover:      #f09d0a;
+  --color-brass-muted:      #d98e00;
+  --color-brass-glow:       rgba(255, 175, 31, 0.25);
+
+  --color-border:           #E5DDD0;
+  --color-border-light:     #D6CAB8;
+  --color-border-accent:    rgba(235, 104, 36, 0.35);
+  --color-border-brass:     rgba(255, 175, 31, 0.35);
+  --color-border-emerald:   rgba(0, 134, 107, 0.25);
 
   /* ── Status Colors ── */
-  --color-success:          #2d8a4e;
-  --color-success-bg:       rgba(45, 138, 78, 0.10);
-  --color-warning:          #d4a853;
-  --color-warning-bg:       rgba(212, 168, 83, 0.10);
-  --color-error:            #FF1A1A;
-  --color-error-bg:         rgba(255, 26, 26, 0.10);
+  --color-success:          #00866b;
+  --color-success-bg:       rgba(0, 134, 107, 0.10);
+  --color-warning:          #ffaf1f;
+  --color-warning-bg:       rgba(255, 175, 31, 0.10);
+  --color-error:            #eb6824;
+  --color-error-bg:         rgba(235, 104, 36, 0.10);
 
   /* ── Shadows & Glows ── */
-  --shadow-card:            0 1px 3px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.3);
-  --shadow-elevated:        0 4px 14px rgba(0, 0, 0, 0.5);
-  --shadow-modal:           0 8px 32px rgba(0, 0, 0, 0.6);
-  --glow-accent:            0 0 20px var(--color-accent-glow);
-  --glow-brass:             0 0 20px var(--color-brass-glow);
+  --shadow-card:            0 4px 20px rgba(18, 39, 32, 0.05), 0 1px 3px rgba(18, 39, 32, 0.04);
+  --shadow-elevated:        0 10px 30px rgba(18, 39, 32, 0.08);
+  --shadow-modal:           0 20px 50px rgba(18, 39, 32, 0.15);
+  --glow-accent:            0 4px 20px rgba(235, 104, 36, 0.35);
+  --glow-brass:             0 4px 20px rgba(255, 175, 31, 0.35);
 
   /* ── Typography Scale ── */
   --font-sans:              'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
@@ -80,7 +89,7 @@
   --transition-base:        250ms ease;
   --transition-slow:        400ms ease;
 
-  /* ── Semantic Mappings (dark only) ── */
+  /* ── Semantic Mappings ── */
   --bg-base:                var(--color-bg-primary);
   --bg-surface:             var(--color-bg-surface);
   --bg-elevated:            var(--color-bg-elevated);
@@ -93,9 +102,11 @@
   --accent-hover:           var(--color-accent-hover);
   --brass:                  var(--color-brass);
   --brass-hover:            var(--color-brass-hover);
+  --emerald:                var(--color-emerald);
   --border:                 var(--color-border);
   --border-light:           var(--color-border-light);
 }
+
 
 /* ===================================================================
    BASE RESETS
@@ -108,12 +119,13 @@
 }
 
 html {
-  color-scheme: dark;
+  color-scheme: light;
   -webkit-text-size-adjust: 100%;
   -moz-tab-size: 4;
   tab-size: 4;
   scroll-behavior: smooth;
 }
+
 
 body {
   margin: 0;
@@ -690,22 +702,23 @@ body::before {
 .animate-float        { animation: floatY 4s ease-in-out infinite; }
 .animate-slide-down   { animation: slideDown 250ms ease forwards; }
 
-/* ── Metallic brass gradient text ── */
+/* ── Metallic & Botanical gradient text ── */
 .text-gradient-brass {
   background: linear-gradient(
     90deg,
-    #8A6B29 0%,
-    #E5C178 30%,
-    #C8A34E 50%,
-    #F5D794 70%,
-    #8A6B29 100%
+    #00866b 0%,
+    #00a887 30%,
+    #eb6824 60%,
+    #ffaf1f 85%,
+    #00866b 100%
   );
   background-size: 200% auto;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: shimmerBrass 4s linear infinite;
+  animation: shimmerBrass 5s linear infinite;
 }
+
 
 /* ── Skeleton Loading ── */
 .skeleton {

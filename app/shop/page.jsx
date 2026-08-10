@@ -75,7 +75,7 @@ export default function ShopPage() {
           overflow: 'hidden',
           padding: '4rem 0 3rem',
           marginBottom: '0',
-          background: 'linear-gradient(180deg, #0D0A06 0%, #050505 100%)',
+          background: 'linear-gradient(180deg, #F4EEE4 0%, #FAF7F2 100%)',
           borderBottom: '1px solid var(--border)',
         }}
       >
@@ -88,7 +88,7 @@ export default function ShopPage() {
           width: '600px',
           height: '200px',
           borderRadius: '50%',
-          background: 'radial-gradient(ellipse at center, rgba(212,168,83,0.12) 0%, transparent 70%)',
+          background: 'radial-gradient(ellipse at center, rgba(0,134,107,0.12) 0%, transparent 70%)',
           pointerEvents: 'none',
         }} />
         <div style={{
@@ -98,7 +98,7 @@ export default function ShopPage() {
           width: '300px',
           height: '150px',
           borderRadius: '50%',
-          background: 'radial-gradient(ellipse at center, rgba(255,26,26,0.08) 0%, transparent 70%)',
+          background: 'radial-gradient(ellipse at center, rgba(235,104,36,0.08) 0%, transparent 70%)',
           pointerEvents: 'none',
         }} />
 

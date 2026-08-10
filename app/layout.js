@@ -65,10 +65,11 @@ export default function RootLayout({ children }) {
   const fontVars = `${inter.variable} ${syne.variable}`
 
   return (
-    <html lang="en" className={`dark ${fontVars}`} data-theme="brass-noir">
+    <html lang="en" className={fontVars} data-theme="botanical-ivory">
       <head>
-        {/* Theme permanently locked to dark — no flash, no toggle. NMI gateway compliant. */}
+        {/* Warm Botanical Ivory Theme — #00866b Deep Emerald, #eb6824 Terracotta, #ffaf1f Honey Amber */}
       </head>
+
       <body>
         {/* WCAG: skip-to-content link */}
         <a href="#main-content" className="skip-to-content" aria-label="Skip to main content">

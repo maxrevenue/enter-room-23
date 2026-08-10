@@ -65,28 +65,26 @@ export default function SiteHeader() {
       <div
         className="w-full border-b transition-all duration-300"
         style={{
-          backgroundColor: scrolled
-            ? 'rgba(5,5,5,0.97)'
-            : 'rgba(10,10,10,0.98)',
-          borderColor: scrolled ? 'var(--border)' : 'var(--border)',
+          backgroundColor: scrolled ? 'rgba(250,247,242,0.97)' : 'rgba(250,247,242,0.98)',
+          borderColor: 'var(--color-border)',
           backdropFilter: 'blur(20px)',
           WebkitBackdropFilter: 'blur(20px)',
-          boxShadow: scrolled ? '0 4px 30px rgba(0,0,0,0.4)' : 'none',
+          boxShadow: scrolled ? '0 4px 20px rgba(18,39,32,0.08)' : 'none',
         }}
       >
         <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6">
           {/* ── Logo ── */}
           <Link
             href="/"
-            className="font-syne font-bold tracking-[0.15em] uppercase select-none transition-all duration-300 hover:opacity-80 flex items-center gap-2"
-            style={{ color: 'var(--color-accent)', fontSize: '1.125rem' }}
+            className="font-syne font-bold tracking-[0.15em] uppercase select-none transition-all duration-300 hover:opacity-70 flex items-center gap-2"
+            style={{ color: 'var(--color-emerald)', fontSize: '1.125rem' }}
           >
             <span
               className="text-xs font-bold px-1.5 py-0.5 rounded"
               style={{
-                backgroundColor: 'rgba(255,26,26,0.12)',
-                border: '1px solid rgba(255,26,26,0.2)',
-                color: 'var(--color-accent)',
+                backgroundColor: 'rgba(0,134,107,0.10)',
+                border: '1px solid rgba(0,134,107,0.25)',
+                color: 'var(--color-emerald)',
                 fontFamily: 'monospace',
                 letterSpacing: '0.05em',
               }}
@@ -106,7 +104,7 @@ export default function SiteHeader() {
                   href={link.href}
                   className="relative px-3 py-1.5 text-xs font-semibold tracking-[0.12em] uppercase transition-all duration-200 rounded-sm"
                   style={{
-                    color: isActive ? 'var(--color-brass)' : 'var(--text-secondary)',
+                    color: isActive ? 'var(--color-emerald)' : 'var(--text-secondary)',
                   }}
                 >
                   {link.label}
@@ -115,7 +113,7 @@ export default function SiteHeader() {
                     className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[1.5px] rounded-full transition-all duration-200"
                     style={{
                       width: isActive ? '60%' : '0%',
-                      backgroundColor: 'var(--color-brass)',
+                      backgroundColor: 'var(--color-emerald)',
                     }}
                   />
                   {/* Hover underline via CSS */}
@@ -134,7 +132,7 @@ export default function SiteHeader() {
             {/* Cart */}
             <button
               onClick={() => setCartOpen(!cartOpen)}
-              className="relative p-2.5 rounded-full transition-all duration-200 hover:bg-white/5"
+              className="relative p-2.5 rounded-full transition-all duration-200 hover:bg-black/5"
               aria-label={`Open cart${itemCount > 0 ? ` (${itemCount} items)` : ''}`}
               style={{ color: 'var(--text-secondary)' }}
             >
@@ -152,7 +150,7 @@ export default function SiteHeader() {
             {/* Mobile hamburger */}
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="md:hidden p-2.5 rounded-full transition-all duration-200 hover:bg-white/5"
+              className="md:hidden p-2.5 rounded-full transition-all duration-200 hover:bg-black/5"
               aria-label="Toggle menu"
               aria-expanded={mobileOpen}
               style={{ color: 'var(--text-secondary)' }}
@@ -167,8 +165,8 @@ export default function SiteHeader() {
           <nav
             className="md:hidden border-t animate-slide-down"
             style={{
-              backgroundColor: 'rgba(5,5,5,0.98)',
-              borderColor: 'var(--border)',
+              backgroundColor: 'rgba(250,247,242,0.98)',
+              borderColor: 'var(--color-border)',
               backdropFilter: 'blur(20px)',
             }}
           >
@@ -182,8 +180,8 @@ export default function SiteHeader() {
                     onClick={closeMobile}
                     className="px-3 py-3 text-sm font-semibold tracking-[0.1em] uppercase rounded-md transition-all duration-200"
                     style={{
-                      color: isActive ? 'var(--color-brass)' : 'var(--text-secondary)',
-                      backgroundColor: isActive ? 'var(--color-brass-glow)' : 'transparent',
+                      color: isActive ? 'var(--color-emerald)' : 'var(--text-secondary)',
+                      backgroundColor: isActive ? 'rgba(0,134,107,0.08)' : 'transparent',
                     }}
                   >
                     {isActive && <span className="mr-2 text-xs">▸</span>}
