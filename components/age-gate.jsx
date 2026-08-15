@@ -22,16 +22,20 @@ function AgeGateHuman() {
   const [status, setStatus] = useState('loading')
 
   useEffect(() => {
-    const verified = Cookies.get('room23_age_verified')
+    const verified = Cookies.get('room23_age_verified') || Cookies.get('age_verified')
     setStatus(verified ? 'verified' : 'unverified')
   }, [])
 
   const handleVerify = () => {
-    Cookies.set('room23_age_verified', 'true', {
+    const cookieOpts = {
       expires: siteConfig.ageCookieDurationDays,
+      path: '/',
       sameSite: 'lax',
       secure: process.env.NODE_ENV === 'production',
-    })
+    }
+    // Middleware reads age_verified; the overlay also keeps room23_age_verified.
+    Cookies.set('room23_age_verified', 'true', cookieOpts)
+    Cookies.set('age_verified', 'true', cookieOpts)
     setStatus('verified')
   }
 

@@ -14,6 +14,7 @@ const NAV_LINKS = [
   { href: '/collections/new-arrivals', label: 'NEW ARRIVALS' },
   { href: '/journal', label: 'THE ARCHIVE' },
   { href: '/faq', label: 'FAQ' },
+  { href: '/shipping', label: 'SHIPPING' },
   { href: '/contact', label: 'CONTACT' },
 ]
 
@@ -54,7 +55,7 @@ export default function SiteHeader() {
             <div className="flex items-center gap-1 min-w-[2.5rem] lg:min-w-0 lg:flex-1">
               <button
                 onClick={() => setDrawerOpen(true)}
-                className="p-2 -ml-2 rounded-full transition-all duration-200 focus:outline-none lg:hidden"
+                className="p-2 -ml-2 rounded-full transition-all duration-200 focus:outline-none"
                 style={{ color: 'var(--color-text-primary)' }}
                 onMouseOver={e => e.currentTarget.style.color = '#C8102E'}
                 onMouseOut={e => e.currentTarget.style.color = 'var(--color-text-primary)'}
@@ -62,14 +63,14 @@ export default function SiteHeader() {
               >
                 <Menu className="h-6 w-6 stroke-[1.5]" />
               </button>
-              <nav className="hidden lg:flex items-center gap-5" aria-label="Primary">
-                {NAV_LINKS.slice(0, 5).map((link) => {
-                  const isActive = pathname === link.href
+              <nav className="hidden xl:flex items-center gap-x-3 overflow-x-auto" aria-label="Primary">
+                {NAV_LINKS.map((link) => {
+                  const isActive = pathname === link.href || (link.href !== '/shop' && pathname?.startsWith(`${link.href}/`))
                   return (
                     <Link
                       key={link.label}
                       href={link.href}
-                      className="text-[11px] tracking-[0.16em] uppercase font-semibold transition-colors"
+                      className="text-[10px] tracking-[0.14em] uppercase font-semibold transition-colors whitespace-nowrap"
                       style={{ color: isActive ? '#C8102E' : 'var(--color-text-secondary)' }}
                     >
                       {link.label}
@@ -142,7 +143,7 @@ export default function SiteHeader() {
             {/* Drawer Links */}
             <div className="flex flex-col px-6 py-8 space-y-1">
               {NAV_LINKS.map((link) => {
-                const isActive = pathname === link.href
+                const isActive = pathname === link.href || pathname?.startsWith(`${link.href}/`)
                 const Icon = link.icon
                 return (
                   <Link

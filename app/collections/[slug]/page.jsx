@@ -3,7 +3,7 @@
 import { use, useState, useMemo } from 'react'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { Lock, ArrowRight, ShieldCheck } from 'lucide-react'
+import { Lock, ArrowRight, ShieldCheck, Star, Zap } from 'lucide-react'
 import { PRODUCTS, COLLECTIONS, getProductsByCollection } from '@/lib/products'
 import ProductCard from '@/components/product-card'
 
