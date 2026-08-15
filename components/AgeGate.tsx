@@ -3,68 +3,80 @@
 import { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import { siteConfig } from '@/lib/config';
-import { Lock } from 'lucide-react';
 
 export default function AgeGate() {
   const [status, setStatus] = useState<'loading' | 'verified' | 'unverified'>('loading');
 
   useEffect(() => {
     const verified = Cookies.get('room23_age_verified');
-    if (verified) {
-      setStatus('verified');
-    } else {
-      setStatus('unverified');
-    }
+    setStatus(verified ? 'verified' : 'unverified');
   }, []);
 
   const handleVerify = () => {
-    Cookies.set('room23_age_verified', 'true', { 
+    Cookies.set('room23_age_verified', 'true', {
       expires: siteConfig.ageCookieDurationDays,
       sameSite: 'lax',
-      secure: process.env.NODE_ENV === 'production'
+      secure: process.env.NODE_ENV === 'production',
     });
     setStatus('verified');
   };
 
   if (status === 'loading') {
-    return <div className="fixed inset-0 z-50 bg-zinc-950" />; // Prevents flash
+    return <div className="fixed inset-0 z-50 bg-zinc-950" />;
   }
 
   if (status === 'verified') return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950/95 backdrop-blur-sm">
-      <div 
-        role="dialog" 
-        aria-modal="true" 
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950/95 backdrop-blur-sm px-4">
+      <div
+        role="dialog"
+        aria-modal="true"
         aria-labelledby="age-gate-title"
-        className="w-full max-w-md p-8 border border-zinc-800 bg-zinc-900 text-center shadow-2xl mx-4"
+        className="relative w-full max-w-sm overflow-hidden bg-zinc-900/90 text-center shadow-[0_24px_80px_rgba(0,0,0,0.65)] ring-1 ring-white/10"
       >
-        <div className="flex justify-center mb-4">
-          <Lock className="w-6 h-6 text-zinc-500" aria-hidden="true" />
-        </div>
-        <h1 id="age-gate-title" className="text-2xl font-serif text-white tracking-widest mb-1">ROOM 23</h1>
-        <h2 className="text-xs font-semibold tracking-widest text-red-600 mb-4">AGE VERIFICATION REQUIRED</h2>
-        <p className="text-zinc-400 mb-8 text-sm leading-relaxed">
-          Our products are intended for adults. <br />
-          By entering, you confirm you are 18 years of age or older. <br />
-          <span className="text-zinc-300 font-medium">No tracking, no judgment.</span>
-        </p>
-        <div className="flex flex-col gap-4">
-          <button 
-            onClick={handleVerify}
-            aria-label="Confirm I am 18 or older and enter the site"
-            className="w-full py-3 bg-red-800 hover:bg-red-700 text-white font-medium tracking-wide transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-zinc-900"
+        <div
+          className="h-px w-full"
+          style={{ background: 'linear-gradient(90deg, transparent, rgba(200,16,46,0.55), transparent)' }}
+          aria-hidden="true"
+        />
+
+        <div className="px-10 py-12">
+          <h1
+            id="age-gate-title"
+            className="font-syne text-2xl font-semibold text-white tracking-[0.42em] mb-10"
           >
-            I AM 18+ — ENTER
-          </button>
-          <a 
-            href="https://www.google.com"
-            aria-label="Exit the site if under 18"
-            className="w-full py-3 border border-zinc-700 hover:border-zinc-500 text-zinc-400 hover:text-white transition-colors block focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-900"
-          >
-            I AM UNDER 18 — EXIT
-          </a>
+            ROOM 23
+          </h1>
+
+          <p className="text-zinc-300 text-[15px] leading-relaxed mb-2">
+            This space is reserved for adults.
+          </p>
+          <p className="text-zinc-500 text-sm leading-relaxed mb-10">
+            By continuing you confirm you are 18 or older.
+          </p>
+
+          <div className="flex flex-col gap-3">
+            <button
+              type="button"
+              onClick={handleVerify}
+              aria-label="Confirm I am 18 or older and enter the site"
+              className="w-full py-3.5 bg-red-800 hover:bg-red-700 text-white text-sm font-medium tracking-[0.22em] uppercase transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-zinc-900"
+            >
+              Enter
+            </button>
+            <a
+              href="https://www.google.com"
+              aria-label="Leave the site if under 18"
+              className="w-full py-2.5 text-zinc-500 hover:text-zinc-300 text-sm tracking-wide transition-colors focus:outline-none focus:ring-2 focus:ring-zinc-600 focus:ring-offset-2 focus:ring-offset-zinc-900"
+            >
+              Leave
+            </a>
+          </div>
+
+          <p className="mt-10 text-[10px] tracking-[0.22em] uppercase text-zinc-600">
+            Private · No tracking
+          </p>
         </div>
       </div>
     </div>
