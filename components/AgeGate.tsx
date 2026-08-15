@@ -21,6 +21,7 @@ export default function AgeGate() {
     setStatus('verified');
   };
 
+  // Solid black while checking the cookie
   if (status === 'loading') {
     return <div className="fixed inset-0 z-50 bg-zinc-950" />;
   }
@@ -28,55 +29,42 @@ export default function AgeGate() {
   if (status === 'verified') return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950/95 backdrop-blur-sm px-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950">
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby="age-gate-title"
-        className="relative w-full max-w-sm overflow-hidden bg-zinc-900/90 text-center shadow-[0_24px_80px_rgba(0,0,0,0.65)] ring-1 ring-white/10"
+        className="w-full max-w-sm mx-4 border border-zinc-800 bg-zinc-900 p-10 text-center shadow-2xl animate-in fade-in duration-300"
       >
-        <div
-          className="h-px w-full"
-          style={{ background: 'linear-gradient(90deg, transparent, rgba(200,16,46,0.55), transparent)' }}
-          aria-hidden="true"
-        />
+        <h1
+          id="age-gate-title"
+          className="text-2xl font-serif tracking-[0.25em] text-white mb-8"
+        >
+          ROOM 23
+        </h1>
 
-        <div className="px-10 py-12">
-          <h1
-            id="age-gate-title"
-            className="font-syne text-2xl font-semibold text-white tracking-[0.42em] mb-10"
+        <p className="text-zinc-400 text-sm leading-relaxed mb-10">
+          This space is reserved for adults.
+          <br />
+          By continuing you confirm you are 18 or older.
+        </p>
+
+        <div className="flex flex-col gap-3">
+          <button
+            onClick={handleVerify}
+            aria-label="Confirm I am 18 or older and enter"
+            className="w-full py-3.5 bg-red-800 hover:bg-red-700 text-white text-sm tracking-widest transition-colors focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2 focus:ring-offset-zinc-900"
           >
-            ROOM 23
-          </h1>
+            ENTER
+          </button>
 
-          <p className="text-zinc-300 text-[15px] leading-relaxed mb-2">
-            This space is reserved for adults.
-          </p>
-          <p className="text-zinc-500 text-sm leading-relaxed mb-10">
-            By continuing you confirm you are 18 or older.
-          </p>
-
-          <div className="flex flex-col gap-3">
-            <button
-              type="button"
-              onClick={handleVerify}
-              aria-label="Confirm I am 18 or older and enter the site"
-              className="w-full py-3.5 bg-red-800 hover:bg-red-700 text-white text-sm font-medium tracking-[0.22em] uppercase transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-zinc-900"
-            >
-              Enter
-            </button>
-            <a
-              href="https://www.google.com"
-              aria-label="Leave the site if under 18"
-              className="w-full py-2.5 text-zinc-500 hover:text-zinc-300 text-sm tracking-wide transition-colors focus:outline-none focus:ring-2 focus:ring-zinc-600 focus:ring-offset-2 focus:ring-offset-zinc-900"
-            >
-              Leave
-            </a>
-          </div>
-
-          <p className="mt-10 text-[10px] tracking-[0.22em] uppercase text-zinc-600">
-            Private · No tracking
-          </p>
+          <a
+            href="https://www.google.com"
+            aria-label="Exit if under 18"
+            className="w-full py-3 text-zinc-500 hover:text-zinc-300 text-xs tracking-wider transition-colors"
+          >
+            Leave
+          </a>
         </div>
       </div>
     </div>
