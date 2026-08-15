@@ -32,12 +32,15 @@ export default function CartSheet() {
     subtotal,
     addToCart,
     setCheckoutOpen,
+    appliedPromo,
+    discountPercent,
+    discountAmount,
+    applyPromo,
+    removePromo,
   } = useCart()
 
   const [addedAddons, setAddedAddons] = useState([])
   const [promoCode, setPromoCode] = useState('')
-  const [appliedPromo, setAppliedPromo] = useState('')
-  const [discountPercent, setDiscountPercent] = useState(0)
   const [promoError, setPromoError] = useState('')
 
   if (!cartOpen) return null
@@ -47,23 +50,18 @@ export default function CartSheet() {
     setPromoError('')
     const code = promoCode.trim().toUpperCase()
     if (!code) return
-    if (code === 'SOFTLAUNCH10' || code === 'ROOM23' || code === 'WELCOME10') {
-      setAppliedPromo(code)
-      setDiscountPercent(10)
-      setPromoError('')
-    } else {
-      setPromoError('Invalid code. Try "SOFTLAUNCH10"')
+    const result = applyPromo(code)
+    if (!result.success) {
+      setPromoError('Invalid promo code.')
     }
   }
 
   const handleRemovePromo = () => {
-    setAppliedPromo('')
-    setDiscountPercent(0)
+    removePromo()
     setPromoCode('')
     setPromoError('')
   }
 
-  const discountAmount = (subtotal * discountPercent) / 100
   const finalTotal = Math.max(0, subtotal - discountAmount)
 
   // ── Free Shipping Progress ──

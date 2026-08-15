@@ -7,34 +7,64 @@ import { X, Lock, ShieldCheck, CreditCard, Check } from 'lucide-react'
 import Link from 'next/link'
 
 export default function CheckoutDialog() {
-  const { checkoutOpen, setCheckoutOpen, cart, subtotal, clearCart } = useCart()
+  const { checkoutOpen, setCheckoutOpen, cart, subtotal, clearCart, discountAmount, discountPercent, appliedPromo } = useCart()
   const [agreedToTerms, setAgreedToTerms] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [orderPlaced, setOrderPlaced] = useState(false)
+  const [orderError, setOrderError] = useState('')
 
   if (!checkoutOpen) return null
 
-  const tax = subtotal * 0.08
+  const discountedSubtotal = Math.max(0, subtotal - discountAmount)
+  const tax = discountedSubtotal * 0.08
   const shipping = subtotal >= SITE_CONFIG.freeShippingThreshold ? 0 : SITE_CONFIG.flatShippingRate
-  const total = subtotal + tax + shipping
+  const total = discountedSubtotal + tax + shipping
 
   const handlePlaceOrder = async () => {
     if (!agreedToTerms || submitting) return
     setSubmitting(true)
+    setOrderError('')
 
-    // NMI Collector.js integration point:
-    // 1. Call NMI Collector.js to tokenize card fields
-    // 2. Send token to your backend /api/checkout endpoint
-    // 3. Backend calls NMI API with token + order details
-    // 4. On success → clear cart, show confirmation
-    // See: https://docs.nmi.com/reference/collector-js
+    try {
+      const res = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          cart,
+          subtotal,
+          discountAmount,
+          discountPercent,
+          appliedPromo,
+          tax,
+          shipping,
+          total,
+        }),
+      })
 
-    // Simulate processing
-    setTimeout(() => {
+      const data = await res.json()
+
+      if (!res.ok) {
+        setOrderError(data.error || 'Payment failed. Please try again.')
+        setSubmitting(false)
+        return
+      }
+
+      // Redirect to CCBill hosted payment page — card data never touches our server
+      if (data.paymentUrl) {
+        window.location.href = data.paymentUrl
+        // Keep submitting=true while navigating away; clear cart optimistically
+        clearCart()
+        return
+      }
+
+      // Fallback: order was created without a redirect (shouldn't happen in production)
       setSubmitting(false)
       setOrderPlaced(true)
       clearCart()
-    }, 1500)
+    } catch {
+      setOrderError('Network error. Please check your connection and try again.')
+      setSubmitting(false)
+    }
   }
 
   return (
@@ -165,6 +195,12 @@ export default function CheckoutDialog() {
                 <span>Subtotal</span>
                 <span>${subtotal.toFixed(2)} USD</span>
               </div>
+              {discountAmount > 0 && (
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 'var(--text-sm)', color: 'var(--color-success)' }}>
+                  <span>Discount ({appliedPromo} — {discountPercent}% off)</span>
+                  <span>−${discountAmount.toFixed(2)} USD</span>
+                </div>
+              )}
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 'var(--text-sm)', color: 'var(--text-muted)' }}>
                 <span>Tax (est. 8%)</span>
                 <span>${tax.toFixed(2)} USD</span>
@@ -182,7 +218,7 @@ export default function CheckoutDialog() {
               </div>
             </div>
 
-            {/* ── Credit Card Fields (NMI Collector.js Ready) ── */}
+            {/* ── Payment Details ── */}
             <div>
               <h3
                 style={{
@@ -211,15 +247,9 @@ export default function CheckoutDialog() {
                   />
                 </div>
 
-                {/* Card Number — NMI Collector.js will replace this with a secure iframe */}
+                {/* Card Number — hosted by CCBill secure payment form */}
                 <div>
                   <label htmlFor="cc-number" className="input-label">Card Number</label>
-                  {/* NMI Collector.js Integration:
-                      Replace this input with:
-                      <div id="nmi-card-number" data-nmi-collector="card-number" />
-                      Then initialize in useEffect:
-                      new NMI.collector({ ... })
-                  */}
                   <input
                     id="cc-number"
                     type="text"
@@ -245,10 +275,6 @@ export default function CheckoutDialog() {
                   </div>
                   <div>
                     <label htmlFor="cc-cvv" className="input-label">CVV</label>
-                    {/* NMI Collector.js Integration:
-                        Replace with:
-                        <div id="nmi-card-cvv" data-nmi-collector="card-cvv" />
-                    */}
                     <input
                       id="cc-cvv"
                       type="text"
@@ -348,8 +374,14 @@ export default function CheckoutDialog() {
               )}
             </button>
 
+            {orderError && (
+              <p style={{ color: 'var(--color-accent)', fontSize: 'var(--text-xs)', textAlign: 'center' }}>
+                {orderError}
+              </p>
+            )}
+
             <p style={{ color: 'var(--text-muted)', fontSize: 'var(--text-xs)', textAlign: 'center' }}>
-              Your payment is processed securely via NMI. We never store full card details.
+              Your payment is processed securely. We never store full card details.
             </p>
           </div>
         )}
