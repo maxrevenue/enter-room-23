@@ -7,39 +7,72 @@ import CheckoutDisclaimer from '@/components/CheckoutDisclaimer'
 import { X, Lock, ShieldCheck, Check, Mail } from 'lucide-react'
 import Link from 'next/link'
 
+const EMPTY_SHIPPING = {
+  name: '',
+  line1: '',
+  line2: '',
+  city: '',
+  state: '',
+  postalCode: '',
+  country: 'US',
+}
+
+const fieldStyle = {
+  width: '100%',
+  padding: '0.7rem 0.8rem',
+  borderRadius: 'var(--radius-md)',
+  border: '1px solid var(--border)',
+  backgroundColor: 'var(--color-bg-primary)',
+  color: 'var(--text-primary)',
+  fontSize: 'var(--text-sm)',
+}
+
 export default function CheckoutDialog() {
   const { checkoutOpen, setCheckoutOpen, cart, subtotal, clearCart, discountAmount, discountPercent, appliedPromo } = useCart()
   const [agreedToTerms, setAgreedToTerms] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [orderPlaced, setOrderPlaced] = useState(false)
   const [orderError, setOrderError] = useState('')
+  const [email, setEmail] = useState('')
+  const [shipping, setShipping] = useState(EMPTY_SHIPPING)
+  const [placedOrder, setPlacedOrder] = useState(null)
 
   if (!checkoutOpen) return null
 
   const discountedSubtotal = Math.max(0, subtotal - discountAmount)
   const tax = discountedSubtotal * 0.08
-  const shipping = subtotal >= SITE_CONFIG.freeShippingThreshold ? 0 : SITE_CONFIG.flatShippingRate
-  const total = discountedSubtotal + tax + shipping
+  const shippingCost = subtotal >= SITE_CONFIG.freeShippingThreshold ? 0 : SITE_CONFIG.flatShippingRate
+  const total = discountedSubtotal + tax + shippingCost
+  const canSubmit = Boolean(
+    agreedToTerms &&
+    email.includes('@') &&
+    shipping.name.trim() &&
+    shipping.line1.trim() &&
+    shipping.city.trim() &&
+    shipping.state.trim() &&
+    shipping.postalCode.trim(),
+  )
 
   const handlePlaceOrder = async () => {
-    if (!agreedToTerms || submitting) return
+    if (!canSubmit || submitting) return
     setSubmitting(true)
     setOrderError('')
 
     try {
+      const idempotencyKey = `r23-${crypto.randomUUID()}`
+      const payload = {
+        cart: cart.map((item) => ({ id: item.id, qty: item.qty })),
+        subtotal,
+        appliedPromo,
+        email,
+        shippingAddress: shipping,
+        idempotencyKey,
+      }
+
       const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          cart,
-          subtotal,
-          discountAmount,
-          discountPercent,
-          appliedPromo,
-          tax,
-          shipping,
-          total,
-        }),
+        body: JSON.stringify(payload),
       })
 
       const data = await res.json()
@@ -50,15 +83,17 @@ export default function CheckoutDialog() {
         return
       }
 
-      // Redirect to CCBill hosted payment page — card data never touches our server
       if (data.paymentUrl) {
+        sessionStorage.setItem('r23_pending_order', JSON.stringify({
+          ...payload,
+          orderId: data.orderId,
+        }))
         window.location.href = data.paymentUrl
-        // Keep submitting=true while navigating away; clear cart optimistically
         clearCart()
         return
       }
 
-      // Fallback: order was created without a redirect (shouldn't happen in production)
+      setPlacedOrder(data)
       setSubmitting(false)
       setOrderPlaced(true)
       clearCart()
@@ -139,15 +174,35 @@ export default function CheckoutDialog() {
             >
               Thank You for Your Order
             </h3>
+            {placedOrder?.orderId && (
+              <p style={{ color: 'var(--text-secondary)', fontSize: 'var(--text-sm)' }}>
+                Order <strong style={{ color: 'var(--text-primary)' }}>#{placedOrder.orderId}</strong>
+              </p>
+            )}
             <p style={{ color: 'var(--text-secondary)', fontSize: 'var(--text-sm)' }}>
-              A confirmation email will be sent to you shortly. Your order will be shipped in{' '}
+              {placedOrder?.emailSent
+                ? 'A confirmation email is on its way.'
+                : 'A confirmation email will be sent shortly.'}{' '}
+              Your order will be shipped in{' '}
               <strong style={{ color: 'var(--text-primary)' }}>discreet, plain packaging</strong>.
             </p>
+            {placedOrder?.fulfillment?.splitFulfillment && (
+              <p style={{ color: 'var(--text-secondary)', fontSize: 'var(--text-sm)' }}>
+                {placedOrder.fulfillment.customerNotice}
+              </p>
+            )}
             <p style={{ color: 'var(--text-muted)', fontSize: 'var(--text-xs)' }}>
               Your card statement will show <strong style={{ color: 'var(--text-primary)' }}>{SITE_CONFIG.billingDescriptor}</strong>.
             </p>
             <button
-              onClick={() => { setOrderPlaced(false); setCheckoutOpen(false); setAgreedToTerms(false) }}
+              onClick={() => {
+                setOrderPlaced(false)
+                setPlacedOrder(null)
+                setCheckoutOpen(false)
+                setAgreedToTerms(false)
+                setEmail('')
+                setShipping(EMPTY_SHIPPING)
+              }}
               className="btn-primary"
             >
               Continue Shopping
@@ -208,7 +263,7 @@ export default function CheckoutDialog() {
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 'var(--text-sm)', color: 'var(--text-muted)' }}>
                 <span>Shipping</span>
-                <span>{shipping === 0 ? <span style={{ color: 'var(--color-success)' }}>FREE</span> : `$${shipping.toFixed(2)} USD`}</span>
+                <span>{shippingCost === 0 ? <span style={{ color: 'var(--color-success)' }}>FREE</span> : `$${shippingCost.toFixed(2)} USD`}</span>
               </div>
               <hr style={{ margin: '0.75rem 0', border: 'none', borderTop: '1px solid var(--border)' }} />
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -216,6 +271,89 @@ export default function CheckoutDialog() {
                 <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 'var(--text-xl)', color: 'var(--color-brass)' }}>
                   ${total.toFixed(2)} USD
                 </span>
+              </div>
+            </div>
+
+            <div>
+              <h3
+                style={{
+                  fontFamily: 'var(--font-display)',
+                  fontSize: 'var(--text-sm)',
+                  fontWeight: 600,
+                  color: 'var(--text-primary)',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.06em',
+                  marginBottom: '0.75rem',
+                }}
+              >
+                Delivery
+              </h3>
+              <div className="space-y-3">
+                <input
+                  type="email"
+                  required
+                  autoComplete="email"
+                  placeholder="Email for order confirmation"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full"
+                  style={fieldStyle}
+                />
+                <input
+                  type="text"
+                  required
+                  autoComplete="name"
+                  placeholder="Full name"
+                  value={shipping.name}
+                  onChange={(e) => setShipping((prev) => ({ ...prev, name: e.target.value }))}
+                  style={fieldStyle}
+                />
+                <input
+                  type="text"
+                  required
+                  autoComplete="address-line1"
+                  placeholder="Address"
+                  value={shipping.line1}
+                  onChange={(e) => setShipping((prev) => ({ ...prev, line1: e.target.value }))}
+                  style={fieldStyle}
+                />
+                <input
+                  type="text"
+                  autoComplete="address-line2"
+                  placeholder="Apartment, suite (optional)"
+                  value={shipping.line2}
+                  onChange={(e) => setShipping((prev) => ({ ...prev, line2: e.target.value }))}
+                  style={fieldStyle}
+                />
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 80px 110px', gap: '0.5rem' }}>
+                  <input
+                    type="text"
+                    required
+                    autoComplete="address-level2"
+                    placeholder="City"
+                    value={shipping.city}
+                    onChange={(e) => setShipping((prev) => ({ ...prev, city: e.target.value }))}
+                    style={fieldStyle}
+                  />
+                  <input
+                    type="text"
+                    required
+                    autoComplete="address-level1"
+                    placeholder="State"
+                    value={shipping.state}
+                    onChange={(e) => setShipping((prev) => ({ ...prev, state: e.target.value }))}
+                    style={fieldStyle}
+                  />
+                  <input
+                    type="text"
+                    required
+                    autoComplete="postal-code"
+                    placeholder="ZIP"
+                    value={shipping.postalCode}
+                    onChange={(e) => setShipping((prev) => ({ ...prev, postalCode: e.target.value }))}
+                    style={fieldStyle}
+                  />
+                </div>
               </div>
             </div>
 
@@ -313,7 +451,7 @@ export default function CheckoutDialog() {
             {SITE_CONFIG.checkoutEnabled ? (
             <button
               onClick={handlePlaceOrder}
-              disabled={!agreedToTerms || submitting}
+              disabled={!canSubmit || submitting}
               className="btn-primary"
               style={{ width: '100%', padding: '0.875rem' }}
             >
