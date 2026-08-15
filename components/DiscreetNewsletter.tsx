@@ -30,8 +30,15 @@ export default function DiscreetNewsletter() {
     setStatus('submitting');
 
     try {
-      // API Stub
-      await new Promise(resolve => setTimeout(resolve, 800)); 
+      const res = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+
+      if (!res.ok) {
+        throw new Error('Subscription failed');
+      }
       
       Cookies.set('room23_newsletter_seen', 'true', { expires: 365 });
       Cookies.set('room23_subscribed', 'true', { expires: 365 });

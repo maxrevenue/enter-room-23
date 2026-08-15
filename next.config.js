@@ -1,7 +1,9 @@
 const path = require('path');
 
+const rootDir = path.resolve(__dirname);
+
 const nextConfig = {
-  outputFileTracingRoot: path.join(__dirname, './'),
+  outputFileTracingRoot: rootDir,
   images: {
     unoptimized: true,
     remotePatterns: [
@@ -12,7 +14,16 @@ const nextConfig = {
   },
   // Renamed from experimental.serverComponentsExternalPackages in Next 15
   serverExternalPackages: ['mongodb'],
+  turbopack: {
+    resolveAlias: {
+      '@': rootDir,
+    },
+  },
   webpack(config, { dev }) {
+    config.resolve.alias = {
+      ...(config.resolve.alias || {}),
+      '@': rootDir,
+    };
     if (dev) {
       // Reduce CPU/memory from file watching
       config.watchOptions = {

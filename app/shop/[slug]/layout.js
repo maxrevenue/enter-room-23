@@ -36,3 +36,8 @@ export function generateMetadata({ params }) {
     },
   }
 }
+
+export default function ProductSlugLayout({ children }) {
+  return children
+}
+

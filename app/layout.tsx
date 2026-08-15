@@ -71,11 +71,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className={fontVars} data-theme="noir">
       <body>
+        <SoftLaunchBanner />
+        <AgeGate />
         <a href="#main-content" className="skip-to-content" aria-label="Skip to main content">
           Skip to content
         </a>
-        <SoftLaunchBanner />
-        <AgeGate />
         <CartProvider>
           <SiteShell>{children}</SiteShell>
           <DiscreetNewsletter />
