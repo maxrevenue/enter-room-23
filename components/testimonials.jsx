@@ -64,13 +64,7 @@ export default function Testimonials() {
           {TESTIMONIALS.map((testimonial) => (
             <div
               key={testimonial.id}
-              className="relative flex flex-col p-7 rounded-2xl transition-all duration-300 hover:-translate-y-1"
-              style={{
-                backgroundColor: 'var(--color-bg-surface)',
-                border: '1px solid var(--color-border)',
-              }}
-              onMouseOver={e => e.currentTarget.style.borderColor = 'rgba(200,16,46,0.25)'}
-              onMouseOut={e => e.currentTarget.style.borderColor = 'var(--color-border)'}
+              className="relative flex flex-col rounded-2xl border border-zinc-800 bg-zinc-900 p-7 transition-colors hover:border-zinc-700"
             >
               {/* Quote icon */}
               <Quote

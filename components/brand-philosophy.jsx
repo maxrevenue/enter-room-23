@@ -77,13 +77,7 @@ export default function BrandPhilosophy() {
           ].map((pillar) => (
             <div
               key={pillar.title}
-              className="text-center p-6 rounded-xl transition-all duration-300 hover:-translate-y-1 group"
-              style={{
-                backgroundColor: 'var(--bg-surface)',
-                border: '1px solid var(--border)',
-              }}
-              onMouseOver={e => e.currentTarget.style.borderColor = 'rgba(200,16,46,0.3)'}
-              onMouseOut={e => e.currentTarget.style.borderColor = 'var(--border)'}
+              className="group rounded-xl border border-zinc-800 bg-zinc-900 p-6 text-center transition-colors hover:border-zinc-700"
             >
               <div
                 className="text-3xl mb-4 transition-all duration-300"
