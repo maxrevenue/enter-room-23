@@ -3,7 +3,8 @@
 import { useState } from 'react'
 import { useCart } from '@/lib/cart-context'
 import { SITE_CONFIG } from '@/config/site'
-import { X, Lock, ShieldCheck, CreditCard, Check, Mail } from 'lucide-react'
+import CheckoutDisclaimer from '@/components/CheckoutDisclaimer'
+import { X, Lock, ShieldCheck, Check, Mail } from 'lucide-react'
 import Link from 'next/link'
 
 export default function CheckoutDialog() {
@@ -218,6 +219,8 @@ export default function CheckoutDialog() {
               </div>
             </div>
 
+            <CheckoutDisclaimer />
+
             {/* ── Payment (soft launch) ── */}
             {!SITE_CONFIG.checkoutEnabled && (
               <div
@@ -257,24 +260,6 @@ export default function CheckoutDialog() {
               </p>
             </div>
             )}
-
-            {/* ── Billing Descriptor Notice ── */}
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.625rem',
-                padding: '0.75rem 1rem',
-                backgroundColor: 'var(--bg-elevated)',
-                borderRadius: 'var(--radius-md)',
-                border: '1px solid var(--border-light)',
-              }}
-            >
-              <CreditCard size={16} style={{ color: 'var(--color-brass)', flexShrink: 0 }} />
-              <p style={{ color: 'var(--text-muted)', fontSize: 'var(--text-xs)', lineHeight: 1.4 }}>
-                Charges will appear as <strong style={{ color: 'var(--text-primary)' }}>{SITE_CONFIG.billingDescriptor}</strong> on your bank statement.
-              </p>
-            </div>
 
             {/* ── Security Indicators ── */}
             <div style={{ display: 'flex', gap: '1.5rem', justifyContent: 'center', flexWrap: 'wrap' }}>

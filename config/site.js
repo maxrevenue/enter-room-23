@@ -28,9 +28,9 @@ export const SITE_CONFIG = {
   bizAddressFull: '5482 Wilshire Blvd #333, Los Angeles, CA 90036',
 
   // ── Billing ──
-  billingDescriptor: 'ROOM23',
-  checkoutEnabled: false,
-  softLaunch: true,
+  billingDescriptor: process.env.NEXT_PUBLIC_BILLING_DESCRIPTOR || 'ROOM23 WELLNESS',
+  checkoutEnabled: process.env.NEXT_PUBLIC_SOFT_LAUNCH !== 'true',
+  softLaunch: process.env.NEXT_PUBLIC_SOFT_LAUNCH === 'true',
 
   // ── Shipping ──
   carriers: ['USPS', 'UPS', 'FedEx'],

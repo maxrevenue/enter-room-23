@@ -1,6 +1,10 @@
+import type { ReactNode } from 'react'
 import { Inter, Syne } from 'next/font/google'
 import { CartProvider } from '@/lib/cart-context'
 import SiteShell from '@/components/site-shell'
+import SoftLaunchBanner from '@/components/SoftLaunchBanner'
+import AgeGate from '@/components/AgeGate'
+import DiscreetNewsletter from '@/components/DiscreetNewsletter'
 import './globals.css'
 
 const inter = Inter({
@@ -61,18 +65,20 @@ export const metadata = {
   },
 }
 
-export default function RootLayout({ children }) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   const fontVars = `${inter.variable} ${syne.variable}`
 
   return (
     <html lang="en" className={fontVars} data-theme="noir">
       <body>
-        {/* WCAG: skip-to-content link */}
         <a href="#main-content" className="skip-to-content" aria-label="Skip to main content">
           Skip to content
         </a>
+        <SoftLaunchBanner />
+        <AgeGate />
         <CartProvider>
           <SiteShell>{children}</SiteShell>
+          <DiscreetNewsletter />
         </CartProvider>
       </body>
     </html>

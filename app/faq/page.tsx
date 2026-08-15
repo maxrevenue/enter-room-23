@@ -9,7 +9,7 @@ export const metadata = {
 const faqs = [
   {
     q: 'What will appear on my credit card statement?',
-    a: 'Charges will discreetly appear as ROOM23 or a similar unidentifiable descriptor on your bank statement. Your privacy is paramount; no references to products, adult items, or wellness will ever be visible on your billing record.',
+    a: 'Charges will discreetly appear as ROOM23 WELLNESS on your bank statement. Your privacy is paramount; no product names or adult descriptors will ever be visible on your billing record.',
   },
   {
     q: 'Is the packaging really discreet?',
@@ -28,12 +28,8 @@ const faqs = [
     a: 'Yes. The moment your order ships, you will receive an email containing your tracking number and a direct link to the carrier\'s tracking portal. Please allow up to 24 hours for the tracking information to activate.',
   },
   {
-    q: 'Why is there an age verification?',
-    a: 'Room 23 curates adult wellness products strictly for individuals 18 years of age and older. Age verification is a legal requirement and reflects our core commitment to responsible commerce. We do not knowingly serve minors.',
-  },
-  {
-    q: 'How long does the age verification last?',
-    a: 'Once confirmed, your age is verified for the duration of your current browser session. If you close and reopen your browser, you will be prompted to re-verify. This session-based approach ensures strict compliance with high-risk merchant standards.',
+    q: 'Why do you require age verification, and are you tracking me?',
+    a: 'Because we sell premium adult wellness products, we are legally required to ensure all visitors are 18 or older. We respect your privacy implicitly: our age gate does not collect personal data. It simply places a secure, 30-day cookie on your browser so you don’t have to re-verify every time you visit. No tracking, no judgment.',
   },
   {
     q: 'Can I return an item?',

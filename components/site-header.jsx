@@ -6,7 +6,6 @@ import { usePathname } from 'next/navigation'
 import { useCart } from '@/lib/cart-context'
 import { Menu, X, ShoppingBag, Lock } from 'lucide-react'
 import BrandLogo from '@/components/brand-logo'
-import { SITE_CONFIG } from '@/config/site'
 
 const NAV_LINKS = [
   { href: '/shop', label: 'SHOP' },
@@ -106,18 +105,6 @@ export default function SiteHeader() {
             </div>
           </div>
         </div>
-        {SITE_CONFIG.softLaunch && (
-          <div
-            className="w-full text-center py-1.5 px-4 text-[10px] font-semibold tracking-[0.18em] uppercase"
-            style={{
-              backgroundColor: 'rgba(200,16,46,0.12)',
-              color: '#F4F4F6',
-              borderBottom: '1px solid rgba(200,16,46,0.2)',
-            }}
-          >
-            Soft launch — browse the collection. Secure checkout opens once CCBill is live.
-          </div>
-        )}
       </header>
 
       {/* ── Left Slide-Out Drawer Navigation ── */}

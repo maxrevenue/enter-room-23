@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { useCart } from '@/lib/cart-context'
 import { ShoppingBag, Archive, Key, ArrowRight, ChevronUp } from 'lucide-react'
 import EditorChoice from '@/components/editor-choice'
 import BrandPhilosophy from '@/components/brand-philosophy'
@@ -45,24 +44,19 @@ const COLLECTION_CARDS = [
 ]
 
 export default function HomePage() {
-  const { ageVerified, mounted } = useCart()
   const [showContent, setShowContent] = useState(false)
   const [showScrollTop, setShowScrollTop] = useState(false)
 
   useEffect(() => {
-    if (mounted && ageVerified) {
-      const timer = setTimeout(() => setShowContent(true), 100)
-      return () => clearTimeout(timer)
-    }
-  }, [mounted, ageVerified])
+    const timer = setTimeout(() => setShowContent(true), 100)
+    return () => clearTimeout(timer)
+  }, [])
 
   useEffect(() => {
     const handleScroll = () => setShowScrollTop(window.scrollY > 600)
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
-
-  if (!mounted || !ageVerified) return null
 
   return (
     <div

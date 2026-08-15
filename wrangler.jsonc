@@ -24,7 +24,9 @@
     "BIZ_ADDRESS_STREET": "Address pending",
     "BIZ_ADDRESS_CITY_STATE": "Address pending",
     "BIZ_PHONE": "Phone number pending",
-    "SITE_INDEXABLE": "true"
+    "SITE_INDEXABLE": "true",
+    "NEXT_PUBLIC_SOFT_LAUNCH": "true",
+    "NEXT_PUBLIC_BILLING_DESCRIPTOR": "ROOM23 WELLNESS"
   },
 
   // ── Staging environment ──

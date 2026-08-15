@@ -2,11 +2,12 @@
 
 import { use, useState } from 'react'
 import { notFound, useRouter } from 'next/navigation'
-import { Minus, Plus, Truck, Heart, ChevronDown, ChevronUp, Waves, Droplets, Shield, ShieldCheck, Leaf, Heart as HeartSolid, Smartphone, Sparkles, Blend } from 'lucide-react'
+import { Minus, Plus, Truck, Heart, Waves, Droplets, Shield, ShieldCheck, Leaf, Heart as HeartSolid, Smartphone, Sparkles, Blend } from 'lucide-react'
 import { PRODUCTS } from '@/lib/products'
 import { useCart } from '@/lib/cart-context'
 
 import ProductArtwork from '@/components/product-artwork'
+import ProductSpecs from '@/components/ProductSpecs'
 
 // Map icon names from product features to actual Lucide components
 const ICON_MAP = {
@@ -32,10 +33,6 @@ export default function ProductDetailPage({ params }) {
   const [qty, setQty] = useState(1)
   const [added, setAdded] = useState(false)
   const [wishlisted, setWishlisted] = useState(false)
-
-  // Accordion state
-  const [materialsOpen, setMaterialsOpen] = useState(false)
-  const [specsOpen, setSpecsOpen] = useState(false)
 
   // Current variant price
   const currentPrice =
@@ -308,80 +305,22 @@ export default function ProductDetailPage({ params }) {
           </div>
         </section>
 
-        {/* ── Collapsible Accordions ── */}
-        <section className="space-y-3">
-          {/* Materials & Care */}
-          {product.materials && (
-            <div
-              className="rounded-xl border overflow-hidden"
-              style={{ borderColor: 'var(--border)', backgroundColor: 'var(--bg-surface)' }}
-            >
-              <button
-                onClick={() => setMaterialsOpen(!materialsOpen)}
-                className="w-full flex items-center justify-between px-5 py-4 text-left transition-colors"
-                style={{
-                  backgroundColor: materialsOpen ? 'var(--bg-elevated)' : 'transparent',
-                }}
-              >
-                <span
-                  className="font-syne text-sm font-bold uppercase tracking-[0.1em]"
-                  style={{ color: 'var(--text-primary)' }}
-                >
-                  MATERIALS & CARE
-                </span>
-                {materialsOpen ? (
-                  <ChevronUp className="w-5 h-5" style={{ color: 'var(--text-secondary)' }} />
-                ) : (
-                  <ChevronDown className="w-5 h-5" style={{ color: 'var(--text-secondary)' }} />
-                )}
-              </button>
-              {materialsOpen && (
-                <div className="px-5 pb-5">
-                  <hr className="mb-4" style={{ borderColor: 'var(--border)' }} />
-                  <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-                    {product.materials}
-                  </p>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Specifications */}
-          {product.specifications && (
-            <div
-              className="rounded-xl border overflow-hidden"
-              style={{ borderColor: 'var(--border)', backgroundColor: 'var(--bg-surface)' }}
-            >
-              <button
-                onClick={() => setSpecsOpen(!specsOpen)}
-                className="w-full flex items-center justify-between px-5 py-4 text-left transition-colors"
-                style={{
-                  backgroundColor: specsOpen ? 'var(--bg-elevated)' : 'transparent',
-                }}
-              >
-                <span
-                  className="font-syne text-sm font-bold uppercase tracking-[0.1em]"
-                  style={{ color: 'var(--text-primary)' }}
-                >
-                  SPECIFICATIONS
-                </span>
-                {specsOpen ? (
-                  <ChevronUp className="w-5 h-5" style={{ color: 'var(--text-secondary)' }} />
-                ) : (
-                  <ChevronDown className="w-5 h-5" style={{ color: 'var(--text-secondary)' }} />
-                )}
-              </button>
-              {specsOpen && (
-                <div className="px-5 pb-5">
-                  <hr className="mb-4" style={{ borderColor: 'var(--border)' }} />
-                  <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-                    {product.specifications}
-                  </p>
-                </div>
-              )}
-            </div>
-          )}
-        </section>
+        {(product.materials || product.specifications) && (
+          <ProductSpecs
+            composition={product.materials || product.description}
+            freeFrom={
+              product.filters?.type === 'lubricant'
+                ? ['Fragrance', 'Parabens', 'Glycerin']
+                : []
+            }
+            care={product.specifications || 'Store in a cool, dry place. Follow product label.'}
+            warning={
+              typeof product.materials === 'string' && product.materials.includes('DO NOT')
+                ? product.materials.slice(product.materials.indexOf('DO NOT'))
+                : undefined
+            }
+          />
+        )}
       </div>
     </main>
   )
