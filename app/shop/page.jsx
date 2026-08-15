@@ -6,6 +6,7 @@ import { useCart } from '@/lib/cart-context'
 import { PRODUCTS as products } from '@/lib/products'
 import { ShoppingBag, Search, SlidersHorizontal, X, Star, ChevronDown, Flame, Sparkles } from 'lucide-react'
 import ProductArtwork from '@/components/product-artwork'
+import EditorChoice from '@/components/editor-choice'
 
 const CATEGORIES = ['All', 'Essentials', 'Toys', 'Wellness', 'Accessories']
 
@@ -184,6 +185,8 @@ export default function ShopPage() {
           </div>
         </div>
       </div>
+
+      <EditorChoice />
 
       {/* ── Sticky Filter / Sort Toolbar ── */}
       <div

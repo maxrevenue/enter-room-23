@@ -2,60 +2,46 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { ShoppingBag, Archive, Key, ArrowRight, ChevronUp } from 'lucide-react'
-import EditorChoice from '@/components/editor-choice'
-import BrandPhilosophy from '@/components/brand-philosophy'
-import TheColumn from '@/components/the-column'
-import VipWaitlist from '@/components/vip-waitlist'
+import { ShoppingBag, Truck, Archive, Key, ArrowRight } from 'lucide-react'
 import ComplianceStrip from '@/components/compliance-strip'
-import Testimonials from '@/components/testimonials'
 
-const COLLECTION_CARDS = [
+const DESTINATION_CARDS = [
   {
     href: '/shop',
     icon: ShoppingBag,
     title: 'SHOP',
-    subtitle: 'Curated Essentials',
-    description: 'Explore our full collection of premium adult wellness products.',
-    count: '6 Products',
-    glowColor: 'var(--color-brass)',
-    glowBg: 'var(--color-brass-glow)',
+    subtitle: 'The Collection',
+    description: 'Premium adult wellness, curated and ready to ship.',
+  },
+  {
+    href: '/shipping',
+    icon: Truck,
+    title: 'SHIPPING',
+    subtitle: 'Plain Packaging',
+    description: 'Unmarked boxes, private billing, US delivery.',
   },
   {
     href: '/faq',
     icon: Archive,
     title: 'FAQ',
     subtitle: 'Get Answers',
-    description: 'Billing, shipping, age verification — everything you need to know.',
-    count: '12 Topics',
-    glowColor: 'var(--color-brass)',
-    glowBg: 'var(--color-brass-glow)',
+    description: 'Billing, age verification, and order questions.',
   },
   {
     href: '/contact',
     icon: Key,
     title: 'CONTACT',
     subtitle: "We're Here",
-    description: 'Reach our support team for discreet, private assistance.',
-    count: 'Always Private',
-    glowColor: 'var(--color-brass)',
-    glowBg: 'var(--color-brass-glow)',
+    description: 'Discreet support at support@room23.net.',
   },
 ]
 
 export default function HomePage() {
   const [showContent, setShowContent] = useState(false)
-  const [showScrollTop, setShowScrollTop] = useState(false)
 
   useEffect(() => {
     const timer = setTimeout(() => setShowContent(true), 100)
     return () => clearTimeout(timer)
-  }, [])
-
-  useEffect(() => {
-    const handleScroll = () => setShowScrollTop(window.scrollY > 600)
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
   return (
@@ -63,20 +49,13 @@ export default function HomePage() {
       className={`flex-1 transition-opacity duration-700 ${showContent ? 'opacity-100' : 'opacity-0'}`}
       style={{ backgroundColor: 'var(--bg-base)' }}
     >
-      {/* ══════════════════════════════════════════
-          1. HERO
-          ══════════════════════════════════════════ */}
       <section
-        className="relative min-h-[75vh] flex flex-col items-center justify-center px-4 py-20 sm:py-32 text-center overflow-hidden"
+        className="relative min-h-[70vh] flex flex-col items-center justify-center px-4 py-20 sm:py-28 text-center overflow-hidden"
         aria-label="Welcome to Room 23"
         style={{ backgroundColor: 'var(--bg-base)' }}
       >
-        {/* Hero background — dark with subtle radial glow */}
         <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-          <div
-            className="absolute inset-0"
-            style={{ backgroundColor: '#0B0B0C' }}
-          />
+          <div className="absolute inset-0" style={{ backgroundColor: '#0B0B0C' }} />
           <div
             className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px]"
             style={{
@@ -85,10 +64,9 @@ export default function HomePage() {
           />
         </div>
 
-        {/* Brand Logo — Typography */}
         <div className="relative z-10 flex justify-center mb-6 animate-fade-in-up">
           <span
-            className="font-syne font-bold tracking-widest uppercase transition-transform duration-500 hover:scale-[1.03] inline-block"
+            className="font-syne font-bold tracking-widest uppercase inline-block"
             style={{
               fontSize: 'clamp(2.5rem, 8vw, 4.5rem)',
               color: '#C8102E',
@@ -100,7 +78,6 @@ export default function HomePage() {
           </span>
         </div>
 
-        {/* Eyebrow pill */}
         <div
           className="relative z-10 inline-flex items-center gap-2 mb-6 animate-fade-in-up"
           style={{
@@ -108,7 +85,6 @@ export default function HomePage() {
             borderRadius: '9999px',
             border: '1px solid rgba(200,16,46,0.3)',
             backgroundColor: 'rgba(200,16,46,0.06)',
-            animationDelay: '0.05s',
           }}
         >
           <span
@@ -120,267 +96,78 @@ export default function HomePage() {
               color: '#C8102E',
             }}
           >
-            ✦ Private · Curated · Discreet ✦
+            Private · Curated · Discreet
           </span>
         </div>
 
-        {/* Hero Tagline */}
         <p
           className="relative z-10 max-w-lg mx-auto animate-fade-in-up"
           style={{
             fontSize: 'clamp(1.05rem, 2.5vw, 1.2rem)',
             color: 'var(--text-secondary)',
             lineHeight: 1.8,
-            letterSpacing: '0.02em',
             marginBottom: '2.5rem',
-            animationDelay: '0.1s',
             fontStyle: 'italic',
           }}
         >
-          Considered pleasure. Discreet delivery. — Exclusive collections for those who
-          appreciate refinement behind closed doors.
+          Considered pleasure. Discreet delivery.
         </p>
 
-        {/* CTAs */}
-        <div
-          className="relative z-10 flex flex-col sm:flex-row items-center justify-center gap-3 animate-fade-in-up"
-          style={{ animationDelay: '0.15s' }}
+        <Link
+          href="/shop"
+          className="relative z-10 inline-flex items-center gap-2 group rounded-lg font-semibold uppercase tracking-widest text-sm transition-all duration-200"
+          style={{ padding: '0.875rem 2rem', backgroundColor: '#C8102E', color: '#FFFFFF', boxShadow: '0 4px 24px rgba(200,16,46,0.3)' }}
+          onMouseOver={e => { e.currentTarget.style.backgroundColor = '#A30D25' }}
+          onMouseOut={e => { e.currentTarget.style.backgroundColor = '#C8102E' }}
         >
-          <Link
-            href="/shop"
-            className="inline-flex items-center gap-2 group rounded-lg font-semibold uppercase tracking-widest text-sm transition-all duration-200"
-            style={{ padding: '0.875rem 2rem', backgroundColor: '#C8102E', color: '#FFFFFF', boxShadow: '0 4px 24px rgba(200,16,46,0.3)' }}
-            onMouseOver={e => { e.currentTarget.style.backgroundColor = '#A30D25'; e.currentTarget.style.boxShadow = '0 6px 32px rgba(200,16,46,0.5)' }}
-            onMouseOut={e => { e.currentTarget.style.backgroundColor = '#C8102E'; e.currentTarget.style.boxShadow = '0 4px 24px rgba(200,16,46,0.3)' }}
-          >
-            SHOP NOW
-            <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform duration-200" />
-          </Link>
-          <Link
-            href="/collections/vault"
-            className="inline-flex items-center gap-2 group rounded-lg font-semibold uppercase tracking-widest text-sm transition-all duration-200"
-            style={{ padding: '0.875rem 1.75rem', backgroundColor: 'transparent', color: '#F4F4F6', border: '1px solid rgba(244,244,246,0.2)' }}
-            onMouseOver={e => e.currentTarget.style.borderColor = 'rgba(200,16,46,0.5)'}
-            onMouseOut={e => e.currentTarget.style.borderColor = 'rgba(244,244,246,0.2)'}
-          >
-            THE VAULT
-          </Link>
-        </div>
+          SHOP NOW
+          <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform duration-200" />
+        </Link>
 
-        {/* Crimson divider */}
         <div
           className="relative z-10 mx-auto mt-16 h-[1px] max-w-xs"
-          style={{
-            background: 'linear-gradient(90deg, transparent, #C8102E, transparent)',
-          }}
+          style={{ background: 'linear-gradient(90deg, transparent, #C8102E, transparent)' }}
         />
       </section>
 
-      {/* ══════════════════════════════════════════
-          2. EDITOR'S CHOICE
-          ══════════════════════════════════════════ */}
-      <EditorChoice />
-
-      {/* ══════════════════════════════════════════
-          3. COLLECTION CARDS
-          ══════════════════════════════════════════ */}
-      <section
-        className="px-4 sm:px-6 pb-14 sm:pb-20"
-        aria-label="Collections"
-        style={{ backgroundColor: 'var(--bg-base)' }}
-      >
-        <div className="mx-auto max-w-5xl">
-          {/* Section label */}
-          <p
-            className="text-center mb-8 animate-fade-in-up"
-            style={{
-              fontSize: 'var(--text-xs)',
-              fontWeight: 700,
-              letterSpacing: '0.2em',
-              textTransform: 'uppercase',
-              color: 'var(--color-brass)',
-            }}
-          >
-            Explore
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6">
-            {COLLECTION_CARDS.map((card, i) => (
-              <Link
-                key={card.href}
-                href={card.href}
-                className="group relative flex flex-col items-center text-center p-7 sm:p-8 cursor-pointer transition-all duration-300 hover:-translate-y-1 animate-fade-in-up"
-                style={{
-                  backgroundColor: 'var(--bg-surface)',
-                  borderRadius: 'var(--radius-lg)',
-                  border: '1px solid var(--border)',
-                  animationDelay: `${0.2 + i * 0.08}s`,
-                  opacity: 0,
-                }}
-                aria-label={`Go to ${card.title} — ${card.subtitle}`}
-              >
-                {/* Top brass accent line — expands on hover */}
-                <div
-                  className="absolute top-0 left-8 right-8 h-[1px] transition-all duration-500 group-hover:left-4 group-hover:right-4"
-                  style={{ backgroundColor: card.glowColor, opacity: 0.3 }}
-                />
-
-                {/* Hover background glow */}
-                <div
-                  className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-                  style={{
-                    background: 'radial-gradient(ellipse at 50% 0%, rgba(212,168,83,0.06) 0%, transparent 65%)',
-                  }}
-                />
-
-                {/* Icon */}
-                <div className="relative mb-5 mt-1">
-                  <div
-                    className="relative w-14 h-14 rounded-full flex items-center justify-center border transition-all duration-500 group-hover:shadow-[0_0_20px_rgba(212,168,83,0.25)]"
-                    style={{
-                      borderColor: 'var(--border)',
-                      backgroundColor: 'var(--bg-elevated)',
-                    }}
-                  >
-                    <card.icon
-                      className="w-6 h-6 transition-transform duration-300 group-hover:scale-110"
-                      style={{ color: card.glowColor }}
-                      aria-hidden="true"
-                    />
-                  </div>
-                </div>
-
-                <h3
-                  className="font-syne text-lg font-bold tracking-[0.1em] uppercase mb-1"
-                  style={{ color: 'var(--text-primary)' }}
-                >
-                  {card.title}
-                </h3>
-                <p
-                  className="text-xs font-semibold tracking-[0.15em] uppercase mb-3"
-                  style={{ color: card.glowColor }}
-                >
-                  {card.subtitle}
-                </p>
-                <p className="text-sm leading-relaxed mb-1" style={{ color: 'var(--text-muted)' }}>
-                  {card.description}
-                </p>
-                <p
-                  className="text-xs font-semibold mb-5"
-                  style={{ color: 'rgba(212,168,83,0.5)' }}
-                >
-                  {card.count}
-                </p>
-                <div
-                  className="mt-auto flex items-center gap-2 text-xs font-semibold tracking-[0.12em] uppercase transition-all duration-300 group-hover:gap-3"
-                  style={{ color: card.glowColor }}
-                >
-                  EXPLORE <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform duration-300" aria-hidden="true" />
-                </div>
-
-                <div
-                  className="absolute bottom-0 left-8 right-8 h-[1px] transition-all duration-500 group-hover:left-4 group-hover:right-4"
-                  style={{ backgroundColor: card.glowColor, opacity: 0.15 }}
-                />
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════
-          4. BRAND PHILOSOPHY
-          ══════════════════════════════════════════ */}
-      <BrandPhilosophy />
-
-      {/* ══════════════════════════════════════════
-          5. THE COLUMN (BLOG)
-          ══════════════════════════════════════════ */}
-      <TheColumn />
-
-      {/* ══════════════════════════════════════════
-          6. VIP WAITLIST
-          ══════════════════════════════════════════ */}
-      <Testimonials />
-      <VipWaitlist />
-
-      {/* ══════════════════════════════════════════
-          7. COMPLIANCE STRIP
-          ══════════════════════════════════════════ */}
-      <ComplianceStrip />
-
-      {/* ══════════════════════════════════════════
-          8. TRUST BADGES
-          ══════════════════════════════════════════ */}
-      <section
-        className="px-4 sm:px-6 py-12 sm:py-16"
-        aria-label="Our commitments"
-        style={{ backgroundColor: 'var(--bg-base)' }}
-      >
-        <div className="mx-auto max-w-4xl">
-          <div
-            className="p-8 sm:p-10 text-center relative overflow-hidden"
-            style={{
-              backgroundColor: 'var(--bg-surface)',
-              borderRadius: 'var(--radius-lg)',
-              border: '1px solid var(--border)',
-            }}
-          >
-            {/* Background shimmer */}
-            <div
-              className="absolute inset-0 pointer-events-none"
+      <section className="px-4 sm:px-6 pb-16 sm:pb-20" aria-label="Explore">
+        <div className="mx-auto max-w-5xl grid grid-cols-1 sm:grid-cols-2 gap-5">
+          {DESTINATION_CARDS.map((card) => (
+            <Link
+              key={card.href}
+              href={card.href}
+              className="group relative flex flex-col p-7 sm:p-8 transition-all duration-300 hover:-translate-y-1"
               style={{
-                background: 'radial-gradient(ellipse at 50% 0%, rgba(212,168,83,0.04) 0%, transparent 60%)',
+                backgroundColor: 'var(--bg-surface)',
+                borderRadius: 'var(--radius-lg)',
+                border: '1px solid var(--border)',
               }}
-            />
-            <div className="relative z-10">
-              <div className="flex flex-wrap items-center justify-center gap-x-10 sm:gap-x-14 gap-y-4 mb-8">
-                {[
-                  { title: 'Discreet', desc: 'Plain packaging, private billing' },
-                  { title: 'Curated', desc: 'Hand-selected premium products' },
-                  { title: 'Exclusive', desc: 'Member-only collections & access' },
-                ].map((trait) => (
-                  <div key={trait.title}>
-                    <p
-                      className="text-sm font-syne font-bold tracking-[0.1em] uppercase mb-0.5"
-                      style={{ color: 'var(--color-brass)' }}
-                    >
-                      {trait.title}
-                    </p>
-                    <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{trait.desc}</p>
-                  </div>
-                ))}
-              </div>
-
-              <div
-                className="mx-auto h-[1px] max-w-xs mb-6"
-                style={{ background: 'linear-gradient(90deg, transparent, var(--color-brass), transparent)' }}
-              />
-
-              <p className="text-sm max-w-lg mx-auto" style={{ color: 'var(--text-secondary)' }}>
-                Room 23 is a private sanctuary. Every order is handled with absolute confidentiality.
-                Your privacy is our priority.
+            >
+              <card.icon className="w-5 h-5 mb-4" style={{ color: '#C8102E' }} />
+              <h3
+                className="font-syne text-lg font-bold tracking-[0.1em] uppercase mb-1"
+                style={{ color: 'var(--text-primary)' }}
+              >
+                {card.title}
+              </h3>
+              <p className="text-xs font-semibold tracking-[0.15em] uppercase mb-3" style={{ color: '#C8102E' }}>
+                {card.subtitle}
               </p>
-            </div>
-          </div>
+              <p className="text-sm leading-relaxed mb-5" style={{ color: 'var(--text-muted)' }}>
+                {card.description}
+              </p>
+              <span
+                className="mt-auto flex items-center gap-2 text-xs font-semibold tracking-[0.12em] uppercase"
+                style={{ color: '#C8102E' }}
+              >
+                OPEN <ArrowRight className="w-3.5 h-3.5" />
+              </span>
+            </Link>
+          ))}
         </div>
       </section>
 
-      {/* ── Back to Top ── */}
-      {showScrollTop && (
-        <button
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="fixed bottom-6 right-6 z-50 w-10 h-10 rounded-full flex items-center justify-center animate-fade-in-up transition-all duration-200 hover:scale-110"
-          style={{
-            backgroundColor: 'var(--bg-elevated)',
-            border: '1px solid var(--color-border-brass)',
-            color: 'var(--color-brass)',
-            boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
-          }}
-          aria-label="Back to top"
-        >
-          <ChevronUp size={18} />
-        </button>
-      )}
+      <ComplianceStrip />
     </div>
   )
 }

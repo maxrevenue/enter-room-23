@@ -7,14 +7,22 @@ import { useCart } from '@/lib/cart-context'
 import { Menu, X, ShoppingBag, Lock } from 'lucide-react'
 import BrandLogo from '@/components/brand-logo'
 
-const NAV_LINKS = [
+const TOP_LINKS = [
+  { href: '/shop', label: 'SHOP' },
+  { href: '/shipping', label: 'SHIPPING' },
+  { href: '/faq', label: 'FAQ' },
+  { href: '/contact', label: 'CONTACT' },
+]
+
+const MENU_LINKS = [
   { href: '/shop', label: 'SHOP' },
   { href: '/collections/essentials', label: 'ESSENTIALS' },
   { href: '/collections/vault', label: 'THE VAULT', icon: Lock },
   { href: '/collections/new-arrivals', label: 'NEW ARRIVALS' },
   { href: '/journal', label: 'THE ARCHIVE' },
-  { href: '/faq', label: 'FAQ' },
+  { href: '/about', label: 'ABOUT' },
   { href: '/shipping', label: 'SHIPPING' },
+  { href: '/faq', label: 'FAQ' },
   { href: '/contact', label: 'CONTACT' },
 ]
 
@@ -63,14 +71,14 @@ export default function SiteHeader() {
               >
                 <Menu className="h-6 w-6 stroke-[1.5]" />
               </button>
-              <nav className="hidden xl:flex items-center gap-x-3 overflow-x-auto" aria-label="Primary">
-                {NAV_LINKS.map((link) => {
-                  const isActive = pathname === link.href || (link.href !== '/shop' && pathname?.startsWith(`${link.href}/`))
+              <nav className="hidden md:flex items-center gap-5" aria-label="Primary">
+                {TOP_LINKS.map((link) => {
+                  const isActive = pathname === link.href || pathname?.startsWith(`${link.href}/`)
                   return (
                     <Link
                       key={link.label}
                       href={link.href}
-                      className="text-[10px] tracking-[0.14em] uppercase font-semibold transition-colors whitespace-nowrap"
+                      className="text-[11px] tracking-[0.16em] uppercase font-semibold transition-colors"
                       style={{ color: isActive ? '#C8102E' : 'var(--color-text-secondary)' }}
                     >
                       {link.label}
@@ -121,7 +129,7 @@ export default function SiteHeader() {
 
           {/* Drawer Panel */}
           <nav
-            className="relative flex w-full max-w-xs flex-col shadow-2xl overflow-y-auto animate-in slide-in-from-left duration-300"
+            className="relative flex w-full max-w-xs flex-col shadow-2xl animate-in slide-in-from-left duration-300"
             style={{ backgroundColor: '#0B0B0C', borderRight: '1px solid rgba(200,16,46,0.2)' }}
           >
             <div className="flex items-center justify-between px-6 py-5 border-b" style={{ borderColor: 'rgba(200,16,46,0.15)' }}>
@@ -142,7 +150,7 @@ export default function SiteHeader() {
 
             {/* Drawer Links */}
             <div className="flex flex-col px-6 py-8 space-y-1">
-              {NAV_LINKS.map((link) => {
+              {MENU_LINKS.map((link) => {
                 const isActive = pathname === link.href || pathname?.startsWith(`${link.href}/`)
                 const Icon = link.icon
                 return (

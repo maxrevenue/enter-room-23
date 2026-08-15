@@ -46,10 +46,8 @@ export default function SiteFooter() {
         <div className="flex items-center flex-wrap justify-center gap-6 md:gap-10 mb-12">
           {[
             { href: '/shop', label: 'SHOP' },
-            { href: '/collections/vault', label: 'THE VAULT' },
-            { href: '/journal', label: 'JOURNAL' },
-            { href: '/faq', label: 'FAQ' },
             { href: '/shipping', label: 'SHIPPING' },
+            { href: '/faq', label: 'FAQ' },
             { href: '/contact', label: 'CONTACT' },
           ].map(({ href, label }) => (
             <Link
@@ -72,9 +70,9 @@ export default function SiteFooter() {
           </span>
           <div className="flex items-center gap-5">
             {[
+              { href: '/about', label: 'ABOUT' },
               { href: '/privacy', label: 'PRIVACY' },
               { href: '/terms', label: 'TERMS' },
-              { href: '/shipping', label: 'SHIPPING' },
             ].map(({ href, label }) => (
               <Link
                 key={href}
