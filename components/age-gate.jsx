@@ -21,16 +21,11 @@ export default function AgeGate() {
       className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
       style={{ backgroundColor: 'rgba(11, 11, 12, 0.98)', backdropFilter: 'blur(20px)' }}
     >
-      {/* Hero background image — subtle */}
+      {/* Hero background — subtle radial overlay */}
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
         <div
           className="absolute inset-0"
-          style={{
-            backgroundImage: 'url(/hero.jpg)',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            opacity: 0.08,
-          }}
+          style={{ backgroundColor: '#0B0B0C' }}
         />
         <div
           className="absolute inset-0"
@@ -65,28 +60,27 @@ export default function AgeGate() {
             style={{ background: 'linear-gradient(90deg, #8B0000, #C8102E, #8B0000)' }}
           />
 
-          {/* Image / Logo Section */}
+          {/* Logo Section — typography only */}
           <div className="relative overflow-hidden">
             <div
               className="w-full h-48 flex items-center justify-center"
-              style={{
-                backgroundImage: 'url(/image.png)',
-                backgroundSize: 'cover',
-                backgroundPosition: 'center top',
-              }}
+              style={{ backgroundColor: '#0B0B0C' }}
             >
-              {/* Overlay gradient */}
               <div
                 className="absolute inset-0"
-                style={{ background: 'linear-gradient(to bottom, rgba(22,22,24,0.1) 0%, rgba(22,22,24,0.8) 100%)' }}
+                style={{ background: 'radial-gradient(ellipse at center, rgba(200,16,46,0.08) 0%, transparent 70%)' }}
               />
-              {/* Logo on top of image */}
-              <img
-                src="/logo.jpg"
-                alt="Room 23"
-                className="relative z-10 h-20 w-auto object-contain"
-                style={{ filter: 'drop-shadow(0 4px 16px rgba(200,16,46,0.4))' }}
-              />
+              <span
+                className="relative z-10 font-syne font-bold tracking-widest uppercase"
+                style={{
+                  fontSize: '2rem',
+                  color: '#C8102E',
+                  letterSpacing: '0.4em',
+                  textShadow: '0 4px 16px rgba(200,16,46,0.4)',
+                }}
+              >
+                ROOM 23
+              </span>
             </div>
           </div>
 

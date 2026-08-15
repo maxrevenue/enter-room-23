@@ -1,9 +1,9 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { use, useState, useMemo } from 'react'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { Lock, Star, ArrowRight, ShieldCheck, Zap } from 'lucide-react'
+import { Lock, ArrowRight, ShieldCheck } from 'lucide-react'
 import { PRODUCTS, COLLECTIONS, getProductsByCollection } from '@/lib/products'
 import ProductCard from '@/components/product-card'
 
@@ -18,7 +18,8 @@ const CATEGORY_FILTERS = [
 export const dynamicParams = true
 
 export default function CollectionPage({ params }) {
-  const { slug } = params
+  const resolved = typeof params?.then === 'function' ? use(params) : params
+  const slug = resolved?.slug
   const [activeCategory, setActiveCategory] = useState('all')
 
   const collectionMeta = COLLECTIONS[slug]
@@ -40,6 +41,8 @@ export default function CollectionPage({ params }) {
     return PRODUCTS.slice(0, 6)
   }, [showFallback])
 
+  if (!collectionMeta) notFound()
+
   return (
     <main style={{ backgroundColor: 'var(--bg-base)', minHeight: '100vh' }}>
 
@@ -50,17 +53,6 @@ export default function CollectionPage({ params }) {
       >
         {/* Background */}
         <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-          {isVault && (
-            <div
-              className="absolute inset-0"
-              style={{
-                backgroundImage: 'url(/hero.jpg)',
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                opacity: 0.15,
-              }}
-            />
-          )}
           <div
             className="absolute top-0 left-1/4 w-[60%] h-full"
             style={{
@@ -181,15 +173,6 @@ export default function CollectionPage({ params }) {
                 className="relative text-center mb-12 p-12 rounded-2xl overflow-hidden"
                 style={{ border: '1px solid rgba(200,16,46,0.2)' }}
               >
-                <div
-                  className="absolute inset-0 rounded-2xl"
-                  style={{
-                    backgroundImage: 'url(/hero.jpg)',
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    opacity: 0.12,
-                  }}
-                />
                 <div
                   className="absolute inset-0 rounded-2xl"
                   style={{ background: 'linear-gradient(to bottom, rgba(11,11,12,0.6), rgba(11,11,12,0.95))' }}

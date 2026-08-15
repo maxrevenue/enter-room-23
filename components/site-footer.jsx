@@ -1,7 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import { Instagram, Twitter, Facebook } from 'lucide-react'
+import BrandLogo from '@/components/brand-logo'
+import { SITE_CONFIG } from '@/config/site'
 
 export default function SiteFooter() {
   return (
@@ -14,15 +15,9 @@ export default function SiteFooter() {
     >
       <div className="mx-auto max-w-4xl flex flex-col items-center justify-center">
 
-        {/* Logo */}
-        <Link href="/" className="mb-8 focus:outline-none group" aria-label="Room 23 Home">
-          <img
-            src="/logo.jpg"
-            alt="Room 23"
-            className="h-20 w-auto object-contain transition-all duration-300 group-hover:scale-105"
-            style={{ filter: 'drop-shadow(0 4px 16px rgba(200,16,46,0.2))' }}
-          />
-        </Link>
+        <div className="mb-8">
+          <BrandLogo size="lg" />
+        </div>
 
         {/* Tagline */}
         <p
@@ -38,28 +33,14 @@ export default function SiteFooter() {
           style={{ background: 'linear-gradient(90deg, transparent, #C8102E, transparent)' }}
         />
 
-        {/* ── Social Icons ── */}
-        <div className="flex items-center gap-6 mb-10">
-          {[
-            { href: 'https://twitter.com', Icon: Twitter, label: 'X / Twitter' },
-            { href: 'https://facebook.com', Icon: Facebook, label: 'Facebook' },
-            { href: 'https://instagram.com', Icon: Instagram, label: 'Instagram' },
-          ].map(({ href, Icon, label }) => (
-            <a
-              key={label}
-              href={href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-2.5 rounded-full transition-all duration-300"
-              style={{ color: 'var(--color-text-muted)', border: '1px solid #26262A' }}
-              onMouseOver={e => { e.currentTarget.style.color = '#C8102E'; e.currentTarget.style.borderColor = 'rgba(200,16,46,0.4)' }}
-              onMouseOut={e => { e.currentTarget.style.color = 'var(--color-text-muted)'; e.currentTarget.style.borderColor = '#26262A' }}
-              aria-label={label}
-            >
-              <Icon className="w-4 h-4 stroke-[1.5]" />
-            </a>
-          ))}
-        </div>
+        <p
+          className="text-[11px] tracking-[0.08em] uppercase mb-10 text-center max-w-sm"
+          style={{ color: 'var(--color-text-muted)' }}
+        >
+          {SITE_CONFIG.softLaunch
+            ? 'Browsing is open. Checkout will be enabled when payments go live.'
+            : 'Questions? Reach us at support@room23.net'}
+        </p>
 
         {/* ── Nav Links ── */}
         <div className="flex items-center flex-wrap justify-center gap-6 md:gap-10 mb-12">
@@ -68,6 +49,7 @@ export default function SiteFooter() {
             { href: '/collections/vault', label: 'THE VAULT' },
             { href: '/journal', label: 'JOURNAL' },
             { href: '/faq', label: 'FAQ' },
+            { href: '/shipping', label: 'SHIPPING' },
             { href: '/contact', label: 'CONTACT' },
           ].map(({ href, label }) => (
             <Link
@@ -92,6 +74,7 @@ export default function SiteFooter() {
             {[
               { href: '/privacy', label: 'PRIVACY' },
               { href: '/terms', label: 'TERMS' },
+              { href: '/shipping', label: 'SHIPPING' },
             ].map(({ href, label }) => (
               <Link
                 key={href}

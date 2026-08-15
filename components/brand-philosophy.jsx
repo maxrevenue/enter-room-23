@@ -19,16 +19,6 @@ export default function BrandPhilosophy() {
       </div>
 
       <div className="mx-auto max-w-4xl text-center relative z-10">
-        {/* Logo */}
-        <div className="flex justify-center mb-10">
-          <img
-            src="/logo.jpg"
-            alt="Room 23 — Private Wellness"
-            className="h-32 w-auto object-contain animate-float"
-            style={{ filter: 'drop-shadow(0 8px 24px rgba(200,16,46,0.2))' }}
-          />
-        </div>
-
         <p
           className="text-xs tracking-[0.3em] uppercase mb-4 font-semibold"
           style={{ color: '#C8102E' }}

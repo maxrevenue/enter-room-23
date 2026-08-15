@@ -5,6 +5,8 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useCart } from '@/lib/cart-context'
 import { Menu, X, ShoppingBag, Lock } from 'lucide-react'
+import BrandLogo from '@/components/brand-logo'
+import { SITE_CONFIG } from '@/config/site'
 
 const NAV_LINKS = [
   { href: '/shop', label: 'SHOP' },
@@ -47,31 +49,42 @@ export default function SiteHeader() {
             boxShadow: scrolled ? '0 4px 30px rgba(0,0,0,0.6)' : 'none',
           }}
         >
-          <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
+          <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 gap-4">
 
-            {/* ── Left: Hamburger Menu ── */}
-            <button
-              onClick={() => setDrawerOpen(true)}
-              className="p-2 -ml-2 rounded-full transition-all duration-200 focus:outline-none"
-              style={{ color: 'var(--color-text-primary)' }}
-              onMouseOver={e => e.currentTarget.style.color = '#C8102E'}
-              onMouseOut={e => e.currentTarget.style.color = 'var(--color-text-primary)'}
-              aria-label="Open menu"
-            >
-              <Menu className="h-6 w-6 stroke-[1.5]" />
-            </button>
+            {/* ── Left: Hamburger (mobile) + desktop links ── */}
+            <div className="flex items-center gap-1 min-w-[2.5rem] lg:min-w-0 lg:flex-1">
+              <button
+                onClick={() => setDrawerOpen(true)}
+                className="p-2 -ml-2 rounded-full transition-all duration-200 focus:outline-none lg:hidden"
+                style={{ color: 'var(--color-text-primary)' }}
+                onMouseOver={e => e.currentTarget.style.color = '#C8102E'}
+                onMouseOut={e => e.currentTarget.style.color = 'var(--color-text-primary)'}
+                aria-label="Open menu"
+              >
+                <Menu className="h-6 w-6 stroke-[1.5]" />
+              </button>
+              <nav className="hidden lg:flex items-center gap-5" aria-label="Primary">
+                {NAV_LINKS.slice(0, 5).map((link) => {
+                  const isActive = pathname === link.href
+                  return (
+                    <Link
+                      key={link.label}
+                      href={link.href}
+                      className="text-[11px] tracking-[0.16em] uppercase font-semibold transition-colors"
+                      style={{ color: isActive ? '#C8102E' : 'var(--color-text-secondary)' }}
+                    >
+                      {link.label}
+                    </Link>
+                  )
+                })}
+              </nav>
+            </div>
 
-            {/* ── Center: Logo ── */}
-            <Link href="/" className="flex items-center group focus:outline-none" aria-label="Room 23 Home">
-              <img
-                src="/logo.jpg"
-                alt="ROOM 23"
-                className="h-10 w-auto object-contain transition-all duration-300 group-hover:scale-105"
-                style={{ filter: 'drop-shadow(0 2px 8px rgba(200,16,46,0.3))' }}
-              />
-            </Link>
+            {/* ── Center: Wordmark ── */}
+            <BrandLogo size="md" />
 
             {/* ── Right: Cart ── */}
+            <div className="flex items-center justify-end min-w-[2.5rem] lg:flex-1">
             <button
               onClick={() => setCartOpen(!cartOpen)}
               className="relative p-2 -mr-2 rounded-full transition-all duration-200 focus:outline-none"
@@ -90,8 +103,21 @@ export default function SiteHeader() {
                 </span>
               )}
             </button>
+            </div>
           </div>
         </div>
+        {SITE_CONFIG.softLaunch && (
+          <div
+            className="w-full text-center py-1.5 px-4 text-[10px] font-semibold tracking-[0.18em] uppercase"
+            style={{
+              backgroundColor: 'rgba(200,16,46,0.12)',
+              color: '#F4F4F6',
+              borderBottom: '1px solid rgba(200,16,46,0.2)',
+            }}
+          >
+            Soft launch — browse the collection. Secure checkout opens once CCBill is live.
+          </div>
+        )}
       </header>
 
       {/* ── Left Slide-Out Drawer Navigation ── */}
@@ -110,15 +136,10 @@ export default function SiteHeader() {
             className="relative flex w-full max-w-xs flex-col shadow-2xl overflow-y-auto animate-in slide-in-from-left duration-300"
             style={{ backgroundColor: '#0B0B0C', borderRight: '1px solid rgba(200,16,46,0.2)' }}
           >
-            {/* Drawer Header with Logo */}
             <div className="flex items-center justify-between px-6 py-5 border-b" style={{ borderColor: 'rgba(200,16,46,0.15)' }}>
-              <Link href="/" onClick={closeDrawer} className="focus:outline-none">
-                <img
-                  src="/logo.jpg"
-                  alt="ROOM 23"
-                  className="h-9 w-auto object-contain"
-                />
-              </Link>
+              <span onClick={closeDrawer}>
+                <BrandLogo size="sm" />
+              </span>
               <button
                 onClick={closeDrawer}
                 className="p-2 -mr-2 transition-colors focus:outline-none"

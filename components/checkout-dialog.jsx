@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useCart } from '@/lib/cart-context'
 import { SITE_CONFIG } from '@/config/site'
-import { X, Lock, ShieldCheck, CreditCard, Check } from 'lucide-react'
+import { X, Lock, ShieldCheck, CreditCard, Check, Mail } from 'lucide-react'
 import Link from 'next/link'
 
 export default function CheckoutDialog() {
@@ -218,7 +218,26 @@ export default function CheckoutDialog() {
               </div>
             </div>
 
-            {/* ── Payment Details ── */}
+            {/* ── Payment (soft launch) ── */}
+            {!SITE_CONFIG.checkoutEnabled && (
+              <div
+                style={{
+                  padding: '1rem 1.1rem',
+                  borderRadius: 'var(--radius-md)',
+                  border: '1px solid rgba(200,16,46,0.25)',
+                  backgroundColor: 'rgba(200,16,46,0.06)',
+                }}
+              >
+                <p style={{ color: 'var(--text-primary)', fontSize: 'var(--text-sm)', fontWeight: 600, marginBottom: '0.4rem' }}>
+                  Checkout is almost ready
+                </p>
+                <p style={{ color: 'var(--text-secondary)', fontSize: 'var(--text-xs)', lineHeight: 1.6 }}>
+                  Secure CCBill payments are being connected. You can browse, build a cart, and we will enable checkout as soon as the gateway is live. No card details are collected on this site.
+                </p>
+              </div>
+            )}
+
+            {SITE_CONFIG.checkoutEnabled && (
             <div>
               <h3
                 style={{
@@ -233,60 +252,11 @@ export default function CheckoutDialog() {
               >
                 Payment Details
               </h3>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                {/* Cardholder Name */}
-                <div>
-                  <label htmlFor="cc-name" className="input-label">Cardholder Name</label>
-                  <input
-                    id="cc-name"
-                    type="text"
-                    className="input-field"
-                    placeholder="Name on card"
-                    autoComplete="cc-name"
-                  />
-                </div>
-
-                {/* Card Number — hosted by CCBill secure payment form */}
-                <div>
-                  <label htmlFor="cc-number" className="input-label">Card Number</label>
-                  <input
-                    id="cc-number"
-                    type="text"
-                    className="input-field"
-                    placeholder="0000 0000 0000 0000"
-                    autoComplete="cc-number"
-                    maxLength={19}
-                  />
-                </div>
-
-                {/* Expiry + CVV Row */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                  <div>
-                    <label htmlFor="cc-expiry" className="input-label">Expiry Date</label>
-                    <input
-                      id="cc-expiry"
-                      type="text"
-                      className="input-field"
-                      placeholder="MM / YY"
-                      autoComplete="cc-exp"
-                      maxLength={7}
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="cc-cvv" className="input-label">CVV</label>
-                    <input
-                      id="cc-cvv"
-                      type="text"
-                      className="input-field"
-                      placeholder="123"
-                      autoComplete="cc-csc"
-                      maxLength={4}
-                    />
-                  </div>
-                </div>
-              </div>
+              <p style={{ color: 'var(--text-muted)', fontSize: 'var(--text-xs)', lineHeight: 1.5 }}>
+                You will be redirected to CCBill to complete payment. Card data never touches our servers.
+              </p>
             </div>
+            )}
 
             {/* ── Billing Descriptor Notice ── */}
             <div
@@ -355,6 +325,7 @@ export default function CheckoutDialog() {
             </div>
 
             {/* ── Place Order Button ── */}
+            {SITE_CONFIG.checkoutEnabled ? (
             <button
               onClick={handlePlaceOrder}
               disabled={!agreedToTerms || submitting}
@@ -373,6 +344,17 @@ export default function CheckoutDialog() {
                 </>
               )}
             </button>
+            ) : (
+            <Link
+              href="/contact"
+              onClick={() => setCheckoutOpen(false)}
+              className="btn-primary"
+              style={{ width: '100%', padding: '0.875rem', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem' }}
+            >
+              <Mail size={14} />
+              Notify me when checkout opens
+            </Link>
+            )}
 
             {orderError && (
               <p style={{ color: 'var(--color-accent)', fontSize: 'var(--text-xs)', textAlign: 'center' }}>

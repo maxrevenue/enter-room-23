@@ -26,7 +26,6 @@ export default function ProductDetailPage({ params }) {
   if (!product) notFound()
 
   // ── State ──
-  const [activeImage, setActiveImage] = useState(0)
   const [selectedVariant, setSelectedVariant] = useState(
     product.variants?.length > 0 ? 0 : null
   )
@@ -37,12 +36,6 @@ export default function ProductDetailPage({ params }) {
   // Accordion state
   const [materialsOpen, setMaterialsOpen] = useState(false)
   const [specsOpen, setSpecsOpen] = useState(false)
-
-  // Gallery images: fallback to placeholder if no gallery
-  const galleryImages =
-    product.gallery?.length > 0
-      ? product.gallery
-      : [product.image || null]
 
   // Current variant price
   const currentPrice =
@@ -97,48 +90,8 @@ export default function ProductDetailPage({ params }) {
               className="relative aspect-square rounded-xl overflow-hidden flex items-center justify-center"
               style={{ backgroundColor: 'var(--bg-elevated)', border: '1px solid var(--border)' }}
             >
-              {galleryImages[activeImage] ? (
-                <img
-                  src={galleryImages[activeImage]}
-                  alt={product.name}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <ProductArtwork productId={product.id} category={product.category} className="w-full h-full" />
-              )}
+              <ProductArtwork productId={product.id} category={product.category} className="w-full h-full" />
             </div>
-
-            {/* Thumbnail Gallery */}
-            {galleryImages.length > 1 && (
-              <div className="flex gap-3 overflow-x-auto pb-2">
-                {galleryImages.map((img, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setActiveImage(i)}
-                    className="relative w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 transition-all duration-200"
-                    style={{
-                      backgroundColor: 'var(--bg-elevated)',
-                      border: activeImage === i ? '2px solid #FF1A1A' : '2px solid var(--border)',
-                      opacity: activeImage === i ? 1 : 0.5,
-                    }}
-                  >
-                    {img ? (
-                      <img
-                        src={img}
-                        alt={`${product.name} view ${i + 1}`}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <span className="text-[8px] text-center" style={{ color: 'var(--text-muted)' }}>
-                          {i + 1}
-                        </span>
-                      </div>
-                    )}
-                  </button>
-                ))}
-              </div>
-            )}
           </div>
 
           {/* ===== Product Info (Right) ===== */}
@@ -200,11 +153,11 @@ export default function ProductDetailPage({ params }) {
                       className="px-4 py-2 text-xs font-semibold rounded-lg border transition-all duration-200"
                       style={{
                         backgroundColor:
-                          selectedVariant === i ? 'rgba(255,26,26,0.1)' : 'var(--bg-elevated)',
+                          selectedVariant === i ? 'rgba(200,16,46,0.1)' : 'var(--bg-elevated)',
                         borderColor:
-                          selectedVariant === i ? '#FF1A1A' : 'var(--border)',
+                          selectedVariant === i ? '#C8102E' : 'var(--border)',
                         color:
-                          selectedVariant === i ? '#FF1A1A' : 'var(--text-secondary)',
+                          selectedVariant === i ? '#C8102E' : 'var(--text-secondary)',
                       }}
                     >
                       {variant.label}
@@ -270,7 +223,7 @@ export default function ProductDetailPage({ params }) {
                 disabled={added}
                 className="w-full py-3.5 text-sm font-syne font-bold uppercase tracking-[0.12em] rounded-lg transition-all duration-200"
                 style={{
-                  backgroundColor: added ? '#2d8a4e' : '#FF1A1A',
+                  backgroundColor: added ? '#2d8a4e' : '#C8102E',
                   color: '#FFFFFF',
                 }}
               >
@@ -281,9 +234,9 @@ export default function ProductDetailPage({ params }) {
                 onClick={handleWishlist}
                 className="w-full py-3.5 text-sm font-syne font-semibold uppercase tracking-[0.12em] rounded-lg border transition-all duration-200 flex items-center justify-center gap-2"
                 style={{
-                  backgroundColor: wishlisted ? 'rgba(255,26,26,0.05)' : 'transparent',
-                  borderColor: wishlisted ? '#FF1A1A' : 'var(--border)',
-                  color: wishlisted ? '#FF1A1A' : 'var(--text-secondary)',
+                  backgroundColor: wishlisted ? 'rgba(200,16,46,0.05)' : 'transparent',
+                  borderColor: wishlisted ? '#C8102E' : 'var(--border)',
+                  color: wishlisted ? '#C8102E' : 'var(--text-secondary)',
                 }}
               >
                 {wishlisted ? (
@@ -310,9 +263,9 @@ export default function ProductDetailPage({ params }) {
                   <div key={feature.label} className="flex items-center gap-3">
                     <div
                       className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
-                      style={{ backgroundColor: 'rgba(255,26,26,0.08)' }}
+                      style={{ backgroundColor: 'rgba(200,16,46,0.08)' }}
                     >
-                      <Icon className="w-5 h-5" style={{ color: '#FF1A1A' }} />
+                      <Icon className="w-5 h-5" style={{ color: '#C8102E' }} />
                     </div>
                     <span
                       className="text-xs sm:text-sm font-semibold"
@@ -335,9 +288,9 @@ export default function ProductDetailPage({ params }) {
           >
             <div
               className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"
-              style={{ backgroundColor: 'rgba(255,26,26,0.1)' }}
+              style={{ backgroundColor: 'rgba(200,16,46,0.1)' }}
             >
-              <Truck className="w-5 h-5" style={{ color: '#FF1A1A' }} />
+              <Truck className="w-5 h-5" style={{ color: '#C8102E' }} />
             </div>
             <div>
               <h3

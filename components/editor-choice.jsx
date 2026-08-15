@@ -6,7 +6,7 @@ import { PRODUCTS } from '@/lib/products'
 import ProductArtwork from '@/components/product-artwork'
 
 // Wire to the Premium Silicone Wand — our best featured product
-const FEATURED = PRODUCTS.find((p) => p.id === 'toy-wand-01') || PRODUCTS[0]
+const FEATURED = PRODUCTS.find((p) => p.id === 'lube-silicone-4oz') || PRODUCTS[0]
 
 const FEATURE_ICONS = { Waves: Zap, Droplets, ShieldCheck: Shield, Shield }
 

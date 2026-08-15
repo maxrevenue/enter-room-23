@@ -55,7 +55,7 @@ export const metadata = {
     type: 'website',
   },
   twitter: {
-    card: 'summary_large_image',
+    card: 'summary',
     title: 'Room 23 — Premium Adult Wellness',
     description: 'Discreet packaging. Private billing. 18+ only.',
   },
@@ -65,11 +65,7 @@ export default function RootLayout({ children }) {
   const fontVars = `${inter.variable} ${syne.variable}`
 
   return (
-    <html lang="en" className={fontVars} data-theme="botanical-ivory">
-      <head>
-        {/* Warm Botanical Ivory Theme — #00866b Deep Emerald, #eb6824 Terracotta, #ffaf1f Honey Amber */}
-      </head>
-
+    <html lang="en" className={fontVars} data-theme="noir">
       <body>
         {/* WCAG: skip-to-content link */}
         <a href="#main-content" className="skip-to-content" aria-label="Skip to main content">

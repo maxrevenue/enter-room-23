@@ -7,7 +7,7 @@ import { PRODUCTS as products } from '@/lib/products'
 import { ShoppingBag, Search, SlidersHorizontal, X, Star, ChevronDown, Flame, Sparkles } from 'lucide-react'
 import ProductArtwork from '@/components/product-artwork'
 
-const CATEGORIES = ['All', 'Essentials', 'Accessories']
+const CATEGORIES = ['All', 'Essentials', 'Toys', 'Wellness', 'Accessories']
 
 const SORT_OPTIONS = [
   { value: 'featured',    label: 'Featured' },
@@ -75,7 +75,7 @@ export default function ShopPage() {
           overflow: 'hidden',
           padding: '4rem 0 3rem',
           marginBottom: '0',
-          background: 'linear-gradient(180deg, #F4EEE4 0%, #FAF7F2 100%)',
+          background: 'linear-gradient(180deg, #0B0B0C 0%, #161618 100%)',
           borderBottom: '1px solid var(--border)',
         }}
       >
@@ -88,7 +88,7 @@ export default function ShopPage() {
           width: '600px',
           height: '200px',
           borderRadius: '50%',
-          background: 'radial-gradient(ellipse at center, rgba(0,134,107,0.12) 0%, transparent 70%)',
+          background: 'radial-gradient(ellipse at center, rgba(200,16,46,0.12) 0%, transparent 70%)',
           pointerEvents: 'none',
         }} />
         <div style={{
@@ -98,7 +98,7 @@ export default function ShopPage() {
           width: '300px',
           height: '150px',
           borderRadius: '50%',
-          background: 'radial-gradient(ellipse at center, rgba(235,104,36,0.08) 0%, transparent 70%)',
+          background: 'radial-gradient(ellipse at center, rgba(200,16,46,0.06) 0%, transparent 70%)',
           pointerEvents: 'none',
         }} />
 
@@ -139,7 +139,7 @@ export default function ShopPage() {
               }}
             >
               Premium Wellness,<br />
-              <span style={{ color: 'var(--color-brass)' }}>Curated for You</span>
+              <span style={{ color: '#C8102E' }}>Curated for You</span>
             </h1>
             <p style={{
               color: 'var(--text-secondary)',
@@ -189,7 +189,7 @@ export default function ShopPage() {
       <div
         style={{
           position: 'sticky',
-          top: 0,
+          top: '4rem',
           zIndex: 40,
           backgroundColor: 'rgba(5,5,5,0.95)',
           backdropFilter: 'blur(12px)',
@@ -616,20 +616,7 @@ function ShopProductCard({ product, idx, addedId, onAddToCart }) {
           </span>
         </div>
 
-        {product.image ? (
-          <img
-            src={product.image}
-            alt={product.name}
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              transform: hovered ? 'scale(1.04)' : 'scale(1)',
-              transition: 'transform 400ms ease',
-            }}
-            loading="lazy"
-          />
-        ) : (
+        <div className="absolute inset-0">
           <ProductArtwork
             productId={product.id}
             category={product.category}
@@ -638,7 +625,7 @@ function ShopProductCard({ product, idx, addedId, onAddToCart }) {
               transition: 'transform 400ms ease',
             }}
           />
-        )}
+        </div>
       </Link>
 
       {/* Info */}

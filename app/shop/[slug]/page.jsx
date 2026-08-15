@@ -3,6 +3,7 @@ import { SITE_CONFIG } from '@/config/site'
 import { AddToCartButton, RelatedProductButton } from '@/components/add-to-cart-button'
 import { Shield, Truck, Package } from 'lucide-react'
 import Link from 'next/link'
+import ProductArtwork from '@/components/product-artwork'
 
 export const dynamic = 'force-dynamic'
 
@@ -14,8 +15,8 @@ function slugify(str) {
 }
 
 const CROSS_SELLS = [
-  { name: 'Cleansing Spray', price: 14, image: '/placeholder-product.png', size: '4 oz' },
-  { name: 'Storage Pouch', price: 12, image: '/placeholder-product.png', size: 'One Size' },
+  { name: 'Cleansing Spray', price: 14, size: '4 oz', id: 'addon-cleaner-01' },
+  { name: 'Storage Pouch', price: 12, size: 'One Size', id: 'addon-pouch-01' },
 ]
 
 const RELATED_MAP = {
@@ -61,7 +62,7 @@ export default async function PDP({ params }) {
     '@type': 'Product',
     name: product.name,
     description: product.description || `${product.name} by ${SITE_CONFIG.name} — premium personal care.`,
-    image: product.image,
+    image: undefined,
     sku: product.name.replace(/\s+/g, '-').toLowerCase(),
     brand: { '@type': 'Brand', name: SITE_CONFIG.name },
     offers: {
@@ -92,13 +93,8 @@ export default async function PDP({ params }) {
         {/* Two-column layout */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16">
           {/* Product Image */}
-          <div className="relative aspect-square bg-neutral-100 dark:bg-neutral-800 rounded-2xl overflow-hidden">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={product.image}
-              alt={product.name}
-              className="w-full h-full object-contain p-8"
-            />
+          <div className="relative aspect-square rounded-2xl overflow-hidden" style={{ backgroundColor: 'var(--bg-elevated)', border: '1px solid var(--border)' }}>
+            <ProductArtwork productId={product.id} category={product.category} className="w-full h-full" />
           </div>
 
           {/* Product Info */}
@@ -164,13 +160,8 @@ export default async function PDP({ params }) {
                   key={item.name}
                   className="flex gap-4 p-4 bg-neutral-50 dark:bg-neutral-800/50 rounded-xl border border-neutral-200 dark:border-neutral-700"
                 >
-                  <div className="w-16 h-16 bg-neutral-200 dark:bg-neutral-700 rounded-lg flex-shrink-0 flex items-center justify-center overflow-hidden">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className="w-full h-full object-contain p-2"
-                    />
+                  <div className="w-16 h-16 rounded-lg flex-shrink-0 overflow-hidden" style={{ backgroundColor: 'var(--bg-elevated)', border: '1px solid var(--border)' }}>
+                    <ProductArtwork productId={item.id} category="accessories" className="w-full h-full" />
                   </div>
                   <div className="flex flex-col justify-between flex-1 min-w-0">
                     <div>

@@ -89,7 +89,7 @@ export default function CartSheet() {
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: 'var(--color-border)' }}>
           <div className="flex items-center gap-2">
-            <ShoppingBag className="w-5 h-5 text-[#eb6824]" />
+            <ShoppingBag className="w-5 h-5" style={{ color: '#C8102E' }} />
             <h2 className="text-lg font-semibold font-[var(--font-syne)]" style={{ color: 'var(--color-text-primary)' }}>Your Cart</h2>
           </div>
           <button
@@ -106,7 +106,7 @@ export default function CartSheet() {
         {/* Items */}
         <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
           {cart.length === 0 ? (
-            <p className="text-[#5C786E] text-center py-12">Your cart is empty.</p>
+            <p className="text-center py-12" style={{ color: 'var(--color-text-muted)' }}>Your cart is empty.</p>
           ) : (
             cart.map((item) => (
               <div key={item.id} className="flex gap-4 p-3 rounded-lg border" style={{ backgroundColor: 'var(--color-bg-elevated)', borderColor: 'var(--color-border-light)' }}>
@@ -115,7 +115,7 @@ export default function CartSheet() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <h4 className="text-sm font-medium truncate" style={{ color: 'var(--color-text-primary)' }}>{item.name}</h4>
-                  <p className="text-[#eb6824] text-sm mt-0.5">${item.price}</p>
+                  <p className="text-sm mt-0.5" style={{ color: '#C8102E' }}>${item.price}</p>
                   <div className="flex items-center gap-2 mt-2">
                     <button
                       onClick={() => updateQty(item.id, item.qty - 1)}
@@ -250,22 +250,22 @@ export default function CartSheet() {
                   placeholder="Promo Code (e.g. SOFTLAUNCH10)"
                   value={promoCode}
                   onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
-                  className="flex-1 px-3 py-1.5 text-xs border rounded focus:outline-none focus:border-[#eb6824]"
+                  className="flex-1 px-3 py-1.5 text-xs border rounded focus:outline-none"
                   style={{ backgroundColor: 'var(--color-bg-elevated)', borderColor: 'var(--color-border)', color: 'var(--color-text-primary)' }}
                 />
                 <button
                   onClick={handleApplyPromo}
-                  className="px-3 py-1.5 text-xs font-semibold uppercase tracking-wider bg-[#eb6824] rounded hover:bg-[#d95816] transition-colors"
-                  style={{ color: '#FFFFFF' }}
+                  className="px-3 py-1.5 text-xs font-semibold uppercase tracking-wider rounded transition-colors"
+                  style={{ color: '#FFFFFF', backgroundColor: '#C8102E' }}
                 >
                   Apply
                 </button>
               </div>
               {promoError && (
-                <p className="text-[11px] text-[#eb6824]">{promoError}</p>
+                <p className="text-[11px]" style={{ color: '#C8102E' }}>{promoError}</p>
               )}
               {discountPercent > 0 && (
-                <div className="flex items-center justify-between text-xs text-[#eb6824]">
+                <div className="flex items-center justify-between text-xs" style={{ color: '#C8102E' }}>
                   <span>Promo ({appliedPromo} — {discountPercent}% OFF)</span>
                   <button onClick={handleRemovePromo} className="ml-2 transition-colors" style={{ color: 'var(--color-text-muted)' }} onMouseOver={e => e.currentTarget.style.color = 'var(--color-accent)'} onMouseOut={e => e.currentTarget.style.color = 'var(--color-text-muted)'}>×</button>
                 </div>
@@ -278,7 +278,7 @@ export default function CartSheet() {
             </div>
 
             {discountPercent > 0 && (
-              <div className="flex justify-between text-xs text-[#eb6824]">
+              <div className="flex justify-between text-xs" style={{ color: '#C8102E' }}>
                 <span>Discount ({discountPercent}%)</span>
                 <span>-${discountAmount.toFixed(2)}</span>
               </div>
@@ -286,14 +286,14 @@ export default function CartSheet() {
 
             <div className="flex justify-between font-semibold text-base pt-1 border-t" style={{ color: 'var(--color-text-primary)', borderColor: 'var(--color-border)' }}>
               <span>Estimated Total</span>
-              <span className="text-[#eb6824]">${finalTotal.toFixed(2)}</span>
+              <span style={{ color: '#C8102E' }}>${finalTotal.toFixed(2)}</span>
             </div>
 
             <button
               onClick={() => { setCartOpen(false); setCheckoutOpen(true) }}
               className="w-full btn-primary py-3"
             >
-              Proceed to Checkout
+              {SITE_CONFIG.checkoutEnabled ? 'Proceed to Checkout' : 'Review order'}
             </button>
           </div>
         )}

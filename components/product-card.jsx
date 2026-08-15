@@ -57,18 +57,10 @@ export default function ProductCard({ product }) {
       {/* ── Image ── */}
       <div
         className="relative aspect-square overflow-hidden flex items-center justify-center"
-        style={{ backgroundColor: 'var(--bg-elevated)' }}
+        style={{ backgroundColor: '#0B0B0C' }}
       >
-        {product.image ? (
-          <img
-            src={product.image}
-            alt={product.name}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-            loading="lazy"
-          />
-        ) : (
-          <ProductArtwork productId={product.id} category={product.category} />
-        )}
+        {/* Obsidian placeholder — no product images */}
+        <ProductArtwork productId={product.id} category={product.category} />
 
         {/* Quick-add button */}
         <button

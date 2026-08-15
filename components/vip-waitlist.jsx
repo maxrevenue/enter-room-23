@@ -25,6 +25,7 @@ export default function VipWaitlist() {
 
   return (
     <section
+      id="vip"
       className="relative px-4 py-16 sm:py-24 overflow-hidden"
       style={{ backgroundColor: 'var(--bg-surface)' }}
       aria-labelledby="vip-heading"

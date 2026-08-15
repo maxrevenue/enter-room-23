@@ -29,6 +29,8 @@ export const SITE_CONFIG = {
 
   // ── Billing ──
   billingDescriptor: 'ROOM23',
+  checkoutEnabled: false,
+  softLaunch: true,
 
   // ── Shipping ──
   carriers: ['USPS', 'UPS', 'FedEx'],

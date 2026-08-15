@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useCart } from '@/lib/cart-context'
 import { ShoppingBag, Archive, Key, ArrowRight, ChevronUp } from 'lucide-react'
@@ -77,20 +77,11 @@ export default function HomePage() {
         aria-label="Welcome to Room 23"
         style={{ backgroundColor: 'var(--bg-base)' }}
       >
-        {/* Hero background image */}
+        {/* Hero background — dark with subtle radial glow */}
         <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
           <div
             className="absolute inset-0"
-            style={{
-              backgroundImage: 'url(/hero.jpg)',
-              backgroundSize: 'cover',
-              backgroundPosition: 'center 30%',
-              opacity: 0.18,
-            }}
-          />
-          <div
-            className="absolute inset-0"
-            style={{ background: 'linear-gradient(to bottom, rgba(11,11,12,0.3) 0%, rgba(11,11,12,0.5) 50%, rgba(11,11,12,0.95) 100%)' }}
+            style={{ backgroundColor: '#0B0B0C' }}
           />
           <div
             className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px]"
@@ -100,14 +91,19 @@ export default function HomePage() {
           />
         </div>
 
-        {/* Brand Logo */}
+        {/* Brand Logo — Typography */}
         <div className="relative z-10 flex justify-center mb-6 animate-fade-in-up">
-          <img
-            src="/logo.jpg"
-            alt="Room 23 — Private Wellness"
-            className="h-36 sm:h-48 w-auto object-contain transition-transform duration-500 hover:scale-[1.03]"
-            style={{ filter: 'drop-shadow(0 12px 40px rgba(200,16,46,0.25))' }}
-          />
+          <span
+            className="font-syne font-bold tracking-widest uppercase transition-transform duration-500 hover:scale-[1.03] inline-block"
+            style={{
+              fontSize: 'clamp(2.5rem, 8vw, 4.5rem)',
+              color: '#C8102E',
+              letterSpacing: '0.4em',
+              textShadow: '0 12px 40px rgba(200,16,46,0.25)',
+            }}
+          >
+            ROOM 23
+          </span>
         </div>
 
         {/* Eyebrow pill */}
