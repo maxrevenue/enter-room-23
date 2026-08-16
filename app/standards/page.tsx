@@ -5,7 +5,7 @@ import { SITE_CONFIG } from '@/config/site'
 export const metadata: Metadata = {
   title: 'Materials & Standards',
   description:
-    'Body-safe materials standards for Room 23 products — platinum-cure silicone, borosilicate glass, botanical oils, and mulberry silk.',
+    'Body-safe materials standards for Room 23 products — platinum-cure silicone lubricants.',
 }
 
 export default function StandardsPage() {
@@ -26,26 +26,6 @@ export default function StandardsPage() {
             <p className="mt-3 text-sm leading-relaxed text-zinc-400">
               Our house silicone formula uses medical-grade dimethicone. Fragrance-free, paraben-free,
               glycerin-free, and phthalate-free. Latex condom compatible. Not for use with silicone toys.
-            </p>
-          </div>
-          <div>
-            <h2 className="font-serif text-xl text-white">Borosilicate glass</h2>
-            <p className="mt-3 text-sm leading-relaxed text-zinc-400">
-              Non-porous, seamless, and compatible with all lubricant types. Suitable for gentle
-              temperature play with warm water or brief refrigeration — never boiling water or a freezer.
-            </p>
-          </div>
-          <div>
-            <h2 className="font-serif text-xl text-white">Botanical massage oils</h2>
-            <p className="mt-3 text-sm leading-relaxed text-zinc-400">
-              Topical use only. Not ingestible. Oil-based products can degrade latex condoms — follow
-              the compatibility notes on each product page.
-            </p>
-          </div>
-          <div>
-            <h2 className="font-serif text-xl text-white">Mulberry silk</h2>
-            <p className="mt-3 text-sm leading-relaxed text-zinc-400">
-              22-momme mulberry silk with adjustable fit. Hand wash cold; lay flat to dry.
             </p>
           </div>
         </section>
