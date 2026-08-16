@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000" viewBox="0 0 800 1000" role="img" aria-label="Platinum Silicone Lubricant 2oz">
+  <rect width="800" height="1000" fill="#0B0B0C"/>
+  <ellipse cx="400" cy="820" rx="160" ry="28" fill="#161618"/>
+  <rect x="310" y="280" width="180" height="480" rx="28" fill="#1c1c1f" stroke="#3A3A3C" stroke-width="2"/>
+  <rect x="340" y="220" width="120" height="70" rx="12" fill="#26262A" stroke="#3A3A3C" stroke-width="2"/>
+  <rect x="370" y="190" width="60" height="40" rx="8" fill="#3A3A3C"/>
+  <circle cx="400" cy="210" r="10" fill="#8E8E93"/>
+  <text x="400" y="500" text-anchor="middle" fill="#8E8E93" font-family="Georgia, serif" font-size="22" letter-spacing="6">2 OZ</text>
+  <text x="400" y="540" text-anchor="middle" fill="#3A3A3C" font-family="system-ui,sans-serif" font-size="14" letter-spacing="4">PLATINUM</text>
+</svg>

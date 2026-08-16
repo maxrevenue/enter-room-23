@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000" viewBox="0 0 800 1000" role="img" aria-label="Noir Silk Blindfold">
+  <rect width="800" height="1000" fill="#0B0B0C"/>
+  <ellipse cx="400" cy="820" rx="200" ry="28" fill="#161618"/>
+  <path d="M180 480 Q400 360 620 480 Q400 600 180 480 Z" fill="#1c1c1f" stroke="#8E8E93" stroke-width="2"/>
+  <path d="M200 470 Q400 420 600 470" fill="none" stroke="#3A3A3C" stroke-width="2"/>
+  <path d="M140 500 Q100 520 140 560" fill="none" stroke="#8E8E93" stroke-width="3"/>
+  <path d="M660 500 Q700 520 660 560" fill="none" stroke="#8E8E93" stroke-width="3"/>
+  <text x="400" y="900" text-anchor="middle" fill="#3A3A3C" font-family="system-ui,sans-serif" font-size="14" letter-spacing="4">MULBERRY SILK</text>
+</svg>

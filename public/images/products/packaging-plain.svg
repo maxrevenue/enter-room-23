@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000" viewBox="0 0 800 1000" role="img" aria-label="Plain unmarked shipping carton">
+  <rect width="800" height="1000" fill="#0B0B0C"/>
+  <rect x="180" y="280" width="440" height="320" rx="4" fill="#1c1c1f" stroke="#8E8E93" stroke-width="2"/>
+  <rect x="200" y="300" width="400" height="280" fill="#161618"/>
+  <rect x="420" y="360" width="140" height="90" rx="2" fill="#26262A" stroke="#3A3A3C" stroke-width="1"/>
+  <line x1="180" y1="280" x2="620" y2="280" stroke="#3A3A3C" stroke-width="6"/>
+  <text x="400" y="700" text-anchor="middle" fill="#8E8E93" font-family="system-ui,sans-serif" font-size="14" letter-spacing="4">UNBRANDED CARTON</text>
+  <text x="400" y="730" text-anchor="middle" fill="#3A3A3C" font-family="system-ui,sans-serif" font-size="12" letter-spacing="2">NO OUTER LOGO</text>
+</svg>

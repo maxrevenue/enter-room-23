@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useCart } from '@/lib/cart-context'
 import { SITE_CONFIG } from '@/config/site'
 import CheckoutDisclaimer from '@/components/CheckoutDisclaimer'
-import { X, Lock, ShieldCheck, Check, Mail } from 'lucide-react'
+import { X, Lock, ShieldCheck, Check } from 'lucide-react'
 import Link from 'next/link'
 
 const EMPTY_SHIPPING = {
@@ -358,26 +358,6 @@ export default function CheckoutDialog() {
 
             <CheckoutDisclaimer />
 
-            {/* ── Payment (soft launch) ── */}
-            {!SITE_CONFIG.checkoutEnabled && (
-              <div
-                style={{
-                  padding: '1rem 1.1rem',
-                  borderRadius: 'var(--radius-md)',
-                  border: '1px solid rgba(200,16,46,0.25)',
-                  backgroundColor: 'rgba(200,16,46,0.06)',
-                }}
-              >
-                <p style={{ color: 'var(--text-primary)', fontSize: 'var(--text-sm)', fontWeight: 600, marginBottom: '0.4rem' }}>
-                  Checkout is almost ready
-                </p>
-                <p style={{ color: 'var(--text-secondary)', fontSize: 'var(--text-xs)', lineHeight: 1.6 }}>
-                  You can browse and build a cart. Checkout will open shortly. No card details are collected on this site.
-                </p>
-              </div>
-            )}
-
-            {SITE_CONFIG.checkoutEnabled && (
             <div>
               <h3
                 style={{
@@ -393,10 +373,10 @@ export default function CheckoutDialog() {
                 Payment Details
               </h3>
               <p style={{ color: 'var(--text-muted)', fontSize: 'var(--text-xs)', lineHeight: 1.5 }}>
-                Payment is processed securely. Card data never touches our servers.
+                You will complete payment on our secure hosted payment page. Card data never touches Room 23 servers.
+                Charges appear as {SITE_CONFIG.billingDescriptor}.
               </p>
             </div>
-            )}
 
             {/* ── Security Indicators ── */}
             <div style={{ display: 'flex', gap: '1.5rem', justifyContent: 'center', flexWrap: 'wrap' }}>
@@ -447,7 +427,6 @@ export default function CheckoutDialog() {
             </div>
 
             {/* ── Place Order Button ── */}
-            {SITE_CONFIG.checkoutEnabled ? (
             <button
               onClick={handlePlaceOrder}
               disabled={!canSubmit || submitting}
@@ -466,17 +445,6 @@ export default function CheckoutDialog() {
                 </>
               )}
             </button>
-            ) : (
-            <Link
-              href="/contact"
-              onClick={() => setCheckoutOpen(false)}
-              className="btn-primary"
-              style={{ width: '100%', padding: '0.875rem', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem' }}
-            >
-              <Mail size={14} />
-              Notify me when checkout opens
-            </Link>
-            )}
 
             {orderError && (
               <p style={{ color: 'var(--color-accent)', fontSize: 'var(--text-xs)', textAlign: 'center' }}>

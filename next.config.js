@@ -42,6 +42,13 @@ const nextConfig = {
     return [
       { source: '/vault', destination: '/shop', permanent: true },
       { source: '/collections/vault', destination: '/shop', permanent: true },
+      { source: '/collections/vintage', destination: '/shop', permanent: true },
+      { source: '/products/lube-silicone-2oz', destination: '/products/platinum-silicone-lubricant-2oz', permanent: true },
+      { source: '/products/lube-silicone-4oz', destination: '/products/platinum-silicone-lubricant-4oz', permanent: true },
+      { source: '/products/lube-silicone-8oz', destination: '/products/platinum-silicone-lubricant-8oz', permanent: true },
+      { source: '/products/ds-glass-wand', destination: '/products/obsidian-glass-massage-wand', permanent: true },
+      { source: '/products/ds-massage-oil', destination: '/products/midnight-bloom-massage-oil', permanent: true },
+      { source: '/products/ds-silk-blindfold', destination: '/products/noir-silk-blindfold', permanent: true },
     ]
   },
   async headers() {
@@ -55,7 +62,7 @@ const nextConfig = {
           { key: "Strict-Transport-Security", value: "max-age=31536000; includeSubDomains" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
-          { key: "Access-Control-Allow-Origin", value: process.env.CORS_ORIGINS || 'https://enterroom23.com' },
+          { key: "Access-Control-Allow-Origin", value: process.env.CORS_ORIGINS || 'https://room23.net' },
           { key: "Access-Control-Allow-Methods", value: "GET, POST, OPTIONS" },
           { key: "Access-Control-Allow-Headers", value: "Content-Type, Authorization, X-Idempotency-Key" },
         ],

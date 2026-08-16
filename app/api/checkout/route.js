@@ -122,6 +122,19 @@ export async function POST(request) {
       })
     }
 
+    // Without CCBill FlexForms credentials: allow local/staging dry-run finalization only.
+    // Production must not invent a paid order — configure CCBILL_* env vars.
+    if (process.env.NODE_ENV === 'production' && process.env.ALLOW_CHECKOUT_WITHOUT_GATEWAY !== 'true') {
+      return NextResponse.json(
+        {
+          error: 'Payment gateway is not configured. Contact support if this persists.',
+          orderId,
+          totals: publicTotals(totals),
+        },
+        { status: 503 },
+      )
+    }
+
     const finalized = await finalizePaidOrder(
       {
         orderId,
@@ -132,7 +145,7 @@ export async function POST(request) {
         idempotencyKey,
       },
       {
-        dryRun: process.env.NODE_ENV !== 'production',
+        dryRun: true,
       },
     )
 

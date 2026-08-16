@@ -44,10 +44,11 @@ export default function PrivacyPage() {
 
       <h3>1.3 Age Verification Data</h3>
       <p>
-        We set a session <strong>age_verified</strong> cookie upon entry confirmation. This cookie
-        contains no personal information — it simply indicates that you affirmed being 18+. It is a
-        session cookie that expires when you close your browser and is used solely to re-verify
-        age compliance on return visits.
+        We set <strong>age_verified</strong> and <strong>room23_age_verified</strong> cookies upon
+        entry confirmation. These cookies contain no personal information — they simply indicate that
+        you affirmed being 18+. They expire after <strong>30 days</strong> and are used solely to
+        avoid asking you to re-confirm age on every visit. We do not use a credit card as age
+        verification.
       </p>
 
       {/* ── Section 2 ── */}
@@ -70,7 +71,7 @@ export default function PrivacyPage() {
       <ul>
         <li>All shipments use <strong>plain, unbranded packaging</strong> with no indication of contents or Room 23 branding externally.</li>
         <li>The return address label shows a generic entity name — not &ldquo;Room 23.&rdquo;</li>
-        <li>Card statements show a discreet billing descriptor (typically <strong>ROOM23</strong>).</li>
+        <li>Card statements show a discreet billing descriptor: <strong>ROOM23 WELLNESS</strong>.</li>
         <li>We do not send unsolicited physical mail or catalogs to your shipping address.</li>
         <li>Your email address is never sold, rented, or shared with third parties for their marketing purposes.</li>
       </ul>

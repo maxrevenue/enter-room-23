@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000" viewBox="0 0 800 1000" role="img" aria-label="Massage oil detail">
+  <rect width="800" height="1000" fill="#0B0B0C"/>
+  <rect x="360" y="220" width="80" height="200" rx="10" fill="#26262A" stroke="#3A3A3C" stroke-width="2"/>
+  <rect x="385" y="160" width="30" height="70" rx="4" fill="#8E8E93"/>
+  <ellipse cx="400" cy="560" rx="90" ry="40" fill="#1c1c1f" stroke="#3A3A3C" stroke-width="2"/>
+  <text x="400" y="720" text-anchor="middle" fill="#8E8E93" font-family="system-ui,sans-serif" font-size="14" letter-spacing="4">DROPPER</text>
+</svg>

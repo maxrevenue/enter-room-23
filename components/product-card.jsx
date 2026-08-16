@@ -27,7 +27,7 @@ export default function ProductCard({ product }) {
 
   return (
     <Link
-      href={`/products/${product.id}`}
+      href={`/products/${product.slug || product.id}`}
       className="group relative flex flex-col overflow-hidden transition-all duration-300 hover:-translate-y-1.5"
       style={{
         backgroundColor: 'var(--bg-surface)',
@@ -60,7 +60,12 @@ export default function ProductCard({ product }) {
         style={{ backgroundColor: '#0B0B0C' }}
       >
         {/* Obsidian placeholder — no product images */}
-        <ProductArtwork productId={product.id} category={product.category} />
+        {product.image ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={product.image} alt="" className="h-full w-full object-cover" />
+        ) : (
+          <ProductArtwork productId={product.id} category={product.category} />
+        )}
 
         {/* Quick-add button */}
         <button

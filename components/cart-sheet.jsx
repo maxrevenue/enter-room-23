@@ -1,26 +1,11 @@
 'use client'
 
-import { X, Minus, Plus, ShoppingBag, Truck, Sparkles } from 'lucide-react'
+import { X, Minus, Plus, ShoppingBag, Truck } from 'lucide-react'
 import { useCart } from '@/lib/cart-context'
 import { SITE_CONFIG } from '@/config/site'
 import { useState } from 'react'
 import ProductArtwork from '@/components/product-artwork'
-
-// ── Instant Cross-sell Addons ──
-const CROSS_SELLS = [
-  {
-    id: 'addon-cleaner-01',
-    name: 'Antibacterial Cleansing Spray',
-    price: 14.0,
-    desc: 'pH-balanced toy & surface cleaner. 4 oz.',
-  },
-  {
-    id: 'addon-pouch-01',
-    name: 'Satin Storage Pouch',
-    price: 12.0,
-    desc: 'Anti-static, drawstring closure. Fits all Room 23 items.',
-  },
-]
+import Link from 'next/link'
 
 export default function CartSheet() {
   const {
@@ -30,7 +15,6 @@ export default function CartSheet() {
     updateQty,
     removeItem,
     subtotal,
-    addToCart,
     setCheckoutOpen,
     appliedPromo,
     discountPercent,
@@ -39,7 +23,6 @@ export default function CartSheet() {
     removePromo,
   } = useCart()
 
-  const [addedAddons, setAddedAddons] = useState([])
   const [promoCode, setPromoCode] = useState('')
   const [promoError, setPromoError] = useState('')
 
@@ -62,19 +45,15 @@ export default function CartSheet() {
     setPromoError('')
   }
 
-  const finalTotal = Math.max(0, subtotal - discountAmount)
+  const shippingCost =
+    subtotal >= SITE_CONFIG.freeShippingThreshold ? 0 : SITE_CONFIG.flatShippingRate
+  const finalTotal = Math.max(0, subtotal - discountAmount) + shippingCost
 
   // ── Free Shipping Progress ──
   const THRESHOLD = SITE_CONFIG.freeShippingThreshold
   const remaining = Math.max(0, THRESHOLD - subtotal)
   const pct = Math.min(100, (subtotal / THRESHOLD) * 100)
   const freeUnlocked = remaining === 0
-
-  const handleAddAddon = (addon) => {
-    addToCart(addon)
-    setAddedAddons((prev) => [...prev, addon.id])
-    setTimeout(() => setAddedAddons((prev) => prev.filter((id) => id !== addon.id)), 1500)
-  }
 
   return (
     <div className="fixed inset-0 z-50">
@@ -188,54 +167,6 @@ export default function CartSheet() {
                 />
               </div>
             </div>
-
-            {/* ── One-Click Cross-Sells ── */}
-            <div className="space-y-2">
-              <div className="flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-[#eb6824]" />
-                <span className="text-xs font-semibold uppercase tracking-[0.1em] text-[#5C786E]">
-                  Complete Your Order
-                </span>
-              </div>
-              <div className="space-y-2">
-                {CROSS_SELLS.map((addon) => {
-                  const justAdded = addedAddons.includes(addon.id)
-                  const alreadyInCart = cart.some((i) => i.id === addon.id)
-
-                  if (alreadyInCart) return null
-
-                  return (
-                    <div
-                      key={addon.id}
-                      className="flex items-center gap-3 p-3 rounded-lg border"
-                      style={{ backgroundColor: 'var(--color-bg-elevated)', borderColor: 'var(--color-border-light)' }}
-                    >
-                      <div className="flex-1 min-w-0">
-                        <h4 className="text-sm font-medium truncate" style={{ color: 'var(--color-text-primary)' }}>{addon.name}</h4>
-                        <p className="text-xs mt-0.5" style={{ color: 'var(--color-text-muted)' }}>{addon.desc}</p>
-                      </div>
-                      <div className="text-right flex-shrink-0">
-                        <p className="text-sm font-semibold text-[#eb6824] mb-1">
-                          ${addon.price.toFixed(2)}
-                        </p>
-                        <button
-                          onClick={() => handleAddAddon(addon)}
-                          disabled={justAdded}
-                          className="text-xs font-semibold uppercase tracking-wide px-2.5 py-1 rounded-full transition-all duration-200 border"
-                          style={{
-                            borderColor: justAdded ? '#eb6824' : 'rgba(235,104,36,0.4)',
-                            color: justAdded ? '#eb6824' : '#eb6824',
-                            backgroundColor: justAdded ? 'rgba(235,104,36,0.1)' : 'transparent',
-                          }}
-                        >
-                          {justAdded ? 'Added!' : 'Add'}
-                        </button>
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
           </div>
         )}
 
@@ -247,7 +178,7 @@ export default function CartSheet() {
               <div className="flex gap-2">
                 <input
                   type="text"
-                  placeholder="Promo Code (e.g. SOFTLAUNCH10)"
+                  placeholder="Promo code"
                   value={promoCode}
                   onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
                   className="flex-1 px-3 py-1.5 text-xs border rounded focus:outline-none"
@@ -293,8 +224,15 @@ export default function CartSheet() {
               onClick={() => { setCartOpen(false); setCheckoutOpen(true) }}
               className="w-full btn-primary py-3"
             >
-              {SITE_CONFIG.checkoutEnabled ? 'Proceed to Checkout' : 'Review order'}
+              Proceed to Checkout
             </button>
+            <Link
+              href="/cart"
+              onClick={() => setCartOpen(false)}
+              className="block text-center text-[10px] uppercase tracking-[0.18em] text-zinc-500 hover:text-zinc-300"
+            >
+              View full cart
+            </Link>
           </div>
         )}
       </div>

@@ -4,90 +4,56 @@ import Link from 'next/link'
 import BrandLogo from '@/components/brand-logo'
 import { SITE_CONFIG } from '@/config/site'
 
+const PRIMARY_LINKS = [
+  { href: '/about', label: 'About' },
+  { href: '/shop', label: 'Shop' },
+  { href: '/shipping', label: 'Shipping & Returns' },
+  { href: '/privacy', label: 'Privacy' },
+  { href: '/terms', label: 'Terms' },
+  { href: '/contact', label: 'Contact' },
+]
+
 export default function SiteFooter() {
   return (
-    <footer
-      className="border-t py-16 sm:py-24 px-4 sm:px-6"
-      style={{
-        backgroundColor: 'var(--color-bg-primary)',
-        borderColor: 'rgba(200,16,46,0.15)',
-      }}
-    >
-      <div className="mx-auto max-w-4xl flex flex-col items-center justify-center">
-
+    <footer className="border-t border-zinc-800 bg-zinc-950 px-4 py-16 sm:px-6 sm:py-20">
+      <div className="mx-auto flex max-w-4xl flex-col items-center text-center">
         <div className="mb-8">
           <BrandLogo size="lg" />
         </div>
 
-        {/* Tagline */}
-        <p
-          className="text-xs tracking-[0.2em] uppercase mb-8 text-center"
-          style={{ color: 'var(--color-text-muted)' }}
-        >
+        <p className="mb-8 text-xs uppercase tracking-[0.2em] text-zinc-500">
           Considered pleasure. Private delivery.
         </p>
 
-        {/* Crimson divider */}
-        <div
-          className="w-24 h-px mb-8"
-          style={{ background: 'linear-gradient(90deg, transparent, #C8102E, transparent)' }}
-        />
-
-        <p
-          className="text-[11px] tracking-[0.08em] uppercase mb-10 text-center max-w-sm"
-          style={{ color: 'var(--color-text-muted)' }}
-        >
-          {SITE_CONFIG.softLaunch
-            ? 'Browsing is open. Checkout follows shortly.'
-            : 'Questions? Reach us at support@room23.net'}
+        <p className="mb-10 max-w-sm text-[11px] leading-relaxed text-zinc-500">
+          {SITE_CONFIG.legalName}
+          <br />
+          {SITE_CONFIG.bizAddressFull}
+          <br />
+          {SITE_CONFIG.supportPhone} · {SITE_CONFIG.supportEmail}
+          <br />
+          {SITE_CONFIG.hours}
         </p>
 
-        {/* ── Nav Links ── */}
-        <div className="flex items-center flex-wrap justify-center gap-6 md:gap-10 mb-12">
-          {[
-            { href: '/shop', label: 'SHOP' },
-            { href: '/journal', label: 'JOURNAL' },
-            { href: '/faq', label: 'FAQ' },
-            { href: '/contact', label: 'CONTACT' },
-          ].map(({ href, label }) => (
+        <nav
+          aria-label="Footer"
+          className="mb-12 flex flex-wrap items-center justify-center gap-x-6 gap-y-3"
+        >
+          {PRIMARY_LINKS.map(({ href, label }) => (
             <Link
               key={href}
               href={href}
-              className="text-xs tracking-[0.2em] uppercase font-semibold transition-colors duration-200"
-              style={{ color: 'var(--color-text-secondary)' }}
-              onMouseOver={e => e.currentTarget.style.color = '#C8102E'}
-              onMouseOut={e => e.currentTarget.style.color = 'var(--color-text-secondary)'}
+              className="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-400 transition-colors hover:text-white"
             >
               {label}
             </Link>
           ))}
-        </div>
+        </nav>
 
-        {/* ── Legal strip ── */}
-        <div className="flex flex-col md:flex-row items-center gap-3 md:gap-8 text-center">
-          <span style={{ color: '#3A3A3C', fontSize: '10px', letterSpacing: '0.15em', textTransform: 'uppercase' }}>
-            &copy; {new Date().getFullYear()} Room 23. All rights reserved.
-          </span>
-          <div className="flex items-center gap-5">
-            {[
-              { href: '/about', label: 'ABOUT' },
-              { href: '/privacy', label: 'PRIVACY' },
-              { href: '/terms', label: 'TERMS' },
-            ].map(({ href, label }) => (
-              <Link
-                key={href}
-                href={href}
-                className="transition-colors duration-200"
-                style={{ color: '#3A3A3C', fontSize: '10px', letterSpacing: '0.15em', textTransform: 'uppercase' }}
-                onMouseOver={e => e.currentTarget.style.color = '#C8102E'}
-                onMouseOut={e => e.currentTarget.style.color = '#3A3A3C'}
-              >
-                {label}
-              </Link>
-            ))}
-          </div>
-        </div>
-
+        <p className="text-[10px] uppercase tracking-[0.15em] text-zinc-600">
+          &copy; {new Date().getFullYear()} {SITE_CONFIG.legalName}. Adults 18+ only. Charges appear as{' '}
+          {SITE_CONFIG.billingDescriptor}.
+        </p>
       </div>
     </footer>
   )

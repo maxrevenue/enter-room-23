@@ -21,11 +21,11 @@
 
   "vars": {
     "ADMIN_EMAIL": "support@room23.net",
-    "BIZ_ADDRESS_STREET": "Address pending",
-    "BIZ_ADDRESS_CITY_STATE": "Address pending",
-    "BIZ_PHONE": "Phone number pending",
+    "BIZ_ADDRESS_STREET": "5482 Wilshire Blvd #333",
+    "BIZ_ADDRESS_CITY_STATE": "Los Angeles, CA 90036",
+    "BIZ_PHONE": "(425) 505-3528",
     "SITE_INDEXABLE": "true",
-    "NEXT_PUBLIC_SOFT_LAUNCH": "true",
+    "NEXT_PUBLIC_SOFT_LAUNCH": "false",
     "NEXT_PUBLIC_BILLING_DESCRIPTOR": "ROOM23 WELLNESS"
   },
 

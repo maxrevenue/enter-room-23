@@ -9,7 +9,7 @@ export const metadata = {
 const faqs = [
   {
     q: 'What will appear on my credit card statement?',
-    a: 'Charges will discreetly appear as ROOM23 WELLNESS on your bank statement. Your privacy is paramount; no product names or adult descriptors will ever be visible on your billing record.',
+    a: 'Charges appear as ROOM23 WELLNESS on your bank statement. No product names or adult descriptors appear on the billing record.',
   },
   {
     q: 'Is the packaging really discreet?',
