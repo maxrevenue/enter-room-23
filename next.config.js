@@ -38,6 +38,12 @@ const nextConfig = {
     maxInactiveAge: 10000,
     pagesBufferLength: 2,
   },
+  async redirects() {
+    return [
+      { source: '/vault', destination: '/shop', permanent: true },
+      { source: '/collections/vault', destination: '/shop', permanent: true },
+    ]
+  },
   async headers() {
     return [
       {

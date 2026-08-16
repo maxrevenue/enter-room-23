@@ -33,7 +33,7 @@ export default function TheColumn() {
     <section
       className="px-4 py-12 sm:py-16"
       style={{ backgroundColor: 'var(--bg-elevated, var(--bg-surface))' }}
-      aria-labelledby="the-column-heading"
+      aria-labelledby="journal-heading"
     >
       <div className="mx-auto max-w-5xl">
         {/* ── Header ── */}
@@ -46,11 +46,11 @@ export default function TheColumn() {
             Words
           </p>
           <h2
-            id="the-column-heading"
+            id="journal-heading"
             className="font-syne text-2xl sm:text-3xl font-bold tracking-[0.08em] uppercase"
             style={{ color: 'var(--text-primary)' }}
           >
-            The Column
+            From the Journal
           </h2>
           <div
             className="mx-auto mt-4 h-[1px] w-16"

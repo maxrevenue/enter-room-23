@@ -183,8 +183,7 @@ export default function CheckoutDialog() {
               {placedOrder?.emailSent
                 ? 'A confirmation email is on its way.'
                 : 'A confirmation email will be sent shortly.'}{' '}
-              Your order will be shipped in{' '}
-              <strong style={{ color: 'var(--text-primary)' }}>discreet, plain packaging</strong>.
+              Your order is on its way.
             </p>
             {placedOrder?.fulfillment?.splitFulfillment && (
               <p style={{ color: 'var(--text-secondary)', fontSize: 'var(--text-sm)' }}>
@@ -373,7 +372,7 @@ export default function CheckoutDialog() {
                   Checkout is almost ready
                 </p>
                 <p style={{ color: 'var(--text-secondary)', fontSize: 'var(--text-xs)', lineHeight: 1.6 }}>
-                  Secure CCBill payments are being connected. You can browse, build a cart, and we will enable checkout as soon as the gateway is live. No card details are collected on this site.
+                  You can browse and build a cart. Checkout will open shortly. No card details are collected on this site.
                 </p>
               </div>
             )}
@@ -394,7 +393,7 @@ export default function CheckoutDialog() {
                 Payment Details
               </h3>
               <p style={{ color: 'var(--text-muted)', fontSize: 'var(--text-xs)', lineHeight: 1.5 }}>
-                You will be redirected to CCBill to complete payment. Card data never touches our servers.
+                Payment is processed securely. Card data never touches our servers.
               </p>
             </div>
             )}

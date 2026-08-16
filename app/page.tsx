@@ -5,7 +5,7 @@ import { AspectRatio } from "@/components/ui/aspect-ratio";
 export const metadata: Metadata = {
   title: "Room 23 — Premium Adult Wellness",
   description:
-    "Considered pleasure. Discreet delivery. A private collection of adult wellness, curated with restraint.",
+    "Considered pleasure. Curated essentials. A private collection of adult wellness, selected with restraint.",
 };
 
 const FEATURED_RITUALS = [
@@ -31,6 +31,27 @@ const FEATURED_RITUALS = [
   },
 ] as const;
 
+const JOURNAL_NOTES = [
+  {
+    href: "/journal/wellness-maintenance",
+    tag: "Wellness",
+    title: "Building a Considered Collection",
+    excerpt: "Where to begin — and why fewer, better pieces make a more meaningful private ritual.",
+  },
+  {
+    href: "/journal/lubricant-formulations",
+    tag: "Education",
+    title: "The Ritual of Self-Care",
+    excerpt: "How intentional routines transform ordinary moments into acts of self-regard.",
+  },
+  {
+    href: "/journal/discreet-luxury",
+    tag: "Lifestyle",
+    title: "Designing for Desire",
+    excerpt: "When objects are made with care, they invite a different kind of attention.",
+  },
+] as const;
+
 export default function HomePage() {
   return (
     <main className="bg-zinc-950 text-white">
@@ -39,7 +60,7 @@ export default function HomePage() {
         className="flex min-h-screen flex-col items-center justify-center px-6 py-24 text-center"
       >
         <p className="mb-8 text-[10px] font-medium uppercase tracking-[0.32em] text-zinc-500">
-          Private members&apos; collection
+          Curated essentials
         </p>
 
         <h1
@@ -50,7 +71,7 @@ export default function HomePage() {
         </h1>
 
         <p className="mt-8 text-sm font-light tracking-wide text-zinc-400">
-          Considered pleasure. Discreet delivery.
+          Considered pleasure. Private delivery.
         </p>
 
         <Link
@@ -92,6 +113,46 @@ export default function HomePage() {
                   </h3>
                   <p className="mt-1 text-[10px] uppercase tracking-[0.22em] text-zinc-500">
                     {ritual.note}
+                  </p>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      <section
+        aria-labelledby="journal-heading"
+        className="border-t border-zinc-800 px-6 py-20 md:py-28"
+      >
+        <div className="mx-auto max-w-6xl">
+          <header className="mb-12 text-center md:mb-16">
+            <p className="text-[10px] font-medium uppercase tracking-[0.28em] text-zinc-500">
+              Editorial
+            </p>
+            <h2
+              id="journal-heading"
+              className="mt-4 font-serif text-xl uppercase tracking-[0.28em] text-white md:text-2xl"
+            >
+              From the Journal
+            </h2>
+          </header>
+
+          <ul className="grid grid-cols-1 gap-8 sm:grid-cols-3">
+            {JOURNAL_NOTES.map((note) => (
+              <li key={note.href}>
+                <Link href={note.href} className="group block border border-zinc-800 bg-zinc-900 p-6">
+                  <p className="text-[10px] uppercase tracking-[0.22em] text-zinc-500">
+                    {note.tag}
+                  </p>
+                  <h3 className="mt-4 font-serif text-lg tracking-wide text-white">
+                    {note.title}
+                  </h3>
+                  <p className="mt-3 text-sm leading-relaxed text-zinc-400">
+                    {note.excerpt}
+                  </p>
+                  <p className="mt-6 text-[10px] uppercase tracking-[0.2em] text-zinc-500 group-hover:text-zinc-400">
+                    Read
                   </p>
                 </Link>
               </li>

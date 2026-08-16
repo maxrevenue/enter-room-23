@@ -81,7 +81,7 @@ export default function AccessGate({ title, description }: AccessGateProps) {
               disabled={status === "loading"}
               className="bg-zinc-100 px-4 py-3 text-[11px] font-medium uppercase tracking-[0.15em] text-black hover:bg-white disabled:opacity-50"
             >
-              {status === "loading" ? "PROCESSING..." : "Request Invitation"}
+              {status === "loading" ? "PROCESSING..." : "Subscribe"}
             </button>
             {error ? (
               <p className="text-xs tracking-wide text-zinc-500" role="alert">

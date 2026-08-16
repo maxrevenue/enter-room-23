@@ -172,7 +172,7 @@ export default function CartSheet() {
                 ) : (
                   <span className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
                     Add <strong className="text-[#eb6824]">${remaining.toFixed(2)}</strong> more for{' '}
-                    <strong>FREE Discreet Shipping</strong>
+                    <strong>FREE Shipping</strong>
                   </span>
                 )}
               </div>

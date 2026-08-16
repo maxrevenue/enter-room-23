@@ -72,9 +72,9 @@ export default function DiscreetNewsletter() {
         </div>
       ) : (
         <>
-          <h3 className="text-white font-serif text-lg mb-2">A Private Invitation</h3>
+          <h3 className="text-white font-serif text-lg mb-2">Notes from Room 23</h3>
           <p className="text-zinc-400 text-sm mb-4 leading-relaxed">
-            Join our private list for {siteConfig.discountPercentage}% off your first order. We respect your inbox—no spam, and emails always arrive discreetly as &quot;Room 23&quot;.
+            Join the list for {siteConfig.discountPercentage}% off your first order. Occasional notes. No noise.
           </p>
           <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
             <input 

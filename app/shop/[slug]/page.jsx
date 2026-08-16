@@ -1,7 +1,7 @@
 import { PRODUCTS as products } from '@/lib/products'
 import { SITE_CONFIG } from '@/config/site'
 import { AddToCartButton, RelatedProductButton } from '@/components/add-to-cart-button'
-import { Shield, Truck, Package } from 'lucide-react'
+import { Shield, Truck } from 'lucide-react'
 import Link from 'next/link'
 import ProductArtwork from '@/components/product-artwork'
 
@@ -27,7 +27,6 @@ const RELATED_MAP = {
 
 const TRUST_BADGES = [
   { icon: Shield, label: 'Body-Safe Formula' },
-  { icon: Package, label: 'Discreet Packaging' },
   { icon: Truck, label: `Free Shipping $${SITE_CONFIG.freeShippingThreshold}+` },
 ]
 
@@ -141,7 +140,7 @@ export default async function PDP({ params }) {
                   {SITE_CONFIG.name} Assurance:
                 </strong>{' '}
                 Every product is dermatologist-tested, hypoallergenic, and backed by our
-                30-day satisfaction guarantee. Shipped discreetly via{' '}
+                30-day satisfaction guarantee. Ships via{' '}
                 {SITE_CONFIG.carriers.join(', ')}.
               </p>
             </div>

@@ -1,10 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { Mail, Lock, ArrowRight, Check, Sparkles } from 'lucide-react'
+import { Mail, ArrowRight, Check } from 'lucide-react'
 import { track } from '@/lib/analytics-client'
-
-const SPOTS_REMAINING = 47
 
 export default function VipWaitlist() {
   const [email, setEmail] = useState('')
@@ -15,9 +13,8 @@ export default function VipWaitlist() {
     e.preventDefault()
     if (!email.trim()) return
     setLoading(true)
-    // Simulate slight delay for feel
     setTimeout(() => {
-      track('vip_signup', { email: email.trim() })
+      track('newsletter_signup', { email: email.trim() })
       setSubmitted(true)
       setLoading(false)
     }, 600)
@@ -25,98 +22,44 @@ export default function VipWaitlist() {
 
   return (
     <section
-      id="vip"
-      className="relative px-4 py-16 sm:py-24 overflow-hidden"
+      id="journal-notes"
+      className="relative overflow-hidden px-4 py-16 sm:py-24"
       style={{ backgroundColor: 'var(--bg-surface)' }}
-      aria-labelledby="vip-heading"
+      aria-labelledby="notes-heading"
     >
-      {/* Ambient background */}
-      <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-        <div
-          className="absolute bottom-0 left-1/2 w-[80%] h-[60%] -translate-x-1/2"
-          style={{
-            background: 'radial-gradient(ellipse at 50% 100%, rgba(212,168,83,0.05) 0%, transparent 65%)',
-          }}
-        />
-        <div
-          className="absolute top-0 left-0 right-0 h-[1px]"
-          style={{
-            background: 'linear-gradient(90deg, transparent, rgba(212,168,83,0.2), transparent)',
-          }}
-        />
-      </div>
-
-      <div className="mx-auto max-w-lg text-center relative z-10">
-        {/* Lock icon with glow */}
-        <div
-          className="inline-flex items-center justify-center w-16 h-16 rounded-full mx-auto mb-6 border animate-brass-ring"
-          style={{
-            borderColor: 'rgba(212,168,83,0.3)',
-            backgroundColor: 'var(--bg-elevated)',
-          }}
-          aria-hidden="true"
-        >
-          <Lock
-            className="w-6 h-6"
-            style={{ color: 'var(--color-brass)' }}
-          />
-        </div>
-
-        {/* Urgency pill */}
-        <div
-          className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full mb-5"
-          style={{
-            backgroundColor: 'rgba(212,168,83,0.08)',
-            border: '1px solid rgba(212,168,83,0.15)',
-          }}
-        >
-          <Sparkles size={10} style={{ color: 'var(--color-brass)' }} />
-          <span
-            style={{
-              fontSize: '10px',
-              fontWeight: 700,
-              letterSpacing: '0.1em',
-              textTransform: 'uppercase',
-              color: 'var(--color-brass)',
-            }}
-          >
-            {SPOTS_REMAINING} spots remaining
-          </span>
-        </div>
-
+      <div className="relative z-10 mx-auto max-w-lg text-center">
         <h2
-          id="vip-heading"
-          className="font-syne text-2xl sm:text-3xl font-bold tracking-tight uppercase mb-4"
+          id="notes-heading"
+          className="mb-4 font-syne text-2xl font-bold uppercase tracking-tight sm:text-3xl"
           style={{ color: 'var(--text-primary)' }}
         >
-          Join the Inner Circle
+          Notes from Room 23
         </h2>
 
         <p
-          className="text-sm sm:text-base leading-relaxed mb-8"
+          className="mb-8 text-sm leading-relaxed sm:text-base"
           style={{ color: 'var(--text-secondary)' }}
         >
-          Priority access to new collections, private releases, and members-only
-          pricing — before anyone else sees the door open.
+          New pieces and journal essays, when we have something worth sending.
         </p>
 
         {!submitted ? (
           <form
             onSubmit={handleSubmit}
-            className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"
-            aria-label="VIP waitlist signup"
+            className="mx-auto flex max-w-md flex-col gap-3 sm:flex-row"
+            aria-label="Email signup"
           >
-            <label htmlFor="vip-email" className="sr-only">
-              Email address for VIP waitlist
+            <label htmlFor="notes-email" className="sr-only">
+              Email address
             </label>
-            <div className="flex-1 relative">
+            <div className="relative flex-1">
               <Mail
-                className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
+                className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2"
                 style={{ color: 'var(--text-muted)' }}
                 aria-hidden="true"
               />
               <input
-                id="vip-email"
+                id="notes-email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -138,60 +81,41 @@ export default function VipWaitlist() {
             <button
               type="submit"
               disabled={loading}
-              className="btn-brass inline-flex items-center justify-center gap-2 whitespace-nowrap"
-              style={{ padding: '0.75rem 1.5rem', fontSize: 'var(--text-sm)', opacity: loading ? 0.7 : 1 }}
-              aria-label="Submit email to join VIP waitlist"
+              className="inline-flex items-center justify-center gap-2 whitespace-nowrap bg-zinc-100 px-6 py-3 text-[11px] font-medium uppercase tracking-[0.15em] text-black hover:bg-white"
+              style={{ opacity: loading ? 0.7 : 1 }}
+              aria-label="Subscribe to notes from Room 23"
             >
-              {loading ? (
+              {loading ? 'Sending...' : (
                 <>
-                  <span
-                    className="w-3.5 h-3.5 rounded-full border-2 border-black/30 border-t-black animate-spin"
-                    style={{ display: 'inline-block' }}
-                  />
-                  Joining...
-                </>
-              ) : (
-                <>
-                  Subscribe <ArrowRight className="w-4 h-4" aria-hidden="true" />
+                  Subscribe <ArrowRight className="h-4 w-4" aria-hidden="true" />
                 </>
               )}
             </button>
           </form>
         ) : (
           <div
-            className="px-6 py-5 rounded-xl text-sm animate-fade-in-up"
+            className="rounded-xl px-6 py-5 text-sm"
             style={{
-              backgroundColor: 'rgba(212,168,83,0.08)',
-              border: '1px solid rgba(212,168,83,0.25)',
+              backgroundColor: 'var(--bg-elevated)',
+              border: '1px solid var(--border)',
             }}
             role="status"
             aria-live="polite"
           >
             <div
-              className="inline-flex items-center justify-center w-10 h-10 rounded-full mb-3"
-              style={{ backgroundColor: 'rgba(212,168,83,0.15)' }}
+              className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-full"
+              style={{ backgroundColor: 'var(--bg-base)' }}
             >
-              <Check size={18} style={{ color: 'var(--color-brass)' }} />
+              <Check size={18} style={{ color: 'var(--text-primary)' }} />
             </div>
-            <p
-              className="font-syne font-semibold mb-1"
-              style={{ color: 'var(--color-brass)' }}
-            >
+            <p className="mb-1 font-syne font-semibold" style={{ color: 'var(--text-primary)' }}>
               You&rsquo;re on the list.
             </p>
             <p style={{ color: 'var(--text-muted)', fontSize: 'var(--text-xs)' }}>
-              We&rsquo;ll reach out when a spot opens up. Keep it private.
+              We&rsquo;ll write when there is something worth sending.
             </p>
           </div>
         )}
-
-        {/* Privacy note */}
-        <p
-          className="mt-4 text-xs"
-          style={{ color: 'var(--text-muted)', opacity: 0.7 }}
-        >
-          No spam. Unsubscribe any time. 18+ adults only.
-        </p>
       </div>
     </section>
   )

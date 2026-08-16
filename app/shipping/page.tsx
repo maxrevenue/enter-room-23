@@ -3,7 +3,7 @@ import { SITE_CONFIG } from '@/config/site'
 
 export const metadata = {
   title: 'Shipping & Discretion',
-  description: 'Discreet packaging, shipping rates, and return policy for Room 23 premium adult wellness products.',
+  description: 'Shipping rates, delivery times, and return policy for Room 23.',
 }
 
 export default function ShippingPage() {

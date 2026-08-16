@@ -4,12 +4,12 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useCart } from '@/lib/cart-context'
-import { Menu, X, ShoppingBag, Lock } from 'lucide-react'
+import { Menu, X, ShoppingBag } from 'lucide-react'
 import BrandLogo from '@/components/brand-logo'
 
 const TOP_LINKS = [
   { href: '/shop', label: 'SHOP' },
-  { href: '/shipping', label: 'SHIPPING' },
+  { href: '/journal', label: 'JOURNAL' },
   { href: '/faq', label: 'FAQ' },
   { href: '/contact', label: 'CONTACT' },
 ]
@@ -17,9 +17,8 @@ const TOP_LINKS = [
 const MENU_LINKS = [
   { href: '/shop', label: 'SHOP' },
   { href: '/collections/essentials', label: 'ESSENTIALS' },
-  { href: '/collections/vault', label: 'THE VAULT', icon: Lock },
   { href: '/collections/new-arrivals', label: 'NEW ARRIVALS' },
-  { href: '/journal', label: 'THE ARCHIVE' },
+  { href: '/journal', label: 'JOURNAL' },
   { href: '/about', label: 'ABOUT' },
   { href: '/shipping', label: 'SHIPPING' },
   { href: '/faq', label: 'FAQ' },
@@ -152,7 +151,6 @@ export default function SiteHeader() {
             <div className="flex flex-col px-6 py-8 space-y-1">
               {MENU_LINKS.map((link) => {
                 const isActive = pathname === link.href || pathname?.startsWith(`${link.href}/`)
-                const Icon = link.icon
                 return (
                   <Link
                     key={link.label}
@@ -167,7 +165,6 @@ export default function SiteHeader() {
                     onMouseOver={e => { e.currentTarget.style.color = '#C8102E'; e.currentTarget.style.paddingLeft = '8px' }}
                     onMouseOut={e => { e.currentTarget.style.color = isActive ? '#C8102E' : 'var(--color-text-primary)'; e.currentTarget.style.paddingLeft = '0px' }}
                   >
-                    {Icon && <Icon className="w-3.5 h-3.5 opacity-60" />}
                     {link.label}
                   </Link>
                 )
@@ -178,7 +175,7 @@ export default function SiteHeader() {
             <div className="mt-auto px-6 py-8 border-t" style={{ borderColor: 'rgba(200,16,46,0.1)' }}>
               {/* Tagline */}
               <p className="text-[10px] tracking-widest uppercase mb-6 leading-relaxed" style={{ color: 'var(--color-text-muted)' }}>
-                Private. Curated.<br />For discerning adults only.
+                Considered pleasure.<br />For adults 18+ only.
               </p>
               <div className="flex gap-6">
                 <Link href="/privacy" className="text-[10px] tracking-widest uppercase transition-colors" style={{ color: 'var(--color-text-muted)' }} onClick={closeDrawer}

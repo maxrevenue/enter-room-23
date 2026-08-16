@@ -77,7 +77,7 @@ export default async function JournalArticlePage({ params }) {
           className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest transition-colors mb-8 hover:text-[color:var(--color-emerald)]"
           style={{ color: 'var(--color-text-muted)' }}
         >
-          <ArrowLeft className="w-4 h-4" /> Back to The Column
+          <ArrowLeft className="w-4 h-4" /> Back to the Journal
         </Link>
 
         {/* Category Badge */}

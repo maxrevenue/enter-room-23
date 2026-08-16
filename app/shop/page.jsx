@@ -148,7 +148,7 @@ export default function ShopPage() {
               maxWidth: '520px',
               lineHeight: 1.6,
             }}>
-              Discreetly shipped. Privately billed. Every product is body-safe,
+              Curated essentials. Every product is body-safe,
               clinically tested, and selected for quality above all else.
             </p>
           </div>
@@ -164,10 +164,10 @@ export default function ShopPage() {
             }}
           >
             {[
-              { icon: '🔒', text: 'Discreet Billing' },
-              { icon: '📦', text: 'Plain Packaging' },
               { icon: '✓', text: 'Body-Safe Materials' },
               { icon: '⚡', text: 'Fast Shipping' },
+              { icon: '🔒', text: 'Secure Checkout' },
+              { icon: '18+', text: 'Adults Only' },
             ].map((item) => (
               <div key={item.text} style={{
                 display: 'flex',

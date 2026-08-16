@@ -32,7 +32,7 @@ export default function BrandPhilosophy() {
           style={{ color: 'var(--text-primary)', letterSpacing: '-0.01em' }}
         >
           Considered pleasure.{' '}
-          <span style={{ color: '#C8102E' }}>Discreet delivery.</span>
+          <span style={{ color: '#C8102E' }}>Private delivery.</span>
         </h2>
 
         <div className="space-y-5 mb-14 max-w-2xl mx-auto">
@@ -40,7 +40,7 @@ export default function BrandPhilosophy() {
             className="text-sm sm:text-base leading-relaxed"
             style={{ color: 'var(--text-secondary)' }}
           >
-            Room 23 is a private members&rsquo; club for those who believe intimacy
+            Room 23 is a house for those who believe intimacy
             deserves the same refinement as a well-cut suit or a perfectly aged
             spirit. We exist at the intersection of design, wellness, and desire —
             curating objects that elevate the private self.
@@ -51,8 +51,8 @@ export default function BrandPhilosophy() {
           >
             Every product in our collection is selected with intention. We reject
             the disposable, the garish, the mass-produced. What remains is a
-            tightly edited catalog of essentials — delivered in plain packaging,
-            billed discreetly, and kept between you and your door.
+            tightly edited catalog of essentials — selected with intention,
+            delivered quietly, and kept between you and your door.
           </p>
         </div>
 
@@ -66,8 +66,8 @@ export default function BrandPhilosophy() {
             },
             {
               icon: '⬢',
-              title: 'Discreet',
-              body: 'Plain packaging. Private billing. Appears as ROOM23 on your statement.',
+              title: 'Private',
+              body: 'Orders arrive quietly. Billing stays unremarkable.',
             },
             {
               icon: '◆',

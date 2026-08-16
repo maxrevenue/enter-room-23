@@ -23,16 +23,15 @@ const syne = Syne({
 export const metadata = {
   metadataBase: new URL('https://room23.net'),
   title: {
-    default: 'Room 23 — Premium Adult Wellness · Discreet & Private',
+    default: 'Room 23 — Premium Adult Wellness',
     template: '%s | Room 23',
   },
   description:
-    'Room 23 offers premium adult wellness products with discreet packaging and private billing. 18+ only. Secure, private, and judgment-free.',
+    'Room 23 offers premium adult wellness products, privately delivered. 18+ only.',
   keywords: [
     'adult wellness',
     'premium intimacy',
-    'discreet shipping',
-    'private billing',
+    'private delivery',
     'luxury wellness products',
   ],
   authors: [{ name: 'Room 23' }],
@@ -52,7 +51,7 @@ export const metadata = {
   openGraph: {
     title: 'Room 23 — Premium Adult Wellness',
     description:
-      'Premium adult wellness products. Discreet packaging. Private billing. 18+ only.',
+      'Premium adult wellness products. Private delivery. 18+ only.',
     url: 'https://room23.net',
     siteName: 'Room 23',
     locale: 'en_US',
@@ -61,7 +60,7 @@ export const metadata = {
   twitter: {
     card: 'summary',
     title: 'Room 23 — Premium Adult Wellness',
-    description: 'Discreet packaging. Private billing. 18+ only.',
+    description: 'Premium adult wellness. Private delivery. 18+ only.',
   },
 }
 

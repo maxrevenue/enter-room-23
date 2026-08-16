@@ -1,11 +1,11 @@
 import { SITE_CONFIG } from '@/config/site'
 import VipWaitlist from '@/components/vip-waitlist'
 import Link from 'next/link'
-import { Clock, BookOpen, Heart } from 'lucide-react'
+import { Clock, BookOpen } from 'lucide-react'
 
 export const metadata = {
-  title: 'The Column | Room 23',
-  description: 'Wellness education, intimacy guides, and curated editorial from Room 23. Read the latest on intimate wellness, personal care, and modern relationships.',
+  title: 'Journal | Room 23',
+  description: 'Wellness education, intimacy guides, and editorial from Room 23.',
 }
 
 const ARTICLES = [
@@ -59,7 +59,7 @@ export default function JournalPage() {
             fontFamily: 'var(--font-syne)',
           }}
         >
-          The Column
+          Journal
         </h1>
         <p
           className="text-base sm:text-lg max-w-2xl mx-auto"
@@ -137,35 +137,7 @@ export default function JournalPage() {
         ))}
       </section>
 
-      {/* ── Newsletter Motto ── */}
-      <section className="mx-auto max-w-2xl px-4 sm:px-6 text-center mb-12">
-        <div
-          className="rounded-2xl p-8 sm:p-10 border"
-          style={{
-            backgroundColor: 'var(--bg-surface)',
-            borderColor: 'var(--border)',
-          }}
-        >
-          <Heart
-            className="w-8 h-8 mx-auto mb-4"
-            style={{ color: 'var(--accent)' }}
-          />
-          <h2
-            className="text-xl sm:text-2xl font-bold mb-3"
-            style={{
-              color: 'var(--text-primary)',
-              fontFamily: 'var(--font-syne)',
-            }}
-          >
-            Get The Column in Your Inbox
-          </h2>
-          <p className="text-sm mb-6" style={{ color: 'var(--text-secondary)' }}>
-            New articles, limited releases, and early access. No spam — just curated content
-            for the modern intimate lifestyle.
-          </p>
-          <VipWaitlist />
-        </div>
-      </section>
+      <VipWaitlist />
     </div>
   )
 }

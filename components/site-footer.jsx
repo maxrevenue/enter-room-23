@@ -24,7 +24,7 @@ export default function SiteFooter() {
           className="text-xs tracking-[0.2em] uppercase mb-8 text-center"
           style={{ color: 'var(--color-text-muted)' }}
         >
-          Private. Curated. For discerning adults only.
+          Considered pleasure. Private delivery.
         </p>
 
         {/* Crimson divider */}
@@ -38,7 +38,7 @@ export default function SiteFooter() {
           style={{ color: 'var(--color-text-muted)' }}
         >
           {SITE_CONFIG.softLaunch
-            ? 'Browsing is open. Checkout will be enabled when payments go live.'
+            ? 'Browsing is open. Checkout follows shortly.'
             : 'Questions? Reach us at support@room23.net'}
         </p>
 
@@ -46,7 +46,7 @@ export default function SiteFooter() {
         <div className="flex items-center flex-wrap justify-center gap-6 md:gap-10 mb-12">
           {[
             { href: '/shop', label: 'SHOP' },
-            { href: '/shipping', label: 'SHIPPING' },
+            { href: '/journal', label: 'JOURNAL' },
             { href: '/faq', label: 'FAQ' },
             { href: '/contact', label: 'CONTACT' },
           ].map(({ href, label }) => (
