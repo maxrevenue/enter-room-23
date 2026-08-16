@@ -18,9 +18,9 @@ const STOCK_SKUS = [
 ]
 
 const PRIMARY_IMAGES = {
-  'skins-delay': 'public/images/products/skins-delay/packshot.jpg',
+  'skins-delay': 'public/images/products/skins-delay/packshot.png',
   'cg-oh-my': 'public/images/products/cg-oh-my/packshot.webp',
-  'heli-lavender-mist': 'public/images/products/heli-lavender-mist/bottle.png',
+  'heli-lavender-mist': 'public/images/products/heli-lavender-mist/packshot.png',
   'arlo-atlas-oil': 'public/images/products/arlo-atlas-oil/packshot.png',
   'pr-secret-garden-mist': 'public/images/products/pr-secret-garden-mist/packshot.png',
   'pr-dirty-french-gel': 'public/images/products/pr-dirty-french-gel/packshot.png',
