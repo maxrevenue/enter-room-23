@@ -1,3 +1,5 @@
+import HoverCard from '@/components/hover-card'
+
 export default function BrandPhilosophy() {
   return (
     <section
@@ -75,9 +77,9 @@ export default function BrandPhilosophy() {
               body: 'Materials and design that belong in a gallery, not a novelty shop.',
             },
           ].map((pillar) => (
-            <div
+            <HoverCard
               key={pillar.title}
-              className="group rounded-xl border border-zinc-800 bg-zinc-900 p-6 text-center transition-colors hover:border-zinc-700"
+              className="group rounded-xl border border-zinc-800 bg-zinc-900 p-6 text-center transition-colors"
             >
               <div
                 className="text-3xl mb-4 transition-all duration-300"
@@ -97,7 +99,7 @@ export default function BrandPhilosophy() {
               >
                 {pillar.body}
               </p>
-            </div>
+            </HoverCard>
           ))}
         </div>
 
