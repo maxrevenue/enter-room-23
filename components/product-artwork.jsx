@@ -1,7 +1,15 @@
 'use client'
 
-export default function ProductArtwork({ product, productId, category, className = '', style, alt }) {
-  const src = product?.image || product?.gallery?.[0]?.url
+export default function ProductArtwork({
+  product = undefined,
+  productId = undefined,
+  category = undefined,
+  image = undefined,
+  className = '',
+  style = undefined,
+  alt = undefined,
+}) {
+  const src = image || product?.image || product?.images?.[0]?.url || product?.gallery?.[0]?.url
   const label = product?.name || (category || 'collection').replace(/-/g, ' ')
 
   if (src) {

@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000" viewBox="0 0 800 1000" role="img" aria-label="Obsidian Glass Massage Wand">
-  <rect width="800" height="1000" fill="#0B0B0C"/>
-  <ellipse cx="400" cy="860" rx="140" ry="24" fill="#161618"/>
-  <path d="M360 180 C300 320, 280 520, 340 780 C360 840, 440 840, 460 780 C520 520, 500 320, 440 180 C420 140, 380 140, 360 180 Z" fill="#1c1c1f" stroke="#8E8E93" stroke-width="2"/>
-  <ellipse cx="400" cy="320" rx="28" ry="40" fill="#26262A" opacity="0.6"/>
-  <text x="400" y="920" text-anchor="middle" fill="#3A3A3C" font-family="system-ui,sans-serif" font-size="14" letter-spacing="4">BOROSILICATE</text>
-</svg>

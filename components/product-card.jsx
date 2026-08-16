@@ -7,6 +7,7 @@ import ProductArtwork from '@/components/product-artwork'
 
 const BADGE_STYLES = {
   'BEST SELLER': { bg: '#C8102E', text: '#FFFFFF' },
+  'NEW':         { bg: '#C8102E', text: '#FFFFFF' },
   'TRAVEL':      { bg: '#1c1c1f', text: '#C8102E', border: '1px solid rgba(200,16,46,0.4)' },
   'VALUE':       { bg: '#1c1c1f', text: '#D1D1D6', border: '1px solid rgba(209,209,214,0.3)' },
   'RARE INVENTORY': { bg: '#C8102E', text: '#FFFFFF' },

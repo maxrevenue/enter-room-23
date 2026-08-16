@@ -15,9 +15,9 @@ const catalog = {
     price: 18,
     vendorType: VENDOR_TYPES.ROOM23_STOCK,
   },
-  'ds-massage-oil': {
-    id: 'ds-massage-oil',
-    name: 'Midnight Bloom Massage Oil',
+  'partner-warehouse-a': {
+    id: 'partner-warehouse-a',
+    name: 'Partner Warehouse Item',
     price: 42,
     vendorType: VENDOR_TYPES.ELDORADO_DROPSHIP,
     supplierSku: 'ELD-1001',
@@ -64,7 +64,7 @@ describe('checkout completion pipeline', () => {
     const items = hydrateCartItems(
       [
         { id: 'lube-silicone-2oz', qty: 1 },
-        { id: 'ds-massage-oil', qty: 1 },
+        { id: 'partner-warehouse-a', qty: 1 },
       ],
       (id) => catalog[id],
     )
