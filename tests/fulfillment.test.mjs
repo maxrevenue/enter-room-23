@@ -25,7 +25,7 @@ function stockItem() {
 
 function eldoradoItem() {
   return {
-    id: 'partner-eldorado-item',
+    id: 'partner-warehouse-a',
     name: 'Partner Warehouse Item',
     qty: 1,
     price: 42,
@@ -36,7 +36,7 @@ function eldoradoItem() {
 
 function williamsItem() {
   return {
-    id: 'partner-williams-item',
+    id: 'partner-warehouse-b',
     name: 'Partner Warehouse Object',
     qty: 1,
     price: 65,
