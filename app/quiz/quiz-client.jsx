@@ -23,7 +23,7 @@ export default function QuizClient() {
 
   return (
     <main className="container-narrow" style={{ paddingTop: '3rem', paddingBottom: '4rem' }}>
-      <p className="last-updated">Three SKUs. One suggestion.</p>
+      <p className="last-updated">A short edit. One suggestion.</p>
       <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--text-3xl)', fontWeight: 700, marginBottom: '1rem' }}>
         Which piece
       </h1>
