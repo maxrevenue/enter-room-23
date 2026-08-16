@@ -3,15 +3,16 @@
  *
  * Validates the cart against the server catalog, then either:
  *   1. Returns a CCBill FlexForms URL when the gateway is configured, or
- *   2. Finalizes the order (fulfillment routing + confirmation email).
+ *   2. Finalizes via staging mock (CHECKOUT_MOCK / non-production), or
+ *   3. Returns a hosted-payment placeholder URL at /pay.
  *
- * Card data never touches this server.
+ * Card data never touches this server. Hardware SKUs are one-time charges.
  */
 
 import { NextResponse } from 'next/server'
-import crypto from 'crypto'
 import { SITE_CONFIG } from '@/config/site'
 import { getProductById } from '@/lib/products'
+import { buildCCBillFlexFormUrl, isCheckoutMockEnabled } from '@/lib/ccbill.mjs'
 import {
   checkoutCustomerSchema,
   computeServerTotals,
@@ -19,45 +20,6 @@ import {
   generateOrderId,
   hydrateCartItems,
 } from '@/lib/checkout-complete'
-
-function buildCCBillUrl({ total, orderId }) {
-  const {
-    CCBILL_ACCOUNT_NUMBER,
-    CCBILL_SUB_ACCOUNT,
-    CCBILL_FLEXFORM_ID,
-    CCBILL_SALT,
-    CCBILL_CURRENCY_CODE = '840',
-  } = process.env
-
-  if (!CCBILL_ACCOUNT_NUMBER || !CCBILL_SUB_ACCOUNT || !CCBILL_FLEXFORM_ID || !CCBILL_SALT) {
-    return null
-  }
-
-  const initialPrice = total.toFixed(2)
-  const initialPeriod = '2'
-  const recurringPrice = total.toFixed(2)
-  const recurringPeriod = '2'
-  const numRebills = '0'
-  const currencyCode = CCBILL_CURRENCY_CODE
-  const digestString = `${initialPrice}${initialPeriod}${recurringPrice}${recurringPeriod}${currencyCode}${CCBILL_SALT}`
-  const formDigest = crypto.createHash('md5').update(digestString).digest('hex')
-
-  const params = new URLSearchParams({
-    clientAccnum: CCBILL_ACCOUNT_NUMBER,
-    clientSubacc: CCBILL_SUB_ACCOUNT,
-    initialPrice,
-    initialPeriod,
-    recurringPrice,
-    recurringPeriod,
-    numRebills,
-    currencyCode,
-    formDigest,
-    orderId,
-    redirectUrl: `https://${SITE_CONFIG.domain}/order-confirmed`,
-  })
-
-  return `https://api.ccbill.com/wap-frontflex/flexforms/${CCBILL_FLEXFORM_ID}?${params.toString()}`
-}
 
 function publicTotals(totals) {
   return {
@@ -73,7 +35,7 @@ function publicTotals(totals) {
 export async function POST(request) {
   try {
     const body = await request.json()
-    const { cart, subtotal: subtotalFromClient, appliedPromo } = body
+    const { cart, subtotal: subtotalFromClient, appliedPromo, shippingMethodId } = body
 
     let items
     try {
@@ -92,6 +54,7 @@ export async function POST(request) {
 
     const totals = computeServerTotals(items, {
       appliedPromo,
+      shippingMethodId,
       freeShippingThreshold: SITE_CONFIG.freeShippingThreshold,
       flatShippingRate: SITE_CONFIG.flatShippingRate,
     })
@@ -110,7 +73,12 @@ export async function POST(request) {
       ? body.orderId
       : generateOrderId()
     const idempotencyKey = body.idempotencyKey || `checkout:${orderId}`
-    const paymentUrl = buildCCBillUrl({ total: totals.total, orderId })
+    const paymentUrl = buildCCBillFlexFormUrl({
+      total: totals.total,
+      orderId,
+      email: customer.data.email,
+      domain: SITE_CONFIG.domain,
+    })
 
     if (paymentUrl) {
       return NextResponse.json({
@@ -122,27 +90,38 @@ export async function POST(request) {
       })
     }
 
-    const finalized = await finalizePaidOrder(
-      {
-        orderId,
-        email: customer.data.email,
-        shippingAddress: customer.data.shippingAddress,
-        items,
-        totals,
-        idempotencyKey,
-      },
-      {
-        dryRun: process.env.NODE_ENV !== 'production',
-      },
-    )
+    if (isCheckoutMockEnabled()) {
+      const finalized = await finalizePaidOrder(
+        {
+          orderId,
+          email: customer.data.email,
+          shippingAddress: customer.data.shippingAddress,
+          items,
+          totals,
+          idempotencyKey,
+        },
+        {
+          dryRun: true,
+        },
+      )
+
+      return NextResponse.json({
+        success: true,
+        pending: false,
+        mock: true,
+        orderId: finalized.orderId,
+        paymentUrl: null,
+        emailSent: finalized.emailSent,
+        fulfillment: finalized.fulfillment,
+        totals: publicTotals(totals),
+      })
+    }
 
     return NextResponse.json({
       success: true,
-      pending: false,
-      orderId: finalized.orderId,
-      paymentUrl: null,
-      emailSent: finalized.emailSent,
-      fulfillment: finalized.fulfillment,
+      pending: true,
+      orderId,
+      paymentUrl: `/pay?order=${encodeURIComponent(orderId)}`,
       totals: publicTotals(totals),
     })
   } catch (err) {

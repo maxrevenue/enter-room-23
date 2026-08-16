@@ -33,7 +33,7 @@ function AgeGateHuman() {
       sameSite: 'lax',
       secure: process.env.NODE_ENV === 'production',
     }
-    // Middleware reads age_verified; the overlay also keeps room23_age_verified.
+    // Overlay cookies; 30-day lifetime.
     Cookies.set('room23_age_verified', 'true', cookieOpts)
     Cookies.set('age_verified', 'true', cookieOpts)
     setStatus('verified')

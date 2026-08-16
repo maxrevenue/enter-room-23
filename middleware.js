@@ -1,36 +1,21 @@
 import { NextResponse } from 'next/server'
 
 /**
- * Edge middleware — enforces age verification at the network level
- * before any protected page HTML is rendered.
+ * Edge middleware — HTTPS only.
  *
- * Unverified requests to /shop (or any non-public route) are redirected
- * to / so the age gate displays before content is ever served.
+ * Age verification is a client overlay (see AgeGate). Do not 307 shop, PDP,
+ * journal, collections, cart, or checkout to /. Underwriters and curl must
+ * receive unique HTML for those routes.
  */
-const BOT_UA =
-  /bot|crawler|spider|crawling|googlebot|bingbot|slurp|duckduckbot|facebookexternalhit|twitterbot|linkedinbot|whatsapp|telegrambot/i
-
 export function middleware(request) {
-  const verified =
-    request.cookies.get('age_verified')?.value === 'true' ||
-    request.cookies.get('room23_age_verified')?.value === 'true'
-  const { pathname } = request.nextUrl
-  const userAgent = request.headers.get('user-agent') || ''
+  const proto = request.headers.get('x-forwarded-proto')
+  const host = request.headers.get('host') || ''
+  const isLocal = host.startsWith('localhost') || host.startsWith('127.0.0.1')
 
-  // Public routes accessible without age verification
-  const isPublic =
-    pathname === '/' ||
-    pathname.startsWith('/terms') ||
-    pathname.startsWith('/privacy') ||
-    pathname.startsWith('/shipping') ||
-    pathname.startsWith('/faq') ||
-    pathname.startsWith('/contact') ||
-    pathname.startsWith('/about') ||
-    pathname.startsWith('/_next') ||
-    pathname.includes('.')
-
-  if (!verified && !isPublic && !BOT_UA.test(userAgent)) {
-    return NextResponse.redirect(new URL('/', request.url))
+  if (proto === 'http' && !isLocal) {
+    const url = request.nextUrl.clone()
+    url.protocol = 'https:'
+    return NextResponse.redirect(url, 301)
   }
 
   return NextResponse.next()

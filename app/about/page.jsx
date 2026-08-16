@@ -1,6 +1,4 @@
 import BrandPhilosophy from '@/components/brand-philosophy'
-import Testimonials from '@/components/testimonials'
-import VipWaitlist from '@/components/vip-waitlist'
 
 export const metadata = {
   title: 'About',
@@ -11,8 +9,6 @@ export default function AboutPage() {
   return (
     <div>
       <BrandPhilosophy />
-      <Testimonials />
-      <VipWaitlist />
     </div>
   )
 }

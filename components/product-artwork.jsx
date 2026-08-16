@@ -1,7 +1,19 @@
 'use client'
 
-export default function ProductArtwork({ productId, category, className = '', style }) {
-  const label = (category || 'collection').replace(/-/g, ' ')
+export default function ProductArtwork({ product, productId, category, className = '', style, alt }) {
+  const src = product?.image || product?.gallery?.[0]?.url
+  const label = product?.name || (category || 'collection').replace(/-/g, ' ')
+
+  if (src) {
+    return (
+      <img
+        src={src}
+        alt={alt || product?.gallery?.[0]?.alt || label}
+        className={`h-full w-full object-cover ${className}`}
+        style={style}
+      />
+    )
+  }
 
   return (
     <div
@@ -12,7 +24,6 @@ export default function ProductArtwork({ productId, category, className = '', st
           'radial-gradient(ellipse at 50% 30%, rgba(200,16,46,0.12) 0%, transparent 62%)',
         ...style,
       }}
-      aria-hidden="true"
     >
       <span
         className="font-syne font-bold tracking-[0.35em] uppercase"

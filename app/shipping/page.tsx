@@ -1,64 +1,63 @@
 import Link from 'next/link'
 import { SITE_CONFIG } from '@/config/site'
+import { SHIPPING_METHODS, FREE_SHIPPING_THRESHOLD } from '@/lib/shipping'
 
 export const metadata = {
-  title: 'Shipping & Discretion',
-  description: 'Shipping rates, delivery times, and return policy for Room 23.',
+  title: 'Shipping & Returns',
+  description: 'Shipping rates, discreet packaging, and the Room 23 return policy.',
 }
 
 export default function ShippingPage() {
   return (
     <div className="max-w-3xl mx-auto py-16 px-4 md:px-8">
-      <h1 className="text-3xl font-serif text-white mb-8">Shipping & Discretion</h1>
-      
+      <h1 className="text-3xl font-serif text-white mb-8">Shipping & Returns</h1>
+
       <p className="text-zinc-300 mb-12 leading-relaxed">
-        Your privacy is our highest priority. All orders are processed, packed, and shipped with absolute discretion so you can shop with total peace of mind.
+        {SITE_CONFIG.legalName} ships physical wellness goods within the United States. Orders are
+        processed in 1–2 business days and leave with tracking. Privacy is a customer-experience
+        policy: unmarked cartons, a generic return address, and a packing slip without explicit SKU names.
       </p>
 
       <div className="grid md:grid-cols-2 gap-8 items-center bg-zinc-900 border border-zinc-800 p-6 md:p-8 mb-12">
-        <div className="bg-zinc-950 aspect-square md:aspect-auto md:h-64 flex flex-col items-center justify-center border border-dashed border-zinc-700 text-center p-4">
-          {/* TODO: Replace with next/image of physical box */}
-          <span className="text-zinc-500 text-sm mb-2">[ Image Placeholder ]</span>
-          <span className="text-zinc-600 text-xs">Plain taped brown/white mailer with generic label</span>
+        <div className="overflow-hidden border border-zinc-800">
+          <img
+            src="/images/shipping/discreet-mailer-01.jpg"
+            alt="Plain unmarked carton with a generic shipping label"
+            className="w-full h-64 object-cover"
+          />
         </div>
-        
+
         <div>
-          <h2 className="text-xl font-serif text-white mb-4">Exactly How It Arrives</h2>
+          <h2 className="text-xl font-serif text-white mb-4">Exactly how it arrives</h2>
           <ul className="text-zinc-400 text-sm space-y-3 list-none p-0">
-            <li className="flex items-start gap-2">
-              <span className="text-red-700 mt-1">•</span>
-              <span>Plain, unmarked brown or white outer packaging.</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-red-700 mt-1">•</span>
-              <span>Zero exterior branding, logos, or identifying marks.</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-red-700 mt-1">•</span>
-              <span>Return address simply reads generic fulfillment center.</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-red-700 mt-1">•</span>
-              <span>Customs declarations (international) use vague, compliant terminology (e.g., &quot;Wellness Tool&quot;).</span>
-            </li>
+            <li>Plain, unmarked brown or white outer packaging.</li>
+            <li>No exterior branding, logos, or product names on the carton.</li>
+            <li>Generic return address — not “Room 23.”</li>
+            <li>Packing slip lists generic item names, not explicit SKU titles.</li>
+            <li>Card statement shows {SITE_CONFIG.billingDescriptor}.</li>
           </ul>
         </div>
       </div>
-      
+
       <div className="legal-content text-zinc-300">
         <p className="text-zinc-500 text-xs uppercase tracking-widest mb-8">Last Updated: {SITE_CONFIG.lastUpdated}</p>
 
-        <h2 className="text-xl font-serif text-white mt-10 mb-4">Processing Times</h2>
-        <ul className="text-zinc-400 text-sm space-y-2 mb-6">
-          <li><strong className="text-zinc-200">Standard Orders:</strong> Processed within 1–2 business days of payment confirmation.</li>
-          <li><strong className="text-zinc-200">Weekends/Holidays:</strong> Orders placed after 2:00 PM ET Friday process the following Monday.</li>
-        </ul>
-        <p className="text-zinc-400 text-sm leading-relaxed mb-8">
-          You will receive a confirmation email immediately after purchase and a shipping confirmation with tracking once dispatched.
+        <h2 className="text-xl font-serif text-white mt-10 mb-4">Discretion details</h2>
+        <p className="text-zinc-400 text-sm leading-relaxed mb-4">
+          Unbranded carton. Generic return address. Packing slip without explicit SKU names.
+          We do not print product photography on the exterior. If you use Apple Pay or a wallet
+          notification, your lock screen may still show the merchant name {SITE_CONFIG.billingDescriptor}
+          or “Room 23” depending on your device — that is a wallet behavior we cannot fully suppress.
         </p>
 
-        <h2 className="text-xl font-serif text-white mt-10 mb-4">Shipping Methods &amp; Rates</h2>
-        <p className="text-zinc-400 text-sm mb-4">We ship within the United States (all 50 states, APO/FPO, US territories).</p>
+        <h2 className="text-xl font-serif text-white mt-10 mb-4">Processing times</h2>
+        <ul className="text-zinc-400 text-sm space-y-2 mb-6">
+          <li><strong className="text-zinc-200">Standard orders:</strong> Processed within 1–2 business days of payment confirmation, then shipped with tracking (within 3 business days of payment at the latest).</li>
+          <li><strong className="text-zinc-200">Weekends/holidays:</strong> Orders placed after 2:00 PM ET Friday process the following Monday.</li>
+        </ul>
+
+        <h2 className="text-xl font-serif text-white mt-10 mb-4">Shipping methods &amp; rates</h2>
+        <p className="text-zinc-400 text-sm mb-4">We ship within the United States (all 50 states, APO/FPO, US territories). We do not ship internationally.</p>
         <div className="overflow-x-auto border border-zinc-800 bg-zinc-900 mb-6">
           <table className="w-full border-collapse text-sm">
             <thead>
@@ -69,51 +68,56 @@ export default function ShippingPage() {
               </tr>
             </thead>
             <tbody className="text-zinc-300">
-              <tr className="border-b border-zinc-800"><td className="p-3">Standard (USPS Ground)</td><td className="p-3">5–8 business days</td><td className="p-3">$5.99 USD</td></tr>
-              <tr className="border-b border-zinc-800"><td className="p-3">Expedited (USPS Priority)</td><td className="p-3">2–4 business days</td><td className="p-3">$12.99 USD</td></tr>
-              <tr className="border-b border-zinc-800"><td className="p-3">Express (FedEx 2Day)</td><td className="p-3">2 business days</td><td className="p-3">$24.99 USD</td></tr>
-              <tr><td className="p-3">Express (UPS Next Day Air)</td><td className="p-3">Next business day</td><td className="p-3">$29.99 USD</td></tr>
+              {SHIPPING_METHODS.map((method) => (
+                <tr key={method.id} className="border-b border-zinc-800 last:border-0">
+                  <td className="p-3">{method.name}</td>
+                  <td className="p-3">{method.delivery}</td>
+                  <td className="p-3">${method.rate.toFixed(2)} USD</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
-        <p className="text-zinc-400 text-sm mb-8">Free standard shipping on orders over <strong className="text-white">${SITE_CONFIG.freeShippingThreshold.toFixed(2)} USD</strong>.</p>
+        <p className="text-zinc-400 text-sm mb-8">
+          Free standard shipping on orders over <strong className="text-white">${FREE_SHIPPING_THRESHOLD.toFixed(2)} USD</strong>.
+          Expedited and express rates still apply above that threshold.
+        </p>
 
-        <h2 className="text-xl font-serif text-white mt-10 mb-4">Returns Policy</h2>
-        <h3 className="text-lg text-white mb-3">Final Sale Items (Non-Returnable)</h3>
+        <h2 className="text-xl font-serif text-white mt-10 mb-4">Returns policy</h2>
+        <h3 className="text-lg text-white mb-3">Final sale (non-returnable)</h3>
         <ul className="text-zinc-400 text-sm space-y-2 mb-6">
           <li>Any product that has been opened, used, or whose seal has been broken</li>
           <li>Lubricants, oils, massage products, and all liquid/gel items (once seal is broken)</li>
           <li>Intimate wear and apparel (once removed from packaging)</li>
-          <li>Clearance or &ldquo;Final Sale&rdquo; marked items</li>
+          <li>Clearance or “Final Sale” marked items</li>
         </ul>
 
-        <h3 className="text-lg text-white mb-3">Eligible Returns</h3>
-        <p className="text-zinc-400 text-sm mb-3">Items may be returned only if all conditions are met:</p>
+        <h3 className="text-lg text-white mb-3">Eligible returns</h3>
         <ul className="text-zinc-400 text-sm space-y-2 mb-6">
           <li>Unopened, factory-sealed packaging intact</li>
           <li>Return requested within 14 calendar days of delivery</li>
           <li>Proof of purchase provided</li>
         </ul>
 
-        <h3 className="text-lg text-white mb-3">Return Process</h3>
+        <h3 className="text-lg text-white mb-3">How to return</h3>
         <ol className="text-zinc-400 text-sm space-y-2 mb-8 list-decimal pl-5">
-          <li>Email <a href="mailto:support@room23.net" className="text-red-500 hover:text-red-400">support@room23.net</a> with order number and items to return.</li>
+          <li>Email <a href={`mailto:${SITE_CONFIG.supportEmail}`} className="text-red-500 hover:text-red-400">{SITE_CONFIG.supportEmail}</a> with your order number and the items to return.</li>
           <li>Receive RMA authorization within 1–2 business days.</li>
-          <li>Ship back in discreet packaging (customer pays return shipping unless our error).</li>
-          <li>Refund issued to original payment method within 5–10 business days after inspection.</li>
+          <li>Ship back in discreet packaging. You pay return shipping unless we shipped the wrong item or the item arrived damaged or defective.</li>
+          <li>Refund issued to the original payment method within 5–10 business days after inspection.</li>
         </ol>
 
-        <h2 className="text-xl font-serif text-white mt-10 mb-4">Damaged or Defective Items</h2>
+        <h2 className="text-xl font-serif text-white mt-10 mb-4">Damaged or defective items</h2>
         <p className="text-zinc-400 text-sm leading-relaxed mb-8">
           Contact us within 48 hours of delivery at{' '}
-          <a href="mailto:support@room23.net" className="text-red-500 hover:text-red-400">support@room23.net</a> with order number and photos.
-          We will arrange a replacement or full refund at no cost.
+          <a href={`mailto:${SITE_CONFIG.supportEmail}`} className="text-red-500 hover:text-red-400">{SITE_CONFIG.supportEmail}</a> with
+          your order number and photos. We will arrange a replacement or full refund at no cost.
         </p>
 
-        <h2 className="text-xl font-serif text-white mt-10 mb-4">Lost or Stolen Packages</h2>
+        <h2 className="text-xl font-serif text-white mt-10 mb-4">Lost or stolen packages</h2>
         <p className="text-zinc-400 text-sm leading-relaxed mb-10">
-          Room 23 is not responsible for packages marked &ldquo;Delivered&rdquo; that are stolen. We
-          recommend shipping to a secure address. Missing deliveries must be reported within 7 days.
+          {SITE_CONFIG.legalName} is not responsible for packages marked “Delivered” that are stolen.
+          Ship to a secure address. Report missing deliveries within 7 days.
         </p>
 
         <p className="text-zinc-400 text-sm">

@@ -3,7 +3,6 @@
 import SiteHeader from '@/components/site-header'
 import SiteFooter from '@/components/site-footer'
 import CartSheet from '@/components/cart-sheet'
-import CheckoutDialog from '@/components/checkout-dialog'
 
 export default function SiteShell({ children }) {
   return (
@@ -15,7 +14,6 @@ export default function SiteShell({ children }) {
       </div>
 
       <CartSheet />
-      <CheckoutDialog />
     </div>
   )
 }

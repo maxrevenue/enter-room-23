@@ -5,24 +5,26 @@
  * Entity: California LLC — Filing B20260165153
  */
 
+import { FLAT_SHIPPING_RATE, FREE_SHIPPING_THRESHOLD } from '@/lib/shipping'
+
 export const SITE_CONFIG = {
   // ── Brand Identity ──
   name: 'Room 23',
   legalName: 'Room 23 LLC',
   domain: 'room23.net',
 
-  // ── Contact ──
+  // ── Contact (public block — keep every page on these values) ──
   supportEmail: 'support@room23.net',
   supportPhone: '(425) 505-3528',
   hours: 'Mon–Fri 9:00 AM – 6:00 PM ET',
 
-  // ── Location (CA SOS Filing B20260165153) ──
+  // Principal / SOS address is not published on the storefront.
   principalAddress: '6010 Fulcher Ave, North Hollywood, CA 91606',
   mailingAddress: '5482 Wilshire Blvd #333, Los Angeles, CA 90036',
-  address: '5482 Wilshire Blvd #333, Los Angeles, CA 90036', // Primary public
+  address: '5482 Wilshire Blvd #333, Los Angeles, CA 90036',
   location: 'United States',
+  governingLaw: 'State of California',
 
-  // Backward-compatible aliases for existing components
   bizStreet: '5482 Wilshire Blvd #333',
   bizCityState: 'Los Angeles, CA 90036',
   bizAddressFull: '5482 Wilshire Blvd #333, Los Angeles, CA 90036',
@@ -32,11 +34,12 @@ export const SITE_CONFIG = {
   checkoutEnabled: process.env.NEXT_PUBLIC_SOFT_LAUNCH !== 'true',
   softLaunch: process.env.NEXT_PUBLIC_SOFT_LAUNCH === 'true',
 
-  // ── Shipping ──
+  // ── Shipping (must match /shipping) ──
   carriers: ['USPS', 'UPS', 'FedEx'],
-  freeShippingThreshold: 99.0,
-  flatShippingRate: 8.0,
+  freeShippingThreshold: FREE_SHIPPING_THRESHOLD,
+  flatShippingRate: FLAT_SHIPPING_RATE,
 
   // ── Legal ──
-  lastUpdated: 'August 1, 2026',
+  lastUpdated: 'August 16, 2026',
+  ageCookieDurationDays: 30,
 }

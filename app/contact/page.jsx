@@ -108,7 +108,7 @@ export default function ContactPage() {
                   Mailing Address
                 </h4>
                 <p style={{ color: 'var(--text-primary)', fontSize: 'var(--text-sm)' }}>
-                  Room 23<br />
+                  {SITE_CONFIG.legalName}<br />
                   {SITE_CONFIG.bizStreet}<br />
                   {SITE_CONFIG.bizCityState}<br />
                   United States

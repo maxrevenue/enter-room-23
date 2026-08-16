@@ -68,7 +68,7 @@ export default function TermsPage() {
       </p>
       <p>
         <strong>Billing Descriptor:</strong> Charges on your credit or debit card statement will appear
-        as <strong>ROOM23</strong> or a similar discreet descriptor. By placing an order, you authorize
+        as <strong>{SITE_CONFIG.billingDescriptor}</strong>. By placing an order, you authorize
         us (or our designated payment processor) to charge your selected payment method for the total
         amount, including shipping and any applicable taxes.
       </p>
@@ -139,7 +139,7 @@ export default function TermsPage() {
       <h2>10. Governing Law &amp; Dispute Resolution</h2>
       <p>
         These Terms shall be governed by and construed in accordance with the laws of the <strong>
-        State of Delaware</strong>, without regard to its conflict of law provisions.
+        State of California</strong>, without regard to its conflict of law provisions.
       </p>
       <p>
         Any dispute arising from these Terms or your use of the Site shall be resolved through binding
@@ -180,7 +180,7 @@ export default function TermsPage() {
       <hr />
 
       <p className="text-muted" style={{ fontSize: 'var(--text-sm)' }}>
-        &copy; {new Date().getFullYear()} Room 23. All rights reserved.
+        &copy; {new Date().getFullYear()} {SITE_CONFIG.legalName}. All rights reserved.
       </p>
     </div>
   )

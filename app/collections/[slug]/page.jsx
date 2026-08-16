@@ -39,7 +39,7 @@ export default function CollectionPage({ params }) {
     return PRODUCTS.slice(0, 6)
   }, [showFallback])
 
-  if (!collectionMeta) notFound()
+  if (!collectionMeta || slug === 'vintage') notFound()
 
   return (
     <main style={{ backgroundColor: 'var(--bg-base)', minHeight: '100vh' }}>

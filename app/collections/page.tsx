@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   description: "Curated essentials and seasonal edits from Room 23.",
 };
 
-const VISIBLE_COLLECTIONS = ["essentials", "new-arrivals", "vintage"] as const;
+const VISIBLE_COLLECTIONS = ["essentials", "new-arrivals"] as const;
 
 export default function CollectionsPage() {
   return (

@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { ArrowRight, Zap, Shield, Droplets } from 'lucide-react'
-import { PRODUCTS } from '@/lib/products'
+import { PRODUCTS, productPath } from '@/lib/products'
 import ProductArtwork from '@/components/product-artwork'
 
 // Wire to the Premium Silicone Wand — our best featured product
@@ -76,7 +76,7 @@ export default function EditorChoice() {
               style={{ backgroundColor: 'var(--bg-base)' }}
             >
               <div className="absolute inset-0">
-                <ProductArtwork productId={FEATURED.id} category={FEATURED.category} />
+                <ProductArtwork product={FEATURED} productId={FEATURED.id} category={FEATURED.category} />
               </div>
 
               {/* Badge */}
@@ -171,7 +171,7 @@ export default function EditorChoice() {
                 </div>
 
                 <Link
-                  href={`/products/${FEATURED.id}`}
+                  href={productPath(FEATURED)}
                   className="btn-brass inline-flex items-center gap-2 group/cta"
                   style={{ padding: '0.75rem 1.75rem', fontSize: 'var(--text-sm)' }}
                   aria-label={`View details for ${FEATURED.name}`}

@@ -3,7 +3,7 @@
 import { useState, useMemo, useRef } from 'react'
 import Link from 'next/link'
 import { useCart } from '@/lib/cart-context'
-import { PRODUCTS as products } from '@/lib/products'
+import { PRODUCTS as products, productPath } from '@/lib/products'
 import { ShoppingBag, Search, SlidersHorizontal, X, Star, ChevronDown, Flame, Sparkles } from 'lucide-react'
 import ProductArtwork from '@/components/product-artwork'
 import EditorChoice from '@/components/editor-choice'
@@ -497,28 +497,6 @@ export default function ShopPage() {
           </div>
         )}
 
-        {/* ── Empty state (no products at all) ── */}
-        {products.length === 0 && (
-          <div
-            className="surface-card text-center animate-fade-in-up"
-            style={{ padding: '4rem 2rem', marginTop: '2rem' }}
-          >
-            <ShoppingBag size={48} style={{ color: 'var(--color-brass)', margin: '0 auto 1rem', opacity: 0.3 }} />
-            <h3 style={{
-              fontFamily: 'var(--font-display)',
-              fontSize: 'var(--text-xl)',
-              fontWeight: 600,
-              color: 'var(--text-primary)',
-              marginBottom: '0.5rem',
-            }}>
-              Collection Coming Soon
-            </h3>
-            <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem' }}>
-              Our curated products are being prepared. Check back shortly.
-            </p>
-            <Link href="/" className="btn-secondary">Return Home</Link>
-          </div>
-        )}
       </div>
     </div>
   )
@@ -554,7 +532,7 @@ function ShopProductCard({ product, idx, addedId, onAddToCart }) {
     >
       {/* Image */}
       <Link
-        href={`/products/${product.id}`}
+        href={productPath(product)}
         style={{
           position: 'relative',
           display: 'block',
@@ -621,6 +599,7 @@ function ShopProductCard({ product, idx, addedId, onAddToCart }) {
 
         <div className="absolute inset-0">
           <ProductArtwork
+            product={product}
             productId={product.id}
             category={product.category}
             style={{
@@ -653,7 +632,7 @@ function ShopProductCard({ product, idx, addedId, onAddToCart }) {
         )}
 
         {/* Name */}
-        <Link href={`/products/${product.id}`}>
+        <Link href={productPath(product)}>
           <h3
             style={{
               fontFamily: 'var(--font-display)',
