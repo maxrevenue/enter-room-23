@@ -8,6 +8,7 @@ import ProductCard from '@/components/product-card'
 const COLLECTION_FILTERS = [
   { label: 'ALL', value: '' },
   { label: 'ROOM 23 ESSENTIALS', value: 'essentials' },
+  { label: 'NEW ARRIVALS', value: 'new-arrivals' },
 ]
 
 const PRICE_FILTERS = [
@@ -60,7 +61,7 @@ export default function SearchPage() {
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search lubricant, glass, oil, silk..."
+              placeholder="Search lubricants, glass, oil, silk…"
               className="w-full pl-12 pr-4 py-3.5 text-sm rounded-lg border outline-none transition-all duration-200 focus:shadow-[0_0_0_3px_rgba(255,26,26,0.15)]"
               style={{
                 backgroundColor: 'var(--bg-elevated)',

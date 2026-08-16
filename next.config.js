@@ -43,11 +43,17 @@ const nextConfig = {
       { source: '/collections/vintage', destination: '/shop', permanent: true },
       { source: '/archive', destination: '/journal', permanent: true },
       { source: '/products/lube-silicone-2oz', destination: '/products/platinum-silicone-lubricant-2oz', permanent: true },
-      { source: '/products/lube-silicone-4oz', destination: '/products/platinum-silicone-lubricant', permanent: true },
+      { source: '/products/lube-silicone-4oz', destination: '/products/platinum-silicone-lubricant-4oz', permanent: true },
+      { source: '/shop/lube-silicone-2oz', destination: '/products/platinum-silicone-lubricant-2oz', permanent: true },
+      { source: '/shop/lube-silicone-4oz', destination: '/products/platinum-silicone-lubricant-4oz', permanent: true },
+      { source: '/shop/lube-silicone-8oz', destination: '/products/platinum-silicone-lubricant-8oz', permanent: true },
       { source: '/products/lube-silicone-8oz', destination: '/products/platinum-silicone-lubricant-8oz', permanent: true },
       { source: '/products/ds-glass-wand', destination: '/products/obsidian-glass-massage-wand', permanent: true },
+      { source: '/shop/ds-glass-wand', destination: '/products/obsidian-glass-massage-wand', permanent: true },
       { source: '/products/ds-massage-oil', destination: '/products/midnight-bloom-massage-oil', permanent: true },
+      { source: '/shop/ds-massage-oil', destination: '/products/midnight-bloom-massage-oil', permanent: true },
       { source: '/products/ds-silk-blindfold', destination: '/products/noir-silk-blindfold', permanent: true },
+      { source: '/shop/ds-silk-blindfold', destination: '/products/noir-silk-blindfold', permanent: true },
     ]
   },
   async headers() {

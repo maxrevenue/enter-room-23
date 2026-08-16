@@ -27,11 +27,12 @@ export const metadata = {
     template: '%s | Room 23',
   },
   description:
-    'Room 23 offers premium adult wellness products, privately delivered. 18+ only.',
+    'Room 23 offers premium adult wellness products with private delivery and secure checkout. 18+ only.',
   keywords: [
     'adult wellness',
     'premium intimacy',
     'private delivery',
+    'body-safe',
     'luxury wellness products',
   ],
   authors: [{ name: 'Room 23' }],

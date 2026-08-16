@@ -71,7 +71,7 @@ describe('checkout completion pipeline', () => {
     const totals = computeServerTotals(items, {
       appliedPromo: 'WELCOME10',
       freeShippingThreshold: 99,
-      flatShippingRate: 8,
+      flatShippingRate: 5.99,
     })
 
     const sent = []
@@ -108,7 +108,7 @@ describe('checkout completion pipeline', () => {
 
   it('still returns a customer result when email sending fails', async () => {
     const items = hydrateCartItems([{ id: 'lube-silicone-2oz', qty: 1 }], (id) => catalog[id])
-    const totals = computeServerTotals(items, { freeShippingThreshold: 99, flatShippingRate: 8 })
+    const totals = computeServerTotals(items, { freeShippingThreshold: 99, flatShippingRate: 5.99 })
 
     const result = await finalizePaidOrder(
       {
