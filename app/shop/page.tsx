@@ -6,7 +6,7 @@ import ProductCardActions from '@/components/product-card-actions'
 
 export const metadata: Metadata = {
   title: 'Shop',
-  description: 'Curated adult wellness essentials from Room 23 — lubricants, glass, botanical oil, and silk.',
+  description: 'Curated adult wellness essentials from Room 23 — lubricants, delay spray, mists, oils, and in-stock house pieces.',
 }
 
 export default function ShopPage() {

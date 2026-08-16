@@ -30,8 +30,11 @@ const JOURNAL_NOTES = [
   },
 ] as const
 
+const FEATURED_IDS = ['skins-delay', 'heli-lavender-mist', 'arlo-atlas-oil', 'pr-secret-garden-mist']
+
 export default function HomePage() {
-  const featured = PRODUCTS.slice(0, 4)
+  const featured = FEATURED_IDS.map((id) => PRODUCTS.find((p) => p.id === id)).filter(Boolean)
+  const featuredTiles = featured.length ? featured : PRODUCTS.slice(0, 4)
 
   return (
     <main className="bg-zinc-950 text-white">
@@ -82,7 +85,7 @@ export default function HomePage() {
           </header>
 
           <ul className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            {featured.map((product) => (
+            {featuredTiles.map((product) => (
               <li key={product.id}>
                 <Link href={productHref(product)} className="group block">
                   <div className="overflow-hidden border border-zinc-800 bg-zinc-900">
