@@ -15,6 +15,7 @@ const STOCK_SKUS = [
   'pr-secret-garden-mist',
   'pr-dirty-french-gel',
   'cg-pole-polish',
+  'cake-stroker',
 ]
 
 const PRIMARY_IMAGES = {
@@ -25,10 +26,11 @@ const PRIMARY_IMAGES = {
   'pr-secret-garden-mist': 'public/images/products/pr-secret-garden-mist/packshot.png',
   'pr-dirty-french-gel': 'public/images/products/pr-dirty-french-gel/packshot.png',
   'cg-pole-polish': 'public/images/products/cg-pole-polish/packshot.jpg',
+  'cake-stroker': 'public/images/products/cake-stroker/02-product-only.jpg',
 }
 
 describe('in-stock wellness catalog', () => {
-  it('lists all seven house-stock SKUs', () => {
+  it('lists house-stock wellness SKUs and the Cake stroker', () => {
     for (const id of STOCK_SKUS) {
       assert.match(products, new RegExp(`id: '${id}'`))
       assert.match(products, new RegExp(`vendorType: VENDOR_TYPES.ROOM23_STOCK`))
@@ -36,8 +38,7 @@ describe('in-stock wellness catalog', () => {
     assert.match(products, /newArrival: true/)
   })
 
-  it('does not add Cake stroker and does not resurrect removed dropship SKUs', () => {
-    assert.doesNotMatch(products, /id: 'cake-stroker'/)
+  it('does not resurrect removed dropship SKUs', () => {
     for (const id of ['ds-glass-wand', 'ds-massage-oil', 'ds-silk-blindfold']) {
       assert.doesNotMatch(products, new RegExp(`id: '${id}'`))
     }

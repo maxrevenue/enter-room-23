@@ -11,6 +11,7 @@ const QUESTIONS = [
     prompt: 'What are you actually shopping for?',
     options: [
       { id: 'glide', label: 'A reliable glide', productId: 'lube-silicone-4oz' },
+      { id: 'object', label: 'One well-made object', productId: 'cake-stroker' },
       { id: 'skin', label: 'Something for skin, not a device', productId: 'arlo-atlas-oil' },
       { id: 'delay', label: 'A little more time', productId: 'skins-delay' },
       { id: 'mist', label: 'A light mist', productId: 'heli-lavender-mist' },
