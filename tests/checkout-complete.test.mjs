@@ -15,8 +15,8 @@ const catalog = {
     price: 18,
     vendorType: VENDOR_TYPES.ROOM23_STOCK,
   },
-  'partner-eldorado-item': {
-    id: 'partner-eldorado-item',
+  'partner-warehouse-a': {
+    id: 'partner-warehouse-a',
     name: 'Partner Warehouse Item',
     price: 42,
     vendorType: VENDOR_TYPES.ELDORADO_DROPSHIP,
@@ -64,7 +64,7 @@ describe('checkout completion pipeline', () => {
     const items = hydrateCartItems(
       [
         { id: 'lube-silicone-2oz', qty: 1 },
-        { id: 'partner-eldorado-item', qty: 1 },
+        { id: 'partner-warehouse-a', qty: 1 },
       ],
       (id) => catalog[id],
     )
