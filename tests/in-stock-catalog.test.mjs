@@ -36,8 +36,39 @@ describe('in-stock wellness catalog', () => {
     assert.match(products, /newArrival: true/)
   })
 
-  it('does not add Cake stroker and does not resurrect removed dropship SKUs as new work', () => {
+  it('does not add Cake stroker and does not resurrect removed dropship SKUs', () => {
     assert.doesNotMatch(products, /id: 'cake-stroker'/)
+    for (const id of ['ds-glass-wand', 'ds-massage-oil', 'ds-silk-blindfold']) {
+      assert.doesNotMatch(products, new RegExp(`id: '${id}'`))
+    }
+    for (const slug of [
+      'obsidian-glass-massage-wand',
+      'midnight-bloom-massage-oil',
+      'noir-silk-blindfold',
+    ]) {
+      assert.doesNotMatch(products, new RegExp(slug))
+    }
+  })
+
+  it('301s retired dropship product URLs to /shop', () => {
+    const nextConfig = readFileSync(join(root, 'next.config.js'), 'utf8')
+    for (const slug of [
+      'ds-glass-wand',
+      'obsidian-glass-massage-wand',
+      'ds-massage-oil',
+      'midnight-bloom-massage-oil',
+      'ds-silk-blindfold',
+      'noir-silk-blindfold',
+    ]) {
+      assert.match(
+        nextConfig,
+        new RegExp(`source: '/products/${slug}', destination: '/shop', permanent: true`),
+      )
+      assert.match(
+        nextConfig,
+        new RegExp(`source: '/shop/${slug}', destination: '/shop', permanent: true`),
+      )
+    }
   })
 
   it('stores local packshots for each SKU', () => {

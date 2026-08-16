@@ -21,7 +21,7 @@ export default function JournalPage() {
           Journal
         </h1>
         <p className="text-base sm:text-lg max-w-2xl mx-auto" style={{ color: 'var(--text-secondary)' }}>
-          Materials, care, and discretion — written for the same six objects on the shop floor.
+          Materials, care, and discretion — written for the current edit on the shop floor.
         </p>
       </section>
 
