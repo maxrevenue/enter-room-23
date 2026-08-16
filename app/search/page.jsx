@@ -61,7 +61,7 @@ export default function SearchPage() {
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search lubricants, glass, oil, silk…"
+              placeholder="Search lubricants…"
               className="w-full pl-12 pr-4 py-3.5 text-sm rounded-lg border outline-none transition-all duration-200 focus:shadow-[0_0_0_3px_rgba(255,26,26,0.15)]"
               style={{
                 backgroundColor: 'var(--bg-elevated)',

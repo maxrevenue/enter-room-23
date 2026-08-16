@@ -81,7 +81,7 @@ export default function HomePage() {
             </p>
           </header>
 
-          <ul className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          <ul className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {featured.map((product) => (
               <li key={product.id}>
                 <Link href={productHref(product)} className="group block">

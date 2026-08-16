@@ -25,8 +25,8 @@ function stockItem() {
 
 function eldoradoItem() {
   return {
-    id: 'ds-massage-oil',
-    name: 'Midnight Bloom Massage Oil',
+    id: 'partner-eldorado-item',
+    name: 'Partner Warehouse Item',
     qty: 1,
     price: 42,
     vendorType: VENDOR_TYPES.ELDORADO_DROPSHIP,
@@ -36,8 +36,8 @@ function eldoradoItem() {
 
 function williamsItem() {
   return {
-    id: 'ds-glass-wand',
-    name: 'Obsidian Glass Massage Wand',
+    id: 'partner-williams-item',
+    name: 'Partner Warehouse Object',
     qty: 1,
     price: 65,
     vendorType: VENDOR_TYPES.WILLIAMS_DROPSHIP,
