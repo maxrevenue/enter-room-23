@@ -5,4 +5,5 @@ export const siteConfig = {
   discountCode: 'WELCOME10',
   discountPercentage: 10,
   supportEmail: 'support@room23.net',
+  legalName: 'Room 23 LLC',
 };

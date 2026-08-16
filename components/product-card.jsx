@@ -59,7 +59,6 @@ export default function ProductCard({ product }) {
         className="relative aspect-square overflow-hidden flex items-center justify-center"
         style={{ backgroundColor: '#0B0B0C' }}
       >
-        {/* Obsidian placeholder — no product images */}
         {product.image ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={product.image} alt="" className="h-full w-full object-cover" />

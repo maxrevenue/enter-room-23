@@ -68,7 +68,7 @@ export default function TermsPage() {
       </p>
       <p>
         <strong>Billing Descriptor:</strong> Charges on your credit or debit card statement will appear
-        as <strong>ROOM23 WELLNESS</strong>. By placing an order, you authorize
+        as <strong>{SITE_CONFIG.billingDescriptor}</strong>. By placing an order, you authorize
         us (or our designated payment processor) to charge your selected payment method for the total
         amount, including shipping and any applicable taxes.
       </p>
@@ -180,7 +180,7 @@ export default function TermsPage() {
       <hr />
 
       <p className="text-muted" style={{ fontSize: 'var(--text-sm)' }}>
-        &copy; {new Date().getFullYear()} Room 23. All rights reserved.
+        &copy; {new Date().getFullYear()} {SITE_CONFIG.legalName}. All rights reserved.
       </p>
     </div>
   )

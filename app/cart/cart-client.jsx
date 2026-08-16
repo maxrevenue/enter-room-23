@@ -1,18 +1,18 @@
 'use client'
 
-import { useEffect } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { useCart } from '@/lib/cart-context'
 import { SITE_CONFIG } from '@/config/site'
 import { Minus, Plus, Trash2 } from 'lucide-react'
 
 export default function CartPageClient() {
+  const router = useRouter()
   const {
     cart,
     updateQty,
     removeItem,
     subtotal,
-    setCheckoutOpen,
     discountAmount,
     appliedPromo,
   } = useCart()
@@ -20,10 +20,6 @@ export default function CartPageClient() {
   const shipping =
     subtotal >= SITE_CONFIG.freeShippingThreshold ? 0 : SITE_CONFIG.flatShippingRate
   const total = Math.max(0, subtotal - discountAmount) + shipping
-
-  useEffect(() => {
-    // Prefer full-page cart over overlay when visiting /cart
-  }, [])
 
   if (!cart.length) {
     return (
@@ -121,7 +117,7 @@ export default function CartPageClient() {
         </p>
         <button
           type="button"
-          onClick={() => setCheckoutOpen(true)}
+          onClick={() => router.push('/checkout')}
           className="mt-6 w-full bg-white py-3 text-[11px] font-medium uppercase tracking-[0.2em] text-black hover:bg-zinc-200"
         >
           Checkout

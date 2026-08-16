@@ -40,6 +40,7 @@ export async function POST(request) {
 
     const totals = computeServerTotals(items, {
       appliedPromo: body.appliedPromo,
+      shippingMethodId: body.shippingMethodId,
       freeShippingThreshold: SITE_CONFIG.freeShippingThreshold,
       flatShippingRate: SITE_CONFIG.flatShippingRate,
     })

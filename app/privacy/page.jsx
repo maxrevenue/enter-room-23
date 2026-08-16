@@ -44,11 +44,11 @@ export default function PrivacyPage() {
 
       <h3>1.3 Age Verification Data</h3>
       <p>
-        We set <strong>age_verified</strong> and <strong>room23_age_verified</strong> cookies upon
-        entry confirmation. These cookies contain no personal information — they simply indicate that
-        you affirmed being 18+. They expire after <strong>30 days</strong> and are used solely to
-        avoid asking you to re-confirm age on every visit. We do not use a credit card as age
-        verification.
+        We set a 30-day <strong>age_verified</strong> cookie (and <strong>room23_age_verified</strong>)
+        when you confirm you are 18+. These cookies contain no personal information — they only
+        record that you affirmed the age requirement. They expire after {SITE_CONFIG.ageCookieDurationDays} days
+        and are used solely so you do not have to re-confirm on every visit. We do not use a credit
+        card as age verification.
       </p>
 
       {/* ── Section 2 ── */}
@@ -71,7 +71,7 @@ export default function PrivacyPage() {
       <ul>
         <li>All shipments use <strong>plain, unbranded packaging</strong> with no indication of contents or Room 23 branding externally.</li>
         <li>The return address label shows a generic entity name — not &ldquo;Room 23.&rdquo;</li>
-        <li>Card statements show a discreet billing descriptor: <strong>ROOM23 WELLNESS</strong>.</li>
+        <li>Card statements show a discreet billing descriptor: <strong>{SITE_CONFIG.billingDescriptor}</strong>.</li>
         <li>We do not send unsolicited physical mail or catalogs to your shipping address.</li>
         <li>Your email address is never sold, rented, or shared with third parties for their marketing purposes.</li>
       </ul>
@@ -134,7 +134,7 @@ export default function PrivacyPage() {
       <ul>
         <li><strong>Order data:</strong> Retained for tax and accounting purposes (typically 7 years per IRS requirements).</li>
         <li><strong>Account data:</strong> Retained until you request deletion or your account is inactive for 24 months.</li>
-        <li><strong>Age verification cookie:</strong> Session cookie (expires when browser is closed).</li>
+        <li><strong>Age verification cookie:</strong> {SITE_CONFIG.ageCookieDurationDays} days.</li>
         <li><strong>Analytics data:</strong> Aggregated and anonymized; raw logs purged after 30 days.</li>
       </ul>
 
@@ -217,7 +217,7 @@ export default function PrivacyPage() {
       <ul>
         <li>Email: <a href="mailto:privacy@room23.net">privacy@room23.net</a></li>
         <li>General Support: <a href="mailto:support@room23.net">support@room23.net</a></li>
-        <li>Mail: Room 23, {SITE_CONFIG.bizAddressFull}, USA</li>
+        <li>Mail: {SITE_CONFIG.legalName}, {SITE_CONFIG.bizAddressFull}, USA</li>
       </ul>
       <p>
         Visit our <Link href="/contact" className="link-brass">Contact Page</Link> for additional
@@ -227,7 +227,7 @@ export default function PrivacyPage() {
       <hr />
 
       <p className="text-muted" style={{ fontSize: 'var(--text-sm)' }}>
-        &copy; {new Date().getFullYear()} Room 23. All rights reserved.
+        &copy; {new Date().getFullYear()} {SITE_CONFIG.legalName}. All rights reserved.
       </p>
     </div>
   )
