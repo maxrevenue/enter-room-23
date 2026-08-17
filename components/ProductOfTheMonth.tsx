@@ -2,18 +2,30 @@ import Link from 'next/link'
 import { AspectRatio } from '@/components/ui/aspect-ratio'
 import { getProductById, productHref } from '@/lib/products'
 
-const PRODUCT_OF_MONTH_ID = 'lube-silicone-4oz'
+export type MonthOffer = {
+  label: string
+  compareAtPrice?: number
+}
 
-const EDITORIAL = {
-  kicker: "This month's focus",
-  note: 'Currently reviewing',
-  copy: 'Our standard bottle — concentrated, long-wearing, and quiet on the nightstand. The house formula we return to most often.',
-} as const
+type ProductOfTheMonthProps = {
+  productId: string
+  offer?: MonthOffer | null
+}
 
-export default function ProductOfTheMonth() {
-  const product = getProductById(PRODUCT_OF_MONTH_ID)
+function formatCategory(category?: string) {
+  if (!category) return 'The collection'
+  return String(category).replace(/-/g, ' ')
+}
+
+export default function ProductOfTheMonth({ productId, offer = null }: ProductOfTheMonthProps) {
+  const product = getProductById(productId)
 
   if (!product) return null
+
+  const href = productHref(product)
+  const compareAt =
+    offer?.compareAtPrice != null ? `$${offer.compareAtPrice.toFixed(2)}` : null
+  const editorial = product.shortEditorial || product.description
 
   return (
     <section
@@ -22,14 +34,14 @@ export default function ProductOfTheMonth() {
     >
       <div className="mx-auto max-w-6xl">
         <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-20">
-          <Link href={productHref(product)} className="group block">
+          <Link href={href} className="group block">
             <div className="overflow-hidden border border-theme-border bg-theme-surface">
               <AspectRatio ratio={4 / 5}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={product.image}
                   alt={product.name}
-                  className="h-full w-full object-cover transition-opacity duration-300 group-hover:opacity-90"
+                  className="h-full w-full object-contain p-6 transition-opacity duration-300 group-hover:opacity-90"
                 />
               </AspectRatio>
             </div>
@@ -38,12 +50,16 @@ export default function ProductOfTheMonth() {
           <div className="flex flex-col justify-center">
             <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
               <p className="text-[10px] font-medium uppercase tracking-[0.28em] text-theme-muted">
-                {EDITORIAL.kicker}
+                This month&apos;s focus
               </p>
-              <span className="text-[10px] uppercase tracking-[0.2em] text-theme-muted/60">·</span>
-              <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-theme-muted">
-                {EDITORIAL.note}
-              </p>
+              {offer ? (
+                <>
+                  <span className="text-[10px] uppercase tracking-[0.2em] text-theme-muted/60">·</span>
+                  <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-theme-muted">
+                    {offer.label}
+                  </p>
+                </>
+              ) : null}
             </div>
 
             <h2
@@ -53,21 +69,30 @@ export default function ProductOfTheMonth() {
               Product of the Month
             </h2>
 
-            <Link href={productHref(product)} className="group mt-6 block">
+            <p className="mt-4 text-[10px] font-medium uppercase tracking-[0.22em] text-theme-muted">
+              {formatCategory(product.category)}
+            </p>
+
+            <Link href={href} className="group mt-4 block">
               <h3 className="font-serif text-xl tracking-wide text-theme-text transition-colors duration-300 group-hover:text-theme-text sm:text-2xl">
                 {product.name}
               </h3>
             </Link>
 
-            <p className="mt-5 text-sm leading-relaxed text-theme-muted sm:text-[0.9375rem]">
-              {EDITORIAL.copy}
-            </p>
-
-            {product.shortEditorial ? (
-              <p className="mt-4 text-sm italic leading-relaxed text-theme-muted">{product.shortEditorial}</p>
+            {product.tagline ? (
+              <p className="mt-4 text-sm leading-relaxed text-theme-muted sm:text-[0.9375rem]">
+                {product.tagline}
+              </p>
             ) : null}
 
+            <p className="mt-5 text-sm leading-relaxed text-theme-muted sm:text-[0.9375rem]">
+              {editorial}
+            </p>
+
             <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
+              {compareAt ? (
+                <p className="text-sm tracking-wide text-theme-muted line-through">{compareAt}</p>
+              ) : null}
               <p className="text-sm tracking-wide text-theme-text/80">${product.price.toFixed(2)}</p>
               {product.badge ? (
                 <p className="border border-theme-border px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-theme-muted">
@@ -77,7 +102,7 @@ export default function ProductOfTheMonth() {
             </div>
 
             <Link
-              href={productHref(product)}
+              href={href}
               className="mt-10 inline-flex min-h-12 w-fit items-center justify-center border border-theme-border px-10 py-3.5 text-[11px] font-medium uppercase tracking-[0.24em] text-theme-text transition-colors duration-300 hover:border-theme-muted hover:bg-theme-surface"
             >
               View Product

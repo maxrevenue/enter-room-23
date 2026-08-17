@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import CategoryNav from '@/components/CategoryNav'
-import HomeJournal from '@/components/HomeJournal'
+import CategorySection from '@/components/CategorySection'
+import JournalSection from '@/components/JournalSection'
 import ProductOfTheMonth from '@/components/ProductOfTheMonth'
 import ProductCard from '@/components/product-card'
 import { PRODUCTS } from '@/lib/products'
@@ -12,12 +12,12 @@ export const metadata: Metadata = {
     'Considered pleasure. Body-safe adult wellness essentials with refined formulations and secure checkout. 18+ only.',
 }
 
-const PRODUCT_OF_MONTH_ID = 'lube-silicone-4oz'
+const PRODUCT_OF_THE_MONTH_ID = 'cake-stroker'
 
 const FEATURED_IDS = [
   'skins-delay',
-  'cake-stroker',
   'heli-lavender-mist',
+  'arlo-atlas-oil',
   'lube-silicone-2oz',
 ] as const
 
@@ -28,11 +28,10 @@ export default function HomePage() {
   const editTiles =
     featuredTiles.length > 0
       ? featuredTiles
-      : PRODUCTS.filter((product) => product.id !== PRODUCT_OF_MONTH_ID).slice(0, 4)
+      : PRODUCTS.filter((product) => product.id !== PRODUCT_OF_THE_MONTH_ID).slice(0, 4)
 
   return (
     <div className="bg-theme-bg text-theme-text">
-      {/* Hero */}
       <section
         aria-labelledby="hero-title"
         className="relative flex min-h-[85vh] flex-col items-center justify-center overflow-hidden px-5 py-28 text-center sm:min-h-[88vh] sm:px-8 sm:py-36"
@@ -73,11 +72,13 @@ export default function HomePage() {
         </div>
       </section>
 
-      <ProductOfTheMonth />
+      <ProductOfTheMonth
+        productId={PRODUCT_OF_THE_MONTH_ID}
+        offer={{ label: 'Currently under review' }}
+      />
 
-      <CategoryNav />
+      <CategorySection />
 
-      {/* The Edit */}
       <section
         aria-labelledby="featured-heading"
         className="border-t border-theme-border px-5 py-24 sm:px-8 sm:py-32 md:py-40"
@@ -123,9 +124,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      <HomeJournal />
+      <JournalSection />
 
-      {/* Closing invitation */}
       <section
         aria-labelledby="close-heading"
         className="border-t border-theme-border px-5 py-24 text-center sm:px-8 sm:py-32 md:py-36"
