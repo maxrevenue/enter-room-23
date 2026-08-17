@@ -4,7 +4,7 @@ import VipWaitlist from '@/components/vip-waitlist'
 export const metadata = {
   title: 'About',
   description:
-    'The Room 23 philosophy — considered pleasure, curated essentials, and private delivery of body-safe adult wellness products.',
+    'The Room 23 philosophy — considered pleasure and body-safe adult wellness products.',
 }
 
 export default function AboutPage() {
