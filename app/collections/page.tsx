@@ -29,7 +29,7 @@ export default function CollectionsPage() {
             <li key={slug}>
               <Link
                 href={`/collections/${slug}`}
-                className="block border border-theme-border bg-theme-surface p-8 transition-colors hover:border-theme-border"
+                className="block border border-theme-border bg-theme-surface p-8 transition-colors hover:border-theme-text/30"
               >
                 <h2 className="font-serif text-lg tracking-[0.12em] text-theme-text">{collection.title}</h2>
                 <p className="mt-3 text-sm leading-relaxed text-theme-muted">{collection.subtitle}</p>
