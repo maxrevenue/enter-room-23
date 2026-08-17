@@ -5,7 +5,7 @@ import { PRODUCTS } from '@/lib/products'
 export const metadata: Metadata = {
   title: 'Shop',
   description:
-    'Curated adult wellness essentials from Room 23 — body-safe lubricants, delay spray, mists, oils, and in-stock house pieces. 18+ only.',
+    'Curated adult wellness essentials from Room 23 — body-safe lubricants, delay spray, mists, oils, and the Hello Cake stroker. 18+ only.',
 }
 
 export default function ShopPage() {

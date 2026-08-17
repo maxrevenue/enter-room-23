@@ -11,9 +11,9 @@ const QUESTIONS = [
     prompt: 'What are you actually shopping for?',
     options: [
       { id: 'glide', label: 'A reliable glide', productId: 'lube-silicone-4oz' },
-      { id: 'object', label: 'One well-made object', productId: 'ds-glass-wand' },
-      { id: 'skin', label: 'Something for skin, not a device', productId: 'ds-massage-oil' },
-      { id: 'light', label: 'To dim the room', productId: 'ds-silk-blindfold' },
+      { id: 'sleeve', label: 'A handheld sleeve', productId: 'cake-stroker' },
+      { id: 'delay', label: 'A little more time', productId: 'skins-delay' },
+      { id: 'skin', label: 'Something for skin, not a device', productId: 'arlo-atlas-oil' },
     ],
   },
 ]
@@ -24,7 +24,7 @@ export default function QuizClient() {
 
   return (
     <main className="container-narrow" style={{ paddingTop: '3rem', paddingBottom: '4rem' }}>
-      <p className="last-updated">Four SKUs. One suggestion.</p>
+      <p className="last-updated">One suggestion from the current edit.</p>
       <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--text-3xl)', fontWeight: 700, marginBottom: '1rem' }}>
         Which piece
       </h1>

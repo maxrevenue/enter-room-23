@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     'Considered pleasure. Curated adult wellness essentials with body-safe materials and secure checkout. 18+ only.',
 }
 
-const FEATURED_IDS = ['skins-delay', 'heli-lavender-mist', 'arlo-atlas-oil', 'pr-secret-garden-mist']
+const FEATURED_IDS = ['cake-stroker', 'skins-delay', 'heli-lavender-mist', 'arlo-atlas-oil']
 
 const JOURNAL_NOTES = [
   {
