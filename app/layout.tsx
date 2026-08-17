@@ -5,6 +5,7 @@ import SiteShell from '@/components/site-shell'
 import SoftLaunchBanner from '@/components/SoftLaunchBanner'
 import AgeGate from '@/components/AgeGate'
 import DiscreetNewsletter from '@/components/DiscreetNewsletter'
+import ThemeSwitcher from '@/components/ThemeSwitcher'
 import './globals.css'
 
 const inter = Inter({
@@ -69,7 +70,14 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   const fontVars = `${inter.variable} ${syne.variable}`
 
   return (
-    <html lang="en" className={fontVars} data-theme="noir">
+    <html lang="en" className={fontVars} data-palette="charcoal" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var k='room23-theme-palette',p=localStorage.getItem(k);document.documentElement.setAttribute('data-palette',p||'charcoal');}catch(e){document.documentElement.setAttribute('data-palette','charcoal');}})();`,
+          }}
+        />
+      </head>
       <body>
         <SoftLaunchBanner />
         <AgeGate />
@@ -80,6 +88,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <SiteShell>{children}</SiteShell>
           <DiscreetNewsletter />
         </CartProvider>
+        <ThemeSwitcher />
       </body>
     </html>
   )

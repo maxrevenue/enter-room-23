@@ -45,18 +45,18 @@ export default function AccessGate({ title, description }: AccessGateProps) {
   }
 
   return (
-    <section className="flex min-h-[70vh] flex-col items-center justify-center bg-zinc-950 px-6 py-24">
+    <section className="flex min-h-[70vh] flex-col items-center justify-center bg-theme-bg px-6 py-24">
       <div className="w-full max-w-md text-center">
-        <h1 className="font-serif text-2xl uppercase tracking-[0.2em] text-white">
+        <h1 className="font-serif text-2xl uppercase tracking-[0.2em] text-theme-text">
           {title}
         </h1>
 
-        <p className="mt-6 text-sm leading-relaxed text-zinc-400">
+        <p className="mt-6 text-sm leading-relaxed text-theme-muted">
           {description}
         </p>
 
         {status === "success" ? (
-          <p className="mt-10 text-sm leading-relaxed text-zinc-400">
+          <p className="mt-10 text-sm leading-relaxed text-theme-muted">
             Your request has been received. We will be in touch.
           </p>
         ) : (
@@ -74,7 +74,7 @@ export default function AccessGate({ title, description }: AccessGateProps) {
               required
               autoComplete="email"
               disabled={status === "loading"}
-              className="w-full border border-zinc-800 bg-transparent px-4 py-3 text-sm text-white placeholder:text-zinc-600 focus:border-zinc-500 focus:outline-none disabled:opacity-50"
+              className="w-full border border-theme-border bg-transparent px-4 py-3 text-sm text-theme-text placeholder:text-theme-muted/70 focus:border-theme-muted focus:outline-none disabled:opacity-50"
             />
             <button
               type="submit"
@@ -84,7 +84,7 @@ export default function AccessGate({ title, description }: AccessGateProps) {
               {status === "loading" ? "PROCESSING..." : "Subscribe"}
             </button>
             {error ? (
-              <p className="text-xs tracking-wide text-zinc-500" role="alert">
+              <p className="text-xs tracking-wide text-theme-muted" role="alert">
                 {error}
               </p>
             ) : null}

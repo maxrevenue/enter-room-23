@@ -17,7 +17,7 @@ export default function ProductCardActions({ product }) {
           qty: 1,
         })
       }
-      className="text-[10px] font-medium uppercase tracking-[0.18em] text-zinc-400 hover:text-white"
+      className="text-[10px] font-medium uppercase tracking-[0.18em] text-theme-muted hover:text-theme-text"
     >
       Add
     </button>

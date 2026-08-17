@@ -79,7 +79,7 @@ export default function BrandPhilosophy() {
           ].map((pillar) => (
             <HoverCard
               key={pillar.title}
-              className="group rounded-xl border border-zinc-800 bg-zinc-900 p-6 text-center transition-colors"
+              className="group rounded-xl border border-theme-border bg-theme-surface p-6 text-center transition-colors"
             >
               <div
                 className="text-3xl mb-4 transition-all duration-300"

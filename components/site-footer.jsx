@@ -18,8 +18,8 @@ export default function SiteFooter() {
     <footer
       className="border-t py-16 sm:py-24 px-4 sm:px-6"
       style={{
-        backgroundColor: 'var(--color-bg-primary)',
-        borderColor: 'rgba(200,16,46,0.15)',
+        backgroundColor: 'var(--bg)',
+        borderColor: 'color-mix(in srgb, var(--accent) 15%, transparent)',
       }}
     >
       <div className="mx-auto max-w-4xl flex flex-col items-center justify-center">
@@ -29,19 +29,19 @@ export default function SiteFooter() {
 
         <p
           className="text-xs tracking-[0.2em] uppercase mb-8 text-center"
-          style={{ color: 'var(--color-text-muted)' }}
+          style={{ color: 'var(--muted)' }}
         >
           Considered pleasure. Private delivery.
         </p>
 
         <div
           className="w-24 h-px mb-8"
-          style={{ background: 'linear-gradient(90deg, transparent, #C8102E, transparent)' }}
+          style={{ background: 'linear-gradient(90deg, transparent, var(--accent), transparent)' }}
         />
 
         <p
           className="text-[11px] tracking-[0.08em] uppercase mb-10 text-center max-w-sm"
-          style={{ color: 'var(--color-text-muted)' }}
+          style={{ color: 'var(--muted)' }}
         >
           Questions? {SITE_CONFIG.supportEmail} · {SITE_CONFIG.supportPhone}
         </p>
@@ -52,17 +52,17 @@ export default function SiteFooter() {
               key={href}
               href={href}
               className="text-xs tracking-[0.2em] uppercase font-semibold transition-colors duration-200"
-              style={{ color: 'var(--color-text-secondary)' }}
+              style={{ color: 'var(--muted)' }}
             >
               {label}
             </Link>
           ))}
         </div>
 
-        <p className="text-[10px] uppercase tracking-[0.15em] text-center mb-3" style={{ color: '#3A3A3C' }}>
+        <p className="mb-3 text-center text-[10px] uppercase tracking-[0.15em]" style={{ color: 'var(--border)' }}>
           {SITE_CONFIG.legalName} · {SITE_CONFIG.bizAddressFull}
         </p>
-        <p className="text-[10px] uppercase tracking-[0.15em] text-center" style={{ color: '#3A3A3C' }}>
+        <p className="text-center text-[10px] uppercase tracking-[0.15em]" style={{ color: 'var(--border)' }}>
           Statement descriptor {SITE_CONFIG.billingDescriptor} · © {new Date().getFullYear()} {SITE_CONFIG.legalName}
         </p>
       </div>

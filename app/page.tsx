@@ -34,24 +34,24 @@ export default function HomePage() {
   const featured = PRODUCTS.slice(0, 4)
 
   return (
-    <main className="bg-zinc-950 text-white">
+    <main className="bg-theme-bg text-theme-text">
       <section
         aria-labelledby="hero-title"
         className="flex min-h-[85vh] flex-col items-center justify-center px-6 py-24 text-center"
       >
-        <p className="mb-8 text-[10px] font-medium uppercase tracking-[0.32em] text-zinc-500">
+        <p className="mb-8 text-[10px] font-medium uppercase tracking-[0.32em] text-theme-muted">
           Curated essentials
         </p>
         <h1
           id="hero-title"
-          className="font-serif text-4xl tracking-[0.3em] text-white md:text-5xl"
+          className="font-serif text-4xl tracking-[0.3em] text-theme-text md:text-5xl"
         >
           ROOM 23
         </h1>
-        <p className="mt-8 text-sm font-light tracking-wide text-zinc-400">
+        <p className="mt-8 text-sm font-light tracking-wide text-theme-muted">
           Considered pleasure. Private delivery.
         </p>
-        <ul className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[10px] uppercase tracking-[0.2em] text-zinc-500">
+        <ul className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[10px] uppercase tracking-[0.2em] text-theme-muted">
           <li>Private delivery</li>
           <li>Body-safe materials</li>
           <li>Secure checkout</li>
@@ -66,17 +66,17 @@ export default function HomePage() {
 
       <section
         aria-labelledby="featured-rituals-heading"
-        className="border-t border-zinc-800 px-6 py-20 md:py-28"
+        className="border-t border-theme-border px-6 py-20 md:py-28"
       >
         <div className="mx-auto max-w-6xl">
           <header className="mb-12 text-center md:mb-16">
             <h2
               id="featured-rituals-heading"
-              className="font-serif text-xl uppercase tracking-[0.28em] text-white md:text-2xl"
+              className="font-serif text-xl uppercase tracking-[0.28em] text-theme-text md:text-2xl"
             >
               Featured Rituals
             </h2>
-            <p className="mt-4 text-sm font-light tracking-wide text-zinc-500">
+            <p className="mt-4 text-sm font-light tracking-wide text-theme-muted">
               A tightly held edit. Nothing ornamental.
             </p>
           </header>
@@ -85,7 +85,7 @@ export default function HomePage() {
             {featured.map((product) => (
               <li key={product.id}>
                 <Link href={productHref(product)} className="group block">
-                  <div className="overflow-hidden border border-zinc-800 bg-zinc-900">
+                  <div className="overflow-hidden border border-theme-border bg-theme-surface">
                     <AspectRatio ratio={4 / 5}>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
@@ -95,10 +95,10 @@ export default function HomePage() {
                       />
                     </AspectRatio>
                   </div>
-                  <h3 className="mt-4 font-serif text-sm tracking-[0.08em] text-white">
+                  <h3 className="mt-4 font-serif text-sm tracking-[0.08em] text-theme-text">
                     {product.name}
                   </h3>
-                  <p className="mt-1 text-[10px] uppercase tracking-[0.22em] text-zinc-500">
+                  <p className="mt-1 text-[10px] uppercase tracking-[0.22em] text-theme-muted">
                     ${product.price.toFixed(2)}
                   </p>
                 </Link>
@@ -110,16 +110,16 @@ export default function HomePage() {
 
       <section
         aria-labelledby="journal-heading"
-        className="border-t border-zinc-800 px-6 py-20 md:py-28"
+        className="border-t border-theme-border px-6 py-20 md:py-28"
       >
         <div className="mx-auto max-w-6xl">
           <header className="mb-12 text-center md:mb-16">
-            <p className="text-[10px] font-medium uppercase tracking-[0.28em] text-zinc-500">
+            <p className="text-[10px] font-medium uppercase tracking-[0.28em] text-theme-muted">
               Editorial
             </p>
             <h2
               id="journal-heading"
-              className="mt-4 font-serif text-xl uppercase tracking-[0.28em] text-white md:text-2xl"
+              className="mt-4 font-serif text-xl uppercase tracking-[0.28em] text-theme-text md:text-2xl"
             >
               From the Journal
             </h2>
@@ -130,12 +130,12 @@ export default function HomePage() {
               <li key={note.href}>
                 <Link
                   href={note.href}
-                  className="group block border border-zinc-800 bg-zinc-900 p-6"
+                  className="group block border border-theme-border bg-theme-surface p-6"
                 >
-                  <p className="text-[10px] uppercase tracking-[0.22em] text-zinc-500">{note.tag}</p>
-                  <h3 className="mt-4 font-serif text-lg tracking-wide text-white">{note.title}</h3>
-                  <p className="mt-3 text-sm leading-relaxed text-zinc-400">{note.excerpt}</p>
-                  <p className="mt-6 text-[10px] uppercase tracking-[0.2em] text-zinc-500 group-hover:text-zinc-400">
+                  <p className="text-[10px] uppercase tracking-[0.22em] text-theme-muted">{note.tag}</p>
+                  <h3 className="mt-4 font-serif text-lg tracking-wide text-theme-text">{note.title}</h3>
+                  <p className="mt-3 text-sm leading-relaxed text-theme-muted">{note.excerpt}</p>
+                  <p className="mt-6 text-[10px] uppercase tracking-[0.2em] text-theme-muted group-hover:text-theme-muted">
                     Read
                   </p>
                 </Link>

@@ -47,10 +47,10 @@ export default function SiteHeader() {
       <header className="sticky top-0 z-40 w-full">
         {/* ── Main Nav Bar ── */}
         <div
-          className="w-full transition-all duration-300 border-b"
+          className="w-full border-b transition-all duration-300"
           style={{
-            backgroundColor: scrolled ? 'rgba(11, 11, 12, 0.97)' : '#0B0B0C',
-            borderColor: scrolled ? 'rgba(200,16,46,0.2)' : 'transparent',
+            backgroundColor: 'color-mix(in srgb, var(--bg) 97%, transparent)',
+            borderColor: 'color-mix(in srgb, var(--accent) 20%, transparent)',
             backdropFilter: 'blur(20px)',
             WebkitBackdropFilter: 'blur(20px)',
             boxShadow: scrolled ? '0 4px 30px rgba(0,0,0,0.6)' : 'none',
@@ -63,9 +63,9 @@ export default function SiteHeader() {
               <button
                 onClick={() => setDrawerOpen(true)}
                 className="p-2 -ml-2 rounded-full transition-all duration-200 focus:outline-none"
-                style={{ color: 'var(--color-text-primary)' }}
-                onMouseOver={e => e.currentTarget.style.color = '#C8102E'}
-                onMouseOut={e => e.currentTarget.style.color = 'var(--color-text-primary)'}
+                style={{ color: 'var(--text)' }}
+                onMouseOver={e => e.currentTarget.style.color = 'var(--accent)'}
+                onMouseOut={e => e.currentTarget.style.color = 'var(--text)'}
                 aria-label="Open menu"
               >
                 <Menu className="h-6 w-6 stroke-[1.5]" />
@@ -78,7 +78,7 @@ export default function SiteHeader() {
                       key={link.label}
                       href={link.href}
                       className="text-[11px] tracking-[0.16em] uppercase font-semibold transition-colors"
-                      style={{ color: isActive ? '#C8102E' : 'var(--color-text-secondary)' }}
+                      style={{ color: isActive ? 'var(--accent)' : 'var(--muted)' }}
                     >
                       {link.label}
                     </Link>
@@ -95,16 +95,16 @@ export default function SiteHeader() {
             <button
               onClick={() => setCartOpen(!cartOpen)}
               className="relative p-2 -mr-2 rounded-full transition-all duration-200 focus:outline-none"
-              style={{ color: 'var(--color-text-primary)' }}
-              onMouseOver={e => e.currentTarget.style.color = '#C8102E'}
-              onMouseOut={e => e.currentTarget.style.color = 'var(--color-text-primary)'}
+              style={{ color: 'var(--text)' }}
+              onMouseOver={e => e.currentTarget.style.color = 'var(--accent)'}
+              onMouseOut={e => e.currentTarget.style.color = 'var(--text)'}
               aria-label={`Open cart${itemCount > 0 ? ` (${itemCount} items)` : ''}`}
             >
               <ShoppingBag className="h-5 w-5 stroke-[1.5]" />
               {itemCount > 0 && (
                 <span
                   className="absolute top-0 right-0 flex h-[16px] w-[16px] items-center justify-center rounded-full text-[9px] font-bold animate-in zoom-in duration-200"
-                  style={{ backgroundColor: '#C8102E', color: '#F4F4F6' }}
+                  style={{ backgroundColor: 'var(--accent)', color: 'var(--bg)' }}
                 >
                   {itemCount > 9 ? '9+' : itemCount}
                 </span>
@@ -129,18 +129,18 @@ export default function SiteHeader() {
           {/* Drawer Panel */}
           <nav
             className="relative flex w-full max-w-xs flex-col shadow-2xl animate-in slide-in-from-left duration-300"
-            style={{ backgroundColor: '#0B0B0C', borderRight: '1px solid rgba(200,16,46,0.2)' }}
+            style={{ backgroundColor: 'var(--bg)', borderRight: '1px solid color-mix(in srgb, var(--accent) 20%, transparent)' }}
           >
-            <div className="flex items-center justify-between px-6 py-5 border-b" style={{ borderColor: 'rgba(200,16,46,0.15)' }}>
+            <div className="flex items-center justify-between border-b px-6 py-5" style={{ borderColor: 'color-mix(in srgb, var(--accent) 15%, transparent)' }}>
               <span onClick={closeDrawer}>
                 <BrandLogo size="sm" />
               </span>
               <button
                 onClick={closeDrawer}
                 className="p-2 -mr-2 transition-colors focus:outline-none"
-                style={{ color: 'var(--color-text-muted)' }}
-                onMouseOver={e => e.currentTarget.style.color = '#F4F4F6'}
-                onMouseOut={e => e.currentTarget.style.color = 'var(--color-text-muted)'}
+                style={{ color: 'var(--muted)' }}
+                onMouseOver={e => e.currentTarget.style.color = 'var(--text)'}
+                onMouseOut={e => e.currentTarget.style.color = 'var(--muted)'}
                 aria-label="Close menu"
               >
                 <X className="h-5 w-5 stroke-[1.5]" />
@@ -158,12 +158,12 @@ export default function SiteHeader() {
                     onClick={closeDrawer}
                     className="flex items-center gap-2 py-3 text-sm tracking-[0.2em] uppercase font-semibold transition-all duration-200 border-b"
                     style={{
-                      color: isActive ? '#C8102E' : 'var(--color-text-primary)',
-                      borderColor: 'rgba(255,255,255,0.04)',
+                      color: isActive ? 'var(--accent)' : 'var(--text)',
+                      borderColor: 'color-mix(in srgb, var(--text) 4%, transparent)',
                       fontFamily: 'var(--font-sans)',
                     }}
-                    onMouseOver={e => { e.currentTarget.style.color = '#C8102E'; e.currentTarget.style.paddingLeft = '8px' }}
-                    onMouseOut={e => { e.currentTarget.style.color = isActive ? '#C8102E' : 'var(--color-text-primary)'; e.currentTarget.style.paddingLeft = '0px' }}
+                    onMouseOver={e => { e.currentTarget.style.color = 'var(--accent)'; e.currentTarget.style.paddingLeft = '8px' }}
+                    onMouseOut={e => { e.currentTarget.style.color = isActive ? 'var(--accent)' : 'var(--text)'; e.currentTarget.style.paddingLeft = '0px' }}
                   >
                     {link.label}
                   </Link>
@@ -172,19 +172,18 @@ export default function SiteHeader() {
             </div>
 
             {/* Bottom section */}
-            <div className="mt-auto px-6 py-8 border-t" style={{ borderColor: 'rgba(200,16,46,0.1)' }}>
-              {/* Tagline */}
-              <p className="text-[10px] tracking-widest uppercase mb-6 leading-relaxed" style={{ color: 'var(--color-text-muted)' }}>
+            <div className="mt-auto border-t px-6 py-8" style={{ borderColor: 'color-mix(in srgb, var(--accent) 10%, transparent)' }}>
+              <p className="mb-6 text-[10px] uppercase leading-relaxed tracking-widest" style={{ color: 'var(--muted)' }}>
                 Considered pleasure.<br />For adults 18+ only.
               </p>
               <div className="flex gap-6">
-                <Link href="/privacy" className="text-[10px] tracking-widest uppercase transition-colors" style={{ color: 'var(--color-text-muted)' }} onClick={closeDrawer}
-                  onMouseOver={e => e.currentTarget.style.color = '#C8102E'}
-                  onMouseOut={e => e.currentTarget.style.color = 'var(--color-text-muted)'}
+                <Link href="/privacy" className="text-[10px] uppercase tracking-widest transition-colors" style={{ color: 'var(--muted)' }} onClick={closeDrawer}
+                  onMouseOver={e => e.currentTarget.style.color = 'var(--accent)'}
+                  onMouseOut={e => e.currentTarget.style.color = 'var(--muted)'}
                 >Privacy</Link>
-                <Link href="/terms" className="text-[10px] tracking-widest uppercase transition-colors" style={{ color: 'var(--color-text-muted)' }} onClick={closeDrawer}
-                  onMouseOver={e => e.currentTarget.style.color = '#C8102E'}
-                  onMouseOut={e => e.currentTarget.style.color = 'var(--color-text-muted)'}
+                <Link href="/terms" className="text-[10px] uppercase tracking-widest transition-colors" style={{ color: 'var(--muted)' }} onClick={closeDrawer}
+                  onMouseOver={e => e.currentTarget.style.color = 'var(--accent)'}
+                  onMouseOut={e => e.currentTarget.style.color = 'var(--muted)'}
                 >Terms</Link>
               </div>
             </div>
