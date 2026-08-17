@@ -45,7 +45,7 @@ export default function BrandPhilosophy() {
             Room 23 is a house for those who believe intimacy
             deserves the same refinement as a well-cut suit or a perfectly aged
             spirit. We exist at the intersection of design, wellness, and desire —
-            curating objects that elevate the private self.
+            selecting objects that elevate intimate ritual.
           </p>
           <p
             className="text-sm sm:text-base leading-relaxed"

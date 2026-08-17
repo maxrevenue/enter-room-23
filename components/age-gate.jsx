@@ -100,7 +100,7 @@ function AgeGateHuman() {
         </div>
 
         <p className="text-xs text-zinc-500">
-          Your visit is private — no tracking, no judgment.
+          Your visit stays confidential — no tracking, no judgment.
         </p>
       </div>
     </div>
