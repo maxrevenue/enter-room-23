@@ -42,6 +42,8 @@ const nextConfig = {
       { source: '/collections/vault', destination: '/shop', permanent: true },
       { source: '/collections/vintage', destination: '/shop', permanent: true },
       { source: '/archive', destination: '/journal', permanent: true },
+      { source: '/column', destination: '/journal', permanent: true },
+      { source: '/the-column', destination: '/journal', permanent: true },
       { source: '/products/lube-silicone-2oz', destination: '/products/platinum-silicone-lubricant-2oz', permanent: true },
       { source: '/products/lube-silicone-4oz', destination: '/products/platinum-silicone-lubricant-4oz', permanent: true },
       { source: '/shop/lube-silicone-2oz', destination: '/products/platinum-silicone-lubricant-2oz', permanent: true },
