@@ -1,0 +1,24 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "build-notifier-123",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-08-03",
+  "observability": {
+    "enabled": true
+  },
+  "vars": {
+    "NOTIFY_EMAIL": "jacob@room23.net",
+    "NOTIFY_FROM": "Room 23 Builds <builds@room23.net>",
+    "TARGET_WORKER": "123"
+  },
+  "queues": {
+    "consumers": [
+      {
+        "queue": "builds-123-notifications",
+        "max_batch_size": 10,
+        "max_batch_timeout": 30,
+        "max_retries": 3
+      }
+    ]
+  }
+}
