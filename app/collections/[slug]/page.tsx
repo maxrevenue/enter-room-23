@@ -25,17 +25,17 @@ export default async function CollectionPage({ params }: PageProps) {
   const products = getProductsByCollection(slug)
 
   return (
-    <main className="min-h-screen bg-zinc-950 text-white">
-      <section className="border-b border-zinc-800 px-6 py-20 text-center">
+    <main className="min-h-screen bg-theme-bg text-theme-text">
+      <section className="border-b border-theme-border px-6 py-20 text-center">
         <h1 className="font-serif text-3xl tracking-tight md:text-4xl">{meta.title}</h1>
-        <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-zinc-400">{meta.subtitle}</p>
+        <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-theme-muted">{meta.subtitle}</p>
       </section>
 
       <section className="mx-auto max-w-6xl px-6 py-16">
         {products.length === 0 ? (
-          <p className="text-center text-sm text-zinc-500">
+          <p className="text-center text-sm text-theme-muted">
             Browse the{' '}
-            <Link href="/shop" className="text-zinc-300 underline">
+            <Link href="/shop" className="text-theme-text/80 underline">
               full shop
             </Link>{' '}
             while this grouping updates.
@@ -44,14 +44,14 @@ export default async function CollectionPage({ params }: PageProps) {
           <ul className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {products.map((product) => (
               <li key={product.id}>
-                <Link href={productHref(product)} className="group block border border-zinc-800 bg-zinc-900">
+                <Link href={productHref(product)} className="group block border border-theme-border bg-theme-surface">
                   <AspectRatio ratio={1}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={product.image} alt={product.name} className="h-full w-full object-cover" />
                   </AspectRatio>
                   <div className="p-5">
-                    <h2 className="font-serif text-base text-white">{product.name}</h2>
-                    <p className="mt-2 text-sm text-zinc-500">${product.price.toFixed(2)}</p>
+                    <h2 className="font-serif text-base text-theme-text">{product.name}</h2>
+                    <p className="mt-2 text-sm text-theme-muted">${product.price.toFixed(2)}</p>
                   </div>
                 </Link>
               </li>

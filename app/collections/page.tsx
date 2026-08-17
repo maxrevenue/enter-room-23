@@ -11,13 +11,13 @@ const VISIBLE_COLLECTIONS = ['essentials', 'new-arrivals'] as const
 
 export default function CollectionsPage() {
   return (
-    <main className="min-h-screen bg-zinc-950 px-6 py-20 text-white">
+    <main className="min-h-screen bg-theme-bg px-6 py-20 text-theme-text">
       <header className="mx-auto max-w-3xl text-center">
-        <p className="text-[10px] font-medium uppercase tracking-[0.28em] text-zinc-500">The edit</p>
-        <h1 className="mt-4 font-serif text-3xl uppercase tracking-[0.22em] text-white md:text-4xl">
+        <p className="text-[10px] font-medium uppercase tracking-[0.28em] text-theme-muted">The edit</p>
+        <h1 className="mt-4 font-serif text-3xl uppercase tracking-[0.22em] text-theme-text md:text-4xl">
           Collections
         </h1>
-        <p className="mx-auto mt-6 max-w-md text-sm leading-relaxed text-zinc-400">
+        <p className="mx-auto mt-6 max-w-md text-sm leading-relaxed text-theme-muted">
           Tightly held groupings. Nothing ornamental.
         </p>
       </header>
@@ -29,10 +29,10 @@ export default function CollectionsPage() {
             <li key={slug}>
               <Link
                 href={`/collections/${slug}`}
-                className="block border border-zinc-800 bg-zinc-900 p-8 transition-colors hover:border-zinc-700"
+                className="block border border-theme-border bg-theme-surface p-8 transition-colors hover:border-theme-text/30"
               >
-                <h2 className="font-serif text-lg tracking-[0.12em] text-white">{collection.title}</h2>
-                <p className="mt-3 text-sm leading-relaxed text-zinc-400">{collection.subtitle}</p>
+                <h2 className="font-serif text-lg tracking-[0.12em] text-theme-text">{collection.title}</h2>
+                <p className="mt-3 text-sm leading-relaxed text-theme-muted">{collection.subtitle}</p>
               </Link>
             </li>
           )

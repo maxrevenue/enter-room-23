@@ -61,8 +61,8 @@ export default function SiteHeader() {
     <>
       <header className="sticky top-0 z-40 w-full">
         <div
-          className={`w-full border-b bg-zinc-950/95 backdrop-blur-xl transition-colors duration-300 ${
-            scrolled ? 'border-zinc-800' : 'border-transparent'
+          className={`w-full border-b bg-theme-bg/95 backdrop-blur-xl transition-colors duration-300 ${
+            scrolled ? 'border-theme-border' : 'border-transparent'
           }`}
         >
           <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-3 px-4 sm:h-[4.25rem] sm:px-6">
@@ -70,7 +70,7 @@ export default function SiteHeader() {
               <button
                 type="button"
                 onClick={() => setDrawerOpen(true)}
-                className="inline-flex h-11 w-11 items-center justify-center text-zinc-200 transition-colors hover:text-white md:hidden"
+                className="inline-flex h-11 w-11 items-center justify-center text-theme-text/90 transition-colors hover:text-theme-text md:hidden"
                 aria-label="Open menu"
               >
                 <Menu className="h-5 w-5 stroke-[1.5]" />
@@ -81,7 +81,9 @@ export default function SiteHeader() {
                     key={link.href}
                     href={link.href}
                     className={`text-[11px] font-medium uppercase tracking-[0.18em] transition-colors ${
-                      isActive(link.href) ? 'text-white' : 'text-zinc-400 hover:text-white'
+                      isActive(link.href)
+                        ? 'text-theme-accent'
+                        : 'text-theme-muted hover:text-theme-text'
                     }`}
                   >
                     {link.label}
@@ -96,12 +98,12 @@ export default function SiteHeader() {
               <button
                 type="button"
                 onClick={() => setCartOpen(!cartOpen)}
-                className="relative inline-flex h-11 w-11 items-center justify-center text-zinc-200 transition-colors hover:text-white"
+                className="relative inline-flex h-11 w-11 items-center justify-center text-theme-text/90 transition-colors hover:text-theme-text"
                 aria-label={`Open cart${itemCount > 0 ? ` (${itemCount} items)` : ''}`}
               >
                 <ShoppingBag className="h-5 w-5 stroke-[1.5]" />
                 {itemCount > 0 && (
-                  <span className="absolute right-1.5 top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-zinc-100 px-1 text-[9px] font-semibold text-zinc-950">
+                  <span className="absolute right-1.5 top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-theme-accent px-1 text-[9px] font-semibold text-theme-bg">
                     {itemCount > 9 ? '9+' : itemCount}
                   </span>
                 )}
@@ -119,17 +121,17 @@ export default function SiteHeader() {
             aria-hidden="true"
           />
           <nav
-            className="relative flex h-full w-full max-w-xs flex-col border-r border-zinc-800 bg-zinc-950"
+            className="relative flex h-full w-full max-w-xs flex-col border-r border-theme-border bg-theme-bg"
             aria-label="Mobile"
           >
-            <div className="flex items-center justify-between border-b border-zinc-800 px-5 py-4">
+            <div className="flex items-center justify-between border-b border-theme-border px-5 py-4">
               <span onClick={closeDrawer}>
                 <BrandLogo size="sm" />
               </span>
               <button
                 type="button"
                 onClick={closeDrawer}
-                className="inline-flex h-11 w-11 items-center justify-center text-zinc-400 transition-colors hover:text-white"
+                className="inline-flex h-11 w-11 items-center justify-center text-theme-muted transition-colors hover:text-theme-text"
                 aria-label="Close menu"
               >
                 <X className="h-5 w-5 stroke-[1.5]" />
@@ -142,8 +144,10 @@ export default function SiteHeader() {
                   key={link.href}
                   href={link.href}
                   onClick={closeDrawer}
-                  className={`border-b border-zinc-900 py-3.5 text-sm font-medium uppercase tracking-[0.18em] transition-colors ${
-                    isActive(link.href) ? 'text-white' : 'text-zinc-300 hover:text-white'
+                  className={`border-b border-theme-border py-3.5 text-sm font-medium uppercase tracking-[0.18em] transition-colors ${
+                    isActive(link.href)
+                      ? 'text-theme-accent'
+                      : 'text-theme-text/80 hover:text-theme-text'
                   }`}
                 >
                   {link.label}
@@ -151,8 +155,8 @@ export default function SiteHeader() {
               ))}
             </div>
 
-            <div className="mt-auto border-t border-zinc-800 px-5 py-8">
-              <p className="mb-6 text-[10px] uppercase leading-relaxed tracking-[0.2em] text-zinc-500">
+            <div className="mt-auto border-t border-theme-border px-5 py-8">
+              <p className="mb-6 text-[10px] uppercase leading-relaxed tracking-[0.2em] text-theme-muted">
                 Considered pleasure.
                 <br />
                 For adults 18+ only.
@@ -161,14 +165,14 @@ export default function SiteHeader() {
                 <Link
                   href="/privacy"
                   onClick={closeDrawer}
-                  className="text-[10px] uppercase tracking-[0.18em] text-zinc-500 transition-colors hover:text-zinc-300"
+                  className="text-[10px] uppercase tracking-[0.18em] text-theme-muted transition-colors hover:text-theme-text/80"
                 >
                   Privacy
                 </Link>
                 <Link
                   href="/terms"
                   onClick={closeDrawer}
-                  className="text-[10px] uppercase tracking-[0.18em] text-zinc-500 transition-colors hover:text-zinc-300"
+                  className="text-[10px] uppercase tracking-[0.18em] text-theme-muted transition-colors hover:text-theme-text/80"
                 >
                   Terms
                 </Link>

@@ -22,8 +22,8 @@ export default function BrandLogo({
       style={{
         fontSize: type.fontSize,
         letterSpacing: type.letterSpacing,
-        color: '#C8102E',
-        textShadow: '0 2px 12px rgba(200,16,46,0.28)',
+        color: 'var(--accent)',
+        textShadow: '0 2px 12px color-mix(in srgb, var(--accent) 28%, transparent)',
       }}
     >
       ROOM 23

@@ -10,28 +10,28 @@ export default function ProductDetail({ product }) {
   const related = getRelatedProducts(product, 3)
 
   return (
-    <main className="min-h-screen bg-zinc-950 text-white">
+    <main className="min-h-screen bg-theme-bg text-theme-text">
       <div className="mx-auto max-w-6xl px-6 py-16 lg:py-24">
-        <nav className="mb-8 text-xs uppercase tracking-widest text-zinc-500">
-          <Link href="/shop" className="hover:text-zinc-300">Shop</Link>
+        <nav className="mb-8 text-xs uppercase tracking-widest text-theme-muted">
+          <Link href="/shop" className="hover:text-theme-text/80">Shop</Link>
           <span className="mx-2">/</span>
-          <span className="text-zinc-200">{product.name}</span>
+          <span className="text-theme-text/90">{product.name}</span>
         </nav>
 
         <div className="grid grid-cols-1 gap-16 lg:grid-cols-2">
           <ProductGallery product={product} />
 
           <div className="flex flex-col">
-            <p className="text-[10px] font-medium uppercase tracking-[0.28em] text-zinc-500">
+            <p className="text-[10px] font-medium uppercase tracking-[0.28em] text-theme-muted">
               {product.category}
             </p>
-            <h1 className="mt-4 font-serif text-3xl font-normal tracking-tight text-white lg:text-4xl">
+            <h1 className="mt-4 font-serif text-3xl font-normal tracking-tight text-theme-text lg:text-4xl">
               {product.name}
             </h1>
-            <p className="mt-5 text-sm tracking-[0.12em] text-zinc-400">
+            <p className="mt-5 text-sm tracking-[0.12em] text-theme-muted">
               ${product.price.toFixed(2)} USD
             </p>
-            <p className="mt-8 max-w-md text-sm leading-7 tracking-wide text-zinc-400">
+            <p className="mt-8 max-w-md text-sm leading-7 tracking-wide text-theme-muted">
               {product.shortEditorial || product.description}
             </p>
 
@@ -39,7 +39,7 @@ export default function ProductDetail({ product }) {
               {(product.attributes || []).map((attribute) => (
                 <li
                   key={attribute}
-                  className="border border-zinc-800 px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.2em] text-zinc-400"
+                  className="border border-theme-border px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.2em] text-theme-muted"
                 >
                   {attribute}
                 </li>
@@ -50,20 +50,20 @@ export default function ProductDetail({ product }) {
               <AddToCartButton product={product} />
             </div>
 
-            <p className="mt-4 text-xs text-zinc-500">{product.ageNote}</p>
+            <p className="mt-4 text-xs text-theme-muted">{product.ageNote}</p>
 
-            <div className="mt-8 space-y-4 border border-zinc-800 bg-zinc-900 p-5 text-sm leading-6 text-zinc-400">
+            <div className="mt-8 space-y-4 border border-theme-border bg-theme-surface p-5 text-sm leading-6 text-theme-muted">
               <p>
-                <strong className="text-zinc-200">Shipping. </strong>
+                <strong className="text-theme-text/90">Shipping. </strong>
                 {product.shippingSnippet} Statement descriptor: {SITE_CONFIG.billingDescriptor}.
               </p>
               <p>
-                <strong className="text-zinc-200">Returns. </strong>
+                <strong className="text-theme-text/90">Returns. </strong>
                 {product.returnsSnippet}{' '}
-                <Link href="/shipping" className="text-zinc-200 underline underline-offset-4">Full policy</Link>
+                <Link href="/shipping" className="text-theme-text/90 underline underline-offset-4">Full policy</Link>
               </p>
               <p>
-                <Link href="/standards" className="text-zinc-200 underline underline-offset-4">
+                <Link href="/standards" className="text-theme-text/90 underline underline-offset-4">
                   Materials &amp; standards
                 </Link>
               </p>
@@ -76,17 +76,17 @@ export default function ProductDetail({ product }) {
               warning={product.warning}
             />
 
-            <div className="mt-8 space-y-8 border-t border-zinc-800 pt-8 text-sm leading-7 text-zinc-400">
+            <div className="mt-8 space-y-8 border-t border-theme-border pt-8 text-sm leading-7 text-theme-muted">
               <section>
-                <h2 className="text-[10px] font-medium uppercase tracking-[0.28em] text-zinc-500">Description</h2>
+                <h2 className="text-[10px] font-medium uppercase tracking-[0.28em] text-theme-muted">Description</h2>
                 <p className="mt-3">{product.description}</p>
               </section>
               <section>
-                <h2 className="text-[10px] font-medium uppercase tracking-[0.28em] text-zinc-500">Specifications</h2>
+                <h2 className="text-[10px] font-medium uppercase tracking-[0.28em] text-theme-muted">Specifications</h2>
                 <p className="mt-3">{product.specifications}</p>
               </section>
               <section>
-                <h2 className="text-[10px] font-medium uppercase tracking-[0.28em] text-zinc-500">Discretion</h2>
+                <h2 className="text-[10px] font-medium uppercase tracking-[0.28em] text-theme-muted">Discretion</h2>
                 <p className="mt-3">{product.discretionNotes}</p>
               </section>
             </div>
@@ -94,8 +94,8 @@ export default function ProductDetail({ product }) {
         </div>
 
         {related.length > 0 && (
-          <section className="mt-20 border-t border-zinc-800 pt-12">
-            <h2 className="mb-8 text-center text-sm uppercase tracking-[0.2em] text-zinc-500">
+          <section className="mt-20 border-t border-theme-border pt-12">
+            <h2 className="mb-8 text-center text-sm uppercase tracking-[0.2em] text-theme-muted">
               The rest of the edit
             </h2>
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">

@@ -61,7 +61,7 @@ export default function CartSheet() {
       <div className="absolute right-0 top-0 h-full w-full max-w-md border-l shadow-2xl flex flex-col" style={{ backgroundColor: 'var(--color-bg-surface)', borderColor: 'var(--color-border)' }}>
         <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: 'var(--color-border)' }}>
           <div className="flex items-center gap-2">
-            <ShoppingBag className="w-5 h-5" style={{ color: '#C8102E' }} />
+            <ShoppingBag className="w-5 h-5" style={{ color: 'var(--accent)' }} />
             <h2 className="text-lg font-semibold font-[var(--font-syne)]" style={{ color: 'var(--color-text-primary)' }}>Your Cart</h2>
           </div>
           <button onClick={() => setCartOpen(false)} className="p-2" style={{ color: 'var(--color-text-muted)' }} aria-label="Close cart">
@@ -83,7 +83,7 @@ export default function CartSheet() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <h4 className="text-sm font-medium truncate" style={{ color: 'var(--color-text-primary)' }}>{item.name}</h4>
-                  <p className="text-sm mt-0.5" style={{ color: '#C8102E' }}>${Number(item.price).toFixed(2)}</p>
+                  <p className="text-sm mt-0.5" style={{ color: 'var(--accent)' }}>${Number(item.price).toFixed(2)}</p>
                   <div className="flex items-center gap-2 mt-2">
                     <button onClick={() => updateQty(item.id, item.qty - 1)} className="w-6 h-6 rounded-full border flex items-center justify-center" aria-label="Decrease">
                       <Minus className="w-3 h-3" />
@@ -116,7 +116,7 @@ export default function CartSheet() {
                 )}
               </div>
               <div className="h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--color-bg-primary)' }}>
-                <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: '#C8102E' }} />
+                <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: 'var(--accent)' }} />
               </div>
             </div>
           </div>
@@ -133,13 +133,13 @@ export default function CartSheet() {
                 className="flex-1 px-3 py-1.5 text-xs border rounded focus:outline-none"
                 style={{ backgroundColor: 'var(--color-bg-elevated)', borderColor: 'var(--color-border)', color: 'var(--color-text-primary)' }}
               />
-              <button onClick={handleApplyPromo} className="px-3 py-1.5 text-xs font-semibold uppercase tracking-wider rounded" style={{ color: '#FFFFFF', backgroundColor: '#C8102E' }}>
+              <button onClick={handleApplyPromo} className="px-3 py-1.5 text-xs font-semibold uppercase tracking-wider rounded" style={{ color: 'var(--bg)', backgroundColor: 'var(--accent)' }}>
                 Apply
               </button>
             </div>
-            {promoError && <p className="text-[11px]" style={{ color: '#C8102E' }}>{promoError}</p>}
+            {promoError && <p className="text-[11px]" style={{ color: 'var(--accent)' }}>{promoError}</p>}
             {discountPercent > 0 && (
-              <div className="flex items-center justify-between text-xs" style={{ color: '#C8102E' }}>
+              <div className="flex items-center justify-between text-xs" style={{ color: 'var(--accent)' }}>
                 <span>Promo ({appliedPromo} — {discountPercent}% OFF)</span>
                 <button onClick={handleRemovePromo}>×</button>
               </div>
@@ -150,7 +150,7 @@ export default function CartSheet() {
               <span className="font-semibold">${subtotal.toFixed(2)}</span>
             </div>
             {discountPercent > 0 && (
-              <div className="flex justify-between text-xs" style={{ color: '#C8102E' }}>
+              <div className="flex justify-between text-xs" style={{ color: 'var(--accent)' }}>
                 <span>Discount ({discountPercent}%)</span>
                 <span>-${discountAmount.toFixed(2)}</span>
               </div>
@@ -160,7 +160,7 @@ export default function CartSheet() {
             </p>
             <div className="flex justify-between font-semibold text-base pt-1 border-t" style={{ borderColor: 'var(--color-border)' }}>
               <span>Estimated merchandise</span>
-              <span style={{ color: '#C8102E' }}>${finalTotal.toFixed(2)}</span>
+              <span style={{ color: 'var(--accent)' }}>${finalTotal.toFixed(2)}</span>
             </div>
 
             <button onClick={goCheckout} className="w-full btn-primary py-3">
