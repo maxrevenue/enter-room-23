@@ -27,7 +27,6 @@
         "SITE_INDEXABLE": "true",
         "CORS_ORIGINS": "https://room23.net",
         "NEXT_PUBLIC_SITE_URL": "https://room23.net",
-        "NEXT_PUBLIC_SOFT_LAUNCH": "false",
         "NEXT_PUBLIC_BILLING_DESCRIPTOR": "ROOM23 WELLNESS"
   },
 

@@ -2,7 +2,6 @@ import type { ReactNode } from 'react'
 import { Inter, Syne } from 'next/font/google'
 import { CartProvider } from '@/lib/cart-context'
 import SiteShell from '@/components/site-shell'
-import SoftLaunchBanner from '@/components/SoftLaunchBanner'
 import AgeGate from '@/components/AgeGate'
 import DiscreetNewsletter from '@/components/DiscreetNewsletter'
 import './globals.css'
@@ -27,11 +26,10 @@ export const metadata = {
     template: '%s | Room 23',
   },
   description:
-    'Room 23 offers premium adult wellness products with private delivery and secure checkout. 18+ only.',
+    'Room 23 offers premium adult wellness products with body-safe materials and secure checkout. 18+ only.',
   keywords: [
     'adult wellness',
     'premium intimacy',
-    'private delivery',
     'body-safe',
     'luxury wellness products',
   ],
@@ -52,7 +50,7 @@ export const metadata = {
   openGraph: {
     title: 'Room 23 — Premium Adult Wellness',
     description:
-      'Premium adult wellness products. Private delivery. 18+ only.',
+      'Premium adult wellness products. Body-safe essentials. 18+ only.',
     url: 'https://room23.net',
     siteName: 'Room 23',
     locale: 'en_US',
@@ -61,7 +59,7 @@ export const metadata = {
   twitter: {
     card: 'summary',
     title: 'Room 23 — Premium Adult Wellness',
-    description: 'Premium adult wellness. Private delivery. 18+ only.',
+    description: 'Premium adult wellness. Body-safe essentials. 18+ only.',
   },
 }
 
@@ -71,7 +69,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className={fontVars} data-theme="noir">
       <body>
-        <SoftLaunchBanner />
         <AgeGate />
         <a href="#main-content" className="skip-to-content" aria-label="Skip to main content">
           Skip to content

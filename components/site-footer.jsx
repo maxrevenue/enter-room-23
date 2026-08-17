@@ -1,69 +1,70 @@
-'use client'
-
 import Link from 'next/link'
 import BrandLogo from '@/components/brand-logo'
 import { SITE_CONFIG } from '@/config/site'
 
-const NAV = [
-  { href: '/about', label: 'About' },
+const PRIMARY_LINKS = [
   { href: '/shop', label: 'Shop' },
-  { href: '/shipping', label: 'Shipping & Returns' },
+  { href: '/journal', label: 'Journal' },
+  { href: '/about', label: 'About' },
+  { href: '/shipping', label: 'Shipping' },
+  { href: '/faq', label: 'FAQ' },
+  { href: '/contact', label: 'Contact' },
   { href: '/privacy', label: 'Privacy' },
   { href: '/terms', label: 'Terms' },
-  { href: '/contact', label: 'Contact' },
+]
+
+const TRUST_SIGNALS = [
+  'Body-safe',
+  'Discreet packaging',
+  'Quiet billing',
+  'Secure checkout',
 ]
 
 export default function SiteFooter() {
   return (
-    <footer
-      className="border-t py-16 sm:py-24 px-4 sm:px-6"
-      style={{
-        backgroundColor: 'var(--color-bg-primary)',
-        borderColor: 'rgba(200,16,46,0.15)',
-      }}
-    >
-      <div className="mx-auto max-w-4xl flex flex-col items-center justify-center">
+    <footer className="border-t border-zinc-800 bg-zinc-950 px-4 py-16 sm:px-6 sm:py-20">
+      <div className="mx-auto flex max-w-4xl flex-col items-center text-center">
         <div className="mb-8">
           <BrandLogo size="lg" />
         </div>
 
-        <p
-          className="text-xs tracking-[0.2em] uppercase mb-8 text-center"
-          style={{ color: 'var(--color-text-muted)' }}
-        >
-          Considered pleasure. Private delivery.
+        <p className="mb-8 text-xs uppercase tracking-[0.22em] text-zinc-500">
+          Considered pleasure.
         </p>
 
-        <div
-          className="w-24 h-px mb-8"
-          style={{ background: 'linear-gradient(90deg, transparent, #C8102E, transparent)' }}
-        />
+        <ul className="mb-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[10px] uppercase tracking-[0.2em] text-zinc-500">
+          {TRUST_SIGNALS.map((signal) => (
+            <li key={signal}>{signal}</li>
+          ))}
+        </ul>
 
-        <p
-          className="text-[11px] tracking-[0.08em] uppercase mb-10 text-center max-w-sm"
-          style={{ color: 'var(--color-text-muted)' }}
+        <nav
+          aria-label="Footer"
+          className="mb-12 flex flex-wrap items-center justify-center gap-x-6 gap-y-3"
         >
-          Questions? {SITE_CONFIG.supportEmail} · {SITE_CONFIG.supportPhone}
-        </p>
-
-        <div className="flex items-center flex-wrap justify-center gap-6 md:gap-10 mb-12">
-          {NAV.map(({ href, label }) => (
+          {PRIMARY_LINKS.map(({ href, label }) => (
             <Link
               key={href}
               href={href}
-              className="text-xs tracking-[0.2em] uppercase font-semibold transition-colors duration-200"
-              style={{ color: 'var(--color-text-secondary)' }}
+              className="text-[11px] font-medium uppercase tracking-[0.18em] text-zinc-400 transition-colors hover:text-white"
             >
               {label}
             </Link>
           ))}
-        </div>
+        </nav>
 
-        <p className="text-[10px] uppercase tracking-[0.15em] text-center mb-3" style={{ color: '#3A3A3C' }}>
-          {SITE_CONFIG.legalName} · {SITE_CONFIG.bizAddressFull}
+        <p className="max-w-sm text-[11px] leading-relaxed text-zinc-600">
+          {SITE_CONFIG.legalName}
+          <br />
+          {SITE_CONFIG.bizAddressFull}
+          <br />
+          {SITE_CONFIG.supportEmail}
         </p>
-        <p className="text-[10px] uppercase tracking-[0.15em] text-center" style={{ color: '#3A3A3C' }}>
-          Statement descriptor {SITE_CONFIG.billingDescriptor} · © {new Date().getFullYear()} {SITE_CONFIG.legalName}
+
+        <p className="mt-8 text-[10px] uppercase tracking-[0.16em] text-zinc-600">
+          &copy; {new Date().getFullYear()} {SITE_CONFIG.legalName}. Adults 18+ only.
+          <br className="sm:hidden" />{' '}
+          Charges appear as {SITE_CONFIG.billingDescriptor}.
         </p>
       </div>
     </footer>
