@@ -91,7 +91,7 @@ export default function DiscreetNewsletter() {
               disabled={status === 'submitting'}
               className="w-full bg-theme-accent py-2.5 text-sm font-medium tracking-wide text-theme-bg transition-colors hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-theme-accent focus:ring-offset-2 focus:ring-offset-theme-surface disabled:opacity-50"
             >
-              {status === 'submitting' ? 'PROCESSING...' : 'SECURE MY DISCOUNT'}
+              {status === 'submitting' ? 'Sending…' : 'Join the list'}
             </button>
           </form>
         </>

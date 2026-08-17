@@ -5,7 +5,7 @@ import { SITE_CONFIG } from '@/config/site'
 export const metadata: Metadata = {
   title: 'Materials & Standards',
   description:
-    'Body-safe materials standards for Room 23 products — platinum-cure silicone, borosilicate glass, botanical oils, and mulberry silk.',
+    'Body-safe materials standards for Room 23 products — platinum-cure silicone, botanical oils, and topical wellness formulas.',
 }
 
 export default function StandardsPage() {
@@ -29,23 +29,18 @@ export default function StandardsPage() {
             </p>
           </div>
           <div>
-            <h2 className="font-serif text-xl text-theme-text">Borosilicate glass</h2>
-            <p className="mt-3 text-sm leading-relaxed text-theme-muted">
-              Non-porous, seamless, and compatible with all lubricant types. Suitable for gentle
-              temperature play with warm water or brief refrigeration — never boiling water or a freezer.
-            </p>
-          </div>
-          <div>
-            <h2 className="font-serif text-xl text-theme-text">Botanical massage oils</h2>
+            <h2 className="font-serif text-xl text-theme-text">Botanical body oils</h2>
             <p className="mt-3 text-sm leading-relaxed text-theme-muted">
               Topical use only. Not ingestible. Oil-based products can degrade latex condoms — follow
               the compatibility notes on each product page.
             </p>
           </div>
           <div>
-            <h2 className="font-serif text-xl text-theme-text">Mulberry silk</h2>
+            <h2 className="font-serif text-xl text-theme-text">Topical wellness formulas</h2>
             <p className="mt-3 text-sm leading-relaxed text-theme-muted">
-              22-momme mulberry silk with adjustable fit. Hand wash cold; lay flat to dry.
+              Delay sprays, warming serums, mists, and washes are for external use. Patch-test if you
+              have sensitive skin. Avoid the eye area. These are not personal lubricants unless the
+              product page says otherwise.
             </p>
           </div>
         </section>

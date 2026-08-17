@@ -1,135 +1,77 @@
-'use client'
-
 import Link from 'next/link'
-import { Plus, ShoppingBag } from 'lucide-react'
-import { useCart } from '@/lib/cart-context'
-import ProductArtwork from '@/components/product-artwork'
-
-const BADGE_STYLES = {
-  'BEST SELLER': { bg: '#C8102E', text: '#FFFFFF' },
-  'TRAVEL':      { bg: '#1c1c1f', text: '#C8102E', border: '1px solid rgba(200,16,46,0.4)' },
-  'VALUE':       { bg: '#1c1c1f', text: '#D1D1D6', border: '1px solid rgba(209,209,214,0.3)' },
-  'RARE INVENTORY': { bg: '#C8102E', text: '#FFFFFF' },
-  'ALMOST GONE': { bg: '#7D0A1C', text: '#FFFFFF' },
-  'SOLD OUT':    { bg: '#26262A', text: '#8E8E93' },
-}
+import { INVENTORY_STATUS } from '@/lib/inventory'
+import ProductCardActions from '@/components/product-card-actions'
 
 export default function ProductCard({ product }) {
-  const { addToCart } = useCart()
-
-  const badgeStyle = product.badge ? BADGE_STYLES[product.badge] : null
-
-  const handleQuickAdd = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-    addToCart({ ...product, qty: 1 })
-  }
+  const soldOut =
+    product.inventoryStatus === INVENTORY_STATUS.OUT_OF_STOCK ||
+    product.badge === 'SOLD OUT'
+  const href = `/products/${product.slug || product.id}`
+  const price =
+    typeof product.price === 'number' ? `$${product.price.toFixed(2)}` : product.price
+  const descriptor = product.tagline || product.shortEditorial || null
+  const imageSrc =
+    product.image || product.images?.[0]?.url || product.gallery?.[0]?.url || null
+  const imageAlt =
+    product.images?.[0]?.alt || product.gallery?.[0]?.alt || product.name
 
   return (
-    <Link
-      href={`/products/${product.slug || product.id}`}
-      className="group relative flex flex-col overflow-hidden transition-all duration-300 hover:-translate-y-1.5"
-      style={{
-        backgroundColor: 'var(--bg-surface)',
-        borderRadius: 'var(--radius-lg)',
-        border: '1px solid var(--border)',
-        boxShadow: 'var(--shadow-card)',
-      }}
-      onMouseOver={e => e.currentTarget.style.borderColor = 'rgba(200,16,46,0.25)'}
-      onMouseOut={e => e.currentTarget.style.borderColor = 'var(--border)'}
-    >
-      {/* ── Badge ── */}
-      {product.badge && badgeStyle && (
-        <div className="absolute top-3 left-3 z-10">
-          <span
-            className="inline-block px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.12em] rounded-sm"
-            style={{
-              backgroundColor: badgeStyle.bg,
-              color: badgeStyle.text,
-              border: badgeStyle.border || 'none',
-            }}
-          >
-            {product.badge}
-          </span>
-        </div>
-      )}
-
-      {/* ── Image ── */}
-      <div
-        className="relative aspect-square overflow-hidden flex items-center justify-center"
-        style={{ backgroundColor: '#0B0B0C' }}
+    <article className="group flex h-full flex-col">
+      <Link
+        href={href}
+        className="block focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-theme-muted"
       >
-        {product.image ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={product.image} alt="" className="h-full w-full object-cover" />
-        ) : (
-          <ProductArtwork productId={product.id} category={product.category} />
-        )}
+        <div className="relative aspect-[4/5] overflow-hidden bg-theme-surface">
+          {imageSrc ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={imageSrc}
+              alt={imageAlt}
+              className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+            />
+          ) : (
+            <div className="flex h-full w-full flex-col items-center justify-center bg-theme-bg">
+              <span className="text-[10px] font-medium uppercase tracking-[0.32em] text-theme-muted/70">
+                Room 23
+              </span>
+            </div>
+          )}
 
-        {/* Quick-add button */}
-        <button
-          onClick={handleQuickAdd}
-          className="absolute bottom-3 right-3 w-10 h-10 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 translate-y-2 group-hover:translate-y-0"
-          style={{
-            backgroundColor: '#C8102E',
-            color: '#FFFFFF',
-            boxShadow: '0 4px 12px rgba(200,16,46,0.4)',
-          }}
-          aria-label={`Add ${product.name} to cart`}
+          {product.badge && !soldOut ? (
+            <span className="absolute left-3 top-3 text-[10px] font-medium uppercase tracking-[0.2em] text-theme-text/80">
+              {product.badge}
+            </span>
+          ) : null}
+
+          {soldOut ? (
+            <span className="absolute inset-0 flex items-center justify-center bg-theme-bg/60 text-[10px] font-medium uppercase tracking-[0.22em] text-theme-text/80">
+              Sold out
+            </span>
+          ) : null}
+        </div>
+      </Link>
+
+      <div className="flex flex-1 flex-col px-0.5 pt-5 sm:pt-6">
+        <Link
+          href={href}
+          className="block focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-theme-muted"
         >
-          <Plus className="w-4 h-4" />
-        </button>
+          <h3 className="font-serif text-[15px] leading-snug tracking-wide text-theme-text transition-colors duration-300 group-hover:text-theme-text sm:text-base">
+            {product.name}
+          </h3>
+        </Link>
 
-        {/* Hover overlay */}
-        <div
-          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-          style={{ background: 'linear-gradient(to top, rgba(200,16,46,0.06) 0%, transparent 50%)' }}
-        />
-      </div>
-
-      {/* ── Info ── */}
-      <div className="p-4 flex flex-col gap-1.5">
-        {product.category && (
-          <span
-            className="text-[10px] font-semibold uppercase tracking-[0.15em]"
-            style={{ color: '#C8102E' }}
-          >
-            {product.category}
-          </span>
-        )}
-
-        <h3
-          className="text-sm font-syne font-semibold leading-snug line-clamp-2"
-          style={{ color: 'var(--text-primary)' }}
-        >
-          {product.name}
-        </h3>
-
-        {product.tagline && (
-          <p
-            className="text-[11px] leading-relaxed line-clamp-1"
-            style={{ color: 'var(--text-muted)' }}
-          >
-            {product.tagline}
+        {descriptor ? (
+          <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-theme-muted sm:mt-2.5">
+            {descriptor}
           </p>
-        )}
+        ) : null}
 
-        <div className="flex items-center justify-between mt-2 pt-2" style={{ borderTop: '1px solid var(--border)' }}>
-          <span
-            className="text-base font-syne font-bold"
-            style={{ color: '#F4F4F6' }}
-          >
-            ${product.price}
-          </span>
-          <div
-            className="flex items-center gap-1 text-[10px] uppercase tracking-widest font-semibold"
-            style={{ color: 'var(--text-muted)' }}
-          >
-            <ShoppingBag className="w-3 h-3" />
-            Add
-          </div>
+        <div className="mt-auto flex items-center justify-between gap-4 pt-5 sm:pt-6">
+          <p className="text-sm tracking-wide text-theme-text/80">{price}</p>
+          <ProductCardActions product={product} />
         </div>
       </div>
-    </Link>
+    </article>
   )
 }

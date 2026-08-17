@@ -8,21 +8,19 @@ import { Menu, X, ShoppingBag } from 'lucide-react'
 import BrandLogo from '@/components/brand-logo'
 
 const TOP_LINKS = [
-  { href: '/shop', label: 'SHOP' },
-  { href: '/journal', label: 'JOURNAL' },
-  { href: '/faq', label: 'FAQ' },
-  { href: '/contact', label: 'CONTACT' },
+  { href: '/shop', label: 'Shop' },
+  { href: '/journal', label: 'Journal' },
+  { href: '/about', label: 'About' },
+  { href: '/contact', label: 'Contact' },
 ]
 
 const MENU_LINKS = [
-  { href: '/shop', label: 'SHOP' },
-  { href: '/collections/essentials', label: 'ESSENTIALS' },
-  { href: '/collections/new-arrivals', label: 'NEW ARRIVALS' },
-  { href: '/journal', label: 'JOURNAL' },
-  { href: '/about', label: 'ABOUT' },
-  { href: '/shipping', label: 'SHIPPING' },
+  { href: '/shop', label: 'Shop' },
+  { href: '/journal', label: 'Journal' },
+  { href: '/about', label: 'About' },
+  { href: '/shipping', label: 'Shipping' },
   { href: '/faq', label: 'FAQ' },
-  { href: '/contact', label: 'CONTACT' },
+  { href: '/contact', label: 'Contact' },
 ]
 
 export default function SiteHeader() {
@@ -35,156 +33,149 @@ export default function SiteHeader() {
   const closeDrawer = () => setDrawerOpen(false)
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 10)
+    const handleScroll = () => setScrolled(window.scrollY > 8)
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  useEffect(() => { setDrawerOpen(false) }, [pathname])
+  useEffect(() => {
+    setDrawerOpen(false)
+  }, [pathname])
+
+  useEffect(() => {
+    if (!drawerOpen) return
+    const onKey = (e) => {
+      if (e.key === 'Escape') closeDrawer()
+    }
+    window.addEventListener('keydown', onKey)
+    document.body.style.overflow = 'hidden'
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      document.body.style.overflow = ''
+    }
+  }, [drawerOpen])
+
+  const isActive = (href) => pathname === href || pathname?.startsWith(`${href}/`)
 
   return (
     <>
       <header className="sticky top-0 z-40 w-full">
-        {/* ── Main Nav Bar ── */}
         <div
-          className="w-full border-b transition-all duration-300"
-          style={{
-            backgroundColor: 'color-mix(in srgb, var(--bg) 97%, transparent)',
-            borderColor: 'color-mix(in srgb, var(--accent) 20%, transparent)',
-            backdropFilter: 'blur(20px)',
-            WebkitBackdropFilter: 'blur(20px)',
-            boxShadow: scrolled ? '0 4px 30px rgba(0,0,0,0.6)' : 'none',
-          }}
+          className={`w-full border-b bg-theme-bg/95 backdrop-blur-xl transition-colors duration-300 ${
+            scrolled ? 'border-theme-border' : 'border-transparent'
+          }`}
         >
-          <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 gap-4">
-
-            {/* ── Left: Hamburger (mobile) + desktop links ── */}
-            <div className="flex items-center gap-1 min-w-[2.5rem] lg:min-w-0 lg:flex-1">
+          <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-3 px-4 sm:h-[4.25rem] sm:px-6">
+            <div className="flex min-w-[2.75rem] flex-1 items-center">
               <button
+                type="button"
                 onClick={() => setDrawerOpen(true)}
-                className="p-2 -ml-2 rounded-full transition-all duration-200 focus:outline-none"
-                style={{ color: 'var(--text)' }}
-                onMouseOver={e => e.currentTarget.style.color = 'var(--accent)'}
-                onMouseOut={e => e.currentTarget.style.color = 'var(--text)'}
+                className="inline-flex h-11 w-11 items-center justify-center text-theme-text/90 transition-colors hover:text-theme-text md:hidden"
                 aria-label="Open menu"
               >
-                <Menu className="h-6 w-6 stroke-[1.5]" />
+                <Menu className="h-5 w-5 stroke-[1.5]" />
               </button>
-              <nav className="hidden md:flex items-center gap-5" aria-label="Primary">
-                {TOP_LINKS.map((link) => {
-                  const isActive = pathname === link.href || pathname?.startsWith(`${link.href}/`)
-                  return (
-                    <Link
-                      key={link.label}
-                      href={link.href}
-                      className="text-[11px] tracking-[0.16em] uppercase font-semibold transition-colors"
-                      style={{ color: isActive ? 'var(--accent)' : 'var(--muted)' }}
-                    >
-                      {link.label}
-                    </Link>
-                  )
-                })}
+              <nav className="hidden items-center gap-7 md:flex" aria-label="Primary">
+                {TOP_LINKS.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={`text-[11px] font-medium uppercase tracking-[0.18em] transition-colors ${
+                      isActive(link.href)
+                        ? 'text-theme-accent'
+                        : 'text-theme-muted hover:text-theme-text'
+                    }`}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
               </nav>
             </div>
 
-            {/* ── Center: Wordmark ── */}
             <BrandLogo size="md" />
 
-            {/* ── Right: Cart ── */}
-            <div className="flex items-center justify-end min-w-[2.5rem] lg:flex-1">
-            <button
-              onClick={() => setCartOpen(!cartOpen)}
-              className="relative p-2 -mr-2 rounded-full transition-all duration-200 focus:outline-none"
-              style={{ color: 'var(--text)' }}
-              onMouseOver={e => e.currentTarget.style.color = 'var(--accent)'}
-              onMouseOut={e => e.currentTarget.style.color = 'var(--text)'}
-              aria-label={`Open cart${itemCount > 0 ? ` (${itemCount} items)` : ''}`}
-            >
-              <ShoppingBag className="h-5 w-5 stroke-[1.5]" />
-              {itemCount > 0 && (
-                <span
-                  className="absolute top-0 right-0 flex h-[16px] w-[16px] items-center justify-center rounded-full text-[9px] font-bold animate-in zoom-in duration-200"
-                  style={{ backgroundColor: 'var(--accent)', color: 'var(--bg)' }}
-                >
-                  {itemCount > 9 ? '9+' : itemCount}
-                </span>
-              )}
-            </button>
+            <div className="flex min-w-[2.75rem] flex-1 items-center justify-end">
+              <button
+                type="button"
+                onClick={() => setCartOpen(!cartOpen)}
+                className="relative inline-flex h-11 w-11 items-center justify-center text-theme-text/90 transition-colors hover:text-theme-text"
+                aria-label={`Open cart${itemCount > 0 ? ` (${itemCount} items)` : ''}`}
+              >
+                <ShoppingBag className="h-5 w-5 stroke-[1.5]" />
+                {itemCount > 0 && (
+                  <span className="absolute right-1.5 top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-theme-accent px-1 text-[9px] font-semibold text-theme-bg">
+                    {itemCount > 9 ? '9+' : itemCount}
+                  </span>
+                )}
+              </button>
             </div>
           </div>
         </div>
       </header>
 
-      {/* ── Left Slide-Out Drawer Navigation ── */}
       {drawerOpen && (
-        <div className="fixed inset-0 z-50 flex">
-          {/* Backdrop overlay */}
+        <div className="fixed inset-0 z-50 flex md:hidden">
           <div
-            className="fixed inset-0 transition-opacity duration-300"
-            style={{ backgroundColor: 'rgba(0,0,0,0.75)' }}
+            className="fixed inset-0 bg-black/70"
             onClick={closeDrawer}
             aria-hidden="true"
           />
-
-          {/* Drawer Panel */}
           <nav
-            className="relative flex w-full max-w-xs flex-col shadow-2xl animate-in slide-in-from-left duration-300"
-            style={{ backgroundColor: 'var(--bg)', borderRight: '1px solid color-mix(in srgb, var(--accent) 20%, transparent)' }}
+            className="relative flex h-full w-full max-w-xs flex-col border-r border-theme-border bg-theme-bg"
+            aria-label="Mobile"
           >
-            <div className="flex items-center justify-between border-b px-6 py-5" style={{ borderColor: 'color-mix(in srgb, var(--accent) 15%, transparent)' }}>
+            <div className="flex items-center justify-between border-b border-theme-border px-5 py-4">
               <span onClick={closeDrawer}>
                 <BrandLogo size="sm" />
               </span>
               <button
+                type="button"
                 onClick={closeDrawer}
-                className="p-2 -mr-2 transition-colors focus:outline-none"
-                style={{ color: 'var(--muted)' }}
-                onMouseOver={e => e.currentTarget.style.color = 'var(--text)'}
-                onMouseOut={e => e.currentTarget.style.color = 'var(--muted)'}
+                className="inline-flex h-11 w-11 items-center justify-center text-theme-muted transition-colors hover:text-theme-text"
                 aria-label="Close menu"
               >
                 <X className="h-5 w-5 stroke-[1.5]" />
               </button>
             </div>
 
-            {/* Drawer Links */}
-            <div className="flex flex-col px-6 py-8 space-y-1">
-              {MENU_LINKS.map((link) => {
-                const isActive = pathname === link.href || pathname?.startsWith(`${link.href}/`)
-                return (
-                  <Link
-                    key={link.label}
-                    href={link.href}
-                    onClick={closeDrawer}
-                    className="flex items-center gap-2 py-3 text-sm tracking-[0.2em] uppercase font-semibold transition-all duration-200 border-b"
-                    style={{
-                      color: isActive ? 'var(--accent)' : 'var(--text)',
-                      borderColor: 'color-mix(in srgb, var(--text) 4%, transparent)',
-                      fontFamily: 'var(--font-sans)',
-                    }}
-                    onMouseOver={e => { e.currentTarget.style.color = 'var(--accent)'; e.currentTarget.style.paddingLeft = '8px' }}
-                    onMouseOut={e => { e.currentTarget.style.color = isActive ? 'var(--accent)' : 'var(--text)'; e.currentTarget.style.paddingLeft = '0px' }}
-                  >
-                    {link.label}
-                  </Link>
-                )
-              })}
+            <div className="flex flex-col px-5 py-6">
+              {MENU_LINKS.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={closeDrawer}
+                  className={`border-b border-theme-border py-3.5 text-sm font-medium uppercase tracking-[0.18em] transition-colors ${
+                    isActive(link.href)
+                      ? 'text-theme-accent'
+                      : 'text-theme-text/80 hover:text-theme-text'
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              ))}
             </div>
 
-            {/* Bottom section */}
-            <div className="mt-auto border-t px-6 py-8" style={{ borderColor: 'color-mix(in srgb, var(--accent) 10%, transparent)' }}>
-              <p className="mb-6 text-[10px] uppercase leading-relaxed tracking-widest" style={{ color: 'var(--muted)' }}>
-                Considered pleasure.<br />For adults 18+ only.
+            <div className="mt-auto border-t border-theme-border px-5 py-8">
+              <p className="mb-6 text-[10px] uppercase leading-relaxed tracking-[0.2em] text-theme-muted">
+                Considered pleasure.
+                <br />
+                For adults 18+ only.
               </p>
               <div className="flex gap-6">
-                <Link href="/privacy" className="text-[10px] uppercase tracking-widest transition-colors" style={{ color: 'var(--muted)' }} onClick={closeDrawer}
-                  onMouseOver={e => e.currentTarget.style.color = 'var(--accent)'}
-                  onMouseOut={e => e.currentTarget.style.color = 'var(--muted)'}
-                >Privacy</Link>
-                <Link href="/terms" className="text-[10px] uppercase tracking-widest transition-colors" style={{ color: 'var(--muted)' }} onClick={closeDrawer}
-                  onMouseOver={e => e.currentTarget.style.color = 'var(--accent)'}
-                  onMouseOut={e => e.currentTarget.style.color = 'var(--muted)'}
-                >Terms</Link>
+                <Link
+                  href="/privacy"
+                  onClick={closeDrawer}
+                  className="text-[10px] uppercase tracking-[0.18em] text-theme-muted transition-colors hover:text-theme-text/80"
+                >
+                  Privacy
+                </Link>
+                <Link
+                  href="/terms"
+                  onClick={closeDrawer}
+                  className="text-[10px] uppercase tracking-[0.18em] text-theme-muted transition-colors hover:text-theme-text/80"
+                >
+                  Terms
+                </Link>
               </div>
             </div>
           </nav>

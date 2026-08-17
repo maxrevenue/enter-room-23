@@ -31,8 +31,7 @@ export const SITE_CONFIG = {
 
   // ── Billing ──
   billingDescriptor: process.env.NEXT_PUBLIC_BILLING_DESCRIPTOR || 'ROOM23 WELLNESS',
-  checkoutEnabled: process.env.NEXT_PUBLIC_SOFT_LAUNCH !== 'true',
-  softLaunch: process.env.NEXT_PUBLIC_SOFT_LAUNCH === 'true',
+  checkoutEnabled: true,
 
   // ── Shipping (must match /shipping) ──
   carriers: ['USPS', 'UPS', 'FedEx'],

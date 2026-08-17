@@ -53,12 +53,16 @@ describe('merchant readiness', () => {
     assert.match(source, /https:/)
   })
 
-  it('turns soft launch off by default in wrangler and site config', () => {
+  it('keeps checkout enabled and omits soft-launch env flags', () => {
     const wrangler = read('wrangler.jsonc')
-    assert.match(wrangler, /"NEXT_PUBLIC_SOFT_LAUNCH": "false"/)
+    assert.doesNotMatch(wrangler, /NEXT_PUBLIC_SOFT_LAUNCH/)
     const site = read('config/site.js')
-    assert.match(site, /NEXT_PUBLIC_SOFT_LAUNCH !== 'true'/)
+    assert.match(site, /checkoutEnabled:\s*true/)
+    assert.doesNotMatch(site, /softLaunch/)
+    assert.doesNotMatch(site, /NEXT_PUBLIC_SOFT_LAUNCH/)
     assert.match(site, /ROOM23 WELLNESS/)
+    const envExample = read('.env.example')
+    assert.doesNotMatch(envExample, /SOFT_LAUNCH/)
   })
 
   it('keeps vintage collection out of the customer catalog', () => {

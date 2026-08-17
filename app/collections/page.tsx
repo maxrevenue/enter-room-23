@@ -4,7 +4,7 @@ import { COLLECTIONS } from '@/lib/products'
 
 export const metadata: Metadata = {
   title: 'Collections | Room 23',
-  description: 'Curated essentials and new arrivals from Room 23.',
+  description: 'Essentials and new arrivals from Room 23.',
 }
 
 const VISIBLE_COLLECTIONS = ['essentials', 'new-arrivals'] as const

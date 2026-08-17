@@ -88,7 +88,7 @@ function AgeGateHuman() {
         </div>
 
         <p className="text-xs text-theme-muted">
-          Your visit is private — no tracking, no judgment.
+          Your visit stays confidential — no tracking, no judgment.
         </p>
       </div>
     </div>

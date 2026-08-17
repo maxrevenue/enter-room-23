@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { Mail, ArrowRight, Check } from 'lucide-react'
 import { track } from '@/lib/analytics-client'
 
-export default function VipWaitlist() {
+export default function JournalSignup() {
   const [email, setEmail] = useState('')
   const [submitted, setSubmitted] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -81,7 +81,7 @@ export default function VipWaitlist() {
             <button
               type="submit"
               disabled={loading}
-              className="inline-flex items-center justify-center gap-2 whitespace-nowrap bg-zinc-100 px-6 py-3 text-[11px] font-medium uppercase tracking-[0.15em] text-black hover:bg-white"
+              className="inline-flex min-h-11 items-center justify-center gap-2 whitespace-nowrap bg-zinc-100 px-6 py-3 text-[11px] font-medium uppercase tracking-[0.15em] text-black hover:bg-white"
               style={{ opacity: loading ? 0.7 : 1 }}
               aria-label="Subscribe to notes from Room 23"
             >

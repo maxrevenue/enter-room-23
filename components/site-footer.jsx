@@ -1,69 +1,70 @@
-'use client'
-
 import Link from 'next/link'
 import BrandLogo from '@/components/brand-logo'
 import { SITE_CONFIG } from '@/config/site'
 
-const NAV = [
-  { href: '/about', label: 'About' },
+const PRIMARY_LINKS = [
   { href: '/shop', label: 'Shop' },
-  { href: '/shipping', label: 'Shipping & Returns' },
+  { href: '/journal', label: 'Journal' },
+  { href: '/about', label: 'About' },
+  { href: '/shipping', label: 'Shipping' },
+  { href: '/faq', label: 'FAQ' },
+  { href: '/contact', label: 'Contact' },
   { href: '/privacy', label: 'Privacy' },
   { href: '/terms', label: 'Terms' },
-  { href: '/contact', label: 'Contact' },
+]
+
+const TRUST_SIGNALS = [
+  'Body-safe',
+  'Discreet packaging',
+  'Quiet billing',
+  'Secure checkout',
 ]
 
 export default function SiteFooter() {
   return (
-    <footer
-      className="border-t py-16 sm:py-24 px-4 sm:px-6"
-      style={{
-        backgroundColor: 'var(--bg)',
-        borderColor: 'color-mix(in srgb, var(--accent) 15%, transparent)',
-      }}
-    >
-      <div className="mx-auto max-w-4xl flex flex-col items-center justify-center">
+    <footer className="border-t border-theme-border bg-theme-bg px-4 py-16 sm:px-6 sm:py-20">
+      <div className="mx-auto flex max-w-4xl flex-col items-center text-center">
         <div className="mb-8">
           <BrandLogo size="lg" />
         </div>
 
-        <p
-          className="text-xs tracking-[0.2em] uppercase mb-8 text-center"
-          style={{ color: 'var(--muted)' }}
-        >
-          Considered pleasure. Private delivery.
+        <p className="mb-8 text-xs uppercase tracking-[0.22em] text-theme-muted">
+          Considered pleasure.
         </p>
 
-        <div
-          className="w-24 h-px mb-8"
-          style={{ background: 'linear-gradient(90deg, transparent, var(--accent), transparent)' }}
-        />
+        <ul className="mb-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[10px] uppercase tracking-[0.2em] text-theme-muted">
+          {TRUST_SIGNALS.map((signal) => (
+            <li key={signal}>{signal}</li>
+          ))}
+        </ul>
 
-        <p
-          className="text-[11px] tracking-[0.08em] uppercase mb-10 text-center max-w-sm"
-          style={{ color: 'var(--muted)' }}
+        <nav
+          aria-label="Footer"
+          className="mb-12 flex flex-wrap items-center justify-center gap-x-6 gap-y-3"
         >
-          Questions? {SITE_CONFIG.supportEmail} · {SITE_CONFIG.supportPhone}
-        </p>
-
-        <div className="flex items-center flex-wrap justify-center gap-6 md:gap-10 mb-12">
-          {NAV.map(({ href, label }) => (
+          {PRIMARY_LINKS.map(({ href, label }) => (
             <Link
               key={href}
               href={href}
-              className="text-xs tracking-[0.2em] uppercase font-semibold transition-colors duration-200"
-              style={{ color: 'var(--muted)' }}
+              className="text-[11px] font-medium uppercase tracking-[0.18em] text-theme-muted transition-colors hover:text-theme-text"
             >
               {label}
             </Link>
           ))}
-        </div>
+        </nav>
 
-        <p className="mb-3 text-center text-[10px] uppercase tracking-[0.15em]" style={{ color: 'var(--border)' }}>
-          {SITE_CONFIG.legalName} · {SITE_CONFIG.bizAddressFull}
+        <p className="max-w-sm text-[11px] leading-relaxed text-theme-muted/70">
+          {SITE_CONFIG.legalName}
+          <br />
+          {SITE_CONFIG.bizAddressFull}
+          <br />
+          {SITE_CONFIG.supportEmail}
         </p>
-        <p className="text-center text-[10px] uppercase tracking-[0.15em]" style={{ color: 'var(--border)' }}>
-          Statement descriptor {SITE_CONFIG.billingDescriptor} · © {new Date().getFullYear()} {SITE_CONFIG.legalName}
+
+        <p className="mt-8 text-[10px] uppercase tracking-[0.16em] text-theme-muted/70">
+          &copy; {new Date().getFullYear()} {SITE_CONFIG.legalName}. Adults 18+ only.
+          <br className="sm:hidden" />{' '}
+          Charges appear as {SITE_CONFIG.billingDescriptor}.
         </p>
       </div>
     </footer>

@@ -48,8 +48,9 @@
 │   ├── order-confirmed/          # Post-checkout confirmation
 │   │   ├── page.js               # Server component (wraps client)
 │   │   └── order-confirmed-client.js  # Client component: order ID display, cart clearing
-│   ├── vault/page.js             # Members-only area (placeholder / coming soon)
-│   ├── archive/page.js           # Vintage finds (placeholder / coming soon)
+│   ├── journal/                  # Editorial journal routes
+│   ├── shop/                     # Shop catalog
+│   ├── products/                 # Product detail pages
 │   ├── terms/page.js             # Legal: Terms of Service
 │   ├── terms-of-service/page.js  # Legal: Terms of Service (alternate path)
 │   ├── privacy-policy/page.js    # Legal: Privacy Policy
@@ -121,8 +122,8 @@
 | `/shipping` | `app/shipping/page.js` | Client | Shipping policies & info |
 | `/contact` | `app/contact/page.js` | Client | Contact form |
 | `/order-confirmed` | `app/order-confirmed/page.js` | Server→Client | Post-checkout confirmation |
-| `/vault` | `app/vault/page.js` | Client | Members-only area (coming soon) |
-| `/archive` | `app/archive/page.js` | Client | Vintage pieces (coming soon) |
+| `/journal` | `app/journal` | Server | Editorial journal |
+| `/shop` | `app/shop` | Server | Product catalog |
 | `/terms` | `app/terms/page.js` | Server | Terms of Service |
 | `/terms-of-service` | `app/terms-of-service/page.js` | Server | Terms (alternate path) |
 | `/privacy-policy` | `app/privacy-policy/page.js` | Server | Privacy Policy |
@@ -229,8 +230,8 @@ Real supplier adapters would extend `SupplierAdapter` with live API credentials 
 | Staging Environment | ✅ Complete | Banner, noindex, blocked robots, wrangler env config |
 | Privacy Analytics | ✅ Complete | PII sanitization, fire-and-forget pipeline |
 | Supplier Integration | 🔶 Adapter ready | `MockSupplier` works; real supplier adapters TBD |
-| Vault (Members) | 🔶 Placeholder | Coming soon page with email waitlist |
-| Archive (Vintage) | 🔶 Placeholder | Coming soon page with email waitlist |
+| Journal | ✅ Live | Editorial essays and materials notes |
+| Shop | ✅ Live | Body-safe wellness catalog with checkout |
 | Legal Pages | ✅ Complete | Terms, Privacy, Refund with proper content |
 | E2E Testing | 🔶 In progress | Test ID constants defined; test scripts in `tests/` |
 | SEO | ✅ Complete | robots.txt, sitemap.xml, JSON-LD, metadata |
