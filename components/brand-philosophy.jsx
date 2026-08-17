@@ -34,7 +34,7 @@ export default function BrandPhilosophy() {
           style={{ color: 'var(--text-primary)', letterSpacing: '-0.01em' }}
         >
           Considered pleasure.{' '}
-          <span style={{ color: '#C8102E' }}>Private delivery.</span>
+          <span style={{ color: '#C8102E' }}>Body-safe essentials.</span>
         </h2>
 
         <div className="space-y-5 mb-14 max-w-2xl mx-auto">
