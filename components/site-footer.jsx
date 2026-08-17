@@ -16,7 +16,7 @@ const PRIMARY_LINKS = [
 const TRUST_SIGNALS = [
   'Body-safe',
   'Discreet packaging',
-  'Private billing',
+  'Quiet billing',
   'Secure checkout',
 ]
 
