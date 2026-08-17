@@ -21,13 +21,13 @@ export function AddToCartButton({ product }) {
   return (
     <>
       <div className="flex items-center gap-3 mb-6">
-        <span className="text-xs uppercase tracking-widest text-zinc-500">Qty</span>
-        <div className="flex items-center border border-zinc-800 rounded-lg">
+        <span className="text-xs uppercase tracking-widest text-theme-muted">Qty</span>
+        <div className="flex items-center border border-theme-border rounded-lg">
           <button
             type="button"
             aria-label="Decrease quantity"
             onClick={() => setQuantity(Math.max(1, quantity - 1))}
-            className="p-2 hover:bg-zinc-900 transition-colors"
+            className="p-2 hover:bg-theme-surface transition-colors"
           >
             <Minus size={14} />
           </button>
@@ -36,7 +36,7 @@ export function AddToCartButton({ product }) {
             type="button"
             aria-label="Increase quantity"
             onClick={() => setQuantity(quantity + 1)}
-            className="p-2 hover:bg-zinc-900 transition-colors"
+            className="p-2 hover:bg-theme-surface transition-colors"
           >
             <Plus size={14} />
           </button>

@@ -9,44 +9,84 @@
    Dark Theme Permanently Locked — No Light Mode
    =================================================================== */
 
+/* ===================================================================
+   TEMPORARY THEME PALETTE TESTING — remove ThemeSwitcher + this block
+   =================================================================== */
+
+:root,
+[data-palette='charcoal'] {
+  --bg: #0C0C0C;
+  --surface: #1A1A1A;
+  --text: #F5F2EB;
+  --muted: #A8A29E;
+  --accent: #B08D6A;
+  --border: #2A2A2A;
+}
+
+[data-palette='blush'] {
+  --bg: #0F0F12;
+  --surface: #1C1A1D;
+  --text: #F7F3F1;
+  --muted: #B0A8A6;
+  --accent: #C9A9A6;
+  --border: #2C292B;
+}
+
+[data-palette='olive'] {
+  --bg: #121212;
+  --surface: #1A1C19;
+  --text: #F4F1EA;
+  --muted: #A3A899;
+  --accent: #8B9A7D;
+  --border: #2A2C28;
+}
+
+[data-palette='bone'] {
+  --bg: #0A0A0A;
+  --surface: #161616;
+  --text: #F8F5F0;
+  --muted: #A8A29E;
+  --accent: #C4A574;
+  --border: #2A2A2A;
+}
+
 :root {
   /* ── Color Scheme ── */
   color-scheme: dark;
 
-  /* ── Brand Palette (Dark Luxury Noir) ── */
-  --color-bg-primary:       #0B0B0C;  /* Matte Obsidian Black */
-  --color-bg-surface:       #161618;  /* Dark Velvet */
-  --color-bg-elevated:      #1c1c1f;  /* Slightly elevated Dark Velvet */
-  --color-bg-hover:         #26262A;  /* Hover state for panels */
+  /* ── Brand Palette (mapped from temporary theme tokens) ── */
+  --color-bg-primary:       var(--bg);
+  --color-bg-surface:       var(--surface);
+  --color-bg-elevated:      color-mix(in srgb, var(--surface) 88%, var(--text) 12%);
+  --color-bg-hover:         color-mix(in srgb, var(--surface) 75%, var(--text) 25%);
 
-  --color-text-primary:     #F4F4F6;  /* Crisp Off-White */
-  --color-text-secondary:   #D1D1D6;  /* Softer Off-White */
-  --color-text-muted:       #8E8E93;  /* Muted Ash */
-  --color-text-inverse:     #0B0B0C;  /* Matte Obsidian Black */
+  --color-text-primary:     var(--text);
+  --color-text-secondary:   color-mix(in srgb, var(--text) 82%, var(--muted) 18%);
+  --color-text-muted:       var(--muted);
+  --color-text-inverse:     var(--bg);
 
-  /* ── Swatch 1: Crimson Red (#C8102E) — Primary CTA & Highlights ── */
-  --color-emerald:          #C8102E;
-  --color-emerald-hover:    #A30D25;
-  --color-emerald-muted:    #7D0A1C;
-  --color-emerald-glow:     rgba(200, 16, 46, 0.15);
+  /* ── Accent (palette-driven for testing) ── */
+  --color-emerald:          var(--accent);
+  --color-emerald-hover:    color-mix(in srgb, var(--accent) 82%, var(--bg) 18%);
+  --color-emerald-muted:    color-mix(in srgb, var(--accent) 55%, var(--bg) 45%);
+  --color-emerald-glow:     color-mix(in srgb, var(--accent) 18%, transparent);
 
-  /* ── Swatch 2: Darker Crimson — For secondary accents ── */
-  --color-accent:           #A30D25;
-  --color-accent-hover:     #7D0A1C;
-  --color-accent-muted:     #520612;
-  --color-accent-glow:      rgba(163, 13, 37, 0.25);
+  --color-accent:           var(--accent);
+  --color-accent-hover:     color-mix(in srgb, var(--accent) 82%, var(--bg) 18%);
+  --color-accent-muted:     color-mix(in srgb, var(--accent) 55%, var(--bg) 45%);
+  --color-accent-glow:      color-mix(in srgb, var(--accent) 25%, transparent);
 
-  /* ── Swatch 3: Pale Muted Ash — For subtle borders & badges ── */
-  --color-brass:            #8E8E93;
-  --color-brass-hover:      #D1D1D6;
-  --color-brass-muted:      #636366;
-  --color-brass-glow:       rgba(142, 142, 147, 0.15);
+  /* ── Brass / muted accents ── */
+  --color-brass:            var(--muted);
+  --color-brass-hover:      var(--text);
+  --color-brass-muted:      color-mix(in srgb, var(--muted) 70%, var(--bg) 30%);
+  --color-brass-glow:       color-mix(in srgb, var(--muted) 15%, transparent);
 
-  --color-border:           #26262A;
-  --color-border-light:     #3A3A3C;
-  --color-border-accent:    rgba(200, 16, 46, 0.35);
-  --color-border-brass:     rgba(142, 142, 147, 0.35);
-  --color-border-emerald:   rgba(200, 16, 46, 0.25);
+  --color-border:           var(--border);
+  --color-border-light:     color-mix(in srgb, var(--border) 65%, var(--text) 35%);
+  --color-border-accent:    color-mix(in srgb, var(--accent) 35%, transparent);
+  --color-border-brass:     color-mix(in srgb, var(--muted) 35%, transparent);
+  --color-border-emerald:   color-mix(in srgb, var(--accent) 25%, transparent);
 
   /* ── Status Colors ── */
   --color-success:          #8E8E93;
@@ -90,20 +130,19 @@
   --transition-slow:        400ms ease;
 
   /* ── Semantic Mappings ── */
-  --bg-base:                var(--color-bg-primary);
-  --bg-surface:             var(--color-bg-surface);
+  --bg-base:                var(--bg);
+  --bg-surface:             var(--surface);
   --bg-elevated:            var(--color-bg-elevated);
   --bg-hover:               var(--color-bg-hover);
-  --text-primary:           var(--color-text-primary);
+  --text-primary:           var(--text);
   --text-secondary:         var(--color-text-secondary);
-  --text-muted:             var(--color-text-muted);
-  --text-inverse:           var(--color-text-inverse);
-  --accent:                 var(--color-accent);
+  --text-muted:             var(--muted);
+  --text-inverse:           var(--bg);
   --accent-hover:           var(--color-accent-hover);
   --brass:                  var(--color-brass);
   --brass-hover:            var(--color-brass-hover);
-  --emerald:                var(--color-emerald);
-  --border:                 var(--color-border);
+  --emerald:                var(--accent);
+  --border:                 var(--border);
   --border-light:           var(--color-border-light);
 }
 
@@ -119,7 +158,7 @@
 }
 
 html {
-  color-scheme: light;
+  color-scheme: dark;
   -webkit-text-size-adjust: 100%;
   -moz-tab-size: 4;
   tab-size: 4;
@@ -299,7 +338,7 @@ body::before {
     gap: 0.5rem;
     padding: 0.75rem 1.75rem;
     background-color: var(--accent);
-    color: #FFFFFF;
+    color: var(--bg);
     font-family: var(--font-display);
     font-size: var(--text-sm);
     font-weight: 600;

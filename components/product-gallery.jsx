@@ -10,7 +10,7 @@ export default function ProductGallery({ product }) {
 
   return (
     <div>
-      <AspectRatio ratio={4 / 5} className="overflow-hidden border border-zinc-800 bg-zinc-900">
+      <AspectRatio ratio={4 / 5} className="overflow-hidden border border-theme-border bg-theme-surface">
         <img src={hero.url} alt={hero.alt || product.name} className="h-full w-full object-cover" />
       </AspectRatio>
       {images.length > 1 && (
@@ -22,7 +22,7 @@ export default function ProductGallery({ product }) {
               onClick={() => setActive(index)}
               aria-label={`View image ${index + 1}`}
               aria-current={index === active ? 'true' : undefined}
-              className={`block overflow-hidden border bg-zinc-900 ${index === active ? 'border-zinc-400' : 'border-zinc-800'}`}
+              className={`block overflow-hidden border bg-theme-surface ${index === active ? 'border-theme-text/50' : 'border-theme-border'}`}
             >
               <AspectRatio ratio={4 / 5}>
                 <img src={thumb.url} alt={thumb.alt || ''} className="h-full w-full object-cover" />

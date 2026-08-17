@@ -40,7 +40,7 @@ export default async function JournalArticlePage({ params }) {
         </Link>
 
         <div className="mb-4">
-          <span className="px-3 py-1 text-[11px] font-bold uppercase tracking-[0.15em] rounded-full border border-zinc-700">
+          <span className="px-3 py-1 text-[11px] font-bold uppercase tracking-[0.15em] rounded-full border border-theme-border">
             {article.category}
           </span>
         </div>

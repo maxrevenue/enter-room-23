@@ -17,6 +17,14 @@ module.exports = {
         sans: ['var(--font-inter)', ...fontFamily.sans],
       },
       colors: {
+        theme: {
+          bg: 'var(--bg)',
+          surface: 'var(--surface)',
+          text: 'var(--text)',
+          muted: 'var(--muted)',
+          accent: 'var(--accent)',
+          border: 'var(--border)',
+        },
         // ── Neon Noir (Dark Mode) Palette ──
         'neon-red': {
           DEFAULT: '#FF0033',
