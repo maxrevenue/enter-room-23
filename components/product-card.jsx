@@ -51,7 +51,7 @@ export default function ProductCard({ product }) {
         </div>
       </Link>
 
-      <div className="flex flex-1 flex-col pt-5">
+      <div className="flex flex-1 flex-col px-0.5 pt-5 sm:pt-6">
         <Link
           href={href}
           className="block focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-500"
@@ -62,12 +62,12 @@ export default function ProductCard({ product }) {
         </Link>
 
         {descriptor ? (
-          <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-zinc-500">
+          <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-zinc-500 sm:mt-2.5">
             {descriptor}
           </p>
         ) : null}
 
-        <div className="mt-auto flex items-center justify-between gap-4 pt-5">
+        <div className="mt-auto flex items-center justify-between gap-4 pt-5 sm:pt-6">
           <p className="text-sm tracking-wide text-zinc-300">{price}</p>
           <ProductCardActions product={product} />
         </div>

@@ -68,7 +68,7 @@ export default function BrandPhilosophy() {
             },
             {
               icon: '⬢',
-              title: 'Private',
+              title: 'Quiet',
               body: 'Orders arrive quietly. Billing stays unremarkable.',
             },
             {
