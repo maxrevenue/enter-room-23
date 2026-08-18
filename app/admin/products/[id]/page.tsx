@@ -8,21 +8,24 @@ import {
   unarchiveProduct,
   updateProduct,
 } from '@/app/admin/actions'
+import { ProductEditorFields } from '@/app/admin/products/product-fields'
 import { isAdminAuthenticated } from '@/lib/admin-auth'
 import { resolveAdminPassword } from '@/lib/admin-password.server'
 import {
+  fulfillmentTypeOptions,
   getAdminProduct,
   isArchived,
+  isHiddenByZeroStock,
   isLowStock,
   LOW_STOCK_THRESHOLD,
   productCategories,
+  productImageUrl,
   quantityOf,
+  vendorTypeOptions,
 } from '@/lib/admin-catalog'
 
 export const dynamic = 'force-dynamic'
 
-const fieldClass =
-  'w-full border border-zinc-800 bg-zinc-950 px-4 py-3 text-sm text-zinc-100 outline-none focus:border-zinc-500'
 const labelClass = 'mb-2 block text-[10px] font-medium uppercase tracking-[0.22em] text-zinc-500'
 const ghostButtonClass =
   'border border-zinc-700 px-5 py-3 text-[11px] font-medium uppercase tracking-[0.22em] text-zinc-200 hover:border-zinc-500'
@@ -44,10 +47,12 @@ export default async function AdminProductEditPage({
   if (!product) notFound()
 
   const archived = isArchived(product)
+  const hiddenByZero = isHiddenByZeroStock(product)
   const isPotm = Boolean(product.isProductOfTheMonth || product.isFeatured)
   const quantity = quantityOf(product)
   const low = isLowStock(product)
   const out = quantity === 0
+  const imageUrl = productImageUrl(product)
 
   return (
     <section>
@@ -58,13 +63,34 @@ export default async function AdminProductEditPage({
       </p>
       <h1 className="mt-3 font-serif text-3xl tracking-tight text-zinc-100">{product.name}</h1>
       <p className="mt-3 text-[10px] uppercase tracking-[0.18em] text-zinc-500">
-        {archived ? 'Archived' : 'Active'}
+        {archived ? 'Archived' : hiddenByZero ? 'Hidden (zero stock)' : 'Active'}
         {isPotm ? ' · Product of the Month' : ''}
       </p>
+
+      <div className="mt-6 flex items-center gap-4">
+        {imageUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={imageUrl} alt={product.name} className="h-16 w-16 object-cover border border-zinc-800 bg-zinc-900" />
+        ) : (
+          <div className="flex h-16 w-16 items-center justify-center border border-zinc-800 bg-zinc-900 text-[9px] uppercase tracking-[0.16em] text-zinc-600">
+            No image
+          </div>
+        )}
+        {out ? (
+          <p className="text-xs text-zinc-500">Quantity is 0{product.hideWhenZero ? ' · hide-when-zero is on' : ''}.</p>
+        ) : low ? (
+          <p className="text-xs text-zinc-500">Low stock — {LOW_STOCK_THRESHOLD} or fewer remaining.</p>
+        ) : null}
+      </div>
 
       {query.error === 'invalid' ? (
         <p className="mt-6 text-sm text-zinc-400" role="alert">
           Check the fields and try again.
+        </p>
+      ) : null}
+      {query.error === 'duplicate' ? (
+        <p className="mt-6 text-sm text-zinc-400" role="alert">
+          That slug is already in use.
         </p>
       ) : null}
       {query.error === 'db' ? (
@@ -83,72 +109,14 @@ export default async function AdminProductEditPage({
         </p>
       ) : null}
 
-      <form action={updateProduct} className="mt-10 max-w-xl space-y-6">
+      <form action={updateProduct} className="mt-10 max-w-3xl space-y-10">
         <input type="hidden" name="id" value={product.id} />
-
-        <label className="block">
-          <span className={labelClass}>Name</span>
-          <input className={fieldClass} name="name" defaultValue={product.name} required />
-        </label>
-
-        <div>
-          <span className={labelClass}>Slug</span>
-          <p className="border border-zinc-800 bg-zinc-900 px-4 py-3 text-sm text-zinc-400">
-            {product.slug || product.id}
-          </p>
-        </div>
-
-        <label className="block">
-          <span className={labelClass}>Price</span>
-          <input
-            className={fieldClass}
-            name="price"
-            type="number"
-            min="0"
-            step="0.01"
-            defaultValue={product.price}
-            required
-          />
-        </label>
-
-        <label className="block">
-          <span className={labelClass}>Quantity</span>
-          <input
-            className={fieldClass}
-            name="quantity"
-            type="number"
-            min="0"
-            step="1"
-            defaultValue={quantity ?? ''}
-          />
-          {out ? (
-            <p className="mt-2 text-xs text-zinc-500">Quantity is 0. Archive to hide it from the shop.</p>
-          ) : low ? (
-            <p className="mt-2 text-xs text-zinc-500">Low stock — {LOW_STOCK_THRESHOLD} or fewer remaining.</p>
-          ) : null}
-        </label>
-
-        <label className="block">
-          <span className={labelClass}>Category</span>
-          <select className={fieldClass} name="category" defaultValue={product.category}>
-            {productCategories().map((category) => (
-              <option key={category} value={category}>
-                {category}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        <label className="block">
-          <span className={labelClass}>Short description</span>
-          <textarea
-            className={`${fieldClass} min-h-28`}
-            name="shortEditorial"
-            defaultValue={product.shortEditorial || ''}
-            rows={4}
-          />
-        </label>
-
+        <ProductEditorFields
+          product={product}
+          categories={productCategories()}
+          fulfillmentTypes={fulfillmentTypeOptions()}
+          vendorTypes={vendorTypeOptions()}
+        />
         <button
           type="submit"
           className="bg-zinc-100 px-6 py-3 text-[11px] font-medium uppercase tracking-[0.24em] text-zinc-950 hover:bg-zinc-200"

@@ -13,14 +13,26 @@ import {
 import { resolveAdminPassword } from '@/lib/admin-password.server'
 import {
   findAdminProductBySlug,
+  fulfillmentTypeOptions,
+  GALLERY_SLOT_COUNT,
   getAdminProduct,
   inventoryStatusFromQuantity,
   isArchived,
   makeProductSlug,
+  normalizeAttributes,
+  normalizeImages,
   productCategories,
+  quantityOf,
+  vendorTypeOptions,
 } from '@/lib/admin-catalog'
 import { getRoom23Db } from '@/lib/admin-db'
-import { buildOrderStatusUpdate, getAdminOrder, isOrderStatus } from '@/lib/admin-orders'
+import {
+  buildOrderStatusUpdate,
+  getAdminOrder,
+  isOrderStatus,
+  nextQuantityAfterDecrement,
+  shouldDecrementInventory,
+} from '@/lib/admin-orders'
 import { sendOrderConfirmation } from '@/lib/email/order-confirmation'
 
 async function requireAdmin() {
@@ -39,6 +51,8 @@ function revalidateAdmin() {
 }
 
 const CATEGORY_VALUES = new Set(productCategories())
+const FULFILLMENT_VALUES = new Set(fulfillmentTypeOptions())
+const VENDOR_VALUES = new Set(vendorTypeOptions())
 const RESERVED_SLUGS = new Set(['new', 'admin', 'shop', 'api', 'products', 'collections'])
 
 function fromList(formData: FormData) {
@@ -81,6 +95,160 @@ function visibilityFields(hidden: boolean) {
   }
 }
 
+function parseFlag(formData: FormData, name: string) {
+  const raw = String(formData.get(name) || '').trim().toLowerCase()
+  return raw === 'on' || raw === '1' || raw === 'true'
+}
+
+function parseText(formData: FormData, name: string) {
+  return String(formData.get(name) || '').trim()
+}
+
+function parseGallery(formData: FormData) {
+  const slots = []
+  for (let index = 0; index < GALLERY_SLOT_COUNT; index += 1) {
+    slots.push({
+      url: parseText(formData, `imageUrl${index}`),
+      alt: parseText(formData, `imageAlt${index}`),
+    })
+  }
+  return normalizeImages(slots)
+}
+
+function parseProductFields(formData: FormData, requiredQuantity: boolean) {
+  const name = parseText(formData, 'name')
+  const slugInput = parseText(formData, 'slug')
+  const slug = makeProductSlug(name, slugInput)
+  const price = parsePrice(formData)
+  const quantity = parseQuantity(formData, requiredQuantity)
+  const category = parseText(formData, 'category')
+  const collection = parseText(formData, 'collection') || category
+  const badge = parseText(formData, 'badge')
+  const tagline = parseText(formData, 'tagline')
+  const shortEditorial = parseText(formData, 'shortEditorial')
+  const description = parseText(formData, 'description')
+  const ingredients = parseText(formData, 'ingredients')
+  const directions = parseText(formData, 'directions')
+  const compatibility = parseText(formData, 'compatibility')
+  const care = parseText(formData, 'care')
+  const discretionNotes = parseText(formData, 'discretionNotes')
+  const attributes = normalizeAttributes(parseText(formData, 'attributes'))
+  const fulfillmentType = parseText(formData, 'fulfillmentType')
+  const vendorType = parseText(formData, 'vendorType')
+  const image = parseText(formData, 'image')
+  const images = parseGallery(formData)
+  const hidden = parseHidden(formData)
+  const hideWhenZero = parseFlag(formData, 'hideWhenZero')
+  const isFeatured = parseFlag(formData, 'isFeatured')
+  const isProductOfTheMonth = parseFlag(formData, 'isProductOfTheMonth')
+
+  return {
+    name,
+    slug,
+    price,
+    quantity,
+    category,
+    collection,
+    badge,
+    tagline,
+    shortEditorial,
+    description,
+    ingredients,
+    directions,
+    compatibility,
+    care,
+    discretionNotes,
+    attributes,
+    fulfillmentType,
+    vendorType,
+    image: image || images[0]?.url || '',
+    images,
+    hidden,
+    hideWhenZero,
+    isFeatured,
+    isProductOfTheMonth,
+  }
+}
+
+function editorialFields(fields: ReturnType<typeof parseProductFields>) {
+  return {
+    collection: fields.collection,
+    badge: fields.badge,
+    tagline: fields.tagline,
+    shortEditorial: fields.shortEditorial,
+    description: fields.description,
+    ingredients: fields.ingredients,
+    directions: fields.directions,
+    compatibility: fields.compatibility,
+    care: fields.care,
+    discretionNotes: fields.discretionNotes,
+    attributes: fields.attributes,
+    fulfillmentType: fields.fulfillmentType,
+    vendorType: fields.vendorType,
+    image: fields.image,
+    images: fields.images,
+    gallery: fields.images,
+    hideWhenZero: fields.hideWhenZero,
+    isFeatured: fields.isProductOfTheMonth ? true : fields.isFeatured,
+  }
+}
+
+function fieldsAreValid(fields: ReturnType<typeof parseProductFields>, requireQuantity: boolean) {
+  if (!fields.name || !fields.slug || RESERVED_SLUGS.has(fields.slug) || fields.price == null) return false
+  if (requireQuantity && fields.quantity == null) return false
+  if (fields.quantity === null) return false
+  if (!CATEGORY_VALUES.has(fields.category)) return false
+  if (!FULFILLMENT_VALUES.has(fields.fulfillmentType)) return false
+  if (!VENDOR_VALUES.has(fields.vendorType)) return false
+  return true
+}
+
+async function applyExclusiveProductOfTheMonth(id: string) {
+  const db = await getRoom23Db()
+  if (!db) return
+  await db.collection('products').updateMany({}, { $set: { isProductOfTheMonth: false, isFeatured: false } })
+  await db.collection('products').updateOne({ id }, { $set: { isProductOfTheMonth: true, isFeatured: true } })
+}
+
+async function decrementInventoryForOrder(order: { orderId: string; items?: Array<{ id?: string; qty?: number }> }) {
+  const db = await getRoom23Db()
+  if (!db) return
+
+  const items = Array.isArray(order.items) ? order.items : []
+  for (const item of items) {
+    const id = String(item?.id || '').trim()
+    if (!id) continue
+    const product = await getAdminProduct(id)
+    if (!product) continue
+    const nextQuantity = nextQuantityAfterDecrement(quantityOf(product), Number(item.qty) || 1)
+    if (nextQuantity == null) continue
+
+    await db.collection('products').updateOne(
+      { id },
+      {
+        $set: {
+          id,
+          quantity: nextQuantity,
+          inventoryStatus: inventoryStatusFromQuantity(nextQuantity, product.inventoryStatus),
+          updatedAt: new Date(),
+        },
+        $setOnInsert: {
+          name: product.name,
+          slug: product.slug || id,
+          price: product.price,
+          category: product.category,
+          ...visibilityFields(isArchived(product)),
+          isProductOfTheMonth: Boolean(product.isProductOfTheMonth),
+          isFeatured: Boolean(product.isFeatured),
+          createdAt: new Date(),
+        },
+      },
+      { upsert: true },
+    )
+    revalidatePath(`/admin/products/${id}`)
+  }
+}
+
 export async function loginAdmin(formData: FormData) {
   const password = String(formData.get('password') || '')
   const expected = await resolveAdminPassword()
@@ -110,20 +278,16 @@ export async function logoutAdmin() {
 export async function createProduct(formData: FormData) {
   await requireAdmin()
 
-  const name = String(formData.get('name') || '').trim()
-  const slug = makeProductSlug(name, String(formData.get('slug') || ''))
-  const price = parsePrice(formData)
-  const quantity = parseQuantity(formData, true)
-  const category = String(formData.get('category') || '').trim()
-  const shortEditorial = String(formData.get('shortEditorial') || '').trim()
-  const hidden = parseHidden(formData)
-
-  if (!name || !slug || RESERVED_SLUGS.has(slug) || price == null || quantity == null || !CATEGORY_VALUES.has(category)) {
+  const fields = parseProductFields(formData, true)
+  if (!fieldsAreValid(fields, true)) {
     redirect('/admin/products/new?error=invalid')
   }
+  if (fields.hidden && fields.isProductOfTheMonth) {
+    redirect('/admin/products/new?error=archived')
+  }
 
-  const existing = await findAdminProductBySlug(slug)
-  if (existing || (await getAdminProduct(slug))) {
+  const existing = await findAdminProductBySlug(fields.slug)
+  if (existing || (await getAdminProduct(fields.slug))) {
     redirect('/admin/products/new?error=duplicate')
   }
 
@@ -132,26 +296,28 @@ export async function createProduct(formData: FormData) {
 
   const now = new Date()
   await db.collection('products').insertOne({
-    id: slug,
-    slug,
-    name,
-    price,
-    quantity,
-    category,
-    collection: category,
-    shortEditorial,
-    inventoryStatus: inventoryStatusFromQuantity(quantity),
-    ...visibilityFields(hidden),
+    id: fields.slug,
+    slug: fields.slug,
+    name: fields.name,
+    price: fields.price,
+    quantity: fields.quantity,
+    category: fields.category,
+    inventoryStatus: inventoryStatusFromQuantity(fields.quantity),
+    ...visibilityFields(fields.hidden),
+    ...editorialFields(fields),
     isProductOfTheMonth: false,
-    isFeatured: false,
     source: 'custom',
     createdAt: now,
     updatedAt: now,
   })
 
+  if (fields.isProductOfTheMonth) {
+    await applyExclusiveProductOfTheMonth(fields.slug)
+  }
+
   revalidateAdmin()
-  revalidatePath(`/admin/products/${slug}`)
-  redirect(`/admin/products/${encodeURIComponent(slug)}?saved=1`)
+  revalidatePath(`/admin/products/${fields.slug}`)
+  redirect(`/admin/products/${encodeURIComponent(fields.slug)}?saved=1`)
 }
 
 export async function updateProduct(formData: FormData) {
@@ -161,17 +327,20 @@ export async function updateProduct(formData: FormData) {
   const product = await getAdminProduct(id)
   if (!product) redirect('/admin/products?error=missing')
 
-  const name = String(formData.get('name') || '').trim()
-  const price = parsePrice(formData)
-  const quantity = parseQuantity(formData, false)
-  const category = String(formData.get('category') || '').trim()
-  const shortEditorial = String(formData.get('shortEditorial') || '').trim()
-
-  if (!name || price == null || !CATEGORY_VALUES.has(category) || quantity === null) {
+  const fields = parseProductFields(formData, true)
+  if (!fieldsAreValid(fields, true)) {
     redirectProduct(formData, id, 'error=invalid')
   }
+  if (fields.hidden && fields.isProductOfTheMonth) {
+    redirectProduct(formData, id, 'error=archived')
+  }
 
-  const nextQuantity = quantity === undefined ? product.quantity ?? null : quantity
+  const slugOwner = await findAdminProductBySlug(fields.slug)
+  if (slugOwner && slugOwner.id !== id) {
+    redirectProduct(formData, id, 'error=duplicate')
+  }
+
+  const nextQuantity = fields.quantity
   const db = await getRoom23Db()
   if (!db) redirectProduct(formData, id, 'error=db')
 
@@ -180,25 +349,28 @@ export async function updateProduct(formData: FormData) {
     {
       $set: {
         id,
-        slug: product.slug || id,
-        name,
-        price,
+        slug: fields.slug || product.slug || id,
+        name: fields.name,
+        price: fields.price,
         quantity: nextQuantity,
         inventoryStatus: inventoryStatusFromQuantity(nextQuantity, product.inventoryStatus),
-        category,
-        shortEditorial,
+        category: fields.category,
         source: product.source || undefined,
+        ...visibilityFields(fields.hidden),
+        ...editorialFields(fields),
+        isProductOfTheMonth: fields.isProductOfTheMonth,
         updatedAt: new Date(),
       },
       $setOnInsert: {
-        ...visibilityFields(Boolean(product.hidden)),
-        isProductOfTheMonth: false,
-        isFeatured: false,
         createdAt: new Date(),
       },
     },
     { upsert: true },
   )
+
+  if (fields.isProductOfTheMonth) {
+    await applyExclusiveProductOfTheMonth(id)
+  }
 
   revalidateAdmin()
   revalidatePath(`/admin/products/${id}`)
@@ -397,10 +569,23 @@ export async function updateOrderStatus(formData: FormData) {
   const db = await getRoom23Db()
   if (!db) redirectOrder(order.orderId, 'error=db')
 
-  await db.collection('orders').updateOne({ orderId: order.orderId }, { $set: buildOrderStatusUpdate(status) })
+  const decrement = shouldDecrementInventory(order, status)
+  if (decrement) {
+    await decrementInventoryForOrder(order)
+  }
+
+  await db.collection('orders').updateOne(
+    { orderId: order.orderId },
+    {
+      $set: {
+        ...buildOrderStatusUpdate(status),
+        ...(decrement ? { inventoryDecremented: true } : {}),
+      },
+    },
+  )
 
   revalidateOrder(order.orderId)
-  redirectOrder(order.orderId, 'saved=status')
+  redirectOrder(order.orderId, decrement ? 'saved=status&inventory=1' : 'saved=status')
 }
 
 export async function updateOrderNotes(formData: FormData) {

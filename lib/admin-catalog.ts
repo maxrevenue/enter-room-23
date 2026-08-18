@@ -1,15 +1,17 @@
 import { FULFILLMENT_TYPES, VENDOR_TYPES } from '@/lib/fulfillment'
 import { INVENTORY_STATUS } from '@/lib/inventory'
 import { PRODUCTS, PRODUCT_OF_THE_MONTH_ID, getAllCategories, isNewArrival, slugify } from '@/lib/products'
-import { getRoom23Db, PRODUCT_OVERLAY_FIELDS, type ProductDoc } from '@/lib/admin-db'
+import { getRoom23Db, PRODUCT_OVERLAY_FIELDS, type ProductDoc, type ProductImage } from '@/lib/admin-db'
 
 export const LOW_STOCK_THRESHOLD = 5
+export const GALLERY_SLOT_COUNT = 4
 
 export type CatalogProduct = (typeof PRODUCTS)[number] & {
   quantity?: number | null
   hidden?: boolean
   active?: boolean
   archived?: boolean
+  hideWhenZero?: boolean
   isProductOfTheMonth?: boolean
   isFeatured?: boolean
   source?: string
@@ -28,6 +30,14 @@ export function productCategories() {
   return getAllCategories().filter((category) => category !== 'all')
 }
 
+export function fulfillmentTypeOptions() {
+  return Object.values(FULFILLMENT_TYPES) as string[]
+}
+
+export function vendorTypeOptions() {
+  return Object.values(VENDOR_TYPES) as string[]
+}
+
 export function quantityOf(product: { quantity?: number | null }): number | null {
   if (typeof product.quantity !== 'number' || !Number.isFinite(product.quantity)) return null
   return Math.max(0, Math.floor(product.quantity))
@@ -40,6 +50,14 @@ export function isArchived(product: CatalogProduct) {
 export function isLowStock(product: CatalogProduct) {
   const quantity = quantityOf(product)
   return quantity != null && quantity > 0 && quantity <= LOW_STOCK_THRESHOLD
+}
+
+export function isHiddenByZeroStock(product: CatalogProduct) {
+  return Boolean(product.hideWhenZero) && quantityOf(product) === 0
+}
+
+export function isStorefrontVisible(product: CatalogProduct) {
+  return !isArchived(product) && !isHiddenByZeroStock(product)
 }
 
 export function inventoryStatusFromQuantity(
@@ -55,15 +73,64 @@ export function makeProductSlug(name: string, slug?: string) {
   return slugify(String(slug || name || '').trim())
 }
 
+export function normalizeAttributes(value: unknown): string[] {
+  if (Array.isArray(value)) {
+    return value.map((entry) => String(entry || '').trim()).filter(Boolean)
+  }
+  return String(value || '')
+    .split(/[\n,]+/)
+    .map((entry) => entry.trim())
+    .filter(Boolean)
+}
+
+export function normalizeImages(value: unknown): ProductImage[] {
+  if (!Array.isArray(value)) return []
+  const images: ProductImage[] = []
+  for (const entry of value) {
+    if (typeof entry === 'string') {
+      const url = entry.trim()
+      if (url) images.push({ url, alt: '' })
+      continue
+    }
+    if (!entry || typeof entry !== 'object') continue
+    const record = entry as { url?: unknown; alt?: unknown }
+    const url = String(record.url || '').trim()
+    if (!url) continue
+    images.push({ url, alt: String(record.alt || '').trim() })
+  }
+  return images
+}
+
+export function productImageUrl(product: CatalogProduct) {
+  const primary = typeof product.image === 'string' ? product.image.trim() : ''
+  if (primary) return primary
+  const fromImages = normalizeImages(product.images)
+  if (fromImages[0]?.url) return fromImages[0].url
+  const fromGallery = normalizeImages(product.gallery)
+  return fromGallery[0]?.url || ''
+}
+
+export function gallerySlots(product?: CatalogProduct | null): ProductImage[] {
+  const images = normalizeImages(product?.images?.length ? product.images : product?.gallery)
+  return Array.from({ length: GALLERY_SLOT_COUNT }, (_, index) => images[index] || { url: '', alt: '' })
+}
+
 function applyInventory(product: CatalogProduct): CatalogProduct {
   const quantity = quantityOf(product)
   const archived = isArchived(product)
+  const images = normalizeImages(product.images?.length ? product.images : product.gallery)
+  const image = productImageUrl({ ...product, images })
   return {
     ...product,
     quantity,
     hidden: archived,
     active: !archived,
     archived,
+    hideWhenZero: Boolean(product.hideWhenZero),
+    attributes: normalizeAttributes(product.attributes),
+    images,
+    gallery: images,
+    image,
     inventoryStatus: inventoryStatusFromQuantity(quantity, product.inventoryStatus),
   }
 }
@@ -77,7 +144,16 @@ function buildCustomProduct(doc: ProductDoc): CatalogProduct | null {
   const quantity = quantityOf({ quantity: typeof doc.quantity === 'number' ? doc.quantity : null })
   const category = typeof doc.category === 'string' && doc.category ? doc.category : 'essentials'
   const shortEditorial = typeof doc.shortEditorial === 'string' ? doc.shortEditorial : ''
+  const tagline = typeof doc.tagline === 'string' ? doc.tagline : shortEditorial
+  const description = typeof doc.description === 'string' ? doc.description : shortEditorial
   const slug = typeof doc.slug === 'string' && doc.slug ? doc.slug : makeProductSlug(name, id)
+  const images = normalizeImages(doc.images?.length ? doc.images : doc.gallery)
+  const fulfillmentType = fulfillmentTypeOptions().includes(String(doc.fulfillmentType))
+    ? String(doc.fulfillmentType)
+    : FULFILLMENT_TYPES.ROOM23_STOCK
+  const vendorType = vendorTypeOptions().includes(String(doc.vendorType))
+    ? String(doc.vendorType)
+    : VENDOR_TYPES.ROOM23_STOCK
 
   return applyInventory({
     id,
@@ -87,26 +163,32 @@ function buildCustomProduct(doc: ProductDoc): CatalogProduct | null {
     quantity,
     category,
     collection: doc.collection || category,
+    badge: typeof doc.badge === 'string' ? doc.badge : undefined,
     shortEditorial,
-    description: shortEditorial,
-    tagline: shortEditorial,
-    image: typeof doc.image === 'string' ? doc.image : '',
-    images: [],
-    gallery: [],
+    description,
+    tagline,
+    ingredients: typeof doc.ingredients === 'string' ? doc.ingredients : '',
+    directions: typeof doc.directions === 'string' ? doc.directions : '',
+    compatibility: typeof doc.compatibility === 'string' ? doc.compatibility : '',
+    care: typeof doc.care === 'string' ? doc.care : '',
+    discretionNotes: typeof doc.discretionNotes === 'string' ? doc.discretionNotes : '',
+    attributes: normalizeAttributes(doc.attributes),
+    image: typeof doc.image === 'string' ? doc.image : images[0]?.url || '',
+    images,
+    gallery: images,
     variants: [],
     relatedSlugs: [],
-    attributes: [],
     filters: {},
-    fulfillmentType: FULFILLMENT_TYPES.ROOM23_STOCK,
-    vendorType: VENDOR_TYPES.ROOM23_STOCK,
+    fulfillmentType,
+    vendorType,
     inventoryStatus: inventoryStatusFromQuantity(quantity),
     hidden: Boolean(doc.hidden),
     active: doc.active !== false && !doc.hidden && !doc.archived,
     archived: Boolean(doc.archived || doc.hidden || doc.active === false),
+    hideWhenZero: Boolean(doc.hideWhenZero),
     isProductOfTheMonth: Boolean(doc.isProductOfTheMonth),
     isFeatured: Boolean(doc.isFeatured),
     source: 'custom',
-    badge: undefined,
   } as CatalogProduct)
 }
 
@@ -135,6 +217,7 @@ export async function listAdminProducts(): Promise<CatalogProduct[]> {
       hidden: false,
       active: true,
       archived: false,
+      hideWhenZero: false,
       isProductOfTheMonth: false,
       isFeatured: false,
       quantity: null,
@@ -170,7 +253,7 @@ export async function findAdminProductBySlug(slug: string): Promise<CatalogProdu
 
 export async function listStorefrontProducts(): Promise<CatalogProduct[]> {
   const products = await listAdminProducts()
-  return products.filter((product) => !isArchived(product))
+  return products.filter(isStorefrontVisible)
 }
 
 export async function getStorefrontProductById(id: string): Promise<CatalogProduct | null> {
@@ -206,7 +289,7 @@ export async function listStorefrontProductsByCollection(slug: string): Promise<
 export async function getResolvedProductOfTheMonth(): Promise<CatalogProduct | null> {
   const products = await listAdminProducts()
   const flagged = products.find(
-    (product) => !isArchived(product) && (product.isProductOfTheMonth || product.isFeatured),
+    (product) => isStorefrontVisible(product) && (product.isProductOfTheMonth || product.isFeatured),
   )
   if (flagged) return flagged
 
@@ -218,7 +301,7 @@ export async function getResolvedProductOfTheMonth(): Promise<CatalogProduct | n
     if (overlayCount > 0) return null
   }
 
-  return products.find((product) => !isArchived(product) && product.id === PRODUCT_OF_THE_MONTH_ID) || null
+  return products.find((product) => isStorefrontVisible(product) && product.id === PRODUCT_OF_THE_MONTH_ID) || null
 }
 
 export async function countLowStockProducts(): Promise<number> {
