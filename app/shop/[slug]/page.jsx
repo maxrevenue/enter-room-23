@@ -1,4 +1,4 @@
-import { redirect } from 'next/navigation'
+import { permanentRedirect } from 'next/navigation'
 import { getProductBySlug, productHref } from '@/lib/products'
 
 export const dynamic = 'force-dynamic'
@@ -8,7 +8,7 @@ export default async function ShopSlugRedirect({ params }) {
   const slug = resolved?.slug
   const product = getProductBySlug(slug)
   if (product) {
-    redirect(productHref(product))
+    permanentRedirect(productHref(product))
   }
-  redirect('/shop')
+  permanentRedirect('/shop')
 }

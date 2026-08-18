@@ -51,12 +51,12 @@ function AgeGateHuman() {
         aria-describedby="age-gate-body"
         className="mx-4 w-full max-w-md border border-theme-border bg-theme-surface p-8 text-center shadow-2xl"
       >
-        <h1
+        <p
           id="age-gate-title"
           className="mb-2 font-serif text-2xl tracking-[0.25em] text-theme-text"
         >
           ROOM 23
-        </h1>
+        </p>
         <h2 className="mb-5 text-xs font-semibold tracking-[0.2em] text-theme-accent">
           AGE VERIFICATION REQUIRED
         </h2>

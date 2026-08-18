@@ -49,10 +49,10 @@ export default function ProductOfTheMonth({ productId, offer = null }: ProductOf
                   <Image
                     src={imageSrc}
                     alt={imageAlt}
-                    fill
-                    sizes="(min-width: 1024px) 42vw, 92vw"
+                    width={800}
+                    height={1000}
                     unoptimized
-                    className="object-contain"
+                    className="absolute inset-0 object-contain"
                   />
                 </div>
               </Link>

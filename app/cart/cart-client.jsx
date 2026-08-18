@@ -49,10 +49,10 @@ export default function CartPageClient() {
                   <Image
                     src={item.image}
                     alt=""
-                    fill
-                    sizes="80px"
+                    width={80}
+                    height={96}
                     unoptimized
-                    className="object-cover"
+                    className="absolute inset-0 h-full w-full object-cover"
                   />
                 ) : null}
               </div>

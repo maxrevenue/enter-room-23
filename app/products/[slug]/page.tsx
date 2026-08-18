@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
-import { notFound } from 'next/navigation'
+import { notFound, permanentRedirect } from 'next/navigation'
 import ProductAddToCart from '@/components/product-add-to-cart'
 import ProductCard from '@/components/product-card'
 import { SITE_CONFIG } from '@/config/site'
@@ -27,13 +27,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params
   const product = getProductBySlug(slug)
   if (!product) return { title: 'Product' }
+  if (slug !== product.slug) {
+    permanentRedirect(`/products/${product.slug}`)
+  }
   const description = [product.shortEditorial, product.description]
     .filter(Boolean)
     .join(' ')
     .replace(/\s+/g, ' ')
     .trim()
   return {
-    title: `${product.name} - Adult Wellness`,
+    title: product.name,
     description:
       description.length > 155 ? `${description.slice(0, 154).replace(/\s+\S*$/, '')}…` : description,
     alternates: { canonical: `/products/${product.slug}` },
@@ -54,6 +57,10 @@ export default async function ProductPage({ params, searchParams }: PageProps) {
   const { image } = await searchParams
   const product = getProductBySlug(slug)
   if (!product) notFound()
+  if (slug !== product.slug) {
+    const imageQuery = image && image !== '0' ? `?image=${encodeURIComponent(image)}` : ''
+    permanentRedirect(`/products/${product.slug}${imageQuery}`)
+  }
 
   const gallery = product.images?.length
     ? product.images
@@ -106,11 +113,11 @@ export default async function ProductPage({ params, searchParams }: PageProps) {
               <Image
                 src={hero.url}
                 alt={hero.alt || product.name}
-                fill
-                sizes="(min-width: 1024px) 50vw, 100vw"
+                width={800}
+                height={1000}
                 unoptimized
                 priority
-                className="object-cover"
+                className="absolute inset-0 h-full w-full object-cover"
               />
             </div>
 
@@ -132,10 +139,10 @@ export default async function ProductPage({ params, searchParams }: PageProps) {
                         <Image
                           src={thumb.url}
                           alt={thumb.alt || product.name}
-                          fill
-                          sizes="80px"
+                          width={160}
+                          height={200}
                           unoptimized
-                          className="object-cover"
+                          className="absolute inset-0 h-full w-full object-cover"
                         />
                       </Link>
                     </li>

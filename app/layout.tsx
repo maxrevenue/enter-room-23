@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react'
-import Script from 'next/script'
 import { Inter, Syne, Cormorant_Garamond } from 'next/font/google'
 import { CartProvider } from '@/lib/cart-context'
 import SiteShell from '@/components/site-shell'
@@ -86,11 +85,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       suppressHydrationWarning
     >
       <body>
-        <Script
-          id="theme-init"
-          strategy="beforeInteractive"
-          dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }}
-        />
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
         <AgeGate />
         <a href="#main-content" className="skip-to-content" aria-label="Skip to main content">
           Skip to content

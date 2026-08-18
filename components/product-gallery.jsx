@@ -15,10 +15,10 @@ export default function ProductGallery({ product }) {
         <Image
           src={hero.url}
           alt={hero.alt || product.name}
-          fill
-          sizes="(min-width: 1024px) 50vw, 100vw"
+          width={800}
+          height={1000}
           unoptimized
-          className="object-cover"
+          className="absolute inset-0 h-full w-full object-cover"
         />
       </AspectRatio>
       {images.length > 1 && (
@@ -36,10 +36,10 @@ export default function ProductGallery({ product }) {
                 <Image
                   src={thumb.url}
                   alt={thumb.alt || ''}
-                  fill
-                  sizes="25vw"
+                  width={400}
+                  height={500}
                   unoptimized
-                  className="object-cover"
+                  className="absolute inset-0 h-full w-full object-cover"
                 />
               </AspectRatio>
             </button>

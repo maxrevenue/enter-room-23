@@ -4,6 +4,7 @@ const rootDir = path.resolve(__dirname);
 
 const nextConfig = {
   outputFileTracingRoot: rootDir,
+  htmlLimitedBots: /.*/,
   images: {
     unoptimized: true,
     remotePatterns: [

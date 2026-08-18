@@ -27,10 +27,10 @@ export default function ProductCard({ product }) {
             <Image
               src={imageSrc}
               alt={imageAlt}
-              fill
-              sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+              width={800}
+              height={1000}
               unoptimized
-              className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+              className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
             />
           ) : (
             <div className="flex h-full w-full flex-col items-center justify-center bg-theme-bg">

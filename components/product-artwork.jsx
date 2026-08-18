@@ -20,10 +20,10 @@ export default function ProductArtwork({
         <Image
           src={src}
           alt={alt || product?.gallery?.[0]?.alt || label}
-          fill
-          sizes="(min-width: 640px) 20rem, 100vw"
+          width={800}
+          height={800}
           unoptimized
-          className="object-cover"
+          className="absolute inset-0 h-full w-full object-cover"
         />
       </div>
     )

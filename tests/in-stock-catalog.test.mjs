@@ -21,10 +21,10 @@ const STOCK_SKUS = [
 const PRIMARY_IMAGES = {
   'skins-delay': 'public/images/products/skins-delay/packshot.jpg',
   'cg-oh-my': 'public/images/products/cg-oh-my/packshot.webp',
-  'heli-lavender-mist': 'public/images/products/heli-lavender-mist/bottle.png',
-  'arlo-atlas-oil': 'public/images/products/arlo-atlas-oil/packshot.png',
-  'pr-secret-garden-mist': 'public/images/products/pr-secret-garden-mist/packshot.png',
-  'pr-dirty-french-gel': 'public/images/products/pr-dirty-french-gel/packshot.png',
+  'heli-lavender-mist': 'public/images/products/heli-lavender-mist/bottle.jpg',
+  'arlo-atlas-oil': 'public/images/products/arlo-atlas-oil/packshot.jpg',
+  'pr-secret-garden-mist': 'public/images/products/pr-secret-garden-mist/packshot.jpg',
+  'pr-dirty-french-gel': 'public/images/products/pr-dirty-french-gel/packshot.jpg',
   'cg-pole-polish': 'public/images/products/cg-pole-polish/packshot.jpg',
   'cake-stroker': 'public/images/products/cake-stroker/02-product-only.jpg',
 }
