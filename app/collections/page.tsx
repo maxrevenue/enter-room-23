@@ -1,42 +1,49 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { COLLECTIONS } from '@/lib/products'
+import { COLLECTIONS, getProductsByCollection } from '@/lib/products'
 
 export const metadata: Metadata = {
   title: 'Collections | Room 23',
-  description: 'Essentials and new arrivals from Room 23.',
+  description: 'Essentials, wellness, body, toys, and new arrivals from Room 23.',
 }
 
-const VISIBLE_COLLECTIONS = ['essentials', 'new-arrivals'] as const
-
 export default function CollectionsPage() {
+  const collections = Object.entries(COLLECTIONS).map(([slug, collection]) => ({
+    slug,
+    href: `/collections/${slug}`,
+    title: collection.title,
+    subtitle: collection.subtitle,
+    count: getProductsByCollection(slug).length,
+  }))
+
   return (
-    <main className="min-h-screen bg-theme-bg px-6 py-20 text-theme-text">
+    <main className="min-h-screen bg-theme-bg px-5 py-16 text-theme-text sm:px-8 sm:py-20">
       <header className="mx-auto max-w-3xl text-center">
-        <p className="text-[10px] font-medium uppercase tracking-[0.28em] text-theme-muted">The edit</p>
-        <h1 className="mt-4 font-serif text-3xl uppercase tracking-[0.22em] text-theme-text md:text-4xl">
-          Collections
-        </h1>
-        <p className="mx-auto mt-6 max-w-md text-sm leading-relaxed text-theme-muted">
+        <p className="label-meta">The edit</p>
+        <h1 className="heading-md mt-4">Collections</h1>
+        <p className="body-sm mx-auto mt-6 max-w-md text-muted">
           Tightly held groupings. Nothing ornamental.
         </p>
       </header>
 
-      <ul className="mx-auto mt-16 grid max-w-4xl grid-cols-1 gap-6 md:grid-cols-2">
-        {VISIBLE_COLLECTIONS.map((slug) => {
-          const collection = COLLECTIONS[slug]
-          return (
-            <li key={slug}>
-              <Link
-                href={`/collections/${slug}`}
-                className="block border border-theme-border bg-theme-surface p-8 transition-colors hover:border-theme-text/30"
-              >
-                <h2 className="font-serif text-lg tracking-[0.12em] text-theme-text">{collection.title}</h2>
-                <p className="mt-3 text-sm leading-relaxed text-theme-muted">{collection.subtitle}</p>
-              </Link>
-            </li>
-          )
-        })}
+      <ul className="mx-auto mt-14 grid max-w-6xl grid-cols-1 gap-4 sm:mt-16 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
+        {collections.map((collection) => (
+          <li key={collection.slug}>
+            <Link
+              href={collection.href}
+              className="surface-card group flex h-full min-h-[12.5rem] flex-col justify-between"
+            >
+              <span className="label-meta">
+                {String(collection.count).padStart(2, '0')}{' '}
+                {collection.count === 1 ? 'piece' : 'pieces'}
+              </span>
+              <span className="mt-10 block">
+                <span className="heading-sm block">{collection.title}</span>
+                <span className="body-sm mt-3 block text-muted">{collection.subtitle}</span>
+              </span>
+            </Link>
+          </li>
+        ))}
       </ul>
     </main>
   )

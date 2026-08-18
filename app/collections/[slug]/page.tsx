@@ -1,8 +1,13 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { AspectRatio } from '@/components/ui/aspect-ratio'
-import { COLLECTIONS, getProductsByCollection, productHref } from '@/lib/products'
+import ProductCard from '@/components/product-card'
+import {
+  COLLECTIONS,
+  getCollection,
+  getProductsByCollection,
+  titleFromSlug,
+} from '@/lib/products'
 
 type PageProps = { params: Promise<{ slug: string }> }
 
@@ -12,48 +17,46 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params
-  const meta = COLLECTIONS[slug]
+  const meta = getCollection(slug)
   if (!meta) return { title: 'Collection' }
   return { title: meta.title, description: meta.description }
 }
 
 export default async function CollectionPage({ params }: PageProps) {
   const { slug } = await params
-  const meta = COLLECTIONS[slug]
-  if (!meta) notFound()
-
   const products = getProductsByCollection(slug)
+  const meta = getCollection(slug)
+
+  if (!meta || (!COLLECTIONS[slug] && products.length === 0)) {
+    notFound()
+  }
+
+  const title = meta.title || titleFromSlug(slug)
+  const countLabel = `${String(products.length).padStart(2, '0')} ${
+    products.length === 1 ? 'piece' : 'pieces'
+  }`
 
   return (
     <main className="min-h-screen bg-theme-bg text-theme-text">
-      <section className="border-b border-theme-border px-6 py-20 text-center">
-        <h1 className="font-serif text-3xl tracking-tight md:text-4xl">{meta.title}</h1>
-        <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-theme-muted">{meta.subtitle}</p>
+      <section className="border-b border-theme-border px-5 py-16 text-center sm:px-8 sm:py-20 md:py-24">
+        <p className="label-meta">{countLabel}</p>
+        <h1 className="heading-md mt-5">{title}</h1>
+        <p className="body-sm mx-auto mt-5 max-w-xl text-muted">{meta.subtitle}</p>
       </section>
 
-      <section className="mx-auto max-w-6xl px-6 py-16">
+      <section className="mx-auto max-w-6xl px-5 py-16 sm:px-8 sm:py-20">
         {products.length === 0 ? (
-          <p className="text-center text-sm text-theme-muted">
-            Browse the{' '}
-            <Link href="/shop" className="text-theme-text/80 underline">
-              full shop
-            </Link>{' '}
-            while this grouping updates.
-          </p>
+          <div className="mx-auto max-w-md text-center">
+            <p className="body-sm text-muted">Browse the full shop for the current edit.</p>
+            <Link href="/shop" className="btn-secondary mt-8">
+              Shop the collection
+            </Link>
+          </div>
         ) : (
-          <ul className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="grid grid-cols-1 gap-x-8 gap-y-16 sm:grid-cols-2 sm:gap-y-20 lg:grid-cols-3">
             {products.map((product) => (
               <li key={product.id}>
-                <Link href={productHref(product)} className="group block border border-theme-border bg-theme-surface">
-                  <AspectRatio ratio={1}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={product.image} alt={product.name} className="h-full w-full object-cover" />
-                  </AspectRatio>
-                  <div className="p-5">
-                    <h2 className="font-serif text-base text-theme-text">{product.name}</h2>
-                    <p className="mt-2 text-sm text-theme-muted">${product.price.toFixed(2)}</p>
-                  </div>
-                </Link>
+                <ProductCard product={product} />
               </li>
             ))}
           </ul>

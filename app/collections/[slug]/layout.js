@@ -1,4 +1,4 @@
-import { COLLECTIONS } from '@/lib/products'
+import { COLLECTIONS, getCollection } from '@/lib/products'
 
 export function generateStaticParams() {
   return Object.keys(COLLECTIONS).map((slug) => ({ slug }))
@@ -6,11 +6,11 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }) {
   const { slug } = await params
-  const meta = COLLECTIONS[slug]
+  const meta = getCollection(slug)
   if (!meta) return { title: 'Collection' }
   return {
     title: meta.title,
-    description: meta.subtitle,
+    description: meta.description || meta.subtitle,
   }
 }
 
