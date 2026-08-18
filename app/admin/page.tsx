@@ -1,6 +1,7 @@
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { isAdminAuthenticated } from '@/lib/admin-auth'
+import { resolveAdminPassword } from '@/lib/admin-password.server'
 import { PRODUCTS, getProductOfTheMonth } from '@/lib/products'
 
 export const dynamic = 'force-dynamic'
@@ -30,7 +31,7 @@ async function countOpenOrders(): Promise<number> {
 }
 
 export default async function AdminDashboardPage() {
-  if (!(await isAdminAuthenticated(await cookies()))) {
+  if (!(await isAdminAuthenticated(await cookies(), await resolveAdminPassword()))) {
     redirect('/admin/login')
   }
 

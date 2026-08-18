@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { cookies } from 'next/headers'
 import { logoutAdmin } from '@/app/admin/actions'
 import { isAdminAuthenticated } from '@/lib/admin-auth'
+import { resolveAdminPassword } from '@/lib/admin-password.server'
 
 export const dynamic = 'force-dynamic'
 
@@ -28,7 +29,7 @@ const NAV = [
 ]
 
 export default async function AdminLayout({ children }: { children: ReactNode }) {
-  const authed = await isAdminAuthenticated(await cookies())
+  const authed = await isAdminAuthenticated(await cookies(), await resolveAdminPassword())
 
   return (
     <div id="main-content" className="fixed inset-0 z-[200] overflow-auto bg-zinc-950 text-zinc-100 antialiased">

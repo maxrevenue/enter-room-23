@@ -4,7 +4,8 @@
   "name": "room23-dark-theme",
   "compatibility_date": "2026-08-03",
   "compatibility_flags": [
-    "nodejs_compat"
+    "nodejs_compat",
+    "nodejs_compat_populate_process_env"
   ],
 
   "assets": {

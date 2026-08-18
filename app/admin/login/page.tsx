@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
-import { loginAdmin } from '@/app/admin/actions'
 import { isAdminAuthenticated } from '@/lib/admin-auth'
+import { resolveAdminPassword } from '@/lib/admin-password.server'
 
 export const dynamic = 'force-dynamic'
 
@@ -10,7 +10,7 @@ export default async function AdminLoginPage({
 }: {
   searchParams: Promise<{ error?: string }>
 }) {
-  if (await isAdminAuthenticated(await cookies())) {
+  if (await isAdminAuthenticated(await cookies(), await resolveAdminPassword())) {
     redirect('/admin')
   }
 
@@ -25,7 +25,7 @@ export default async function AdminLoginPage({
           Admin
         </h1>
 
-        <form action={loginAdmin} className="mt-10 space-y-6">
+        <form action="/api/admin/login" method="post" className="mt-10 space-y-6">
           <label className="block">
             <span className="mb-2 block text-[10px] font-medium uppercase tracking-[0.22em] text-zinc-500">
               Password

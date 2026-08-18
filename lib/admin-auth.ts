@@ -13,7 +13,14 @@ type CookieReader = {
 }
 
 export function getAdminPassword(): string {
-  return typeof process.env.ADMIN_PASSWORD === 'string' ? process.env.ADMIN_PASSWORD : ''
+  const key = 'ADMIN_PASSWORD'
+  const value = process.env[key]
+  return typeof value === 'string' ? value.trim() : ''
+}
+
+export function hasAdminSessionCookie(cookieStore: CookieReader): boolean {
+  const token = cookieStore.get(ADMIN_COOKIE_NAME)?.value
+  return typeof token === 'string' && /^[0-9a-f]{64}$/.test(token)
 }
 
 export function getAdminCookieOptions() {
@@ -71,15 +78,22 @@ export async function verifyAdminSessionToken(
   return timingSafeEqual(token, expected)
 }
 
-export async function verifyAdminPassword(input: string): Promise<boolean> {
-  const expected = getAdminPassword()
-  if (!expected || !input) return false
-  const [left, right] = await Promise.all([hmacHex(input, expected), hmacHex(expected, expected)])
+export async function verifyAdminPassword(
+  input: string,
+  expected = getAdminPassword(),
+): Promise<boolean> {
+  const password = input.trim()
+  const secret = expected.trim()
+  if (!secret || !password) return false
+  const [left, right] = await Promise.all([hmacHex(password, secret), hmacHex(secret, secret)])
   return timingSafeEqual(left, right)
 }
 
-export async function isAdminAuthenticated(cookieStore: CookieReader): Promise<boolean> {
-  return verifyAdminSessionToken(cookieStore.get(ADMIN_COOKIE_NAME)?.value)
+export async function isAdminAuthenticated(
+  cookieStore: CookieReader,
+  password = getAdminPassword(),
+): Promise<boolean> {
+  return verifyAdminSessionToken(cookieStore.get(ADMIN_COOKIE_NAME)?.value, password)
 }
 
 export function isAdminPath(pathname: string | null | undefined): boolean {

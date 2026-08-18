@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { isAdminAuthenticated, isAdminPath } from '@/lib/admin-auth'
+import { hasAdminSessionCookie, isAdminPath } from '@/lib/admin-auth'
 import { buildProductCanonicalRedirects } from '@/lib/product-canonical-redirects'
 
 /**
@@ -55,7 +55,7 @@ export async function middleware(request) {
   const adminRequest = isAdminPath(pathname)
 
   if (adminRequest) {
-    const authed = await isAdminAuthenticated(request.cookies)
+    const authed = hasAdminSessionCookie(request.cookies)
     const isLogin = pathname === '/admin/login'
 
     if (!authed && !isLogin) {

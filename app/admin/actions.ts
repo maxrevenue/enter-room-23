@@ -8,16 +8,18 @@ import {
   getAdminCookieOptions,
   verifyAdminPassword,
 } from '@/lib/admin-auth'
+import { resolveAdminPassword } from '@/lib/admin-password.server'
 
 export async function loginAdmin(formData: FormData) {
   const password = String(formData.get('password') || '')
-  const valid = await verifyAdminPassword(password)
+  const expected = await resolveAdminPassword()
+  const valid = await verifyAdminPassword(password, expected)
 
   if (!valid) {
     redirect('/admin/login?error=1')
   }
 
-  const token = await createAdminSessionToken()
+  const token = await createAdminSessionToken(expected)
   if (!token) {
     redirect('/admin/login?error=1')
   }
