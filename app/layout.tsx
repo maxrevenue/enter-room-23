@@ -1,10 +1,11 @@
 import type { ReactNode } from 'react'
-import { Inter, Syne } from 'next/font/google'
+import { Inter, Syne, Cormorant_Garamond } from 'next/font/google'
 import { CartProvider } from '@/lib/cart-context'
 import SiteShell from '@/components/site-shell'
 import AgeGate from '@/components/AgeGate'
 import DiscreetNewsletter from '@/components/DiscreetNewsletter'
 import ThemeSwitcher from '@/components/ThemeSwitcher'
+import { DEFAULT_PALETTE, THEME_INIT_SCRIPT } from '@/lib/theme-palettes'
 import './globals.css'
 
 const inter = Inter({
@@ -18,6 +19,13 @@ const syne = Syne({
   variable: '--font-syne',
   display: 'swap',
   weight: ['400', '500', '600', '700', '800'],
+})
+
+const cormorant = Cormorant_Garamond({
+  subsets: ['latin'],
+  variable: '--font-cormorant',
+  display: 'swap',
+  weight: ['400', '500', '600', '700'],
 })
 
 export const metadata = {
@@ -65,14 +73,19 @@ export const metadata = {
 }
 
 export default function RootLayout({ children }: { children: ReactNode }) {
-  const fontVars = `${inter.variable} ${syne.variable}`
+  const fontVars = `${inter.variable} ${syne.variable} ${cormorant.variable}`
 
   return (
-    <html lang="en" className={fontVars} data-palette="charcoal" suppressHydrationWarning>
+    <html
+      lang="en"
+      className={fontVars}
+      data-palette={DEFAULT_PALETTE}
+      suppressHydrationWarning
+    >
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var k='room23-theme-palette',p=localStorage.getItem(k);document.documentElement.setAttribute('data-palette',p||'charcoal');}catch(e){document.documentElement.setAttribute('data-palette','charcoal');}})();`,
+            __html: THEME_INIT_SCRIPT,
           }}
         />
       </head>

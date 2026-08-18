@@ -28,7 +28,7 @@ export default function CartPageClient() {
         <p className="mt-4 text-sm text-theme-muted">Your cart is empty.</p>
         <Link
           href="/shop"
-          className="mt-10 inline-flex bg-white px-8 py-3 text-[11px] font-medium uppercase tracking-[0.2em] text-black hover:bg-zinc-200"
+          className="mt-10 inline-flex bg-primary px-8 py-3 text-[11px] font-medium uppercase tracking-[0.2em] text-primary-foreground hover:bg-primary/90"
         >
           Continue shopping
         </Link>
@@ -118,7 +118,7 @@ export default function CartPageClient() {
         <button
           type="button"
           onClick={() => router.push('/checkout')}
-          className="mt-6 w-full bg-white py-3 text-[11px] font-medium uppercase tracking-[0.2em] text-black hover:bg-zinc-200"
+          className="mt-6 w-full bg-primary py-3 text-[11px] font-medium uppercase tracking-[0.2em] text-primary-foreground hover:bg-primary/90"
         >
           Checkout
         </button>

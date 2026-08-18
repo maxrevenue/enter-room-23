@@ -2,7 +2,6 @@ const { fontFamily } = require('tailwindcss/defaultTheme')
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  darkMode: 'class',
   content: [
     './app/**/*.{js,jsx,ts,tsx}',
     './components/**/*.{js,jsx,ts,tsx}',
@@ -13,121 +12,64 @@ module.exports = {
     extend: {
       fontFamily: {
         syne: ['var(--font-syne)', ...fontFamily.sans],
-        montserrat: ['var(--font-montserrat)', ...fontFamily.sans],
         sans: ['var(--font-inter)', ...fontFamily.sans],
+        serif: ['var(--font-cormorant)', ...fontFamily.serif],
+      },
+      borderRadius: {
+        lg: 'var(--radius)',
+        md: 'calc(var(--radius) - 2px)',
+        sm: 'calc(var(--radius) - 4px)',
       },
       colors: {
+        border: 'hsl(var(--border) / <alpha-value>)',
+        input: 'hsl(var(--input) / <alpha-value>)',
+        ring: 'hsl(var(--ring) / <alpha-value>)',
+        background: 'hsl(var(--background) / <alpha-value>)',
+        foreground: 'hsl(var(--foreground) / <alpha-value>)',
+        primary: {
+          DEFAULT: 'hsl(var(--primary) / <alpha-value>)',
+          foreground: 'hsl(var(--primary-foreground) / <alpha-value>)',
+        },
+        secondary: {
+          DEFAULT: 'hsl(var(--secondary) / <alpha-value>)',
+          foreground: 'hsl(var(--secondary-foreground) / <alpha-value>)',
+        },
+        destructive: {
+          DEFAULT: 'hsl(var(--destructive) / <alpha-value>)',
+          foreground: 'hsl(var(--destructive-foreground) / <alpha-value>)',
+        },
+        muted: {
+          DEFAULT: 'hsl(var(--muted) / <alpha-value>)',
+          foreground: 'hsl(var(--muted-foreground) / <alpha-value>)',
+        },
+        accent: {
+          DEFAULT: 'hsl(var(--accent) / <alpha-value>)',
+          foreground: 'hsl(var(--accent-foreground) / <alpha-value>)',
+        },
+        popover: {
+          DEFAULT: 'hsl(var(--popover) / <alpha-value>)',
+          foreground: 'hsl(var(--popover-foreground) / <alpha-value>)',
+        },
+        card: {
+          DEFAULT: 'hsl(var(--card) / <alpha-value>)',
+          foreground: 'hsl(var(--card-foreground) / <alpha-value>)',
+        },
         theme: {
-          bg: 'var(--bg)',
-          surface: 'var(--surface)',
-          text: 'var(--text)',
-          muted: 'var(--muted)',
-          accent: 'var(--accent)',
-          border: 'var(--border)',
-        },
-        // ── Neon Noir (Dark Mode) Palette ──
-        'neon-red': {
-          DEFAULT: '#FF0033',
-          50: '#FFF0F3',
-          100: '#FFD6DE',
-          200: '#FFADBD',
-          300: '#FF859D',
-          400: '#FF5C7D',
-          500: '#FF0033',
-          600: '#D6002B',
-          700: '#AD0023',
-          800: '#85001B',
-          900: '#5C0013',
-          950: '#3D000D',
-        },
-        'amber-glow': {
-          DEFAULT: '#FF9900',
-          400: '#FFB84D',
-          500: '#FF9900',
-          600: '#E68A00',
-        },
-        'obsidian': {
-          DEFAULT: '#0A0508',
-          50: '#F5F0F3',
-          100: '#E8DDE3',
-          200: '#D1BBC8',
-          300: '#BA99AD',
-          400: '#A37792',
-          500: '#8A5D78',
-          600: '#6E4A60',
-          700: '#523748',
-          800: '#362430',
-          900: '#1A1118',
-          950: '#0A0508',
-        },
-
-        // ── Ivory Speakeasy (Light Mode) Palette ──
-        'wine-burgundy': {
-          DEFAULT: '#800020',
-          50: '#FDF2F5',
-          100: '#FBD8E2',
-          200: '#F5B0C5',
-          300: '#ED88A8',
-          400: '#E3608C',
-          500: '#CC386E',
-          600: '#A30018',
-          700: '#800020',
-          800: '#5C0017',
-          900: '#38000E',
-          950: '#1C0007',
-        },
-        'ivory': {
-          DEFAULT: '#F6F2EC',
-          50: '#FCFAF8',
-          100: '#F9F6F2',
-          200: '#F6F2EC',
-          300: '#EBE4D9',
-          400: '#DDD1BF',
-          500: '#CCBDA5',
-          600: '#B8A78B',
-          700: '#9E8D72',
-          800: '#7D6E58',
-          900: '#5C5040',
-          950: '#3D352A',
-        },
-        'aged-brass': {
-          DEFAULT: '#C5A059',
-          400: '#D9BF8A',
-          500: '#C5A059',
-          600: '#A8853E',
-        },
-
-        // ── Brass Noir V3 (Espresso · Brass · Ivory) ──
-        'bne-espresso': {
-          DEFAULT: '#14100d',
-          surface: '#1c1814',
-          elevated: '#241f1a',
-        },
-        'bne-ivory': {
-          DEFAULT: '#f3ede0',
-          muted: '#a0988a',
-          subtle: '#605a52',
-        },
-        'bne-brass': {
-          DEFAULT: '#c8a34e',
-          hover: '#d4b564',
-          dim: '#a0823a',
-        },
-        'bne-border': {
-          DEFAULT: '#2c2620',
-          light: '#3a342c',
+          bg: 'hsl(var(--background) / <alpha-value>)',
+          surface: 'hsl(var(--card) / <alpha-value>)',
+          text: 'hsl(var(--foreground) / <alpha-value>)',
+          muted: 'hsl(var(--muted-foreground) / <alpha-value>)',
+          accent: 'hsl(var(--primary) / <alpha-value>)',
+          border: 'hsl(var(--border) / <alpha-value>)',
         },
       },
       boxShadow: {
-        // Dark mode neon glows
         'neon-red-sm': '0 0 8px rgba(255,0,51,0.5), 0 0 16px rgba(255,0,51,0.2)',
         'neon-red': '0 0 12px rgba(255,0,51,0.6), 0 0 30px rgba(255,0,51,0.25), 0 0 50px rgba(255,0,51,0.1)',
         'neon-red-lg': '0 0 20px rgba(255,0,51,0.7), 0 0 45px rgba(255,0,51,0.3), 0 0 80px rgba(255,0,51,0.15)',
         'neon-red-inner': 'inset 0 0 12px rgba(255,0,51,0.5), inset 0 0 30px rgba(255,0,51,0.15)',
         'neon-amber': '0 0 10px rgba(255,153,0,0.5), 0 0 25px rgba(255,153,0,0.2)',
         'neon-amber-lg': '0 0 20px rgba(255,153,0,0.6), 0 0 40px rgba(255,153,0,0.25)',
-
-        // Light mode soft warm glows
         'wine-glow': '0 2px 16px rgba(128,0,32,0.15), 0 0 2px rgba(128,0,32,0.2)',
         'wine-glow-lg': '0 4px 24px rgba(128,0,32,0.2), 0 0 6px rgba(128,0,32,0.15)',
         'brass-glow': '0 1px 8px rgba(197,160,89,0.25), 0 0 2px rgba(197,160,89,0.15)',

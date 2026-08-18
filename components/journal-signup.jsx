@@ -81,7 +81,7 @@ export default function JournalSignup() {
             <button
               type="submit"
               disabled={loading}
-              className="inline-flex min-h-11 items-center justify-center gap-2 whitespace-nowrap bg-zinc-100 px-6 py-3 text-[11px] font-medium uppercase tracking-[0.15em] text-black hover:bg-white"
+              className="inline-flex min-h-11 items-center justify-center gap-2 whitespace-nowrap bg-primary px-6 py-3 text-[11px] font-medium uppercase tracking-[0.15em] text-primary-foreground hover:bg-primary/90"
               style={{ opacity: loading ? 0.7 : 1 }}
               aria-label="Subscribe to notes from Room 23"
             >

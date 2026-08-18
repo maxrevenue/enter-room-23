@@ -38,7 +38,7 @@ export default function HomePage() {
       >
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_28%,rgba(82,82,91,0.28)_0%,transparent_55%)]"
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_28%,hsl(var(--muted-foreground)/0.18)_0%,transparent_55%)]"
         />
         <div
           aria-hidden="true"
@@ -65,7 +65,7 @@ export default function HomePage() {
           </p>
           <Link
             href="/shop"
-            className="mt-12 inline-flex min-h-12 items-center justify-center bg-zinc-50 px-10 py-3.5 text-[11px] font-medium uppercase tracking-[0.24em] text-zinc-950 transition-colors duration-300 hover:bg-zinc-200 sm:mt-14"
+            className="mt-12 inline-flex min-h-12 items-center justify-center bg-primary px-10 py-3.5 text-[11px] font-medium uppercase tracking-[0.24em] text-primary-foreground transition-colors duration-300 hover:bg-primary/90 sm:mt-14"
           >
             Shop the collection
           </Link>
