@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { usePathname } from 'next/navigation'
 import {
   DEFAULT_PALETTE,
   isPaletteId,
@@ -32,6 +33,7 @@ function writeStoredPalette(id: PaletteId) {
 }
 
 export default function ThemeSwitcher() {
+  const pathname = usePathname()
   const [palette, setPalette] = useState<PaletteId>(DEFAULT_PALETTE)
   const [open, setOpen] = useState(false)
 
@@ -47,6 +49,8 @@ export default function ThemeSwitcher() {
     writeStoredPalette(id)
     setOpen(false)
   }
+
+  if (pathname?.startsWith('/admin')) return null
 
   return (
     <div

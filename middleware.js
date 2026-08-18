@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { isAdminAuthenticated, isAdminPath } from '@/lib/admin-auth'
 import { buildProductCanonicalRedirects } from '@/lib/product-canonical-redirects'
 
 /**
@@ -24,9 +25,12 @@ const PRODUCT_CANONICAL_REDIRECTS = new Map(
   buildProductCanonicalRedirects().map((rule) => [rule.source, rule.destination]),
 )
 
-function withSecurityHeaders(response) {
+function withSecurityHeaders(response, { noStore = false } = {}) {
   for (const [key, value] of Object.entries(SECURITY_HEADERS)) {
     response.headers.set(key, value)
+  }
+  if (noStore) {
+    response.headers.set('Cache-Control', 'private, no-store')
   }
   return response
 }
@@ -36,7 +40,7 @@ function pathnameWithoutTrailingSlash(pathname) {
   return pathname
 }
 
-export function middleware(request) {
+export async function middleware(request) {
   const proto = request.headers.get('x-forwarded-proto')
   const host = request.headers.get('host') || ''
   const isLocal = host.startsWith('localhost') || host.startsWith('127.0.0.1')
@@ -48,6 +52,27 @@ export function middleware(request) {
   }
 
   const pathname = pathnameWithoutTrailingSlash(request.nextUrl.pathname)
+  const adminRequest = isAdminPath(pathname)
+
+  if (adminRequest) {
+    const authed = await isAdminAuthenticated(request.cookies)
+    const isLogin = pathname === '/admin/login'
+
+    if (!authed && !isLogin) {
+      const url = request.nextUrl.clone()
+      url.pathname = '/admin/login'
+      url.search = ''
+      return withSecurityHeaders(NextResponse.redirect(url), { noStore: true })
+    }
+
+    if (authed && isLogin) {
+      const url = request.nextUrl.clone()
+      url.pathname = '/admin'
+      url.search = ''
+      return withSecurityHeaders(NextResponse.redirect(url), { noStore: true })
+    }
+  }
+
   const canonicalPath = PRODUCT_CANONICAL_REDIRECTS.get(pathname)
   if (canonicalPath) {
     const url = request.nextUrl.clone()
@@ -55,7 +80,7 @@ export function middleware(request) {
     return withSecurityHeaders(NextResponse.redirect(url, 308))
   }
 
-  return withSecurityHeaders(NextResponse.next())
+  return withSecurityHeaders(NextResponse.next(), { noStore: adminRequest })
 }
 
 export const config = {

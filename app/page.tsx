@@ -3,7 +3,7 @@ import Link from 'next/link'
 import JournalSection from '@/components/JournalSection'
 import ProductOfTheMonth from '@/components/ProductOfTheMonth'
 import ProductCard from '@/components/product-card'
-import { PRODUCTS } from '@/lib/products'
+import { PRODUCTS, PRODUCT_OF_THE_MONTH_ID } from '@/lib/products'
 
 export const metadata: Metadata = {
   title: 'Premium Adult Wellness - Body-Safe Essentials',
@@ -11,8 +11,6 @@ export const metadata: Metadata = {
     'Shop body-safe adult wellness essentials from Room 23: refined lubricants, intimate care, and discreet checkout. Considered pleasure. 18+ only.',
   alternates: { canonical: '/' },
 }
-
-const PRODUCT_OF_THE_MONTH_ID = 'cake-stroker'
 
 const FEATURED_IDS = [
   'skins-delay',

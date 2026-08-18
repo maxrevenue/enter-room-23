@@ -6,12 +6,12 @@ export default function robots() {
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/api/', '/order-confirmed'],
+        disallow: ['/api/', '/admin', '/order-confirmed'],
       },
       {
         userAgent: 'Googlebot',
         allow: '/',
-        disallow: ['/api/', '/order-confirmed'],
+        disallow: ['/api/', '/admin', '/order-confirmed'],
       },
     ],
     sitemap: `https://${SITE_CONFIG.domain}/sitemap.xml`,

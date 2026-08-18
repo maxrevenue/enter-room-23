@@ -1,16 +1,20 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import Cookies from 'js-cookie';
 import { siteConfig } from '@/lib/config';
 import { X } from 'lucide-react';
 
 export default function DiscreetNewsletter() {
+  const pathname = usePathname();
   const [isVisible, setIsVisible] = useState(false);
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success'>('idle');
   const [email, setEmail] = useState('');
 
   useEffect(() => {
+    if (pathname?.startsWith('/admin')) return;
+
     const hasSeen = Cookies.get('room23_newsletter_seen');
     const hasSubscribed = Cookies.get('room23_subscribed');
     
@@ -18,7 +22,9 @@ export default function DiscreetNewsletter() {
       const timer = setTimeout(() => setIsVisible(true), 10000);
       return () => clearTimeout(timer);
     }
-  }, []);
+  }, [pathname]);
+
+  if (pathname?.startsWith('/admin')) return null;
 
   const handleDismiss = () => {
     Cookies.set('room23_newsletter_seen', 'true', { expires: 14 });

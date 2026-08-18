@@ -32,10 +32,10 @@
 
   // ── Staging environment ──
   // Deploy with: npx wrangler deploy --env staging
-  // Secrets (NMI_PRIVATE_KEY, RESEND_API_KEY, ADMIN_EMAIL) must be set separately:
-  //   npx wrangler secret put NMI_PRIVATE_KEY --env staging
-  //   npx wrangler secret put RESEND_API_KEY --env staging
-  //   npx wrangler secret put ADMIN_EMAIL --env staging
+  // Secrets (RESEND_API_KEY, ADMIN_PASSWORD, MONGODB_URI) must be set separately:
+  //   npx wrangler secret put ADMIN_PASSWORD
+  //   npx wrangler secret put MONGODB_URI
+  //   npx wrangler secret put RESEND_API_KEY
   // Never store secrets in this file.
   "env": {
     "staging": {

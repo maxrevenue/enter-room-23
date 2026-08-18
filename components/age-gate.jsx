@@ -1,10 +1,14 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { usePathname } from 'next/navigation'
 import Cookies from 'js-cookie'
 import { siteConfig } from '@/lib/config'
 
 export default function AgeGate() {
+  const pathname = usePathname()
+  if (pathname?.startsWith('/admin')) return null
+
   const isBot =
     typeof navigator !== 'undefined' &&
     /bot|crawler|spider|crawling|googlebot|bingbot|slurp|duckduckbot|facebookexternalhit|twitterbot|linkedinbot|whatsapp|telegrambot/i.test(
