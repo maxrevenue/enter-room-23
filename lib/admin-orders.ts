@@ -45,17 +45,17 @@ export async function listAdminOrders(limit = 50): Promise<AdminOrder[]> {
   const db = await getRoom23Db()
   if (!db) return []
   return db
-    .collection('orders')
+    .collection<AdminOrder>('orders')
     .find({})
     .sort({ createdAt: -1 })
     .limit(limit)
-    .toArray() as Promise<AdminOrder[]>
+    .toArray()
 }
 
 export async function getAdminOrder(orderId: string): Promise<AdminOrder | null> {
   const db = await getRoom23Db()
   if (!db) return null
-  return db.collection('orders').findOne({ orderId }) as Promise<AdminOrder | null>
+  return db.collection<AdminOrder>('orders').findOne({ orderId })
 }
 
 export async function countOpenOrders(): Promise<number> {
