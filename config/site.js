@@ -18,8 +18,6 @@ export const SITE_CONFIG = {
   supportPhone: '(425) 505-3528',
   hours: 'Mon–Fri 9:00 AM – 6:00 PM ET',
 
-  // Principal / SOS address is not published on the storefront.
-  principalAddress: '6010 Fulcher Ave, North Hollywood, CA 91606',
   mailingAddress: '5482 Wilshire Blvd #333, Los Angeles, CA 90036',
   address: '5482 Wilshire Blvd #333, Los Angeles, CA 90036',
   location: 'United States',
@@ -29,9 +27,16 @@ export const SITE_CONFIG = {
   bizCityState: 'Los Angeles, CA 90036',
   bizAddressFull: '5482 Wilshire Blvd #333, Los Angeles, CA 90036',
 
-  // ── Billing ──
+  // ── Billing & Payments ──
   billingDescriptor: process.env.NEXT_PUBLIC_BILLING_DESCRIPTOR || 'ROOM23 WELLNESS',
+  paymentProcessor: 'CCBill',
+  pciCheckoutWording:
+    'Secure checkout processed by CCBill. Payment details are handled by our PCI-compliant payment processor.',
   checkoutEnabled: true,
+
+  // ── Promotions ──
+  discountCode: 'WELCOME10',
+  discountPercentage: 10,
 
   // ── Shipping (must match /shipping) ──
   carriers: ['USPS', 'UPS', 'FedEx'],
@@ -39,6 +44,6 @@ export const SITE_CONFIG = {
   flatShippingRate: FLAT_SHIPPING_RATE,
 
   // ── Legal ──
-  lastUpdated: 'August 16, 2026',
+  lastUpdated: 'August 18, 2026',
   ageCookieDurationDays: 30,
 }

@@ -127,8 +127,22 @@ export default function ShippingPage() {
         </p>
 
         <p className="text-theme-muted text-sm">
-          Questions? Visit our <Link href="/faq" className="text-theme-accent hover:opacity-80">FAQ</Link> or <Link href="/contact" className="text-theme-accent hover:opacity-80">Contact Us</Link>.
+          Questions? Visit our <Link href="/faq" className="text-theme-accent hover:opacity-80">FAQ</Link> or{' '}
+          <Link href="/contact" className="text-theme-accent hover:opacity-80">Contact Us</Link>.
         </p>
+
+        <div className="mt-12 pt-8 border-t border-theme-border text-theme-muted text-sm leading-relaxed">
+          <p className="text-theme-text/90 font-serif text-lg mb-3">{SITE_CONFIG.legalName}</p>
+          <p>{SITE_CONFIG.bizAddressFull}</p>
+          <p className="mt-2">
+            <a href={`mailto:${SITE_CONFIG.supportEmail}`} className="text-theme-accent hover:opacity-80">{SITE_CONFIG.supportEmail}</a>
+            {' · '}
+            {SITE_CONFIG.supportPhone}
+          </p>
+          <p className="mt-2 text-xs">
+            Billing descriptor: {SITE_CONFIG.billingDescriptor}. {SITE_CONFIG.pciCheckoutWording}
+          </p>
+        </div>
       </div>
     </div>
   )

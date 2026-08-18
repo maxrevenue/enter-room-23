@@ -211,14 +211,15 @@ export default function CheckoutForm() {
       <div>
         <h2 className="text-sm font-semibold uppercase tracking-[0.06em] mb-2">Payment</h2>
         <p className="text-xs leading-6" style={{ color: 'var(--text-muted)' }}>
-          One-time charge for physical goods. Card data is entered on CCBill&apos;s hosted payment page — never on room23.net.
-          The payment page is non-sexual. Your statement shows {SITE_CONFIG.billingDescriptor}.
+          One-time charge for physical goods. {SITE_CONFIG.pciCheckoutWording} Card data is entered on{' '}
+          {SITE_CONFIG.paymentProcessor}&apos;s hosted payment page — never on room23.net. Your statement shows{' '}
+          {SITE_CONFIG.billingDescriptor}.
         </p>
       </div>
 
       <div className="flex gap-6 justify-center flex-wrap">
         <span className="flex items-center gap-1 text-xs" style={{ color: 'var(--text-muted)' }}><Lock size={12} /> 256-bit SSL</span>
-        <span className="flex items-center gap-1 text-xs" style={{ color: 'var(--text-muted)' }}><ShieldCheck size={12} /> PCI-DSS via CCBill</span>
+        <span className="flex items-center gap-1 text-xs" style={{ color: 'var(--text-muted)' }}><ShieldCheck size={12} /> {SITE_CONFIG.paymentProcessor}</span>
       </div>
 
       <label className="flex items-start gap-3 p-3 border cursor-pointer" style={{ borderColor: agreedToTerms ? 'var(--color-success)' : 'var(--border)' }}>

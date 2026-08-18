@@ -73,6 +73,26 @@ describe('merchant readiness', () => {
     assert.doesNotMatch(collections, /vintage/)
   })
 
+  it('names CCBill in legal pages and omits NMI sitewide', () => {
+    const terms = read('app/terms/page.jsx')
+    const privacy = read('app/privacy/page.jsx')
+    assert.match(terms, /SITE_CONFIG\.paymentProcessor/)
+    assert.match(terms, /SITE_CONFIG\.pciCheckoutWording/)
+    assert.match(terms, /SITE_CONFIG\.billingDescriptor/)
+    assert.match(privacy, /SITE_CONFIG\.paymentProcessor/)
+    assert.match(privacy, /SITE_CONFIG\.pciCheckoutWording/)
+    assert.doesNotMatch(terms, /PCI-DSS Level 1/)
+    assert.doesNotMatch(privacy, /PCI-DSS Level 1/)
+
+    const site = read('config/site.js')
+    assert.match(site, /paymentProcessor:\s*'CCBill'/)
+    assert.match(site, /Secure checkout processed by CCBill/)
+    assert.doesNotMatch(site, /NMI/)
+
+    const wrangler = read('wrangler.jsonc')
+    assert.doesNotMatch(wrangler, /NMI/)
+  })
+
   it('does not leave enterroom23.com on the customer path', () => {
     const nextConfig = read('next.config.js')
     assert.doesNotMatch(nextConfig, /enterroom23/)

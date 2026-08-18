@@ -14,14 +14,14 @@ export default async function PayPage({ searchParams }) {
 
   return (
     <main className="container-narrow" style={{ paddingTop: '3rem', paddingBottom: '4rem' }}>
-      <p className="last-updated">Hosted payment · CCBill</p>
+      <p className="last-updated">Hosted payment · {SITE_CONFIG.paymentProcessor}</p>
       <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--text-3xl)', fontWeight: 700, marginBottom: '1rem' }}>
         Secure payment
       </h1>
       <p style={{ color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: '1.5rem' }}>
-        This is a one-time charge for shipped wellness goods. Card details are entered on CCBill&apos;s
-        payment page. Room 23 never stores full card numbers. The payment screen is non-sexual and
-        shows the descriptor <strong>{SITE_CONFIG.billingDescriptor}</strong>.
+        This is a one-time charge for shipped wellness goods. {SITE_CONFIG.pciCheckoutWording} Card details are entered on{' '}
+        {SITE_CONFIG.paymentProcessor}&apos;s payment page. Room 23 never stores full card numbers. The payment screen is
+        non-sexual and shows the descriptor <strong>{SITE_CONFIG.billingDescriptor}</strong>.
       </p>
       {orderId && (
         <p className="text-sm mb-6" style={{ color: 'var(--text-muted)' }}>
@@ -30,8 +30,8 @@ export default async function PayPage({ searchParams }) {
       )}
       <p className="text-sm mb-8" style={{ color: 'var(--text-secondary)' }}>
         If you were not redirected automatically, the processor session could not be started from this
-        environment. Email <a href={`mailto:${SITE_CONFIG.supportEmail}`}>{SITE_CONFIG.supportEmail}</a> with
-        your order reference and we will complete the charge with you.
+        environment. Email <a href={`mailto:${SITE_CONFIG.supportEmail}`}>{SITE_CONFIG.supportEmail}</a> or call{' '}
+        {SITE_CONFIG.supportPhone} with your order reference and we will complete the charge with you.
       </p>
       <div className="flex gap-3 flex-wrap">
         <Link href="/checkout" className="btn-primary">Return to checkout</Link>

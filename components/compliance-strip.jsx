@@ -1,3 +1,5 @@
+import { SITE_CONFIG } from '@/config/site'
+
 export default function ComplianceStrip() {
   return (
     <section
@@ -32,7 +34,7 @@ export default function ComplianceStrip() {
           {/* Billing descriptor */}
           <div>
             <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
-              Appears as <strong style={{ color: 'var(--bne-brass, var(--accent))', fontWeight: 600 }}>ROOM23 WELLNESS</strong> on your statement
+              Appears as <strong style={{ color: 'var(--bne-brass, var(--accent))', fontWeight: 600 }}>{SITE_CONFIG.billingDescriptor}</strong> on your statement
             </span>
           </div>
 
@@ -58,6 +60,13 @@ export default function ComplianceStrip() {
             </svg>
             <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
               256-bit SSL encrypted
+            </span>
+          </div>
+
+          {/* Payment processor */}
+          <div>
+            <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
+              Checkout via {SITE_CONFIG.paymentProcessor}
             </span>
           </div>
 

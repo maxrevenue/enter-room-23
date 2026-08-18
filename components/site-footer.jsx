@@ -58,7 +58,15 @@ export default function SiteFooter() {
           <br />
           {SITE_CONFIG.bizAddressFull}
           <br />
-          {SITE_CONFIG.supportEmail}
+          {SITE_CONFIG.supportPhone}
+          <br />
+          <a href={`mailto:${SITE_CONFIG.supportEmail}`} className="hover:text-theme-text transition-colors">
+            {SITE_CONFIG.supportEmail}
+          </a>
+        </p>
+
+        <p className="mt-6 max-w-md text-[10px] leading-relaxed text-theme-muted/70">
+          {SITE_CONFIG.pciCheckoutWording}
         </p>
 
         <p className="mt-8 text-[10px] uppercase tracking-[0.16em] text-theme-muted/70">

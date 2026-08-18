@@ -7,7 +7,7 @@
 
 ## 1. Overview
 
-**Room 23** is a premium adult wellness e-commerce storefront. Built as a single-page Next.js application with App Router, deployed on Cloudflare Workers. Features age verification, product catalog, cart, secure checkout via NMI, and privacy-conscious analytics.
+**Room 23** is a premium adult wellness e-commerce storefront. Built as a single-page Next.js application with App Router, deployed on Cloudflare Workers. Features age verification, product catalog, cart, secure checkout via CCBill, and privacy-conscious analytics.
 
 ---
 
@@ -22,7 +22,7 @@
 | Icons | Lucide React | latest |
 | Class utilities | `clsx` + `tailwind-merge` | latest |
 | Deployment | Cloudflare Workers (via `@opennextjs/cloudflare`) | latest |
-| Payment Gateway | NMI (Network Merchants Inc.) | REST API |
+| Payment Processor | CCBill (FlexForms hosted checkout) | Hosted payment page |
 | Transactional Email | Resend | REST API |
 | Testing | Vitest (unit) + Playwright/qabot (E2E) | latest |
 | Package Manager | npm | latest |
@@ -56,7 +56,7 @@
 │   ├── privacy-policy/page.js    # Legal: Privacy Policy
 │   ├── refund-policy/page.js     # Legal: Refund Policy
 │   └── api/
-│       ├── checkout/route.js     # POST — process payment via NMI, validate inventory, send confirmation email
+│       ├── checkout/route.js     # POST — build CCBill FlexForms URL, validate inventory, send confirmation email
 │       ├── analytics/route.js    # POST — server-side PII-sanitized analytics ingestion
 │       └── [[...path]]/route.js  # Catch-all mock API for unhandled routes
 │
@@ -67,7 +67,7 @@
 │   ├── site-footer.jsx           # Footer with links, legal, newsletter CTA
 │   ├── age-gate.jsx              # Age verification dialog (18+, locks entire site until confirmed)
 │   ├── cart-sheet.jsx            # Slide-out cart sidebar with qty controls + checkout trigger
-│   ├── checkout-dialog.jsx       # Full checkout form (contact, shipping, payment) with NMI integration
+│   ├── checkout-form.jsx         # Full checkout form (contact, shipping) with CCBill redirect
 │   └── json-ld.jsx               # Schema.org structured data for SEO
 │
 ├── lib/                          # Business logic & utilities
@@ -179,7 +179,7 @@ Client (CheckoutDialog)                    Server (api/checkout/route.js)
   │                                            │ 1. Validate idempotency key
   │                                            │ 2. Recalculate subtotal from server-side prices
   │                                            │ 3. Check inventory (via supplier adapter)
-  │                                            │ 4. Charge via NMI API
+  │                                            │ 4. Redirect to CCBill FlexForms hosted payment page
   │                                            │ 5. Submit order to supplier (drop-ship)
   │                                            │ 6. Send confirmation email (Resend)
   │                                            │ 7. Fire analytics (non-blocking)
@@ -190,7 +190,7 @@ Client (CheckoutDialog)                    Server (api/checkout/route.js)
 ```
 - **Idempotency**: Client generates `r23-{timestamp}-{random}` key; server checks/rejects duplicates
 - **Server-side subtotal recalculation**: Prevents client-side price manipulation
-- **Client never sees** supplier identity, NMI API keys, cost prices, or margins
+- **Client never sees** supplier identity, CCBill credentials, cost prices, or margins
 
 ### Analytics (`lib/analytics.js` + `lib/analytics-client.js`)
 - **Client-side**: `track(event, data)` → fire-and-forget `fetch('/api/analytics', ...)`, never blocks UI
@@ -225,7 +225,7 @@ Real supplier adapters would extend `SupplierAdapter` with live API credentials 
 | Age Gate (18+) | ✅ Complete | Non-dismissable dialog, persisted in cart context |
 | Product Catalog | ✅ Complete | Hardcoded products with images |
 | Shopping Cart | ✅ Complete | Slide-out sheet, qty controls, subtotal |
-| Checkout / Payment | ✅ Complete | NMI integration, idempotency, server-side price validation |
+| Checkout / Payment | ✅ Complete | CCBill FlexForms integration, idempotency, server-side price validation |
 | Order Confirmation | ✅ Complete | Clears cart, shows order ID, discreet shipping info |
 | Staging Environment | ✅ Complete | Banner, noindex, blocked robots, wrangler env config |
 | Privacy Analytics | ✅ Complete | PII sanitization, fire-and-forget pipeline |
@@ -277,7 +277,7 @@ npx wrangler deploy --env staging   # Deploy to staging
 ```
 
 ### Secrets (never in repo)
-- `NMI_PRIVATE_KEY` — payment gateway
+- `CCBILL_SALT`, `CCBILL_ACCOUNT_NUMBER`, `CCBILL_SUB_ACCOUNT`, `CCBILL_FLEXFORM_ID` — payment processor
 - `RESEND_API_KEY` — transactional email
 - `ADMIN_EMAIL` — order notification recipient
 

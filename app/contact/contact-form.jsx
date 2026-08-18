@@ -38,7 +38,7 @@ export default function ContactForm() {
       setSubmitted(true)
       form.reset()
     } catch {
-      setError('Network error. Please email support@room23.net.')
+      setError(`Network error. Please email ${SITE_CONFIG.supportEmail}.`)
     } finally {
       setSubmitting(false)
     }

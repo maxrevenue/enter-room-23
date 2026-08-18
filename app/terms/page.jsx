@@ -47,7 +47,7 @@ export default function TermsPage() {
       </p>
       <p>
         You agree to notify us immediately of any unauthorized use of your account at{' '}
-        <a href="mailto:support@room23.net">support@room23.net</a>.
+        <a href={`mailto:${SITE_CONFIG.supportEmail}`}>{SITE_CONFIG.supportEmail}</a>.
       </p>
 
       {/* ── Section 3 ── */}
@@ -71,12 +71,12 @@ export default function TermsPage() {
       <p>
         <strong>Billing Descriptor:</strong> Charges on your credit or debit card statement will appear
         as <strong>{SITE_CONFIG.billingDescriptor}</strong>. By placing an order, you authorize
-        us (or our designated payment processor) to charge your selected payment method for the total
-        amount, including shipping and any applicable taxes.
+        us to charge your selected payment method for the total amount, including shipping and any
+        applicable taxes, through our payment processor, <strong>{SITE_CONFIG.paymentProcessor}</strong>.
       </p>
       <p>
-        We utilize a PCI-compliant third-party payment gateway for all transactions. Room 23 does not
-        store full credit card numbers on our servers.
+        {SITE_CONFIG.pciCheckoutWording} Room 23 does not store full credit card numbers on our servers.
+        Card data is entered on {SITE_CONFIG.paymentProcessor}&rsquo;s hosted payment page — never on room23.net.
       </p>
 
       {/* ── Section 5 ── */}
@@ -171,7 +171,8 @@ export default function TermsPage() {
         For questions about these Terms, please contact us at:
       </p>
       <ul>
-        <li>Email: <a href="mailto:support@room23.net">support@room23.net</a></li>
+        <li>Email: <a href={`mailto:${SITE_CONFIG.supportEmail}`}>{SITE_CONFIG.supportEmail}</a></li>
+        <li>Phone: {SITE_CONFIG.supportPhone}</li>
         <li>Mail: {SITE_CONFIG.legalName}, {SITE_CONFIG.bizAddressFull}, {SITE_CONFIG.location}</li>
       </ul>
       <p>

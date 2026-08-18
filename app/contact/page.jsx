@@ -73,11 +73,11 @@ export default function ContactPage() {
                   Email Support
                 </h4>
                 <a
-                  href="mailto:support@room23.net"
+                  href={`mailto:${SITE_CONFIG.supportEmail}`}
                   className="link-brass"
                   style={{ fontSize: 'var(--text-base)' }}
                 >
-                  support@room23.net
+                  {SITE_CONFIG.supportEmail}
                 </a>
               </div>
 
@@ -86,9 +86,13 @@ export default function ContactPage() {
                 <h4 className="label" style={{ color: 'var(--text-secondary)', marginBottom: '0.25rem' }}>
                   Phone
                 </h4>
-                <p style={{ color: 'var(--text-primary)', fontSize: 'var(--text-base)' }}>
+                <a
+                  href={`tel:${SITE_CONFIG.supportPhone.replace(/\D/g, '')}`}
+                  className="link-brass"
+                  style={{ fontSize: 'var(--text-base)' }}
+                >
                   {SITE_CONFIG.supportPhone}
-                </p>
+                </a>
               </div>
 
               {/* Hours */}
@@ -113,7 +117,20 @@ export default function ContactPage() {
                   {SITE_CONFIG.legalName}<br />
                   {SITE_CONFIG.bizStreet}<br />
                   {SITE_CONFIG.bizCityState}<br />
-                  United States
+                  {SITE_CONFIG.location}
+                </p>
+              </div>
+
+              {/* Billing */}
+              <div>
+                <h4 className="label" style={{ color: 'var(--text-secondary)', marginBottom: '0.25rem' }}>
+                  Billing
+                </h4>
+                <p style={{ color: 'var(--text-primary)', fontSize: 'var(--text-sm)' }}>
+                  Statement descriptor: {SITE_CONFIG.billingDescriptor}
+                </p>
+                <p style={{ color: 'var(--text-muted)', fontSize: 'var(--text-xs)', marginTop: '0.25rem' }}>
+                  {SITE_CONFIG.pciCheckoutWording}
                 </p>
               </div>
             </div>

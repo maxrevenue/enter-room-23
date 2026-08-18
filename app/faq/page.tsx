@@ -11,7 +11,7 @@ export const metadata = {
 const faqs = [
   {
     q: 'What will appear on my credit card statement?',
-    a: 'Charges appear as ROOM23 WELLNESS on your bank statement. No product names or adult descriptors appear on the billing record.',
+    a: `Charges appear as ${SITE_CONFIG.billingDescriptor} on your bank statement. No product names or adult descriptors appear on the billing record.`,
   },
   {
     q: 'Is the packaging really discreet?',
@@ -39,19 +39,19 @@ const faqs = [
   },
   {
     q: 'What if I receive a defective item?',
-    a: 'If a product arrives damaged or defective, please contact us within 48 hours of delivery at support@room23.net, including your order number and photos of the item. We will swiftly arrange a free replacement or a full refund.',
+    a: `If a product arrives damaged or defective, please contact us within 48 hours of delivery at ${SITE_CONFIG.supportEmail}, including your order number and photos of the item. We will swiftly arrange a free replacement or a full refund.`,
   },
   {
     q: 'What payment methods do you accept?',
-    a: 'We proudly accept Visa, Mastercard, American Express, and Discover. All transactions are processed securely through a PCI-DSS Level 1 compliant payment gateway. Room 23 never stores full credit card numbers.',
+    a: `We accept Visa, Mastercard, American Express, and Discover. ${SITE_CONFIG.pciCheckoutWording} Room 23 never stores full credit card numbers.`,
   },
   {
     q: 'Is my payment information secure?',
-    a: 'Yes, completely. All transactions are routed through a PCI-DSS Level 1 compliant infrastructure utilizing advanced 256-bit TLS encryption. We use tokenized payment fields to ensure your full card number never touches our servers.',
+    a: `${SITE_CONFIG.pciCheckoutWording} Card data is entered on ${SITE_CONFIG.paymentProcessor}'s hosted payment page — never on room23.net.`,
   },
   {
     q: 'How do I contact customer support?',
-    a: 'You can reach us directly at support@room23.net. Our dedicated team responds to all inquiries within 24 hours during normal business days.',
+    a: `You can reach us at ${SITE_CONFIG.supportEmail} or ${SITE_CONFIG.supportPhone}. Our team responds to all inquiries within 24 hours during normal business days.`,
   },
 ]
 
@@ -144,7 +144,7 @@ export default function FAQPage() {
         </p>
         <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
           <Link href="/contact" className="btn-primary">Contact Us</Link>
-          <a href="mailto:support@room23.net" className="btn-secondary">Email Support</a>
+          <a href={`mailto:${SITE_CONFIG.supportEmail}`} className="btn-secondary">Email Support</a>
         </div>
       </div>
     </div>
