@@ -14,13 +14,7 @@ type PageProps = {
 }
 
 export async function generateStaticParams() {
-  const slugs = new Set<string>()
-  for (const p of PRODUCTS) {
-    slugs.add(p.slug)
-    slugs.add(p.id)
-    if (Array.isArray(p.aliases)) p.aliases.forEach((a: string) => slugs.add(a))
-  }
-  return Array.from(slugs).map((slug) => ({ slug }))
+  return PRODUCTS.filter((p) => p.slug).map((p) => ({ slug: p.slug }))
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {

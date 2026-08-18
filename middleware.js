@@ -1,14 +1,15 @@
 import { NextResponse } from 'next/server'
+import { buildProductCanonicalRedirects } from '@/lib/product-canonical-redirects'
 
 /**
- * Edge middleware — HTTPS only + security headers.
+ * Edge middleware — HTTPS only + security headers + product canonical 308s.
  *
  * Age verification is a client overlay (see AgeGate). Do not 307 shop, PDP,
  * journal, collections, cart, or checkout to /. Underwriters and curl must
  * receive unique HTML for those routes.
  *
  * OpenNext on Cloudflare does not reliably apply next.config.js headers()
- * to Worker HTML, so security headers are set here.
+ * or redirects() to Worker HTML, so those run here.
  */
 const SECURITY_HEADERS = {
   'X-Frame-Options': 'SAMEORIGIN',
@@ -19,11 +20,20 @@ const SECURITY_HEADERS = {
     "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:;",
 }
 
+const PRODUCT_CANONICAL_REDIRECTS = new Map(
+  buildProductCanonicalRedirects().map((rule) => [rule.source, rule.destination]),
+)
+
 function withSecurityHeaders(response) {
   for (const [key, value] of Object.entries(SECURITY_HEADERS)) {
     response.headers.set(key, value)
   }
   return response
+}
+
+function pathnameWithoutTrailingSlash(pathname) {
+  if (pathname.length > 1 && pathname.endsWith('/')) return pathname.slice(0, -1)
+  return pathname
 }
 
 export function middleware(request) {
@@ -35,6 +45,14 @@ export function middleware(request) {
     const url = request.nextUrl.clone()
     url.protocol = 'https:'
     return withSecurityHeaders(NextResponse.redirect(url, 301))
+  }
+
+  const pathname = pathnameWithoutTrailingSlash(request.nextUrl.pathname)
+  const canonicalPath = PRODUCT_CANONICAL_REDIRECTS.get(pathname)
+  if (canonicalPath) {
+    const url = request.nextUrl.clone()
+    url.pathname = canonicalPath
+    return withSecurityHeaders(NextResponse.redirect(url, 308))
   }
 
   return withSecurityHeaders(NextResponse.next())

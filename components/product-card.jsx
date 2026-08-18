@@ -2,12 +2,13 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { INVENTORY_STATUS } from '@/lib/inventory'
 import ProductCardActions from '@/components/product-card-actions'
+import { productHref } from '@/lib/products'
 
 export default function ProductCard({ product }) {
   const soldOut =
     product.inventoryStatus === INVENTORY_STATUS.OUT_OF_STOCK ||
     product.badge === 'SOLD OUT'
-  const href = `/products/${product.slug || product.id}`
+  const href = productHref(product)
   const price =
     typeof product.price === 'number' ? `$${product.price.toFixed(2)}` : product.price
   const descriptor = product.tagline || product.shortEditorial || null
