@@ -7,7 +7,7 @@
 
 import { NextResponse } from 'next/server'
 import { SITE_CONFIG } from '@/config/site'
-import { getProductById } from '@/lib/products'
+import { listStorefrontProducts } from '@/lib/admin-catalog'
 import {
   checkoutCustomerSchema,
   computeServerTotals,
@@ -25,7 +25,9 @@ export async function POST(request) {
 
     let items
     try {
-      items = hydrateCartItems(body.cart, getProductById)
+      const catalog = await listStorefrontProducts()
+      const byId = new Map(catalog.map((product) => [product.id, product]))
+      items = hydrateCartItems(body.cart, (id) => byId.get(id))
     } catch (err) {
       return NextResponse.json({ error: err.message }, { status: 400 })
     }

@@ -1,7 +1,8 @@
 import { SITE_CONFIG } from '@/config/site'
-import { PRODUCTS, productHref } from '@/lib/products'
+import { listStorefrontProducts } from '@/lib/admin-catalog'
+import { productHref } from '@/lib/products'
 
-export default function sitemap() {
+export default async function sitemap() {
   const staticPages = [
     { path: '/', priority: 1.0, changeFrequency: 'weekly' },
     { path: '/shop', priority: 0.9, changeFrequency: 'weekly' },
@@ -31,7 +32,8 @@ export default function sitemap() {
     priority: p.priority,
   }))
 
-  const productEntries = PRODUCTS.map((product) => ({
+  const liveProducts = await listStorefrontProducts()
+  const productEntries = liveProducts.map((product) => ({
     url: `https://${SITE_CONFIG.domain}${productHref(product)}`,
     lastModified: new Date('2026-08-16'),
     changeFrequency: 'weekly',

@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { getProductById, productHref } from '@/lib/products'
+import { productHref } from '@/lib/products'
 
 export type MonthOffer = {
   label: string
@@ -8,7 +8,20 @@ export type MonthOffer = {
 }
 
 type ProductOfTheMonthProps = {
-  productId: string
+  productId?: string
+  product?: {
+    id: string
+    slug?: string
+    name: string
+    price: number
+    category?: string
+    tagline?: string
+    shortEditorial?: string
+    description?: string
+    image?: string
+    images?: Array<{ url?: string; alt?: string }>
+    attributes?: string[]
+  } | null
   offer?: MonthOffer | null
 }
 
@@ -17,9 +30,7 @@ function formatCategory(category?: string) {
   return String(category).replace(/-/g, ' ')
 }
 
-export default function ProductOfTheMonth({ productId, offer = null }: ProductOfTheMonthProps) {
-  const product = getProductById(productId)
-
+export default function ProductOfTheMonth({ product = null, offer = null }: ProductOfTheMonthProps) {
   if (!product) return null
 
   const href = productHref(product)

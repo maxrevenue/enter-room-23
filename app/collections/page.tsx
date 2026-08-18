@@ -1,6 +1,9 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { COLLECTIONS, getProductsByCollection } from '@/lib/products'
+import { listStorefrontProductsByCollection } from '@/lib/admin-catalog'
+import { COLLECTIONS } from '@/lib/products'
+
+export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'Shop Collections - Essentials, Wellness & Toys',
@@ -9,14 +12,16 @@ export const metadata: Metadata = {
   alternates: { canonical: '/collections' },
 }
 
-export default function CollectionsPage() {
-  const collections = Object.entries(COLLECTIONS).map(([slug, collection]) => ({
-    slug,
-    href: `/collections/${slug}`,
-    title: collection.title,
-    subtitle: collection.subtitle,
-    count: getProductsByCollection(slug).length,
-  }))
+export default async function CollectionsPage() {
+  const collections = await Promise.all(
+    Object.entries(COLLECTIONS).map(async ([slug, collection]) => ({
+      slug,
+      href: `/collections/${slug}`,
+      title: collection.title,
+      subtitle: collection.subtitle,
+      count: (await listStorefrontProductsByCollection(slug)).length,
+    })),
+  )
 
   return (
     <main className="min-h-screen bg-theme-bg px-5 py-16 text-theme-text sm:px-8 sm:py-20">

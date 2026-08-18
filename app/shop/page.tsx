@@ -1,7 +1,9 @@
 import type { Metadata } from 'next'
 import ProductCard from '@/components/product-card'
 import ShopCategoryBar from '@/components/ShopCategoryBar'
-import { PRODUCTS } from '@/lib/products'
+import { listStorefrontProducts } from '@/lib/admin-catalog'
+
+export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'Shop Adult Wellness - Body-Safe Essentials',
@@ -15,8 +17,8 @@ function formatCount(count: number) {
   return `${padded} ${count === 1 ? 'piece' : 'pieces'}`
 }
 
-export default function ShopPage() {
-  const products = PRODUCTS
+export default async function ShopPage() {
+  const products = await listStorefrontProducts()
   const countLabel = formatCount(products.length)
 
   return (

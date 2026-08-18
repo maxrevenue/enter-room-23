@@ -6,7 +6,10 @@ import ProductAddToCart from '@/components/product-add-to-cart'
 import ProductCard from '@/components/product-card'
 import { SITE_CONFIG } from '@/config/site'
 import { INVENTORY_STATUS } from '@/lib/inventory'
-import { PRODUCTS, getProductBySlug, productHref } from '@/lib/products'
+import { getStorefrontProductBySlug, listStorefrontProducts } from '@/lib/admin-catalog'
+import { PRODUCTS, productHref } from '@/lib/products'
+
+export const dynamic = 'force-dynamic'
 
 type PageProps = {
   params: Promise<{ slug: string }>
@@ -19,7 +22,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params
-  const product = getProductBySlug(slug)
+  const product = await getStorefrontProductBySlug(slug)
   if (!product) return { title: 'Product' }
   if (slug !== product.slug) {
     permanentRedirect(`/products/${product.slug}`)
@@ -49,7 +52,7 @@ function formatCategory(category?: string) {
 export default async function ProductPage({ params, searchParams }: PageProps) {
   const { slug } = await params
   const { image } = await searchParams
-  const product = getProductBySlug(slug)
+  const product = await getStorefrontProductBySlug(slug)
   if (!product) notFound()
   if (slug !== product.slug) {
     const imageQuery = image && image !== '0' ? `?image=${encodeURIComponent(image)}` : ''
@@ -58,7 +61,9 @@ export default async function ProductPage({ params, searchParams }: PageProps) {
 
   const gallery = product.images?.length
     ? product.images
-    : [{ url: product.image, alt: product.name }]
+    : product.image
+      ? [{ url: product.image, alt: product.name }]
+      : []
   const activeIndex = Math.min(
     Math.max(Number.parseInt(image ?? '0', 10) || 0, 0),
     gallery.length - 1,
@@ -73,16 +78,19 @@ export default async function ProductPage({ params, searchParams }: PageProps) {
     { title: 'Care', body: product.care },
   ].filter((section) => section.body)
 
+  const liveProducts = await listStorefrontProducts()
   const relatedIds = new Set<string>([product.id])
   const related = []
   for (const relatedSlug of product.relatedSlugs || []) {
-    const item = getProductBySlug(relatedSlug)
+    const item = liveProducts.find(
+      (candidate) => candidate.slug === relatedSlug || candidate.id === relatedSlug,
+    )
     if (item && !relatedIds.has(item.id)) {
       related.push(item)
       relatedIds.add(item.id)
     }
   }
-  for (const item of PRODUCTS) {
+  for (const item of liveProducts) {
     if (related.length >= 3) break
     if (!relatedIds.has(item.id)) {
       related.push(item)
@@ -104,15 +112,23 @@ export default async function ProductPage({ params, searchParams }: PageProps) {
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-16 xl:gap-20">
           <div>
             <div className="relative aspect-[4/5] overflow-hidden border border-theme-border bg-theme-bg">
-              <Image
-                src={hero.url}
-                alt={hero.alt || product.name}
-                width={800}
-                height={1000}
-                unoptimized
-                priority
-                className="absolute inset-0 h-full w-full object-cover"
-              />
+              {hero?.url ? (
+                <Image
+                  src={hero.url}
+                  alt={hero.alt || product.name}
+                  width={800}
+                  height={1000}
+                  unoptimized
+                  priority
+                  className="absolute inset-0 h-full w-full object-cover"
+                />
+              ) : (
+                <div className="flex h-full w-full items-center justify-center">
+                  <span className="text-[10px] font-medium uppercase tracking-[0.32em] text-theme-muted/70">
+                    Room 23
+                  </span>
+                </div>
+              )}
             </div>
 
             {gallery.length > 1 ? (

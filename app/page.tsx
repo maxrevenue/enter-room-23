@@ -3,8 +3,10 @@ import Link from 'next/link'
 import JournalSection from '@/components/JournalSection'
 import ProductOfTheMonth from '@/components/ProductOfTheMonth'
 import ProductCard from '@/components/product-card'
-import { PRODUCTS, PRODUCT_OF_THE_MONTH_ID } from '@/lib/products'
-import { getResolvedProductOfTheMonth } from '@/lib/admin-catalog'
+import { PRODUCT_OF_THE_MONTH_ID } from '@/lib/products'
+import { getResolvedProductOfTheMonth, listStorefrontProducts } from '@/lib/admin-catalog'
+
+export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'Premium Adult Wellness - Body-Safe Essentials',
@@ -21,16 +23,18 @@ const FEATURED_IDS = [
 ] as const
 
 export default async function HomePage() {
-  const productOfTheMonth = await getResolvedProductOfTheMonth()
+  const [productOfTheMonth, storefrontProducts] = await Promise.all([
+    getResolvedProductOfTheMonth(),
+    listStorefrontProducts(),
+  ])
   const productOfTheMonthId = productOfTheMonth?.id || PRODUCT_OF_THE_MONTH_ID
+  const liveById = new Map(storefrontProducts.map((product) => [product.id, product]))
 
-  const featuredTiles = FEATURED_IDS.map((id) => PRODUCTS.find((product) => product.id === id)).filter(
-    Boolean,
-  )
+  const featuredTiles = FEATURED_IDS.map((id) => liveById.get(id)).filter(Boolean)
   const editTiles =
     featuredTiles.length > 0
       ? featuredTiles
-      : PRODUCTS.filter((product) => product.id !== productOfTheMonthId).slice(0, 4)
+      : storefrontProducts.filter((product) => product.id !== productOfTheMonthId).slice(0, 4)
 
   return (
     <div className="bg-theme-bg text-theme-text">
@@ -76,7 +80,7 @@ export default async function HomePage() {
 
       {productOfTheMonth ? (
         <ProductOfTheMonth
-          productId={productOfTheMonth.id}
+          product={productOfTheMonth}
           offer={{ label: 'This month\'s focus' }}
         />
       ) : null}

@@ -11,7 +11,7 @@
 
 import { NextResponse } from 'next/server'
 import { SITE_CONFIG } from '@/config/site'
-import { getProductById } from '@/lib/products'
+import { listStorefrontProducts } from '@/lib/admin-catalog'
 import { buildCCBillFlexFormUrl, isCheckoutMockEnabled } from '@/lib/ccbill.mjs'
 import {
   checkoutCustomerSchema,
@@ -39,7 +39,9 @@ export async function POST(request) {
 
     let items
     try {
-      items = hydrateCartItems(cart, getProductById)
+      const catalog = await listStorefrontProducts()
+      const byId = new Map(catalog.map((product) => [product.id, product]))
+      items = hydrateCartItems(cart, (id) => byId.get(id))
     } catch (err) {
       return NextResponse.json({ error: err.message }, { status: 400 })
     }

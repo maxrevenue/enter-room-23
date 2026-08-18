@@ -3,12 +3,14 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import ProductCard from '@/components/product-card'
 import ShopCategoryBar from '@/components/ShopCategoryBar'
+import { listStorefrontProductsByCollection } from '@/lib/admin-catalog'
 import {
   COLLECTIONS,
   getCollection,
-  getProductsByCollection,
   titleFromSlug,
 } from '@/lib/products'
+
+export const dynamic = 'force-dynamic'
 
 type PageProps = { params: Promise<{ slug: string }> }
 
@@ -35,7 +37,7 @@ function formatCount(count: number) {
 
 export default async function CollectionPage({ params }: PageProps) {
   const { slug } = await params
-  const products = getProductsByCollection(slug)
+  const products = await listStorefrontProductsByCollection(slug)
   const meta = getCollection(slug)
 
   if (!meta || (!COLLECTIONS[slug] && products.length === 0)) {

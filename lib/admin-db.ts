@@ -15,11 +15,39 @@ export async function getRoom23Db() {
 
 export const PRODUCT_OVERLAY_FIELDS = [
   'name',
+  'slug',
   'price',
+  'quantity',
   'inventoryStatus',
   'category',
   'hidden',
+  'active',
+  'archived',
   'shortEditorial',
   'isProductOfTheMonth',
   'isFeatured',
+  'source',
 ] as const
+
+export type ProductDoc = {
+  id: string
+  slug?: string
+  name?: string
+  price?: number
+  quantity?: number
+  inventoryStatus?: string
+  category?: string
+  collection?: string
+  shortEditorial?: string
+  description?: string
+  tagline?: string
+  hidden?: boolean
+  active?: boolean
+  archived?: boolean
+  isProductOfTheMonth?: boolean
+  isFeatured?: boolean
+  source?: string
+  image?: string
+  createdAt?: Date
+  updatedAt?: Date
+}
