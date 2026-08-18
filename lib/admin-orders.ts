@@ -48,6 +48,7 @@ export type AdminOrder = {
   emailSent?: boolean
   adminReview?: boolean
   fulfilled?: boolean
+  inventoryDecremented?: boolean
   fulfillment?: { status?: string; splitFulfillment?: boolean } | null
 }
 
@@ -186,6 +187,19 @@ export function orderFilterQuery(filter: OrderFilter = 'all') {
     return { status: { $in: [...REFUNDED_CANCELLED_STATUSES] } }
   }
   return {}
+}
+
+export function shouldDecrementInventory(order: Pick<AdminOrder, 'status' | 'fulfilled' | 'fulfillment' | 'inventoryDecremented'>, nextStatus: string) {
+  if (nextStatus !== 'fulfilled') return false
+  if (order.inventoryDecremented === true) return false
+  if (isOrderFulfilled(order)) return false
+  return true
+}
+
+export function nextQuantityAfterDecrement(current: number | null | undefined, orderedQty: number) {
+  if (typeof current !== 'number' || !Number.isFinite(current)) return null
+  const qty = Math.max(1, Math.floor(Number(orderedQty) || 1))
+  return Math.max(0, Math.floor(current) - qty)
 }
 
 export function buildOrderStatusUpdate(status: OrderStatus) {

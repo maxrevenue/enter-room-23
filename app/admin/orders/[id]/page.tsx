@@ -31,7 +31,7 @@ const ghostButtonClass =
 const primaryButtonClass =
   'bg-zinc-100 px-6 py-3 text-[11px] font-medium uppercase tracking-[0.24em] text-zinc-950 hover:bg-zinc-200'
 
-function flashMessage(query: { error?: string; saved?: string }) {
+function flashMessage(query: { error?: string; saved?: string; inventory?: string }) {
   if (query.error === 'invalid') return { role: 'alert' as const, text: 'Choose a valid status and try again.' }
   if (query.error === 'db') return { role: 'alert' as const, text: 'MongoDB is not available. Changes were not saved.' }
   if (query.error === 'email') {
@@ -39,6 +39,9 @@ function flashMessage(query: { error?: string; saved?: string }) {
       role: 'alert' as const,
       text: 'Confirmation email was not sent. Check the customer address, line items, and Resend configuration.',
     }
+  }
+  if (query.saved === 'status' && query.inventory === '1') {
+    return { role: 'status' as const, text: 'Status saved. Inventory was decremented.' }
   }
   if (query.saved === 'status') return { role: 'status' as const, text: 'Status saved.' }
   if (query.saved === 'notes') return { role: 'status' as const, text: 'Notes saved.' }
@@ -53,7 +56,7 @@ export default async function AdminOrderDetailPage({
   searchParams,
 }: {
   params: Promise<{ id: string }>
-  searchParams: Promise<{ error?: string; saved?: string }>
+  searchParams: Promise<{ error?: string; saved?: string; inventory?: string }>
 }) {
   if (!(await isAdminAuthenticated(await cookies(), await resolveAdminPassword()))) {
     redirect('/admin/login')
@@ -122,6 +125,10 @@ export default async function AdminOrderDetailPage({
         <div>
           <dt className={labelClass}>Confirmation email</dt>
           <dd className="text-zinc-300">{order.emailSent ? 'Sent' : 'Not sent'}</dd>
+        </div>
+        <div>
+          <dt className={labelClass}>Inventory</dt>
+          <dd className="text-zinc-300">{order.inventoryDecremented ? 'Decremented on fulfill' : 'Not decremented'}</dd>
         </div>
         <div className="sm:col-span-2">
           <dt className={labelClass}>Shipping address</dt>
