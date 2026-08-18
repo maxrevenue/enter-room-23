@@ -22,21 +22,24 @@ export default function ShopPage() {
   return (
     <div className="min-h-screen bg-theme-bg text-theme-text">
       <section className="mx-auto max-w-6xl px-5 py-16 sm:px-8 sm:py-20 md:py-24">
-        <header className="mb-10 sm:mb-12">
-          <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between md:gap-12">
-            <div className="max-w-xl">
-              <p className="text-[10px] font-medium uppercase tracking-[0.3em] text-theme-muted">
+        <header className="mb-8 sm:mb-10">
+          <div className="flex flex-col gap-6 sm:gap-8 md:flex-row md:items-end md:justify-between md:gap-12">
+            <div className="max-w-lg">
+              <p className="text-[10px] font-medium uppercase tracking-[0.32em] text-theme-muted">
                 The collection
               </p>
-              <h1 className="mt-5 font-serif text-3xl tracking-tight text-theme-text sm:text-4xl md:text-[2.75rem]">
+              <h1 className="mt-4 font-serif text-[2rem] leading-[1.1] tracking-tight text-theme-text sm:mt-5 sm:text-4xl md:text-[2.75rem]">
                 Shop
               </h1>
-              <p className="mt-6 max-w-md text-sm leading-relaxed text-theme-muted sm:text-[0.9375rem]">
-                A tightly held edit of body-safe essentials — refined formulas, quiet packaging,
-                nothing ornamental.
+              <p className="mt-5 max-w-md text-sm leading-[1.7] text-theme-muted sm:mt-6 sm:text-[0.9375rem]">
+                A tightly held edit of body-safe essentials — refined formulas, quiet
+                packaging, nothing ornamental.
               </p>
             </div>
-            <p className="shrink-0 text-[10px] font-medium uppercase tracking-[0.22em] text-theme-muted">
+            <p
+              className="shrink-0 text-[10px] font-medium uppercase tracking-[0.24em] text-theme-muted md:pb-1"
+              aria-label={`${products.length} products`}
+            >
               {countLabel}
             </p>
           </div>
@@ -49,7 +52,7 @@ export default function ShopPage() {
             The current edit is being revised. Please check back shortly.
           </p>
         ) : (
-          <ul className="mt-12 grid grid-cols-1 gap-x-8 gap-y-16 sm:mt-16 sm:grid-cols-2 sm:gap-y-20 lg:grid-cols-3">
+          <ul className="mt-12 grid grid-cols-1 gap-x-8 gap-y-16 sm:mt-14 sm:grid-cols-2 sm:gap-y-20 lg:grid-cols-3">
             {products.map((product) => (
               <li key={product.id}>
                 <ProductCard product={product} />
