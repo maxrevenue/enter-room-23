@@ -29,12 +29,12 @@ export default function CartSheet() {
 
   if (!cartOpen) return null
 
-  const handleApplyPromo = () => {
+  const handleApplyPromo = async () => {
     setPromoError('')
     const code = promoCode.trim().toUpperCase()
     if (!code) return
-    const result = applyPromo(code)
-    if (!result.success) setPromoError('Invalid promo code.')
+    const result = await applyPromo(code)
+    if (!result.success) setPromoError(result.error || 'Invalid promo code.')
   }
 
   const handleRemovePromo = () => {
@@ -138,9 +138,12 @@ export default function CartSheet() {
               </button>
             </div>
             {promoError && <p className="text-[11px]" style={{ color: 'var(--accent)' }}>{promoError}</p>}
-            {discountPercent > 0 && (
+            {appliedPromo && discountAmount > 0 && (
               <div className="flex items-center justify-between text-xs" style={{ color: 'var(--accent)' }}>
-                <span>Promo ({appliedPromo} — {discountPercent}% OFF)</span>
+                <span>
+                  Promo ({appliedPromo}
+                  {discountPercent > 0 ? ` — ${discountPercent}% OFF` : ''})
+                </span>
                 <button onClick={handleRemovePromo}>×</button>
               </div>
             )}
@@ -149,9 +152,9 @@ export default function CartSheet() {
               <span style={{ color: 'var(--color-text-secondary)' }}>Subtotal</span>
               <span className="font-semibold">${subtotal.toFixed(2)}</span>
             </div>
-            {discountPercent > 0 && (
+            {discountAmount > 0 && (
               <div className="flex justify-between text-xs" style={{ color: 'var(--accent)' }}>
-                <span>Discount ({discountPercent}%)</span>
+                <span>Discount{discountPercent > 0 ? ` (${discountPercent}%)` : appliedPromo ? ` (${appliedPromo})` : ''}</span>
                 <span>-${discountAmount.toFixed(2)}</span>
               </div>
             )}
