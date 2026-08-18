@@ -31,7 +31,7 @@ export default function PrivacyPage() {
       <p>When you make a purchase, create an account, or contact us, we may collect:</p>
       <ul>
         <li><strong>Identity &amp; Contact Data:</strong> Full name, email address, shipping address, billing address, and phone number.</li>
-        <li><strong>Payment Data:</strong> Credit/debit card information, billing ZIP code, and cardholder name. <strong>Note:</strong> Full card numbers are tokenized and processed exclusively by our PCI-DSS Level 1 compliant payment gateway. Room 23 never stores complete card numbers on its servers.</li>
+        <li><strong>Payment Data:</strong> Credit/debit card information, billing ZIP code, and cardholder name. <strong>Note:</strong> Secure checkout processed by CCBill. Payment details are handled by our PCI-compliant payment processor. Room 23 never stores complete card numbers on its servers.</li>
         <li><strong>Account Credentials:</strong> Email and hashed password if you create an account.</li>
         <li><strong>Communication Data:</strong> Messages, inquiries, and feedback sent to our support team.</li>
       </ul>
@@ -57,7 +57,7 @@ export default function PrivacyPage() {
       <h2>2. How We Use Your Information</h2>
       <p>We use collected information for the following purposes:</p>
       <ul>
-        <li><strong>Order Fulfillment:</strong> Processing payments, shipping products, sending order confirmations and tracking updates, and handling returns.</li>
+        <li><strong>Order Fulfillment:</strong> Processing payments through CCBill, shipping products, sending order confirmations and tracking updates, and handling returns.</li>
         <li><strong>Customer Support:</strong> Responding to inquiries, resolving disputes, and providing assistance.</li>
         <li><strong>Legal Compliance:</strong> Age verification, fraud prevention, tax reporting, and responding to lawful requests from authorities.</li>
         <li><strong>Site Improvement:</strong> Analyzing aggregate usage patterns to improve product offerings and user experience.</li>
@@ -84,10 +84,10 @@ export default function PrivacyPage() {
 
       <h3>4.1 Payment Processing</h3>
       <p>
-        Payment transactions are processed through a
-        PCI-DSS Level 1 compliant payment gateway utilizing 256-bit TLS encryption. Cardholder data is received directly through
-        tokenized fields; Room 23 does not have access to complete card numbers. Our payment processor&rsquo;s privacy policy
-        governs their handling of your payment data.
+        Payment transactions are processed by <strong>CCBill</strong>, our designated payment processor.
+        Secure checkout processed by CCBill. Payment details are handled by our PCI-compliant payment processor.
+        Cardholder data is entered on CCBill&rsquo;s hosted payment page; Room 23 does not have access to
+        complete card numbers. CCBill&rsquo;s privacy policy governs their handling of your payment data.
       </p>
 
       <h3>4.2 Shipping Carriers</h3>
@@ -166,7 +166,7 @@ export default function PrivacyPage() {
 
       <p>
         To exercise any of these rights, email us at{' '}
-        <a href="mailto:privacy@room23.net">privacy@room23.net</a> with the subject line
+        <a href={`mailto:${SITE_CONFIG.supportEmail}`}>{SITE_CONFIG.supportEmail}</a> with the subject line
         &ldquo;Data Rights Request.&rdquo; We will respond within 30 days (GDPR) or 45 days (CCPA), as
         applicable.
       </p>
@@ -178,7 +178,7 @@ export default function PrivacyPage() {
       </p>
       <ul>
         <li><strong>Encryption:</strong> All data transmitted between your browser and our servers is encrypted via TLS 1.3 (256-bit SSL).</li>
-        <li><strong>PCI Compliance:</strong> Payment data is handled exclusively through PCI-DSS Level 1 compliant infrastructure with 256-bit TLS encryption.</li>
+        <li><strong>PCI Compliance:</strong> Secure checkout processed by CCBill. Payment details are handled by our PCI-compliant payment processor.</li>
         <li><strong>Access Controls:</strong> Personal data access is restricted to authorized personnel on a need-to-know basis.</li>
         <li><strong>Security Headers:</strong> Strict Content Security Policy, HSTS, X-Frame-Options, and other defensive headers are enforced.</li>
       </ul>
@@ -194,7 +194,7 @@ export default function PrivacyPage() {
         personal information from anyone under the age of 18. If we learn that we have collected
         personal data from an individual under 18, we will delete it immediately. If you believe a
         minor has provided us with information, please contact us at{' '}
-        <a href="mailto:privacy@room23.net">privacy@room23.net</a>.
+        <a href={`mailto:${SITE_CONFIG.supportEmail}`}>{SITE_CONFIG.supportEmail}</a>.
       </p>
 
       {/* ── Section 10 ── */}
@@ -217,9 +217,9 @@ export default function PrivacyPage() {
       <h2>12. Contact Information</h2>
       <p>For privacy-related inquiries or to exercise your data rights:</p>
       <ul>
-        <li>Email: <a href="mailto:privacy@room23.net">privacy@room23.net</a></li>
-        <li>General Support: <a href="mailto:support@room23.net">support@room23.net</a></li>
-        <li>Mail: {SITE_CONFIG.legalName}, {SITE_CONFIG.bizAddressFull}, USA</li>
+        <li>Email: <a href={`mailto:${SITE_CONFIG.supportEmail}`}>{SITE_CONFIG.supportEmail}</a></li>
+        <li>Phone: {SITE_CONFIG.supportPhone}</li>
+        <li>Mail: {SITE_CONFIG.legalName}, {SITE_CONFIG.bizAddressFull}, {SITE_CONFIG.location}</li>
       </ul>
       <p>
         Visit our <Link href="/contact" className="link-brass">Contact Page</Link> for additional
