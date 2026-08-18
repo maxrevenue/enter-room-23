@@ -27,6 +27,12 @@ import {
 } from '@/lib/admin-catalog'
 import { getRoom23Db } from '@/lib/admin-db'
 import {
+  isCouponType,
+  normalizeCouponCode,
+  type CouponType,
+} from '@/lib/admin-coupons'
+import { normalizeShippingZones, SHIPPING_ZONE_SLOTS, STORE_SETTINGS_ID } from '@/lib/admin-settings'
+import {
   buildOrderStatusUpdate,
   getAdminOrder,
   isOrderStatus,
@@ -44,8 +50,12 @@ function revalidateAdmin() {
   revalidatePath('/admin')
   revalidatePath('/admin/products')
   revalidatePath('/admin/orders')
+  revalidatePath('/admin/coupons')
+  revalidatePath('/admin/settings')
   revalidatePath('/')
   revalidatePath('/shop')
+  revalidatePath('/cart')
+  revalidatePath('/checkout')
   revalidatePath('/products', 'layout')
   revalidatePath('/collections', 'layout')
 }
@@ -687,4 +697,192 @@ export async function resendOrderEmail(formData: FormData) {
 
   revalidateOrder(order.orderId)
   redirectOrder(order.orderId, 'saved=email')
+}
+
+function redirectCoupon(code: string, query = 'saved=1'): never {
+  redirect(`/admin/coupons/${encodeURIComponent(code)}?${query}`)
+}
+
+function parseOptionalNumber(formData: FormData, name: string, integer = false) {
+  const raw = String(formData.get(name) ?? '').trim()
+  if (raw === '') return null
+  const value = integer ? Math.floor(Number(raw)) : Number(raw)
+  if (!Number.isFinite(value) || value < 0) return undefined
+  return value
+}
+
+function parseCouponFields(formData: FormData) {
+  const code = normalizeCouponCode(String(formData.get('code') || ''))
+  const type = String(formData.get('type') || '').trim()
+  const value = Number(formData.get('value'))
+  const minOrder = parseOptionalNumber(formData, 'minOrder')
+  const usageLimit = parseOptionalNumber(formData, 'usageLimit', true)
+  const expiresRaw = String(formData.get('expiresAt') || '').trim()
+  const note = String(formData.get('note') || '').trim().slice(0, 500)
+  const expiresAt = expiresRaw ? new Date(expiresRaw) : null
+
+  return {
+    code,
+    type,
+    value,
+    minOrder,
+    usageLimit,
+    expiresAt: expiresAt && !Number.isNaN(expiresAt.getTime()) ? expiresAt : null,
+    note,
+    active: String(formData.get('active') || '').toLowerCase() === 'on',
+  }
+}
+
+function couponFieldsAreValid(fields: ReturnType<typeof parseCouponFields>) {
+  if (!fields.code || fields.code.length < 3) return false
+  if (!isCouponType(fields.type)) return false
+  if (!Number.isFinite(fields.value) || fields.value <= 0) return false
+  if (fields.type === 'percent' && (fields.value < 1 || fields.value > 100)) return false
+  if (fields.minOrder === undefined || fields.usageLimit === undefined) return false
+  return true
+}
+
+export async function createCoupon(formData: FormData) {
+  await requireAdmin()
+  const fields = parseCouponFields(formData)
+  if (!couponFieldsAreValid(fields)) redirect('/admin/coupons/new?error=invalid')
+
+  const db = await getRoom23Db()
+  if (!db) redirect('/admin/coupons/new?error=db')
+
+  const existing = await db.collection('coupons').findOne({ code: fields.code })
+  if (existing) redirect('/admin/coupons/new?error=duplicate')
+
+  const type: CouponType = fields.type === 'fixed' ? 'fixed' : 'percent'
+  const now = new Date()
+  await db.collection('coupons').insertOne({
+    code: fields.code,
+    type,
+    value: fields.value,
+    minOrder: fields.minOrder,
+    usageLimit: fields.usageLimit,
+    usedCount: 0,
+    expiresAt: fields.expiresAt,
+    active: fields.active,
+    note: fields.note,
+    createdAt: now,
+    updatedAt: now,
+  })
+
+  revalidateAdmin()
+  revalidatePath(`/admin/coupons/${fields.code}`)
+  redirect(`/admin/coupons/${encodeURIComponent(fields.code)}?saved=1`)
+}
+
+export async function updateCoupon(formData: FormData) {
+  await requireAdmin()
+  const originalCode = normalizeCouponCode(String(formData.get('originalCode') || formData.get('code') || ''))
+  const fields = parseCouponFields(formData)
+  if (!originalCode) redirect('/admin/coupons?error=missing')
+  if (!couponFieldsAreValid(fields)) redirectCoupon(originalCode, 'error=invalid')
+
+  const db = await getRoom23Db()
+  if (!db) redirectCoupon(originalCode, 'error=db')
+
+  const current = await db.collection('coupons').findOne({ code: originalCode })
+  if (!current) redirect('/admin/coupons?error=missing')
+
+  const type: CouponType = fields.type === 'fixed' ? 'fixed' : 'percent'
+  await db.collection('coupons').updateOne(
+    { code: originalCode },
+    {
+      $set: {
+        type,
+        value: fields.value,
+        minOrder: fields.minOrder,
+        usageLimit: fields.usageLimit,
+        expiresAt: fields.expiresAt,
+        active: fields.active,
+        note: fields.note,
+        updatedAt: new Date(),
+      },
+    },
+  )
+
+  revalidateAdmin()
+  revalidatePath(`/admin/coupons/${originalCode}`)
+  redirectCoupon(originalCode)
+}
+
+export async function deactivateCoupon(formData: FormData) {
+  await requireAdmin()
+  const code = normalizeCouponCode(String(formData.get('code') || ''))
+  if (!code) redirect('/admin/coupons?error=missing')
+
+  const db = await getRoom23Db()
+  if (!db) redirect(`/admin/coupons/${encodeURIComponent(code)}?error=db`)
+
+  const current = await db.collection('coupons').findOne({ code })
+  if (!current) redirect('/admin/coupons?error=missing')
+
+  await db.collection('coupons').updateOne(
+    { code },
+    { $set: { active: false, updatedAt: new Date() } },
+  )
+
+  revalidateAdmin()
+  revalidatePath(`/admin/coupons/${code}`)
+  if (fromList(formData)) redirect('/admin/coupons?saved=1')
+  redirectCoupon(code)
+}
+
+export async function updateStoreSettings(formData: FormData) {
+  await requireAdmin()
+
+  const shippingFlatRate = Number(formData.get('shippingFlatRate'))
+  const thresholdRaw = String(formData.get('freeShippingThreshold') ?? '').trim()
+  const freeShippingThreshold = thresholdRaw === '' ? null : Number(thresholdRaw)
+  const supportEmail = String(formData.get('supportEmail') || '').trim()
+  const supportPhone = String(formData.get('supportPhone') || '').trim()
+  const storeOpen = String(formData.get('storeOpen') || '').toLowerCase() === 'on'
+
+  if (!Number.isFinite(shippingFlatRate) || shippingFlatRate < 0) {
+    redirect('/admin/settings?error=invalid')
+  }
+  if (freeShippingThreshold != null && (!Number.isFinite(freeShippingThreshold) || freeShippingThreshold < 0)) {
+    redirect('/admin/settings?error=invalid')
+  }
+  if (!supportEmail || !supportEmail.includes('@')) {
+    redirect('/admin/settings?error=invalid')
+  }
+
+  const zones = []
+  for (let index = 0; index < SHIPPING_ZONE_SLOTS; index += 1) {
+    zones.push({
+      name: String(formData.get(`zoneName${index}`) || ''),
+      countries: String(formData.get(`zoneCountries${index}`) || ''),
+      rate: String(formData.get(`zoneRate${index}`) || ''),
+    })
+  }
+
+  const db = await getRoom23Db()
+  if (!db) redirect('/admin/settings?error=db')
+
+  await db.collection('settings').updateOne(
+    { id: STORE_SETTINGS_ID },
+    {
+      $set: {
+        id: STORE_SETTINGS_ID,
+        storeOpen,
+        supportEmail,
+        supportPhone,
+        shippingFlatRate,
+        freeShippingThreshold,
+        shippingZones: normalizeShippingZones(zones),
+        updatedAt: new Date(),
+      },
+      $setOnInsert: {
+        createdAt: new Date(),
+      },
+    },
+    { upsert: true },
+  )
+
+  revalidateAdmin()
+  redirect('/admin/settings?saved=1')
 }
