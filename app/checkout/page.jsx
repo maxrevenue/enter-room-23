@@ -1,4 +1,5 @@
 import CheckoutForm from '@/components/checkout-form'
+import { SITE_CONFIG } from '@/config/site'
 
 export const metadata = {
   title: 'Secure Checkout - Physical Goods',
@@ -15,7 +16,7 @@ export default function CheckoutPage() {
         Checkout
       </h1>
       <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem' }}>
-        US shipping only. Payment is completed on CCBill&apos;s hosted page.
+        US shipping only. Payment is completed on {SITE_CONFIG.paymentProcessor}&apos;s hosted page.
       </p>
       <CheckoutForm />
     </main>

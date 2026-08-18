@@ -37,7 +37,7 @@ export default function TermsPage() {
           <section className="space-y-3">
             <h2 className="font-serif text-xl text-theme-text">3. Payment Processing & Billing Descriptor</h2>
             <p>
-              All online purchases are billed securely. Payments are processed by our authorized payment processor, CCBill. Secure checkout processed by CCBill. Payment details are handled by our PCI-compliant payment processor.
+              All online purchases are billed securely. Payments are processed by our authorized payment processor, {SITE_CONFIG.paymentProcessor}. {SITE_CONFIG.pciCheckoutWording}
             </p>
             <p>
               Your credit card, debit card, or bank statement will show charges under the exact billing descriptor:

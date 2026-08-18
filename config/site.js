@@ -22,12 +22,13 @@ export const SITE_CONFIG = {
   bizStreet: BASE_CONFIG.address.street,
   bizCityState: `${BASE_CONFIG.address.city}, ${BASE_CONFIG.address.state} ${BASE_CONFIG.address.zip}`,
   bizAddressFull: BASE_CONFIG.address.full,
-  // Default billing descriptor: ROOM23 WELLNESS (defined in lib/constants.ts)
   billingDescriptor: process.env.NEXT_PUBLIC_BILLING_DESCRIPTOR || BASE_CONFIG.billingDescriptor,
   checkoutEnabled: true,
+  discountCode: 'WELCOME10',
+  discountPercentage: 10,
   carriers: ['USPS', 'UPS', 'FedEx'],
   freeShippingThreshold: FREE_SHIPPING_THRESHOLD,
   flatShippingRate: FLAT_SHIPPING_RATE,
-  lastUpdated: 'August 2026',
+  lastUpdated: 'August 18, 2026',
   ageCookieDurationDays: 30,
 }

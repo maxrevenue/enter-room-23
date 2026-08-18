@@ -30,10 +30,10 @@ export default function PrivacyPage() {
           <section className="space-y-3">
             <h2 className="font-serif text-xl text-theme-text">2. Payment Security & Payment Processing</h2>
             <p>
-              We do not store complete credit card or payment card account numbers on our servers. All transaction data is handled directly by our payment gateway provider, CCBill.
+              We do not store complete credit card or payment card account numbers on our servers. All transaction data is handled directly by our payment processor, {SITE_CONFIG.paymentProcessor}.
             </p>
             <p>
-              Secure checkout processed by CCBill. Payment details are handled by our PCI-compliant payment processor. Your transaction will appear on your bank statement under the descriptor:{' '}
+              {SITE_CONFIG.pciCheckoutWording} Your transaction will appear on your bank statement under the descriptor:{' '}
               <strong className="text-theme-text font-semibold">{SITE_CONFIG.billingDescriptor}</strong>.
             </p>
           </section>

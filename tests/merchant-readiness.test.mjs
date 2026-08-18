@@ -60,7 +60,8 @@ describe('merchant readiness', () => {
     assert.match(site, /checkoutEnabled:\s*true/)
     assert.doesNotMatch(site, /softLaunch/)
     assert.doesNotMatch(site, /NEXT_PUBLIC_SOFT_LAUNCH/)
-    assert.match(site, /ROOM23 WELLNESS/)
+    const constants = read('lib/constants.ts')
+    assert.match(constants, /ROOM23 WELLNESS/)
     const envExample = read('.env.example')
     assert.doesNotMatch(envExample, /SOFT_LAUNCH/)
   })
@@ -71,6 +72,26 @@ describe('merchant readiness', () => {
     assert.doesNotMatch(products, /vintage:/)
     const collections = read('app/collections/page.tsx')
     assert.doesNotMatch(collections, /vintage/)
+  })
+
+  it('names CCBill in legal pages and omits NMI sitewide', () => {
+    const terms = read('app/terms/page.tsx')
+    const privacy = read('app/privacy/page.tsx')
+    assert.match(terms, /SITE_CONFIG\.paymentProcessor/)
+    assert.match(terms, /SITE_CONFIG\.pciCheckoutWording/)
+    assert.match(terms, /SITE_CONFIG\.billingDescriptor/)
+    assert.match(privacy, /SITE_CONFIG\.paymentProcessor/)
+    assert.match(privacy, /SITE_CONFIG\.pciCheckoutWording/)
+    assert.doesNotMatch(terms, /PCI-DSS Level 1/)
+    assert.doesNotMatch(privacy, /PCI-DSS Level 1/)
+
+    const constants = read('lib/constants.ts')
+    assert.match(constants, /paymentProcessor:\s*'CCBill'/)
+    assert.match(constants, /Secure checkout processed by CCBill/)
+    assert.doesNotMatch(constants, /NMI/)
+
+    const wrangler = read('wrangler.jsonc')
+    assert.doesNotMatch(wrangler, /NMI/)
   })
 
   it('does not leave enterroom23.com on the customer path', () => {

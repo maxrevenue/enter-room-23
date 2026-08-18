@@ -28,6 +28,9 @@ export default function ShippingPage() {
               Your credit card or bank statement will discreetly list charges under the exact billing descriptor:{' '}
               <strong className="text-theme-text font-semibold">{SITE_CONFIG.billingDescriptor}</strong>.
             </p>
+            <p className="text-sm leading-relaxed text-theme-muted">
+              {SITE_CONFIG.pciCheckoutWording}
+            </p>
           </section>
 
           <section className="space-y-4">

@@ -14,4 +14,6 @@ export const SITE_CONFIG = {
   email: 'support@room23.net',
   billingDescriptor: 'ROOM23 WELLNESS',
   paymentProcessor: 'CCBill',
+  pciCheckoutWording:
+    'Secure checkout processed by CCBill. Payment details are handled by our PCI-compliant payment processor.',
 } as const

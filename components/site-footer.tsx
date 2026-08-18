@@ -104,7 +104,7 @@ export default function SiteFooter() {
             </p>
           </div>
           <p className="mt-4 text-[10px] leading-relaxed text-theme-muted/80">
-            Secure checkout processed by CCBill. Payment details are handled by our PCI-compliant payment processor.
+            {SITE_CONFIG.pciCheckoutWording}
           </p>
         </div>
       </div>

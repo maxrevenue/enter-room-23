@@ -71,7 +71,7 @@ export default function ContactPage() {
             </h2>
             <div className="mt-4 space-y-4 text-xs text-theme-muted">
               <p>
-                All transactions on this site are processed securely through our payment provider, CCBill.
+                All transactions on this site are processed securely through {SITE_CONFIG.paymentProcessor}.
               </p>
               <div className="rounded border border-theme-border p-4">
                 <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-theme-muted">
@@ -82,7 +82,7 @@ export default function ContactPage() {
                 </p>
               </div>
               <p className="text-[11px] leading-relaxed">
-                Secure checkout processed by CCBill. Payment details are handled by our PCI-compliant payment processor.
+                {SITE_CONFIG.pciCheckoutWording}
               </p>
             </div>
           </div>

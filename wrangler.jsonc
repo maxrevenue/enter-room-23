@@ -32,8 +32,8 @@
 
   // ── Staging environment ──
   // Deploy with: npx wrangler deploy --env staging
-  // Secrets (NMI_PRIVATE_KEY, RESEND_API_KEY, ADMIN_EMAIL) must be set separately:
-  //   npx wrangler secret put NMI_PRIVATE_KEY --env staging
+  // Secrets (CCBILL_SALT, RESEND_API_KEY, ADMIN_EMAIL) must be set separately:
+  //   npx wrangler secret put CCBILL_SALT --env staging
   //   npx wrangler secret put RESEND_API_KEY --env staging
   //   npx wrangler secret put ADMIN_EMAIL --env staging
   // Never store secrets in this file.
