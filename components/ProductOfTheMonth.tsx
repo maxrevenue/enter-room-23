@@ -1,5 +1,5 @@
+import Image from 'next/image'
 import Link from 'next/link'
-import { AspectRatio } from '@/components/ui/aspect-ratio'
 import { getProductById, productHref } from '@/lib/products'
 
 export type MonthOffer = {
@@ -23,9 +23,12 @@ export default function ProductOfTheMonth({ productId, offer = null }: ProductOf
   if (!product) return null
 
   const href = productHref(product)
+  const dossierHref = `${href}#dossier`
+  const imageSrc = product.image || product.images?.[0]?.url
+  const imageAlt = product.images?.[0]?.alt || product.name
+  const editorial = product.shortEditorial || product.description
   const compareAt =
     offer?.compareAtPrice != null ? `$${offer.compareAtPrice.toFixed(2)}` : null
-  const editorial = product.shortEditorial || product.description
 
   return (
     <section
@@ -33,80 +36,66 @@ export default function ProductOfTheMonth({ productId, offer = null }: ProductOf
       className="border-t border-theme-border px-5 py-24 sm:px-8 sm:py-32 md:py-40"
     >
       <div className="mx-auto max-w-6xl">
-        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-20">
-          <Link href={href} className="group block">
-            <div className="overflow-hidden border border-theme-border bg-theme-surface">
-              <AspectRatio ratio={4 / 5}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="h-full w-full object-contain p-6 transition-opacity duration-300 group-hover:opacity-90"
-                />
-              </AspectRatio>
-            </div>
-          </Link>
+        <header className="mb-10 max-w-md sm:mb-14 lg:mb-20">
+          <p className="label-meta">This month&apos;s focus</p>
+          {offer?.label ? <p className="label-meta mt-3">{offer.label}</p> : null}
+        </header>
 
-          <div className="flex flex-col justify-center">
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-              <p className="text-[10px] font-medium uppercase tracking-[0.28em] text-theme-muted">
-                This month&apos;s focus
-              </p>
-              {offer ? (
-                <>
-                  <span className="text-[10px] uppercase tracking-[0.2em] text-theme-muted/60">·</span>
-                  <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-theme-muted">
-                    {offer.label}
-                  </p>
-                </>
-              ) : null}
-            </div>
+        <div className="grid grid-cols-1 gap-10 sm:gap-12 lg:grid-cols-12 lg:items-end lg:gap-x-8 lg:gap-y-0">
+          <div className="lg:col-span-7">
+            {imageSrc ? (
+              <Link href={href} className="group block" aria-label={product.name}>
+                <div className="product-frame">
+                  <Image
+                    src={imageSrc}
+                    alt={imageAlt}
+                    fill
+                    sizes="(min-width: 1024px) 42vw, 92vw"
+                    unoptimized
+                    className="object-contain"
+                  />
+                </div>
+              </Link>
+            ) : null}
+          </div>
 
-            <h2
-              id="product-of-month-heading"
-              className="mt-6 font-serif text-2xl tracking-tight text-theme-text sm:text-3xl md:text-4xl"
-            >
-              Product of the Month
+          <div className="lg:col-span-4 lg:col-start-9">
+            <p className="label-meta">{formatCategory(product.category)}</p>
+            <h2 id="product-of-month-heading" className="heading-lg mt-5">
+              {product.name}
             </h2>
 
-            <p className="mt-4 text-[10px] font-medium uppercase tracking-[0.22em] text-theme-muted">
-              {formatCategory(product.category)}
-            </p>
-
-            <Link href={href} className="group mt-4 block">
-              <h3 className="font-serif text-xl tracking-wide text-theme-text transition-colors duration-300 group-hover:text-theme-text sm:text-2xl">
-                {product.name}
-              </h3>
-            </Link>
-
             {product.tagline ? (
-              <p className="mt-4 text-sm leading-relaxed text-theme-muted sm:text-[0.9375rem]">
-                {product.tagline}
-              </p>
+              <p className="caption mt-4">{product.tagline}</p>
             ) : null}
 
-            <p className="mt-5 text-sm leading-relaxed text-theme-muted sm:text-[0.9375rem]">
-              {editorial}
-            </p>
+            <p className="body-sm mt-6 max-w-sm text-muted">{editorial}</p>
 
-            <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
+            {product.attributes?.length ? (
+              <ul className="mt-8 flex flex-wrap gap-x-5 gap-y-2">
+                {product.attributes.map((attribute: string) => (
+                  <li key={attribute} className="caption">
+                    {attribute}
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+
+            <div className="mt-10 flex flex-wrap items-baseline gap-x-5 gap-y-2">
               {compareAt ? (
-                <p className="text-sm tracking-wide text-theme-muted line-through">{compareAt}</p>
+                <p className="caption line-through">{compareAt}</p>
               ) : null}
-              <p className="text-sm tracking-wide text-theme-text/80">${product.price.toFixed(2)}</p>
-              {product.badge ? (
-                <p className="border border-theme-border px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-theme-muted">
-                  {product.badge}
-                </p>
-              ) : null}
+              <p className="body-sm">${product.price.toFixed(2)}</p>
             </div>
 
-            <Link
-              href={href}
-              className="mt-10 inline-flex min-h-12 w-fit items-center justify-center border border-theme-border px-10 py-3.5 text-[11px] font-medium uppercase tracking-[0.24em] text-theme-text transition-colors duration-300 hover:border-theme-muted hover:bg-theme-surface"
-            >
-              View Product
-            </Link>
+            <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+              <Link href={href} className="btn-primary">
+                Acquire Object
+              </Link>
+              <Link href={dossierHref} className="btn-secondary">
+                Read Dossier
+              </Link>
+            </div>
           </div>
         </div>
       </div>

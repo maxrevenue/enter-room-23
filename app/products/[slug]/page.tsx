@@ -185,7 +185,10 @@ export default async function ProductPage({ params, searchParams }: PageProps) {
           </div>
         </div>
 
-        <div className="mt-16 grid grid-cols-1 gap-12 border-t border-theme-border pt-12 sm:mt-20 sm:gap-14 sm:pt-16 lg:grid-cols-12">
+        <div
+          id="dossier"
+          className="mt-16 grid grid-cols-1 gap-12 border-t border-theme-border pt-12 sm:mt-20 sm:gap-14 sm:pt-16 lg:grid-cols-12"
+        >
           <div className="lg:col-span-4">
             <h2 className="font-serif text-xl tracking-tight text-theme-text sm:text-2xl">
               Details
