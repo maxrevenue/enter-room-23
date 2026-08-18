@@ -3,9 +3,10 @@ import Link from 'next/link'
 import { SITE_CONFIG } from '@/config/site'
 
 export const metadata: Metadata = {
-  title: 'Materials & Standards',
+  title: 'Materials & Standards - Body-Safe Formulas',
   description:
-    'Body-safe materials standards for Room 23 products — platinum-cure silicone, botanical oils, and topical wellness formulas.',
+    'How Room 23 vets body-safe materials: platinum-cure silicone, botanical oils, and topical wellness formulas with clear compatibility notes. 18+.',
+  alternates: { canonical: '/standards' },
 }
 
 export default function StandardsPage() {

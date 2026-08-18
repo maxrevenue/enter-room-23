@@ -3,8 +3,10 @@ import Link from 'next/link'
 import { Clock, BookOpen } from 'lucide-react'
 
 export const metadata = {
-  title: 'Journal',
-  description: 'Wellness education and editorial from Room 23.',
+  title: 'Wellness Journal - Care, Materials & Discretion',
+  description:
+    'Read Room 23 journal notes on lubricant formulations, intimate care, and why discretion is the standard for adult wellness. 18+ only.',
+  alternates: { canonical: '/journal' },
 }
 
 export default function JournalPage() {

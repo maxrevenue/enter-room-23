@@ -1,7 +1,7 @@
 import Link from 'next/link'
 
 export const metadata = {
-  title: 'Page Not Found',
+  title: 'Page Not Found - Missing Route',
   robots: { index: false, follow: false },
 }
 

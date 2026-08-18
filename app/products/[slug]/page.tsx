@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import ProductAddToCart from '@/components/product-add-to-cart'
@@ -26,9 +27,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params
   const product = getProductBySlug(slug)
   if (!product) return { title: 'Product' }
+  const description = [product.shortEditorial, product.description]
+    .filter(Boolean)
+    .join(' ')
+    .replace(/\s+/g, ' ')
+    .trim()
   return {
-    title: product.name,
-    description: product.shortEditorial || product.description,
+    title: `${product.name} - Adult Wellness`,
+    description:
+      description.length > 155 ? `${description.slice(0, 154).replace(/\s+\S*$/, '')}…` : description,
+    alternates: { canonical: `/products/${product.slug}` },
   }
 }
 
@@ -94,12 +102,15 @@ export default async function ProductPage({ params, searchParams }: PageProps) {
 
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-16 xl:gap-20">
           <div>
-            <div className="aspect-[4/5] overflow-hidden border border-theme-border bg-theme-bg">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+            <div className="relative aspect-[4/5] overflow-hidden border border-theme-border bg-theme-bg">
+              <Image
                 src={hero.url}
                 alt={hero.alt || product.name}
-                className="h-full w-full object-cover"
+                fill
+                sizes="(min-width: 1024px) 50vw, 100vw"
+                unoptimized
+                priority
+                className="object-cover"
               />
             </div>
 
@@ -114,15 +125,17 @@ export default async function ProductPage({ params, searchParams }: PageProps) {
                         scroll={false}
                         aria-label={`View image ${index + 1}`}
                         aria-current={isActive ? 'true' : undefined}
-                        className={`block aspect-[4/5] overflow-hidden border bg-theme-bg ${
+                        className={`relative block aspect-[4/5] overflow-hidden border bg-theme-bg ${
                           isActive ? 'border-theme-text/50' : 'border-theme-border'
                         }`}
                       >
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
+                        <Image
                           src={thumb.url}
                           alt={thumb.alt || product.name}
-                          className="h-full w-full object-cover"
+                          fill
+                          sizes="80px"
+                          unoptimized
+                          className="object-cover"
                         />
                       </Link>
                     </li>

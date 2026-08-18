@@ -28,14 +28,14 @@ export default function BrandPhilosophy() {
           Est. 2024
         </p>
 
-        <h2
+        <h1
           id="philosophy-heading"
           className="font-syne text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-6"
           style={{ color: 'var(--text-primary)', letterSpacing: '-0.01em' }}
         >
           Considered pleasure.{' '}
           <span style={{ color: '#C8102E' }}>Body-safe essentials.</span>
-        </h2>
+        </h1>
 
         <div className="space-y-5 mb-14 max-w-2xl mx-auto">
           <p

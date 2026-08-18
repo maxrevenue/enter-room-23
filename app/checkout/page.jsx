@@ -1,8 +1,9 @@
 import CheckoutForm from '@/components/checkout-form'
 
 export const metadata = {
-  title: 'Checkout',
-  description: 'Secure one-time checkout for Room 23 physical goods. Card data never touches our servers.',
+  title: 'Secure Checkout - Physical Goods',
+  description:
+    'Complete a one-time checkout for Room 23 physical goods. Card data is entered on the hosted payment page, never on our servers.',
   robots: { index: false, follow: false },
 }
 

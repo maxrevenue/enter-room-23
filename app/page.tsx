@@ -7,9 +7,10 @@ import ProductCard from '@/components/product-card'
 import { PRODUCTS } from '@/lib/products'
 
 export const metadata: Metadata = {
-  title: 'Room 23 — Premium Adult Wellness',
+  title: 'Premium Adult Wellness - Body-Safe Essentials',
   description:
-    'Considered pleasure. Body-safe adult wellness essentials with refined formulations and secure checkout. 18+ only.',
+    'Shop body-safe adult wellness essentials from Room 23: refined lubricants, intimate care, and discreet checkout. Considered pleasure. 18+ only.',
+  alternates: { canonical: '/' },
 }
 
 const PRODUCT_OF_THE_MONTH_ID = 'cake-stroker'

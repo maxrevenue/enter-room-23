@@ -1,5 +1,7 @@
 'use client'
 
+import Image from 'next/image'
+
 export default function ProductArtwork({
   product = undefined,
   productId = undefined,
@@ -14,12 +16,16 @@ export default function ProductArtwork({
 
   if (src) {
     return (
-      <img
-        src={src}
-        alt={alt || product?.gallery?.[0]?.alt || label}
-        className={`h-full w-full object-cover ${className}`}
-        style={style}
-      />
+      <div className={`relative h-full w-full ${className}`} style={style}>
+        <Image
+          src={src}
+          alt={alt || product?.gallery?.[0]?.alt || label}
+          fill
+          sizes="(min-width: 640px) 20rem, 100vw"
+          unoptimized
+          className="object-cover"
+        />
+      </div>
     )
   }
 

@@ -2,8 +2,9 @@ import Link from 'next/link'
 import { SITE_CONFIG } from '@/config/site'
 
 export const metadata = {
-  title: 'Secure payment',
-  description: 'Hosted payment for Room 23 physical goods.',
+  title: 'Secure Payment - Hosted Checkout',
+  description:
+    'Finish payment for your Room 23 order on the hosted processor page. Physical adult wellness goods, US shipping only.',
   robots: { index: false, follow: false },
 }
 

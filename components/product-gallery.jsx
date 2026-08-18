@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import { AspectRatio } from '@/components/ui/aspect-ratio'
 
 export default function ProductGallery({ product }) {
@@ -10,8 +11,15 @@ export default function ProductGallery({ product }) {
 
   return (
     <div>
-      <AspectRatio ratio={4 / 5} className="overflow-hidden border border-theme-border bg-theme-surface">
-        <img src={hero.url} alt={hero.alt || product.name} className="h-full w-full object-cover" />
+      <AspectRatio ratio={4 / 5} className="relative overflow-hidden border border-theme-border bg-theme-surface">
+        <Image
+          src={hero.url}
+          alt={hero.alt || product.name}
+          fill
+          sizes="(min-width: 1024px) 50vw, 100vw"
+          unoptimized
+          className="object-cover"
+        />
       </AspectRatio>
       {images.length > 1 && (
         <div className="mt-4 grid grid-cols-4 gap-3">
@@ -22,10 +30,17 @@ export default function ProductGallery({ product }) {
               onClick={() => setActive(index)}
               aria-label={`View image ${index + 1}`}
               aria-current={index === active ? 'true' : undefined}
-              className={`block overflow-hidden border bg-theme-surface ${index === active ? 'border-theme-text/50' : 'border-theme-border'}`}
+              className={`relative block overflow-hidden border bg-theme-surface ${index === active ? 'border-theme-text/50' : 'border-theme-border'}`}
             >
               <AspectRatio ratio={4 / 5}>
-                <img src={thumb.url} alt={thumb.alt || ''} className="h-full w-full object-cover" />
+                <Image
+                  src={thumb.url}
+                  alt={thumb.alt || ''}
+                  fill
+                  sizes="25vw"
+                  unoptimized
+                  className="object-cover"
+                />
               </AspectRatio>
             </button>
           ))}

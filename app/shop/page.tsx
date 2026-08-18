@@ -3,9 +3,10 @@ import ProductCard from '@/components/product-card'
 import { PRODUCTS, searchProducts } from '@/lib/products'
 
 export const metadata: Metadata = {
-  title: 'Shop',
+  title: 'Shop Adult Wellness - Body-Safe Essentials',
   description:
-    'Curated adult wellness essentials from Room 23 — body-safe lubricants, delay spray, mists, oils, and the Hello Cake stroker. 18+ only.',
+    'Browse Room 23 adult wellness essentials: platinum silicone lubricants, delay spray, botanical mists, oils, and body-safe toys. 18+ only.',
+  alternates: { canonical: '/shop' },
 }
 
 type ShopPageProps = {

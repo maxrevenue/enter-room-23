@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useCart } from '@/lib/cart-context'
 import { SITE_CONFIG } from '@/config/site'
@@ -43,10 +44,16 @@ export default function CartPageClient() {
         <ul className="mt-10 space-y-6">
           {cart.map((item) => (
             <li key={item.id} className="flex gap-4 border-b border-theme-border pb-6">
-              <div className="h-24 w-20 shrink-0 overflow-hidden border border-theme-border bg-theme-surface">
+              <div className="relative h-24 w-20 shrink-0 overflow-hidden border border-theme-border bg-theme-surface">
                 {item.image ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={item.image} alt="" className="h-full w-full object-cover" />
+                  <Image
+                    src={item.image}
+                    alt=""
+                    fill
+                    sizes="80px"
+                    unoptimized
+                    className="object-cover"
+                  />
                 ) : null}
               </div>
               <div className="flex flex-1 flex-col">

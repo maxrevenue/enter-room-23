@@ -3,8 +3,10 @@ import Link from 'next/link'
 import { COLLECTIONS, getProductsByCollection } from '@/lib/products'
 
 export const metadata: Metadata = {
-  title: 'Collections | Room 23',
-  description: 'Essentials, wellness, body, toys, and new arrivals from Room 23.',
+  title: 'Shop Collections - Essentials, Wellness & Toys',
+  description:
+    'Explore Room 23 collections: essentials, wellness, body care, toys, and new arrivals. Tightly held groupings of body-safe adult wellness. 18+.',
+  alternates: { canonical: '/collections' },
 }
 
 export default function CollectionsPage() {

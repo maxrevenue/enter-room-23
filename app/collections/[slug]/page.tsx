@@ -19,7 +19,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params
   const meta = getCollection(slug)
   if (!meta) return { title: 'Collection' }
-  return { title: meta.title, description: meta.description }
+  const description = [meta.description, meta.subtitle].filter(Boolean).join(' ')
+  return {
+    title: `${meta.title} - Adult Wellness Collection`,
+    description: description.length > 155 ? `${description.slice(0, 154).replace(/\s+\S*$/, '')}…` : description,
+    alternates: { canonical: `/collections/${slug}` },
+  }
 }
 
 export default async function CollectionPage({ params }: PageProps) {

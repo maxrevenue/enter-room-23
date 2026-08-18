@@ -1,10 +1,13 @@
+import Image from 'next/image'
 import Link from 'next/link'
 import { SITE_CONFIG } from '@/config/site'
 import { SHIPPING_METHODS, FREE_SHIPPING_THRESHOLD } from '@/lib/shipping'
 
 export const metadata = {
-  title: 'Shipping & Returns',
-  description: 'Shipping rates, discreet packaging, and the Room 23 return policy.',
+  title: 'Shipping & Returns - Discreet US Delivery',
+  description:
+    'Room 23 ships unmarked US parcels with tracking. See rates, free-shipping threshold, packing policy, and the 14-day unopened return window.',
+  alternates: { canonical: '/shipping' },
 }
 
 export default function ShippingPage() {
@@ -20,10 +23,13 @@ export default function ShippingPage() {
 
       <div className="grid md:grid-cols-2 gap-8 items-center bg-theme-surface border border-theme-border p-6 md:p-8 mb-12">
         <div className="overflow-hidden border border-theme-border">
-          <img
+          <Image
             src="/images/shipping/discreet-mailer-01.jpg"
             alt="Plain unmarked carton with a generic shipping label"
-            className="w-full h-64 object-cover"
+            width={800}
+            height={512}
+            unoptimized
+            className="h-64 w-full object-cover"
           />
         </div>
 

@@ -13,9 +13,12 @@ export async function generateMetadata({ params }) {
   const { slug } = await params
   const article = getJournalArticle(slug)
   if (!article) return { title: 'Journal' }
+  const description = [article.excerpt, article.subtitle].filter(Boolean).join(' ')
   return {
-    title: article.title,
-    description: article.excerpt,
+    title: `${article.title} - Journal`,
+    description:
+      description.length > 155 ? `${description.slice(0, 154).replace(/\s+\S*$/, '')}…` : description,
+    alternates: { canonical: `/journal/${slug}` },
   }
 }
 

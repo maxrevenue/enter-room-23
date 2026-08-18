@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import Script from 'next/script'
 import { Inter, Syne, Cormorant_Garamond } from 'next/font/google'
 import { CartProvider } from '@/lib/cart-context'
 import SiteShell from '@/components/site-shell'
@@ -28,14 +29,17 @@ const cormorant = Cormorant_Garamond({
   weight: ['400', '500', '600', '700'],
 })
 
+const DEFAULT_TITLE = 'Premium Adult Wellness - Body-Safe Essentials | Room 23'
+const DEFAULT_DESCRIPTION =
+  'Shop body-safe adult wellness essentials from Room 23: refined lubricants, intimate care, and discreet checkout. Considered pleasure. 18+ only.'
+
 export const metadata = {
   metadataBase: new URL('https://room23.net'),
   title: {
-    default: 'Room 23 — Premium Adult Wellness',
+    default: DEFAULT_TITLE,
     template: '%s | Room 23',
   },
-  description:
-    'Room 23 offers premium adult wellness products with body-safe materials and secure checkout. 18+ only.',
+  description: DEFAULT_DESCRIPTION,
   keywords: [
     'adult wellness',
     'premium intimacy',
@@ -57,9 +61,8 @@ export const metadata = {
     },
   },
   openGraph: {
-    title: 'Room 23 — Premium Adult Wellness',
-    description:
-      'Premium adult wellness products. Body-safe essentials. 18+ only.',
+    title: DEFAULT_TITLE,
+    description: DEFAULT_DESCRIPTION,
     url: 'https://room23.net',
     siteName: 'Room 23',
     locale: 'en_US',
@@ -67,8 +70,8 @@ export const metadata = {
   },
   twitter: {
     card: 'summary',
-    title: 'Room 23 — Premium Adult Wellness',
-    description: 'Premium adult wellness. Body-safe essentials. 18+ only.',
+    title: DEFAULT_TITLE,
+    description: DEFAULT_DESCRIPTION,
   },
 }
 
@@ -82,14 +85,12 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       data-palette={DEFAULT_PALETTE}
       suppressHydrationWarning
     >
-      <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: THEME_INIT_SCRIPT,
-          }}
-        />
-      </head>
       <body>
+        <Script
+          id="theme-init"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }}
+        />
         <AgeGate />
         <a href="#main-content" className="skip-to-content" aria-label="Skip to main content">
           Skip to content

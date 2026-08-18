@@ -2,8 +2,10 @@ import Link from 'next/link'
 import { SITE_CONFIG } from '@/config/site'
 
 export const metadata = {
-  title: 'Terms of Service',
-  description: 'Terms of Service for Room 23 — Age restrictions, account responsibilities, and legal agreements.',
+  title: 'Terms of Service - Age, Orders & Use',
+  description:
+    'Room 23 terms covering 18+ access, orders of physical goods, accounts, prohibited use, and the legal agreement for this adult wellness shop.',
+  alternates: { canonical: '/terms' },
 }
 
 export default function TermsPage() {

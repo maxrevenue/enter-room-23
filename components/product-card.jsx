@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { INVENTORY_STATUS } from '@/lib/inventory'
 import ProductCardActions from '@/components/product-card-actions'
 
@@ -23,11 +24,13 @@ export default function ProductCard({ product }) {
       >
         <div className="relative aspect-[4/5] overflow-hidden bg-theme-surface">
           {imageSrc ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
+            <Image
               src={imageSrc}
               alt={imageAlt}
-              className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+              fill
+              sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+              unoptimized
+              className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
             />
           ) : (
             <div className="flex h-full w-full flex-col items-center justify-center bg-theme-bg">

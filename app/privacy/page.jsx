@@ -2,8 +2,10 @@ import Link from 'next/link'
 import { SITE_CONFIG } from '@/config/site'
 
 export const metadata = {
-  title: 'Privacy Policy',
-  description: 'Privacy Policy for Room 23 — How we collect, use, and protect your personal data. GDPR and CCPA compliant.',
+  title: 'Privacy Policy - Data & Discretion',
+  description:
+    'How Room 23 collects, uses, and protects personal data for adult wellness orders. GDPR and CCPA notes, cookies, and billing privacy.',
+  alternates: { canonical: '/privacy' },
 }
 
 export default function PrivacyPage() {

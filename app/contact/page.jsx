@@ -3,8 +3,10 @@ import ContactForm from './contact-form'
 import { SITE_CONFIG } from '@/config/site'
 
 export const metadata = {
-  title: 'Contact Us',
-  description: 'Contact Room 23 customer support — Email, operating hours, and business address.',
+  title: 'Contact Support - Discreet Customer Care',
+  description:
+    'Contact Room 23 for order help, shipping questions, and product guidance. Discreet replies. Typical response within one to two business days.',
+  alternates: { canonical: '/contact' },
 }
 
 export default function ContactPage() {

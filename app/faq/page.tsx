@@ -2,8 +2,10 @@ import Link from 'next/link'
 import { SITE_CONFIG } from '@/config/site'
 
 export const metadata = {
-  title: 'Frequently Asked Questions',
-  description: 'FAQ for Room 23 — Billing, discreet shipping, order tracking, age verification, and more.',
+  title: 'FAQ - Shipping, Billing & Discretion',
+  description:
+    'Answers on Room 23 billing descriptors, unmarked packaging, US shipping times, age verification, and returns for adult wellness orders.',
+  alternates: { canonical: '/faq' },
 }
 
 const faqs = [
