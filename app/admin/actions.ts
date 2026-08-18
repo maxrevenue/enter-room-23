@@ -20,7 +20,8 @@ import {
   productCategories,
 } from '@/lib/admin-catalog'
 import { getRoom23Db } from '@/lib/admin-db'
-import { getAdminOrder, isOrderStatus } from '@/lib/admin-orders'
+import { buildOrderStatusUpdate, getAdminOrder, isOrderStatus } from '@/lib/admin-orders'
+import { sendOrderConfirmation } from '@/lib/email/order-confirmation'
 
 async function requireAdmin() {
   const ok = await isAdminAuthenticated(await cookies(), await resolveAdminPassword())
@@ -367,36 +368,138 @@ export async function clearProductOfTheMonth(formData: FormData) {
   redirect(`/admin/products/${encodeURIComponent(id)}?saved=1`)
 }
 
-export async function updateOrder(formData: FormData) {
-  await requireAdmin()
+function redirectOrder(orderId: string, query: string): never {
+  redirect(`/admin/orders/${encodeURIComponent(orderId)}?${query}`)
+}
 
+async function requireAdminOrder(formData: FormData) {
+  await requireAdmin()
   const orderId = String(formData.get('orderId') || '').trim()
+  if (!orderId) redirect('/admin/orders?error=missing')
   const order = await getAdminOrder(orderId)
   if (!order) redirect('/admin/orders?error=missing')
+  return order
+}
 
+function revalidateOrder(orderId: string) {
+  revalidateAdmin()
+  revalidatePath(`/admin/orders/${orderId}`)
+}
+
+export async function updateOrderStatus(formData: FormData) {
+  const order = await requireAdminOrder(formData)
   const status = String(formData.get('status') || '').trim()
-  const notes = String(formData.get('notes') || '').trim().slice(0, 2000)
 
   if (!isOrderStatus(status)) {
-    redirect(`/admin/orders/${encodeURIComponent(orderId)}?error=invalid`)
+    redirectOrder(order.orderId, 'error=invalid')
   }
 
   const db = await getRoom23Db()
-  if (!db) redirect(`/admin/orders/${encodeURIComponent(orderId)}?error=db`)
+  if (!db) redirectOrder(order.orderId, 'error=db')
+
+  await db.collection('orders').updateOne({ orderId: order.orderId }, { $set: buildOrderStatusUpdate(status) })
+
+  revalidateOrder(order.orderId)
+  redirectOrder(order.orderId, 'saved=status')
+}
+
+export async function updateOrderNotes(formData: FormData) {
+  const order = await requireAdminOrder(formData)
+  const notes = String(formData.get('notes') || '').trim().slice(0, 2000)
+
+  const db = await getRoom23Db()
+  if (!db) redirectOrder(order.orderId, 'error=db')
 
   await db.collection('orders').updateOne(
-    { orderId },
+    { orderId: order.orderId },
     {
       $set: {
-        status,
         notes,
-        fulfilled: status === 'fulfilled',
         updatedAt: new Date(),
       },
     },
   )
 
-  revalidateAdmin()
-  revalidatePath(`/admin/orders/${orderId}`)
-  redirect(`/admin/orders/${encodeURIComponent(orderId)}?saved=1`)
+  revalidateOrder(order.orderId)
+  redirectOrder(order.orderId, 'saved=notes')
+}
+
+export async function markOrderReviewed(formData: FormData) {
+  const order = await requireAdminOrder(formData)
+  const raw = String(formData.get('adminReview') || '').trim().toLowerCase()
+  const adminReview = raw === '1' || raw === 'true' || raw === 'on'
+
+  const db = await getRoom23Db()
+  if (!db) redirectOrder(order.orderId, 'error=db')
+
+  await db.collection('orders').updateOne(
+    { orderId: order.orderId },
+    {
+      $set: {
+        adminReview,
+        updatedAt: new Date(),
+      },
+    },
+  )
+
+  revalidateOrder(order.orderId)
+  redirectOrder(order.orderId, 'saved=reviewed')
+}
+
+export async function resendOrderEmail(formData: FormData) {
+  const order = await requireAdminOrder(formData)
+  const email = String(order.email || '').trim()
+  const items = (Array.isArray(order.items) ? order.items : [])
+    .map((item) => ({
+      name: String(item?.name || item?.id || 'Item').trim() || 'Item',
+      qty: Math.max(1, Math.floor(Number(item?.qty) || 1)),
+      price: Number(item?.price),
+    }))
+    .filter((item) => Number.isFinite(item.price) && item.price >= 0)
+
+  if (!email || items.length === 0 || !process.env.RESEND_API_KEY) {
+    redirectOrder(order.orderId, 'error=email')
+  }
+
+  const totals = order.totals || {}
+  const subtotal = Number(totals.subtotal)
+  const shipping = Number(totals.shipping)
+  const tax = Number(totals.tax)
+  const total = Number(totals.total)
+  const fallbackSubtotal = items.reduce((sum, item) => sum + item.price * item.qty, 0)
+
+  try {
+    await sendOrderConfirmation({
+      orderId: order.orderId,
+      email,
+      items,
+      totals: {
+        subtotal: Number.isFinite(subtotal) ? subtotal : fallbackSubtotal,
+        shipping: Number.isFinite(shipping) ? shipping : 0,
+        tax: Number.isFinite(tax) ? tax : 0,
+        total: Number.isFinite(total)
+          ? total
+          : fallbackSubtotal + (Number.isFinite(shipping) ? shipping : 0),
+      },
+      splitFulfillment: Boolean(order.fulfillment?.splitFulfillment),
+    })
+  } catch {
+    redirectOrder(order.orderId, 'error=email')
+  }
+
+  const db = await getRoom23Db()
+  if (db) {
+    await db.collection('orders').updateOne(
+      { orderId: order.orderId },
+      {
+        $set: {
+          emailSent: true,
+          updatedAt: new Date(),
+        },
+      },
+    )
+  }
+
+  revalidateOrder(order.orderId)
+  redirectOrder(order.orderId, 'saved=email')
 }

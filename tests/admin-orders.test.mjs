@@ -1,0 +1,82 @@
+import { describe, it } from 'node:test'
+import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+const root = join(dirname(fileURLToPath(import.meta.url)), '..')
+
+function read(rel) {
+  return readFileSync(join(root, rel), 'utf8')
+}
+
+describe('admin phase 4 orders', () => {
+  it('preserves closed-order status logic for the open-order count', () => {
+    const source = read('lib/admin-orders.ts')
+    assert.match(source, /export const CLOSED_ORDER_STATUSES = \[/)
+    assert.match(source, /'fulfilled'/)
+    assert.match(source, /'refunded'/)
+    assert.match(source, /'cancelled'/)
+    assert.match(source, /'shipped'/)
+    assert.match(source, /'delivered'/)
+    assert.match(source, /'complete'/)
+    assert.match(source, /'completed'/)
+    assert.match(source, /\$nor: \[\{ status: \{ \$in: CLOSED_ORDER_STATUSES \} \}, \{ fulfilled: true \}\]/)
+    assert.match(source, /countDocuments\(openOrdersQuery\(\)\)/)
+  })
+
+  it('filters orders by all / open / fulfilled / refunded-cancelled', () => {
+    const helpers = read('lib/admin-orders.ts')
+    const listPage = read('app/admin/orders/page.tsx')
+    assert.match(helpers, /export const ORDER_FILTERS = \['all', 'open', 'fulfilled', 'closed'\]/)
+    assert.match(listPage, /All/)
+    assert.match(listPage, /Open/)
+    assert.match(listPage, /Fulfilled/)
+    assert.match(listPage, /Refunded\/Cancelled/)
+    assert.match(listPage, /No orders match this filter/)
+    assert.match(listPage, /order\.email \|\| '—'/)
+    assert.match(listPage, /Items/)
+    assert.match(listPage, /Fulfilled/)
+  })
+
+  it('stores notes, adminReview, and fulfillment markers on dedicated actions', () => {
+    const actions = read('app/admin/actions.ts')
+    const detail = read('app/admin/orders/[id]/page.tsx')
+    const helpers = read('lib/admin-orders.ts')
+
+    assert.match(actions, /export async function updateOrderStatus/)
+    assert.match(actions, /export async function updateOrderNotes/)
+    assert.match(actions, /export async function markOrderReviewed/)
+    assert.match(actions, /export async function resendOrderEmail/)
+    assert.match(actions, /sendOrderConfirmation/)
+    assert.match(actions, /\$set: \{\s*notes,/)
+    assert.match(actions, /adminReview,/)
+
+    assert.match(helpers, /fulfilled: status === 'fulfilled'/)
+    assert.match(helpers, /update\['fulfillment\.status'\] = 'fulfilled'/)
+    assert.match(helpers, /status === 'refunded' \|\| status === 'cancelled'/)
+    assert.match(helpers, /update\.fulfilled = false/)
+
+    assert.match(detail, /Shipping address/)
+    assert.match(detail, /Unit price/)
+    assert.match(detail, /Line total/)
+    assert.match(detail, /Subtotal/)
+    assert.match(detail, /Mark as reviewed/)
+    assert.match(detail, /Resend confirmation email/)
+    assert.match(detail, /name="notes"/)
+    assert.doesNotMatch(detail, /adminNotes/)
+  })
+
+  it('adds recent open orders and low-stock lists to the dashboard', () => {
+    const dashboard = read('app/admin/page.tsx')
+    assert.match(dashboard, /countOpenOrders/)
+    assert.match(dashboard, /countLowStockProducts/)
+    assert.match(dashboard, /getResolvedProductOfTheMonth/)
+    assert.match(dashboard, /listRecentOpenOrders\(5\)/)
+    assert.match(dashboard, /Recent open orders/)
+    assert.match(dashboard, /Low stock products/)
+    assert.match(dashboard, /\/admin\/orders\/\$\{encodeURIComponent\(order\.orderId\)\}/)
+    assert.match(dashboard, /\/admin\/products\/\$\{encodeURIComponent\(product\.id\)\}/)
+    assert.doesNotMatch(dashboard, /recharts/i)
+  })
+})
