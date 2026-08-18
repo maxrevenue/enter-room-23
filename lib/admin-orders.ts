@@ -94,6 +94,51 @@ export function parseOrderFilter(value?: string | string[] | null): OrderFilter 
   return 'all'
 }
 
+export function parseOrderSearch(value?: string | string[] | null) {
+  const raw = Array.isArray(value) ? value[0] : value
+  return String(raw || '').trim().slice(0, 80)
+}
+
+export function escapeRegex(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
+export function orderMatchesSearch(order: Pick<AdminOrder, 'orderId' | 'email' | 'shippingAddress'>, q?: string) {
+  const needle = String(q || '').trim().toLowerCase()
+  if (!needle) return true
+  const name = String(order.shippingAddress?.name || '').toLowerCase()
+  return (
+    String(order.orderId || '').toLowerCase().includes(needle) ||
+    String(order.email || '').toLowerCase().includes(needle) ||
+    name.includes(needle)
+  )
+}
+
+export function orderSearchQuery(q?: string) {
+  const needle = String(q || '').trim()
+  if (!needle) return {}
+  const regex = { $regex: escapeRegex(needle), $options: 'i' }
+  return {
+    $or: [{ orderId: regex }, { email: regex }, { 'shippingAddress.name': regex }],
+  }
+}
+
+export function buildOrdersListQuery(filter: OrderFilter = 'all', q = '') {
+  const filterQuery = orderFilterQuery(filter)
+  const searchQuery = orderSearchQuery(q)
+  if (!Object.keys(searchQuery).length) return filterQuery
+  if (!Object.keys(filterQuery).length) return searchQuery
+  return { $and: [filterQuery, searchQuery] }
+}
+
+export function adminOrdersHref(filter: OrderFilter = 'all', q = '') {
+  const params = new URLSearchParams()
+  if (filter !== 'all') params.set('filter', filter)
+  if (String(q || '').trim()) params.set('q', String(q).trim())
+  const query = params.toString()
+  return query ? `/admin/orders?${query}` : '/admin/orders'
+}
+
 export function normalizeOrderStatus(status?: string) {
   return String(status || 'paid').trim().toLowerCase() || 'paid'
 }
@@ -232,14 +277,16 @@ export function orderLineTotal(item?: { qty?: number; price?: number }) {
 export async function listAdminOrders(
   filterOrLimit: OrderFilter | number = 'all',
   limit = 100,
+  q = '',
 ): Promise<AdminOrder[]> {
   const filter = typeof filterOrLimit === 'number' ? 'all' : filterOrLimit
   const cap = typeof filterOrLimit === 'number' ? filterOrLimit : limit
+  const search = typeof filterOrLimit === 'number' ? '' : q
   const db = await getRoom23Db()
   if (!db) return []
   return db
     .collection<AdminOrder>('orders')
-    .find(orderFilterQuery(filter))
+    .find(buildOrdersListQuery(filter, search))
     .sort({ createdAt: -1 })
     .limit(cap)
     .toArray()

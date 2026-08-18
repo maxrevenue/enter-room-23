@@ -50,6 +50,7 @@ function revalidateAdmin() {
   revalidatePath('/admin')
   revalidatePath('/admin/products')
   revalidatePath('/admin/orders')
+  revalidatePath('/admin/customers')
   revalidatePath('/admin/coupons')
   revalidatePath('/admin/settings')
   revalidatePath('/')
@@ -563,9 +564,11 @@ async function requireAdminOrder(formData: FormData) {
   return order
 }
 
-function revalidateOrder(orderId: string) {
+function revalidateOrder(orderId: string, email?: string) {
   revalidateAdmin()
   revalidatePath(`/admin/orders/${orderId}`)
+  const customerEmail = String(email || '').trim().toLowerCase()
+  if (customerEmail) revalidatePath(`/admin/customers/${encodeURIComponent(customerEmail)}`)
 }
 
 export async function updateOrderStatus(formData: FormData) {
@@ -594,7 +597,7 @@ export async function updateOrderStatus(formData: FormData) {
     },
   )
 
-  revalidateOrder(order.orderId)
+  revalidateOrder(order.orderId, order.email)
   redirectOrder(order.orderId, decrement ? 'saved=status&inventory=1' : 'saved=status')
 }
 
@@ -615,7 +618,7 @@ export async function updateOrderNotes(formData: FormData) {
     },
   )
 
-  revalidateOrder(order.orderId)
+  revalidateOrder(order.orderId, order.email)
   redirectOrder(order.orderId, 'saved=notes')
 }
 
@@ -637,7 +640,7 @@ export async function markOrderReviewed(formData: FormData) {
     },
   )
 
-  revalidateOrder(order.orderId)
+  revalidateOrder(order.orderId, order.email)
   redirectOrder(order.orderId, 'saved=reviewed')
 }
 
@@ -695,7 +698,7 @@ export async function resendOrderEmail(formData: FormData) {
     )
   }
 
-  revalidateOrder(order.orderId)
+  revalidateOrder(order.orderId, order.email)
   redirectOrder(order.orderId, 'saved=email')
 }
 

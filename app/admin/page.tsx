@@ -88,7 +88,13 @@ export default async function AdminDashboardPage() {
         ))}
       </ul>
 
-      <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <li>
+          <Link href="/admin/customers" className="block border border-zinc-800 bg-zinc-900 px-6 py-6 hover:border-zinc-600">
+            <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-zinc-500">Support</p>
+            <p className="mt-3 font-serif text-xl tracking-tight text-zinc-100">Customers</p>
+          </Link>
+        </li>
         <li>
           <Link href="/admin/coupons" className="block border border-zinc-800 bg-zinc-900 px-6 py-6 hover:border-zinc-600">
             <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-zinc-500">Commerce</p>

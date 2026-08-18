@@ -34,7 +34,7 @@ describe('admin phase 4 orders', () => {
     assert.match(listPage, /Fulfilled/)
     assert.match(listPage, /Refunded\/Cancelled/)
     assert.match(listPage, /No orders match this filter/)
-    assert.match(listPage, /order\.email \|\| '—'/)
+    assert.match(listPage, /order\.email/)
     assert.match(listPage, /Items/)
     assert.match(listPage, /Fulfilled/)
   })

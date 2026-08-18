@@ -9,6 +9,7 @@ import {
 } from '@/app/admin/actions'
 import { isAdminAuthenticated } from '@/lib/admin-auth'
 import { resolveAdminPassword } from '@/lib/admin-password.server'
+import { adminCustomerHref } from '@/lib/admin-customers'
 import {
   coerceOrderStatus,
   formatOrderDateTime,
@@ -112,7 +113,15 @@ export default async function AdminOrderDetailPage({
         </div>
         <div>
           <dt className={labelClass}>Customer email</dt>
-          <dd className="text-zinc-100">{order.email || '—'}</dd>
+          <dd className="text-zinc-100">
+            {order.email ? (
+              <Link href={adminCustomerHref(order.email)} className="hover:text-zinc-300">
+                {order.email}
+              </Link>
+            ) : (
+              '—'
+            )}
+          </dd>
         </div>
         <div>
           <dt className={labelClass}>Fulfillment</dt>
