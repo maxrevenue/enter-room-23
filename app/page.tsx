@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import CategorySection from '@/components/CategorySection'
 import JournalSection from '@/components/JournalSection'
 import ProductOfTheMonth from '@/components/ProductOfTheMonth'
 import ProductCard from '@/components/product-card'
@@ -77,8 +76,6 @@ export default function HomePage() {
         productId={PRODUCT_OF_THE_MONTH_ID}
         offer={{ label: 'Currently under review' }}
       />
-
-      <CategorySection />
 
       <section
         aria-labelledby="featured-heading"
