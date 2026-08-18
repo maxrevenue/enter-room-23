@@ -4,6 +4,7 @@ import JournalSection from '@/components/JournalSection'
 import ProductOfTheMonth from '@/components/ProductOfTheMonth'
 import ProductCard from '@/components/product-card'
 import { PRODUCTS, PRODUCT_OF_THE_MONTH_ID } from '@/lib/products'
+import { getResolvedProductOfTheMonth } from '@/lib/admin-catalog'
 
 export const metadata: Metadata = {
   title: 'Premium Adult Wellness - Body-Safe Essentials',
@@ -19,14 +20,17 @@ const FEATURED_IDS = [
   'lube-silicone-2oz',
 ] as const
 
-export default function HomePage() {
+export default async function HomePage() {
+  const productOfTheMonth = await getResolvedProductOfTheMonth()
+  const productOfTheMonthId = productOfTheMonth?.id || PRODUCT_OF_THE_MONTH_ID
+
   const featuredTiles = FEATURED_IDS.map((id) => PRODUCTS.find((product) => product.id === id)).filter(
     Boolean,
   )
   const editTiles =
     featuredTiles.length > 0
       ? featuredTiles
-      : PRODUCTS.filter((product) => product.id !== PRODUCT_OF_THE_MONTH_ID).slice(0, 4)
+      : PRODUCTS.filter((product) => product.id !== productOfTheMonthId).slice(0, 4)
 
   return (
     <div className="bg-theme-bg text-theme-text">
@@ -70,10 +74,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      <ProductOfTheMonth
-        productId={PRODUCT_OF_THE_MONTH_ID}
-        offer={{ label: 'Currently under review' }}
-      />
+      {productOfTheMonth ? (
+        <ProductOfTheMonth
+          productId={productOfTheMonth.id}
+          offer={{ label: 'This month\'s focus' }}
+        />
+      ) : null}
 
       <section
         aria-labelledby="featured-heading"

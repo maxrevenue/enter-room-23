@@ -2,46 +2,26 @@ import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { isAdminAuthenticated } from '@/lib/admin-auth'
 import { resolveAdminPassword } from '@/lib/admin-password.server'
-import { PRODUCTS, getProductOfTheMonth } from '@/lib/products'
+import { getResolvedProductOfTheMonth, listAdminProducts } from '@/lib/admin-catalog'
+import { countOpenOrders } from '@/lib/admin-orders'
 
 export const dynamic = 'force-dynamic'
-
-const CLOSED_ORDER_STATUSES = [
-  'fulfilled',
-  'shipped',
-  'delivered',
-  'cancelled',
-  'complete',
-  'completed',
-]
-
-async function countOpenOrders(): Promise<number> {
-  if (!process.env.MONGODB_URI) return 0
-
-  try {
-    const { connectToDatabase } = await import('@/lib/mongodb')
-    const client = await connectToDatabase()
-    const db = client.db('room23')
-    return db.collection('orders').countDocuments({
-      $nor: [{ status: { $in: CLOSED_ORDER_STATUSES } }, { fulfilled: true }],
-    })
-  } catch {
-    return 0
-  }
-}
 
 export default async function AdminDashboardPage() {
   if (!(await isAdminAuthenticated(await cookies(), await resolveAdminPassword()))) {
     redirect('/admin/login')
   }
 
-  const productOfTheMonth = getProductOfTheMonth()
-  const openOrders = await countOpenOrders()
+  const [products, productOfTheMonth, openOrders] = await Promise.all([
+    listAdminProducts(),
+    getResolvedProductOfTheMonth(),
+    countOpenOrders(),
+  ])
 
   const stats = [
     {
       label: 'Products',
-      value: String(PRODUCTS.length),
+      value: String(products.length),
     },
     {
       label: 'Open orders',
