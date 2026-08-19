@@ -79,6 +79,31 @@ export function riskFlagChipClass(severity: RiskFlagSeverity) {
   return SEVERITY_CHIP_CLASS[severity]
 }
 
+export function staleOpenCutoff(now = new Date()) {
+  return new Date(now.getTime() - STALE_OPEN_MS)
+}
+
+/** Shared staleness rule — swap implementation to admin-sla when Phase 19 lands. */
+export function isStaleOpenOrder(
+  order: Pick<AdminOrder, 'status' | 'fulfilled' | 'fulfillment' | 'createdAt'>,
+  now = new Date(),
+) {
+  if (!isOpenOrder(order)) return false
+  const createdTs = orderTimestamp(order.createdAt)
+  return createdTs > 0 && now.getTime() - createdTs >= STALE_OPEN_MS
+}
+
+export function isHighValueOrder(order: Pick<AdminOrder, 'totals'>) {
+  const total = Number(order.totals?.total)
+  return Number.isFinite(total) && total >= HIGH_VALUE_THRESHOLD
+}
+
+export function isUnreviewedOpenOrder(
+  order: Pick<AdminOrder, 'status' | 'fulfilled' | 'fulfillment' | 'adminReview'>,
+) {
+  return isOpenOrder(order) && order.adminReview !== true
+}
+
 export function maxRiskSeverityScore(flags: RiskFlag[]) {
   return flags.reduce((max, flag) => Math.max(max, SEVERITY_SCORE[flag.severity]), 0)
 }
@@ -116,17 +141,16 @@ export function getOrderRiskFlags(
   }
 
   const total = Number(order.totals?.total)
-  if (Number.isFinite(total) && total >= HIGH_VALUE_THRESHOLD) {
+  if (isHighValueOrder(order)) {
     flags.push({ id: 'high_value', label: 'High value', severity: 'medium' })
   }
 
   if (isOpenOrder(order)) {
-    if (order.adminReview !== true) {
+    if (isUnreviewedOpenOrder(order)) {
       flags.push({ id: 'unreviewed', label: 'Unreviewed', severity: 'medium' })
     }
 
-    const createdTs = orderTimestamp(order.createdAt)
-    if (createdTs > 0 && now.getTime() - createdTs >= STALE_OPEN_MS) {
+    if (isStaleOpenOrder(order, now)) {
       flags.push({ id: 'stale_open', label: 'Stale · 48h+', severity: 'low' })
     }
   }

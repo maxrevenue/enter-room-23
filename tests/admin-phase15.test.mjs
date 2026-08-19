@@ -41,6 +41,7 @@ describe('admin phase 15 bulk actions', () => {
     assert.match(ordersTable, /confirm\(/)
     assert.match(productsTable, /sticky top-0/)
     assert.match(ordersTable, /sticky top-0/)
+    assert.match(ordersTable, /view !== 'all'/)
   })
 
   it('wires bulk tables into admin list pages with result flash', () => {

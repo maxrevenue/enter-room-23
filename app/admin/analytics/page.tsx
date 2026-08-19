@@ -157,7 +157,7 @@ export default async function AdminAnalyticsPage() {
               <h2 className="mt-2 font-serif text-xl tracking-tight text-zinc-100">Recent refunds</h2>
             </div>
             <Link
-              href="/admin/orders?filter=closed"
+              href="/admin/orders?view=refunded_cancelled"
               className="text-[10px] font-medium uppercase tracking-[0.18em] text-zinc-500 hover:text-zinc-100"
             >
               View all

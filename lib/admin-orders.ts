@@ -164,7 +164,8 @@ export function buildOrdersListQuery(filter: OrderFilter = 'all', q = '') {
 
 export function adminOrdersHref(filter: OrderFilter = 'all', q = '') {
   const params = new URLSearchParams()
-  if (filter !== 'all') params.set('filter', filter)
+  const view = filter === 'closed' ? 'refunded_cancelled' : filter
+  if (view !== 'all') params.set('view', view)
   if (String(q || '').trim()) params.set('q', String(q).trim())
   const query = params.toString()
   return query ? `/admin/orders?${query}` : '/admin/orders'

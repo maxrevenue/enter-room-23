@@ -92,7 +92,8 @@ function orderMatchesSearch(order, q) {
 
 function adminOrdersHref(filter = 'all', q = '') {
   const params = new URLSearchParams()
-  if (filter !== 'all') params.set('filter', filter)
+  const view = filter === 'closed' ? 'refunded_cancelled' : filter
+  if (view !== 'all') params.set('view', view)
   if (String(q || '').trim()) params.set('q', String(q).trim())
   const query = params.toString()
   return query ? `/admin/orders?${query}` : '/admin/orders'
@@ -163,7 +164,7 @@ describe('admin phase 8 customers and order search', () => {
     assert.equal(orderMatchesSearch(order, 'BUYER@'), true)
     assert.equal(orderMatchesSearch(order, 'alex'), true)
     assert.equal(orderMatchesSearch(order, 'missing'), false)
-    assert.equal(adminOrdersHref('open', ' alex@x.com '), '/admin/orders?filter=open&q=alex%40x.com')
+    assert.equal(adminOrdersHref('open', ' alex@x.com '), '/admin/orders?view=open&q=alex%40x.com')
     assert.equal(adminOrdersHref('all'), '/admin/orders')
   })
 
@@ -187,7 +188,7 @@ describe('admin phase 8 customers and order search', () => {
     assert.match(ordersPage, /parseOrderSearch/)
     assert.match(ordersPage, /name="q"/)
     assert.match(ordersPage, /method="get"/)
-    assert.match(ordersPage, /No orders match this search/)
+    assert.match(ordersPage, /orderViewEmptyMessage/)
     assert.match(helpers, /export function orderSearchQuery/)
     assert.match(helpers, /export function buildOrdersListQuery/)
     assert.match(helpers, /listAdminOrders\(\s*filterOrLimit: OrderFilter \| number = 'all',\s*limit = 100,\s*q = '',/)

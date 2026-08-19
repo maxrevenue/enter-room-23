@@ -5,7 +5,7 @@ import { useMemo, useState } from 'react'
 import { useFormStatus } from 'react-dom'
 import { bulkUpdateOrders } from '@/app/admin/actions'
 import { adminCustomerHref } from '@/lib/admin-customers'
-import type { OrderFilter } from '@/lib/admin-orders'
+import type { OrderViewId } from '@/lib/admin-views'
 
 const BULK_LIMIT = 50
 
@@ -26,7 +26,7 @@ export type OrderBulkRow = {
 
 type OrdersBulkTableProps = {
   orders: OrderBulkRow[]
-  filter: OrderFilter
+  view: OrderViewId
   q: string
 }
 
@@ -53,16 +53,16 @@ function BulkIdsInput({ ids }: { ids: string[] }) {
   return <input type="hidden" name="ids" value={JSON.stringify(ids)} readOnly />
 }
 
-function ListContextInputs({ filter, q }: { filter: OrderFilter; q: string }) {
+function ListContextInputs({ view, q }: { view: OrderViewId; q: string }) {
   return (
     <>
-      {filter !== 'all' ? <input type="hidden" name="filter" value={filter} /> : null}
+      {view !== 'all' ? <input type="hidden" name="view" value={view} /> : null}
       {q ? <input type="hidden" name="q" value={q} /> : null}
     </>
   )
 }
 
-export function OrdersBulkTable({ orders, filter, q }: OrdersBulkTableProps) {
+export function OrdersBulkTable({ orders, view, q }: OrdersBulkTableProps) {
   const [selected, setSelected] = useState<Set<string>>(() => new Set())
   const [capWarning, setCapWarning] = useState(false)
 
@@ -119,14 +119,14 @@ export function OrdersBulkTable({ orders, filter, q }: OrdersBulkTableProps) {
 
           <form action={bulkUpdateOrders} className="inline">
             <BulkIdsInput ids={selectedIds} />
-            <ListContextInputs filter={filter} q={q} />
+            <ListContextInputs view={view} q={q} />
             <input type="hidden" name="action" value="reviewed" />
             <BulkSubmitButton label="Mark reviewed" />
           </form>
 
           <form action={bulkUpdateOrders} onSubmit={confirmFulfill} className="inline">
             <BulkIdsInput ids={selectedIds} />
-            <ListContextInputs filter={filter} q={q} />
+            <ListContextInputs view={view} q={q} />
             <input type="hidden" name="action" value="fulfilled" />
             <BulkSubmitButton label="Set fulfilled" />
           </form>

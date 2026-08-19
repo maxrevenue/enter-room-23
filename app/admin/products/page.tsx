@@ -15,8 +15,21 @@ import {
   quantityOf,
 } from '@/lib/admin-catalog'
 import { formatMarginPct, productMarginPct } from '@/lib/admin-margin'
+import {
+  adminProductsViewHref,
+  filterProductsByView,
+  parseProductView,
+  PRODUCT_VIEWS,
+  productViewEmptyMessage,
+  type ProductViewId,
+} from '@/lib/admin-views'
 
 export const dynamic = 'force-dynamic'
+
+const viewPillActive =
+  'inline-flex border border-zinc-100 bg-zinc-100 px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.16em] text-zinc-950'
+const viewPillIdle =
+  'inline-flex border border-zinc-700 px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.16em] text-zinc-400 hover:border-zinc-500 hover:text-zinc-200'
 
 function formatMoney(value: number) {
   return `$${Number(value || 0).toFixed(2)}`
@@ -28,6 +41,7 @@ export default async function AdminProductsPage({
   searchParams: Promise<{
     error?: string
     saved?: string
+    view?: string
     bulk?: string
     count?: string
     msg?: string
@@ -38,7 +52,9 @@ export default async function AdminProductsPage({
   }
 
   const params = await searchParams
-  const products = await listAdminProducts()
+  const view = parseProductView(params)
+  const allProducts = await listAdminProducts()
+  const products = filterProductsByView(allProducts, view)
   const categories = productCategories()
   const bulkCount = Number(params.count)
   const bulkCountLabel = Number.isFinite(bulkCount) && bulkCount >= 0 ? bulkCount : null
@@ -125,7 +141,29 @@ export default async function AdminProductsPage({
         </p>
       ) : null}
 
-      <ProductsBulkTable products={rows} categories={categories} />
+      <nav aria-label="Product views" className="mb-8 flex flex-wrap gap-2">
+        {PRODUCT_VIEWS.map((preset) => {
+          const active = preset.id === view
+          return (
+            <Link
+              key={preset.id}
+              href={adminProductsViewHref(preset.id as ProductViewId)}
+              className={active ? viewPillActive : viewPillIdle}
+              aria-current={active ? 'page' : undefined}
+            >
+              {preset.label}
+            </Link>
+          )
+        })}
+      </nav>
+
+      {products.length === 0 ? (
+        <p className="border border-zinc-800 bg-zinc-900 px-6 py-10 text-sm text-zinc-400">
+          {productViewEmptyMessage(view)}
+        </p>
+      ) : (
+        <ProductsBulkTable products={rows} categories={categories} view={view} />
+      )}
     </section>
   )
 }

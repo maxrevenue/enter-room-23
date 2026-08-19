@@ -11,6 +11,7 @@ import {
   unarchiveProduct,
   updateQuantity,
 } from '@/app/admin/actions'
+import type { ProductViewId } from '@/lib/admin-views'
 
 const BULK_LIMIT = 50
 
@@ -43,6 +44,7 @@ export type ProductBulkRow = {
 type ProductsBulkTableProps = {
   products: ProductBulkRow[]
   categories: string[]
+  view: ProductViewId
 }
 
 function BulkSubmitButton({
@@ -68,7 +70,7 @@ function BulkIdsInput({ ids }: { ids: string[] }) {
   return <input type="hidden" name="ids" value={JSON.stringify(ids)} readOnly />
 }
 
-export function ProductsBulkTable({ products, categories }: ProductsBulkTableProps) {
+export function ProductsBulkTable({ products, categories, view }: ProductsBulkTableProps) {
   const [selected, setSelected] = useState<Set<string>>(() => new Set())
   const [capWarning, setCapWarning] = useState(false)
   const [category, setCategory] = useState(categories[0] || '')
@@ -124,30 +126,35 @@ export function ProductsBulkTable({ products, categories }: ProductsBulkTablePro
 
           <form action={bulkUpdateProducts} onSubmit={confirmArchive} className="inline">
             <BulkIdsInput ids={selectedIds} />
+            {view !== 'all' ? <input type="hidden" name="view" value={view} /> : null}
             <input type="hidden" name="action" value="archive" />
             <BulkSubmitButton label="Archive" />
           </form>
 
           <form action={bulkUpdateProducts} className="inline">
             <BulkIdsInput ids={selectedIds} />
+            {view !== 'all' ? <input type="hidden" name="view" value={view} /> : null}
             <input type="hidden" name="action" value="restore" />
             <BulkSubmitButton label="Restore" />
           </form>
 
           <form action={bulkUpdateProducts} className="inline">
             <BulkIdsInput ids={selectedIds} />
+            {view !== 'all' ? <input type="hidden" name="view" value={view} /> : null}
             <input type="hidden" name="action" value="hideWhenZeroOn" />
             <BulkSubmitButton label="Hide when zero · on" />
           </form>
 
           <form action={bulkUpdateProducts} className="inline">
             <BulkIdsInput ids={selectedIds} />
+            {view !== 'all' ? <input type="hidden" name="view" value={view} /> : null}
             <input type="hidden" name="action" value="hideWhenZeroOff" />
             <BulkSubmitButton label="Hide when zero · off" />
           </form>
 
           <form action={bulkUpdateProducts} className="inline-flex items-center gap-2">
             <BulkIdsInput ids={selectedIds} />
+            {view !== 'all' ? <input type="hidden" name="view" value={view} /> : null}
             <input type="hidden" name="action" value="setCategory" />
             <select
               name="category"

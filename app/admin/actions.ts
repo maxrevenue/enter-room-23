@@ -97,16 +97,18 @@ function parseBulkIds(raw: unknown): { ids: string[]; exceeded: boolean } {
   }
 }
 
-function bulkProductsRedirect(params: Record<string, string>): never {
+function bulkProductsRedirect(formData: FormData, params: Record<string, string>): never {
   const search = new URLSearchParams(params)
+  const view = String(formData.get('view') || '').trim()
+  if (view && view !== 'all') search.set('view', view)
   redirect(`/admin/products?${search.toString()}`)
 }
 
 function bulkOrdersRedirect(formData: FormData, params: Record<string, string>): never {
   const search = new URLSearchParams(params)
-  const filter = String(formData.get('filter') || '').trim()
+  const view = String(formData.get('view') || '').trim()
   const q = String(formData.get('q') || '').trim()
-  if (filter && filter !== 'all') search.set('filter', filter)
+  if (view && view !== 'all') search.set('view', view)
   if (q) search.set('q', q)
   redirect(`/admin/orders?${search.toString()}`)
 }
@@ -1133,16 +1135,16 @@ export async function bulkUpdateProducts(formData: FormData) {
 
   const { ids, exceeded } = parseBulkIds(formData.get('ids'))
   if (exceeded) {
-    bulkProductsRedirect({ bulk: 'error', msg: 'Select at most 50 products.' })
+    bulkProductsRedirect(formData, { bulk: 'error', msg: 'Select at most 50 products.' })
   }
   if (!ids.length) {
-    bulkProductsRedirect({ bulk: 'error', msg: 'No products selected.' })
+    bulkProductsRedirect(formData, { bulk: 'error', msg: 'No products selected.' })
   }
 
   const action = String(formData.get('action') || '').trim()
   const db = await getRoom23Db()
   if (!db) {
-    bulkProductsRedirect({ bulk: 'error', msg: 'Database unavailable.' })
+    bulkProductsRedirect(formData, { bulk: 'error', msg: 'Database unavailable.' })
   }
 
   let updated = 0
@@ -1178,13 +1180,13 @@ export async function bulkUpdateProducts(formData: FormData) {
     } else if (action === 'setCategory') {
       const category = String(formData.get('category') || '').trim()
       if (!CATEGORY_VALUES.has(category)) {
-        bulkProductsRedirect({ bulk: 'error', msg: 'Invalid category.' })
+        bulkProductsRedirect(formData, { bulk: 'error', msg: 'Invalid category.' })
       }
       $set.category = category
       $set.collection = category
       auditMessage = `Set category to ${category} for ${product.name} (bulk)`
     } else {
-      bulkProductsRedirect({ bulk: 'error', msg: 'Unknown bulk action.' })
+      bulkProductsRedirect(formData, { bulk: 'error', msg: 'Unknown bulk action.' })
     }
 
     await db.collection('products').updateOne(
@@ -1218,7 +1220,7 @@ export async function bulkUpdateProducts(formData: FormData) {
   }
 
   revalidateAdmin()
-  bulkProductsRedirect({ bulk: 'ok', count: String(updated) })
+  bulkProductsRedirect(formData, { bulk: 'ok', count: String(updated) })
 }
 
 export async function bulkUpdateOrders(formData: FormData) {

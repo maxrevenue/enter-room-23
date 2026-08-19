@@ -121,7 +121,7 @@ export default async function AdminDashboardPage() {
                 <div className="flex items-center justify-between gap-4 px-6 py-4">
                   <h3 className="text-[10px] font-medium uppercase tracking-[0.22em] text-zinc-500">Orders</h3>
                   <Link
-                    href="/admin/orders?filter=open"
+                    href="/admin/orders?view=open"
                     className="text-[10px] font-medium uppercase tracking-[0.18em] text-zinc-500 hover:text-zinc-200"
                   >
                     View all
@@ -162,7 +162,7 @@ export default async function AdminDashboardPage() {
                 <div className="flex items-center justify-between gap-4 px-6 py-4">
                   <h3 className="text-[10px] font-medium uppercase tracking-[0.22em] text-zinc-500">Inventory</h3>
                   <Link
-                    href="/admin/products"
+                    href="/admin/products?view=low_stock"
                     className="text-[10px] font-medium uppercase tracking-[0.18em] text-zinc-500 hover:text-zinc-200"
                   >
                     View all

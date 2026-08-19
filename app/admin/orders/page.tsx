@@ -6,17 +6,13 @@ import { isAdminAuthenticated } from '@/lib/admin-auth'
 import { resolveAdminPassword } from '@/lib/admin-password.server'
 import { listAdminProducts } from '@/lib/admin-catalog'
 import {
-  adminOrdersHref,
   formatOrderDate,
   formatOrderMoney,
   isOrderFulfilled,
-  listAdminOrders,
   orderItemCount,
   orderStatusBadgeClass,
   orderStatusLabel,
-  parseOrderFilter,
   parseOrderSearch,
-  type OrderFilter,
 } from '@/lib/admin-orders'
 import {
   buildProductsByIdMap,
@@ -24,15 +20,21 @@ import {
   getOrderRiskFlags,
   riskFlagChipClass,
 } from '@/lib/admin-risk'
+import {
+  adminOrdersViewHref,
+  listAdminOrdersForView,
+  ORDER_VIEWS,
+  orderViewEmptyMessage,
+  parseOrderView,
+  type OrderViewId,
+} from '@/lib/admin-views'
 
 export const dynamic = 'force-dynamic'
 
-const FILTER_TABS: { id: OrderFilter; label: string }[] = [
-  { id: 'all', label: 'All' },
-  { id: 'open', label: 'Open' },
-  { id: 'fulfilled', label: 'Fulfilled' },
-  { id: 'closed', label: 'Refunded/Cancelled' },
-]
+const viewPillActive =
+  'inline-flex border border-zinc-100 bg-zinc-100 px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.16em] text-zinc-950'
+const viewPillIdle =
+  'inline-flex border border-zinc-700 px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.16em] text-zinc-400 hover:border-zinc-500 hover:text-zinc-200'
 
 const fieldClass =
   'w-full border border-zinc-800 bg-zinc-950 px-4 py-3 text-sm text-zinc-100 outline-none focus:border-zinc-500'
@@ -42,6 +44,7 @@ export default async function AdminOrdersPage({
 }: {
   searchParams: Promise<{
     error?: string
+    view?: string
     filter?: string
     q?: string
     bulk?: string
@@ -55,11 +58,14 @@ export default async function AdminOrdersPage({
   }
 
   const params = await searchParams
-  const filter = parseOrderFilter(params.filter)
+  const view = parseOrderView(params)
   const q = parseOrderSearch(params.q)
-  const [orders, products] = await Promise.all([listAdminOrders(filter, 100, q), listAdminProducts()])
-  const productsById = buildProductsByIdMap(products, collectOrderProductIds(orders))
   const now = new Date()
+  const [orders, products] = await Promise.all([
+    listAdminOrdersForView(view, 100, q, now),
+    listAdminProducts(),
+  ])
+  const productsById = buildProductsByIdMap(products, collectOrderProductIds(orders))
 
   const bulkCount = Number(params.count)
   const bulkCountLabel = Number.isFinite(bulkCount) && bulkCount >= 0 ? bulkCount : null
@@ -112,8 +118,24 @@ export default async function AdminOrdersPage({
         </p>
       ) : null}
 
+      <nav aria-label="Order views" className="mb-6 flex flex-wrap gap-2">
+        {ORDER_VIEWS.map((preset) => {
+          const active = preset.id === view
+          return (
+            <Link
+              key={preset.id}
+              href={adminOrdersViewHref(preset.id as OrderViewId, q)}
+              className={active ? viewPillActive : viewPillIdle}
+              aria-current={active ? 'page' : undefined}
+            >
+              {preset.label}
+            </Link>
+          )
+        })}
+      </nav>
+
       <form action="/admin/orders" method="get" className="mb-8 flex flex-col gap-3 sm:flex-row">
-        {filter !== 'all' ? <input type="hidden" name="filter" value={filter} /> : null}
+        {view !== 'all' ? <input type="hidden" name="view" value={view} /> : null}
         <label className="block flex-1">
           <span className="sr-only">Search orders</span>
           <input
@@ -131,7 +153,7 @@ export default async function AdminOrdersPage({
         </button>
         {q ? (
           <Link
-            href={adminOrdersHref(filter)}
+            href={adminOrdersViewHref(view)}
             className="inline-flex items-center px-5 py-3 text-[11px] font-medium uppercase tracking-[0.22em] text-zinc-500 hover:text-zinc-100"
           >
             Clear
@@ -139,33 +161,12 @@ export default async function AdminOrdersPage({
         ) : null}
       </form>
 
-      <nav aria-label="Filter orders" className="mb-8 flex flex-wrap gap-x-8 gap-y-3 border-b border-zinc-800 pb-4">
-        {FILTER_TABS.map((tab) => {
-          const active = tab.id === filter
-          return (
-            <Link
-              key={tab.id}
-              href={adminOrdersHref(tab.id, q)}
-              className={`text-[11px] font-medium uppercase tracking-[0.22em] ${
-                active ? 'text-zinc-100' : 'text-zinc-500 hover:text-zinc-300'
-              }`}
-            >
-              {tab.label}
-            </Link>
-          )
-        })}
-      </nav>
-
       {orders.length === 0 ? (
         <p className="border border-zinc-800 bg-zinc-900 px-6 py-10 text-sm text-zinc-400">
-          {q
-            ? 'No orders match this search.'
-            : filter === 'all'
-              ? 'No orders yet. Paid checkouts are stored in MongoDB for review here.'
-              : 'No orders match this filter.'}
+          {orderViewEmptyMessage(view, q)}
         </p>
       ) : (
-        <OrdersBulkTable orders={rows} filter={filter} q={q} />
+        <OrdersBulkTable orders={rows} view={view} q={q} />
       )}
     </section>
   )
