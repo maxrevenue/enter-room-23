@@ -23,6 +23,7 @@ import {
   quantityOf,
   vendorTypeOptions,
 } from '@/lib/admin-catalog'
+import { formatStockAlertSentAt } from '@/lib/admin-stock-alerts'
 
 export const dynamic = 'force-dynamic'
 
@@ -53,6 +54,7 @@ export default async function AdminProductEditPage({
   const low = isLowStock(product)
   const out = quantity === 0
   const imageUrl = productImageUrl(product)
+  const alertSentAt = formatStockAlertSentAt(product.lowStockAlertSentAt)
 
   return (
     <section>
@@ -80,6 +82,12 @@ export default async function AdminProductEditPage({
           <p className="text-xs text-zinc-500">Quantity is 0{product.hideWhenZero ? ' · hide-when-zero is on' : ''}.</p>
         ) : low ? (
           <p className="text-xs text-zinc-500">Low stock — {LOW_STOCK_THRESHOLD} or fewer remaining.</p>
+        ) : null}
+        {alertSentAt ? (
+          <p className="text-xs text-zinc-500">
+            Alert sent {alertSentAt}
+            {product.lowStockAlertLevel ? ` · ${product.lowStockAlertLevel}` : ''}
+          </p>
         ) : null}
       </div>
 

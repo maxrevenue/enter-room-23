@@ -15,6 +15,8 @@ export type CatalogProduct = (typeof PRODUCTS)[number] & {
   isProductOfTheMonth?: boolean
   isFeatured?: boolean
   source?: string
+  lowStockAlertSentAt?: Date | string | null
+  lowStockAlertLevel?: 'low' | 'out' | null
 }
 
 function pickOverlay(doc: Record<string, unknown> | null | undefined) {
@@ -189,6 +191,8 @@ function buildCustomProduct(doc: ProductDoc): CatalogProduct | null {
     isProductOfTheMonth: Boolean(doc.isProductOfTheMonth),
     isFeatured: Boolean(doc.isFeatured),
     source: 'custom',
+    lowStockAlertSentAt: doc.lowStockAlertSentAt,
+    lowStockAlertLevel: doc.lowStockAlertLevel,
   } as CatalogProduct)
 }
 

@@ -41,6 +41,7 @@ import {
 } from '@/lib/admin-orders'
 import { writeAdminAudit } from '@/lib/admin-audit'
 import { sendOrderConfirmation } from '@/lib/email/order-confirmation'
+import { handleStockAlertAfterQuantityChange, type StockAlertLevel } from '@/lib/admin-stock-alerts'
 
 async function requireAdmin() {
   const ok = await isAdminAuthenticated(await cookies(), await resolveAdminPassword())
@@ -224,6 +225,26 @@ async function applyExclusiveProductOfTheMonth(id: string) {
   await db.collection('products').updateOne({ id }, { $set: { isProductOfTheMonth: true, isFeatured: true } })
 }
 
+async function syncStockAlert(
+  product: {
+    id: string
+    name: string
+    quantity?: number | null
+    lowStockAlertSentAt?: unknown
+    lowStockAlertLevel?: StockAlertLevel | null
+  },
+  nextQuantity: number | null,
+) {
+  await handleStockAlertAfterQuantityChange({
+    productId: product.id,
+    productName: product.name,
+    previousQuantity: quantityOf(product),
+    nextQuantity,
+    lowStockAlertSentAt: product.lowStockAlertSentAt,
+    lowStockAlertLevel: product.lowStockAlertLevel ?? null,
+  })
+}
+
 async function decrementInventoryForOrder(order: { orderId: string; items?: Array<{ id?: string; qty?: number }> }) {
   const db = await getRoom23Db()
   if (!db) return
@@ -259,6 +280,7 @@ async function decrementInventoryForOrder(order: { orderId: string; items?: Arra
       },
       { upsert: true },
     )
+    await syncStockAlert(product, nextQuantity)
     revalidatePath(`/admin/products/${id}`)
   }
 }
@@ -328,6 +350,17 @@ export async function createProduct(formData: FormData) {
   if (fields.isProductOfTheMonth) {
     await applyExclusiveProductOfTheMonth(fields.slug)
   }
+
+  await syncStockAlert(
+    {
+      id: fields.slug,
+      name: fields.name,
+      quantity: null,
+      lowStockAlertSentAt: null,
+      lowStockAlertLevel: null,
+    },
+    fields.quantity,
+  )
 
   revalidateAdmin()
   revalidatePath(`/admin/products/${fields.slug}`)
@@ -407,6 +440,8 @@ export async function updateProduct(formData: FormData) {
     })
   }
 
+  await syncStockAlert(product, nextQuantity ?? null)
+
   revalidateAdmin()
   revalidatePath(`/admin/products/${id}`)
   redirectProduct(formData, id)
@@ -447,6 +482,8 @@ export async function updateQuantity(formData: FormData) {
     },
     { upsert: true },
   )
+
+  await syncStockAlert(product, quantity ?? null)
 
   revalidateAdmin()
   revalidatePath(`/admin/products/${id}`)

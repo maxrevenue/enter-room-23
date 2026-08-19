@@ -43,6 +43,8 @@ export const PRODUCT_OVERLAY_FIELDS = [
   'isProductOfTheMonth',
   'isFeatured',
   'source',
+  'lowStockAlertSentAt',
+  'lowStockAlertLevel',
 ] as const
 
 export type ProductImage = {
@@ -81,6 +83,8 @@ export type ProductDoc = {
   image?: string
   images?: ProductImage[]
   gallery?: ProductImage[]
+  lowStockAlertSentAt?: Date
+  lowStockAlertLevel?: 'low' | 'out'
   createdAt?: Date
   updatedAt?: Date
 }
