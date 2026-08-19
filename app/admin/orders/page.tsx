@@ -170,7 +170,7 @@ export default async function AdminOrdersPage({
           {orderViewEmptyMessage(view, q)}
         </p>
       ) : (
-        <OrdersBulkTable orders={rows} view={view} q={q} />
+        <OrdersBulkTable orders={rows} view={view} q={q} showPackWave={view === 'open'} />
       )}
     </section>
   )

@@ -5,6 +5,7 @@ import { useMemo, useState } from 'react'
 import { useFormStatus } from 'react-dom'
 import { bulkUpdateOrders } from '@/app/admin/actions'
 import { adminCustomerHref } from '@/lib/admin-customers'
+import { buildPackWaveHref } from '@/lib/admin-pack-wave'
 import type { OrderViewId } from '@/lib/admin-views'
 
 const BULK_LIMIT = 50
@@ -30,6 +31,7 @@ type OrdersBulkTableProps = {
   orders: OrderBulkRow[]
   view: OrderViewId
   q: string
+  showPackWave?: boolean
 }
 
 function BulkSubmitButton({
@@ -64,7 +66,7 @@ function ListContextInputs({ view, q }: { view: OrderViewId; q: string }) {
   )
 }
 
-export function OrdersBulkTable({ orders, view, q }: OrdersBulkTableProps) {
+export function OrdersBulkTable({ orders, view, q, showPackWave = false }: OrdersBulkTableProps) {
   const [selected, setSelected] = useState<Set<string>>(() => new Set())
   const [capWarning, setCapWarning] = useState(false)
 
@@ -132,6 +134,12 @@ export function OrdersBulkTable({ orders, view, q }: OrdersBulkTableProps) {
             <input type="hidden" name="action" value="fulfilled" />
             <BulkSubmitButton label="Set fulfilled" />
           </form>
+
+          {showPackWave ? (
+            <Link href={buildPackWaveHref(selectedIds)} className={bulkBtnClass}>
+              Pack wave
+            </Link>
+          ) : null}
 
           <button
             type="button"
