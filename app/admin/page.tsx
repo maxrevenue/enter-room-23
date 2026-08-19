@@ -90,6 +90,18 @@ export default async function AdminDashboardPage() {
 
       <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <li>
+          <Link href="/admin/analytics" className="block border border-zinc-800 bg-zinc-900 px-6 py-6 hover:border-zinc-600">
+            <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-zinc-500">Operations</p>
+            <p className="mt-3 font-serif text-xl tracking-tight text-zinc-100">Analytics</p>
+          </Link>
+        </li>
+        <li>
+          <Link href="/admin/audit" className="block border border-zinc-800 bg-zinc-900 px-6 py-6 hover:border-zinc-600">
+            <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-zinc-500">Operations</p>
+            <p className="mt-3 font-serif text-xl tracking-tight text-zinc-100">Audit</p>
+          </Link>
+        </li>
+        <li>
           <Link href="/admin/customers" className="block border border-zinc-800 bg-zinc-900 px-6 py-6 hover:border-zinc-600">
             <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-zinc-500">Support</p>
             <p className="mt-3 font-serif text-xl tracking-tight text-zinc-100">Customers</p>
@@ -106,6 +118,30 @@ export default async function AdminDashboardPage() {
             <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-zinc-500">Commerce</p>
             <p className="mt-3 font-serif text-xl tracking-tight text-zinc-100">Settings</p>
           </Link>
+        </li>
+        <li className="border border-zinc-800 bg-zinc-900 px-6 py-6">
+          <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-zinc-500">Export</p>
+          <p className="mt-3 font-serif text-xl tracking-tight text-zinc-100">CSV</p>
+          <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2">
+            <a
+              href="/admin/export/orders"
+              className="text-[10px] font-medium uppercase tracking-[0.18em] text-zinc-400 hover:text-zinc-100"
+            >
+              Orders
+            </a>
+            <a
+              href="/admin/export/products"
+              className="text-[10px] font-medium uppercase tracking-[0.18em] text-zinc-400 hover:text-zinc-100"
+            >
+              Products
+            </a>
+            <Link
+              href="/admin/analytics#export"
+              className="text-[10px] font-medium uppercase tracking-[0.18em] text-zinc-400 hover:text-zinc-100"
+            >
+              Filters
+            </Link>
+          </div>
         </li>
       </ul>
 
