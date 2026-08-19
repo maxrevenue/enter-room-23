@@ -1,17 +1,19 @@
 import { SITE_CONFIG } from '@/config/site'
 import { listStorefrontProducts } from '@/lib/admin-catalog'
-import { productHref } from '@/lib/products'
+import { COLLECTIONS, productHref } from '@/lib/products'
 
 export default async function sitemap() {
+  const collectionPaths = Object.keys(COLLECTIONS).map((slug) => ({
+    path: `/collections/${slug}`,
+    priority: 0.6,
+    changeFrequency: 'weekly',
+  }))
+
   const staticPages = [
     { path: '/', priority: 1.0, changeFrequency: 'weekly' },
     { path: '/shop', priority: 0.9, changeFrequency: 'weekly' },
     { path: '/collections', priority: 0.7, changeFrequency: 'weekly' },
-    { path: '/collections/essentials', priority: 0.7, changeFrequency: 'weekly' },
-    { path: '/collections/wellness', priority: 0.6, changeFrequency: 'weekly' },
-    { path: '/collections/body', priority: 0.6, changeFrequency: 'weekly' },
-    { path: '/collections/toys', priority: 0.6, changeFrequency: 'weekly' },
-    { path: '/collections/new-arrivals', priority: 0.6, changeFrequency: 'weekly' },
+    ...collectionPaths,
     { path: '/journal', priority: 0.7, changeFrequency: 'weekly' },
     { path: '/journal/wellness-maintenance', priority: 0.5, changeFrequency: 'monthly' },
     { path: '/journal/lubricant-formulations', priority: 0.5, changeFrequency: 'monthly' },

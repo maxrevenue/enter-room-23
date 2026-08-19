@@ -1,45 +1,27 @@
 import Link from 'next/link'
+import { NEW_ARRIVALS_COLLECTION, STORE_CATEGORIES } from '@/lib/categories'
 import { getProductsByCollection } from '@/lib/products'
-
-const CATEGORIES = [
-  {
-    slug: 'essentials',
-    label: 'Essentials',
-    description: 'Lubricants and everyday staples',
-  },
-  {
-    slug: 'wellness',
-    label: 'Wellness',
-    description: 'Sprays, mists, and intimate care',
-  },
-  {
-    slug: 'body',
-    label: 'Body',
-    description: 'Oils, gels, and sensorial rituals',
-  },
-  {
-    slug: 'toys',
-    label: 'Toys',
-    description: 'Body-safe pieces for solo and shared play',
-  },
-  {
-    slug: 'new-arrivals',
-    label: 'New Arrivals',
-    description: 'Latest additions to the edit',
-  },
-] as const
 
 function formatCount(count: number) {
   const padded = String(count).padStart(2, '0')
   return `${padded} ${count === 1 ? 'piece' : 'pieces'}`
 }
 
+const HOMEPAGE_CATEGORIES = [
+  ...STORE_CATEGORIES.filter((category) =>
+    ['lubes', 'strokers', 'toys'].includes(category.id),
+  ),
+  NEW_ARRIVALS_COLLECTION,
+]
+
 export default function CategorySection() {
-  const categories = CATEGORIES.map((category) => ({
-    ...category,
-    href: `/collections/${category.slug}`,
-    count: getProductsByCollection(category.slug).length,
-  }))
+  const categories = HOMEPAGE_CATEGORIES.map((category) => ({
+    slug: category.id,
+    label: category.label,
+    description: category.subtitle,
+    href: `/collections/${category.id}`,
+    count: getProductsByCollection(category.id).length,
+  })).filter((category) => category.count > 0)
 
   return (
     <section
@@ -53,7 +35,7 @@ export default function CategorySection() {
             Categories
           </h2>
           <p className="body-sm mt-5 max-w-md text-muted">
-            Five rooms of the edit. Each card opens a live collection.
+            Shop the collection by category — lubes, strokers, toys, and more.
           </p>
         </header>
 

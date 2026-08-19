@@ -1,11 +1,12 @@
 import Link from 'next/link'
 import BrandLogo from '@/components/brand-logo'
+import { STORE_CATEGORIES } from '@/lib/categories'
 import { SITE_CONFIG } from '@/lib/constants'
 
 const FOOTER_NAV = [
   { href: '/shop', label: 'Shop' },
-  { href: '/collections/essentials', label: 'Essentials' },
-  { href: '/collections/wellness', label: 'Wellness' },
+  { href: '/collections/lubes', label: 'Lubes' },
+  { href: '/collections/strokers', label: 'Strokers' },
   { href: '/journal', label: 'Journal' },
   { href: '/about', label: 'About' },
   { href: '/shipping', label: 'Shipping & Returns' },
@@ -56,13 +57,13 @@ export default function SiteFooter() {
 
               <div>
                 <p className="text-[10px] font-medium uppercase tracking-[0.28em] text-theme-muted">
-                  Information
+                  Categories
                 </p>
                 <ul className="mt-4 space-y-2.5">
-                  {FOOTER_NAV.slice(4, 8).map((item) => (
-                    <li key={item.href}>
+                  {STORE_CATEGORIES.slice(0, 4).map((item) => (
+                    <li key={item.id}>
                       <Link
-                        href={item.href}
+                        href={`/collections/${item.id}`}
                         className="text-xs text-theme-muted transition-colors hover:text-theme-text"
                       >
                         {item.label}
@@ -74,10 +75,10 @@ export default function SiteFooter() {
 
               <div>
                 <p className="text-[10px] font-medium uppercase tracking-[0.28em] text-theme-muted">
-                  Legal
+                  Information
                 </p>
                 <ul className="mt-4 space-y-2.5">
-                  {FOOTER_NAV.slice(8).map((item) => (
+                  {FOOTER_NAV.slice(4).map((item) => (
                     <li key={item.href}>
                       <Link
                         href={item.href}

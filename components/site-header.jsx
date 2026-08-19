@@ -6,15 +6,7 @@ import { usePathname } from 'next/navigation'
 import { useCart } from '@/lib/cart-context'
 import { Menu, X, ShoppingBag } from 'lucide-react'
 import BrandLogo from '@/components/brand-logo'
-
-const CATEGORY_LINKS = [
-  { href: '/shop', label: 'Shop' },
-  { href: '/collections/essentials', label: 'Essentials' },
-  { href: '/collections/new-arrivals', label: 'New Arrivals' },
-  { href: '/collections/wellness', label: 'Wellness' },
-  { href: '/collections/body', label: 'Body' },
-  { href: '/collections/toys', label: 'Toys' },
-]
+import { STORE_NAV_LINKS } from '@/lib/categories'
 
 const HOUSE_LINKS = [
   { href: '/journal', label: 'Journal' },
@@ -141,7 +133,7 @@ export default function SiteHeader() {
           aria-label="Collections"
         >
           <ul className="mx-auto flex h-11 max-w-7xl items-center justify-between gap-4 overflow-x-auto px-6">
-            {CATEGORY_LINKS.map((link) => (
+            {STORE_NAV_LINKS.map((link) => (
               <li key={link.href} className="shrink-0">
                 <Link
                   href={link.href}
@@ -194,7 +186,7 @@ export default function SiteHeader() {
                 Collections
               </p>
               <ul className="flex flex-col">
-                {CATEGORY_LINKS.map((link) => (
+                {STORE_NAV_LINKS.map((link) => (
                   <li key={link.href}>
                     <Link
                       href={link.href}

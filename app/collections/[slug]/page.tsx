@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import ProductCard from '@/components/product-card'
 import ShopCategoryBar from '@/components/ShopCategoryBar'
+import { resolveCollectionSlug } from '@/lib/categories'
 import { listStorefrontProductsByCollection } from '@/lib/admin-catalog'
 import {
   COLLECTIONS,
@@ -37,15 +38,17 @@ function formatCount(count: number) {
 
 export default async function CollectionPage({ params }: PageProps) {
   const { slug } = await params
+  const resolvedSlug = resolveCollectionSlug(slug)
   const products = await listStorefrontProductsByCollection(slug)
   const meta = getCollection(slug)
 
-  if (!meta || (!COLLECTIONS[slug] && products.length === 0)) {
+  if (!meta || (!COLLECTIONS[resolvedSlug] && products.length === 0)) {
     notFound()
   }
 
-  const title = meta.title || titleFromSlug(slug)
+  const title = meta.title || titleFromSlug(resolvedSlug)
   const countLabel = formatCount(products.length)
+  const barSlug = COLLECTIONS[resolvedSlug] ? resolvedSlug : slug
 
   return (
     <main className="min-h-screen bg-theme-bg text-theme-text">
@@ -62,7 +65,7 @@ export default async function CollectionPage({ params }: PageProps) {
       </section>
 
       <section className="mx-auto max-w-6xl px-5 pb-16 sm:px-8 sm:pb-20 md:pb-24">
-        <ShopCategoryBar active={slug} />
+        <ShopCategoryBar active={barSlug} />
 
         {products.length === 0 ? (
           <div className="mx-auto mt-16 max-w-md text-center">

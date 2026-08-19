@@ -1,32 +1,12 @@
 import Link from 'next/link'
+import { NEW_ARRIVALS_COLLECTION, STORE_CATEGORIES } from '@/lib/categories'
 
-const CATEGORIES = [
-  {
-    label: 'Essentials',
-    description: 'Core formulations',
-    href: '/collections/essentials',
-  },
-  {
-    label: 'Wellness',
-    description: 'Botanical & sensorial',
-    href: '/shop',
-  },
-  {
-    label: 'Body',
-    description: 'Performance & texture',
-    href: '/shop',
-  },
-  {
-    label: 'New',
-    description: 'Recent additions',
-    href: '/collections/new-arrivals',
-  },
-  {
-    label: 'Accessories',
-    description: 'Care & detail',
-    href: '/shop',
-  },
-] as const
+const NAV_CATEGORIES = [
+  ...STORE_CATEGORIES.filter((category) =>
+    ['lubes', 'strokers', 'toys', 'vibrators'].includes(category.id),
+  ),
+  NEW_ARRIVALS_COLLECTION,
+]
 
 export default function CategoryNav() {
   return (
@@ -47,17 +27,17 @@ export default function CategoryNav() {
 
         <nav aria-label="Product categories">
           <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5 md:gap-4">
-            {CATEGORIES.map((category) => (
-              <li key={category.label}>
+            {NAV_CATEGORIES.map((category) => (
+              <li key={category.id}>
                 <Link
-                  href={category.href}
+                  href={`/collections/${category.id}`}
                   className="group flex h-full flex-col justify-between border border-theme-border bg-theme-surface px-4 py-5 transition-colors duration-300 hover:border-theme-muted md:px-5 md:py-6"
                 >
                   <span className="font-serif text-sm tracking-[0.08em] text-theme-text md:text-base">
                     {category.label}
                   </span>
                   <span className="mt-3 text-[10px] uppercase tracking-[0.18em] text-theme-muted transition-colors duration-300 group-hover:text-theme-text/80">
-                    {category.description}
+                    {category.subtitle.split('.')[0]}
                   </span>
                 </Link>
               </li>

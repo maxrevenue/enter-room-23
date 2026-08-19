@@ -1,6 +1,15 @@
 import { FULFILLMENT_TYPES, VENDOR_TYPES } from '@/lib/fulfillment'
 import { INVENTORY_STATUS } from '@/lib/inventory'
-import { PRODUCTS, PRODUCT_OF_THE_MONTH_ID, getAllCategories, isNewArrival, slugify } from '@/lib/products'
+import {
+  DEFAULT_CATEGORY_ID,
+  DEFAULT_HOUSE_LUBE_ID,
+  NEW_ARRIVALS_COLLECTION,
+  allCategoryIds,
+  isHouseLubeProduct,
+  normalizeCategory,
+  productMatchesCollection,
+} from '@/lib/categories'
+import { PRODUCTS, PRODUCT_OF_THE_MONTH_ID, isNewArrival, slugify } from '@/lib/products'
 import { getRoom23Db, PRODUCT_OVERLAY_FIELDS, type ProductDoc, type ProductImage } from '@/lib/admin-db'
 
 export const LOW_STOCK_THRESHOLD = 5
@@ -30,7 +39,7 @@ function pickOverlay(doc: Record<string, unknown> | null | undefined) {
 }
 
 export function productCategories() {
-  return getAllCategories().filter((category) => category !== 'all')
+  return allCategoryIds()
 }
 
 export function fulfillmentTypeOptions() {
@@ -161,7 +170,8 @@ function buildCustomProduct(doc: ProductDoc): CatalogProduct | null {
   const price = Number(doc.price)
   const cogs = typeof doc.cogs === 'number' && Number.isFinite(doc.cogs) && doc.cogs >= 0 ? doc.cogs : null
   const quantity = quantityOf({ quantity: typeof doc.quantity === 'number' ? doc.quantity : null })
-  const category = typeof doc.category === 'string' && doc.category ? doc.category : 'essentials'
+  const category =
+    typeof doc.category === 'string' && doc.category ? normalizeCategory(doc.category) : DEFAULT_CATEGORY_ID
   const shortEditorial = typeof doc.shortEditorial === 'string' ? doc.shortEditorial : ''
   const tagline = typeof doc.tagline === 'string' ? doc.tagline : shortEditorial
   const description = typeof doc.description === 'string' ? doc.description : shortEditorial
@@ -299,31 +309,26 @@ export async function getStorefrontProductBySlug(slug: string): Promise<CatalogP
 
 export async function listStorefrontProductsByCollection(slug: string): Promise<CatalogProduct[]> {
   const products = await listStorefrontProducts()
-  if (slug === 'new-arrivals') return products.filter(isNewArrival)
-  if (slug === 'essentials') {
-    return products.filter((product) => product.category === 'essentials' || product.collection === 'essentials')
-  }
-  const byCategory = products.filter((product) => product.category === slug)
-  if (byCategory.length) return byCategory
-  return products.filter((product) => product.collection === slug)
+  if (slug === NEW_ARRIVALS_COLLECTION.id) return products.filter(isNewArrival)
+  return products.filter((product) => productMatchesCollection(product, slug))
 }
 
+/** Admin may flag any SKU as POTM; storefront homepage only features house lube. */
 export async function getResolvedProductOfTheMonth(): Promise<CatalogProduct | null> {
   const products = await listAdminProducts()
-  const flagged = products.find(
-    (product) => isStorefrontVisible(product) && (product.isProductOfTheMonth || product.isFeatured),
+  const visible = products.filter(isStorefrontVisible)
+
+  const flagged = visible.find(
+    (product) => product.isProductOfTheMonth || product.isFeatured,
   )
-  if (flagged) return flagged
+  if (flagged && isHouseLubeProduct(flagged.id)) return flagged
 
-  const db = await getRoom23Db()
-  if (db) {
-    const overlayCount = await db.collection('products').countDocuments({
-      $or: [{ isProductOfTheMonth: { $exists: true } }, { isFeatured: { $exists: true } }],
-    })
-    if (overlayCount > 0) return null
-  }
+  const defaultLube =
+    visible.find((product) => product.id === DEFAULT_HOUSE_LUBE_ID) ||
+    visible.find((product) => product.id === PRODUCT_OF_THE_MONTH_ID)
+  if (defaultLube) return defaultLube
 
-  return products.find((product) => isStorefrontVisible(product) && product.id === PRODUCT_OF_THE_MONTH_ID) || null
+  return visible.find((product) => isHouseLubeProduct(product.id)) || null
 }
 
 export async function countLowStockProducts(): Promise<number> {

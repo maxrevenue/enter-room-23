@@ -6,9 +6,9 @@ import { COLLECTIONS } from '@/lib/products'
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'Shop Collections - Essentials, Wellness & Toys',
+  title: 'Shop Collections - Lubes, Toys & Strokers',
   description:
-    'Explore Room 23 collections: essentials, wellness, body care, toys, and new arrivals. Tightly held groupings of body-safe adult wellness. 18+.',
+    'Explore Room 23 collections: lubes, toys, strokers, vibrators, and more. Tightly held groupings of body-safe adult wellness. 18+.',
   alternates: { canonical: '/collections' },
 }
 
@@ -23,18 +23,20 @@ export default async function CollectionsPage() {
     })),
   )
 
+  const visibleCollections = collections.filter((collection) => collection.count > 0)
+
   return (
     <main className="min-h-screen bg-theme-bg px-5 py-16 text-theme-text sm:px-8 sm:py-20">
       <header className="mx-auto max-w-3xl text-center">
         <p className="label-meta">The edit</p>
         <h1 className="heading-md mt-4">Collections</h1>
         <p className="body-sm mx-auto mt-6 max-w-md text-muted">
-          Tightly held groupings. Nothing ornamental.
+          Browse by category. Nothing ornamental.
         </p>
       </header>
 
       <ul className="mx-auto mt-14 grid max-w-6xl grid-cols-1 gap-4 sm:mt-16 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
-        {collections.map((collection) => (
+        {visibleCollections.map((collection) => (
           <li key={collection.slug}>
             <Link
               href={collection.href}

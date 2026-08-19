@@ -2,13 +2,22 @@
 
 import { useState, useMemo } from 'react'
 import { Search } from 'lucide-react'
-import { PRODUCTS, searchProducts } from '@/lib/products'
+import { NEW_ARRIVALS_COLLECTION, STORE_CATEGORIES } from '@/lib/categories'
+import { searchProducts } from '@/lib/products'
 import ProductCard from '@/components/product-card'
 
 const COLLECTION_FILTERS = [
   { label: 'ALL', value: '' },
-  { label: 'ROOM 23 ESSENTIALS', value: 'essentials' },
-  { label: 'NEW ARRIVALS', value: 'new-arrivals' },
+  ...STORE_CATEGORIES.filter((category) =>
+    ['lubes', 'strokers', 'toys'].includes(category.id),
+  ).map((category) => ({
+    label: category.label.toUpperCase(),
+    value: category.id,
+  })),
+  {
+    label: NEW_ARRIVALS_COLLECTION.label.toUpperCase(),
+    value: NEW_ARRIVALS_COLLECTION.id,
+  },
 ]
 
 const PRICE_FILTERS = [
@@ -42,7 +51,6 @@ export default function SearchPage() {
       style={{ backgroundColor: 'var(--bg-base)' }}
     >
       <div className="max-w-6xl mx-auto">
-        {/* ── Title ── */}
         <h1
           className="font-syne text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-8 tracking-tight"
           style={{ color: 'var(--text-primary)' }}
@@ -50,7 +58,6 @@ export default function SearchPage() {
           Search Room 23
         </h1>
 
-        {/* ── Search Bar ── */}
         <div className="max-w-xl mx-auto mb-10 relative">
           <div className="relative">
             <Search
@@ -61,7 +68,7 @@ export default function SearchPage() {
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search lubricants, mists, oils, wellness…"
+              placeholder="Search lubes, strokers, toys…"
               className="w-full pl-12 pr-4 py-3.5 text-sm rounded-lg border outline-none transition-all duration-200 focus:shadow-[0_0_0_3px_rgba(255,26,26,0.15)]"
               style={{
                 backgroundColor: 'var(--bg-elevated)',
@@ -72,15 +79,13 @@ export default function SearchPage() {
           </div>
         </div>
 
-        {/* ── Filter Pills ── */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-          {/* Collection filters (left) */}
           <div className="flex flex-wrap items-center gap-2">
             <span
               className="text-[10px] font-semibold uppercase tracking-[0.12em] mr-1"
               style={{ color: 'var(--text-muted)' }}
             >
-              Collection:
+              Category:
             </span>
             {COLLECTION_FILTERS.map((f) => (
               <button
@@ -101,7 +106,6 @@ export default function SearchPage() {
             ))}
           </div>
 
-          {/* Price filters (right) */}
           <div className="flex flex-wrap items-center gap-2">
             <span
               className="text-[10px] font-semibold uppercase tracking-[0.12em] mr-1"
@@ -129,7 +133,6 @@ export default function SearchPage() {
           </div>
         </div>
 
-        {/* ── Results Count ── */}
         <p
           className="text-xs mb-6"
           style={{ color: 'var(--text-muted)' }}
@@ -137,7 +140,6 @@ export default function SearchPage() {
           {results.length} {results.length === 1 ? 'product' : 'products'} found
         </p>
 
-        {/* ── Product Grid ── */}
         {results.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {results.map((product) => (

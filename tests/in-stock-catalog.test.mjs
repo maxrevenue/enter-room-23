@@ -53,6 +53,6 @@ describe('in-stock wellness catalog', () => {
   })
 
   it('exposes the new SKUs on new-arrivals', () => {
-    assert.match(products, /if \(slug === 'new-arrivals'\) return PRODUCTS.filter\(isNewArrival\)/)
+    assert.match(products, /NEW_ARRIVALS_COLLECTION\.id\) return PRODUCTS\.filter\(isNewArrival\)/)
   })
 })

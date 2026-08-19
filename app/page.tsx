@@ -3,7 +3,7 @@ import Link from 'next/link'
 import JournalSection from '@/components/JournalSection'
 import ProductOfTheMonth from '@/components/ProductOfTheMonth'
 import ProductCard from '@/components/product-card'
-import { PRODUCT_OF_THE_MONTH_ID } from '@/lib/products'
+import { sortCuratedStorefrontProducts } from '@/lib/categories'
 import { getResolvedProductOfTheMonth, listStorefrontProducts } from '@/lib/admin-catalog'
 
 export const dynamic = 'force-dynamic'
@@ -15,26 +15,16 @@ export const metadata: Metadata = {
   alternates: { canonical: '/' },
 }
 
-const FEATURED_IDS = [
-  'skins-delay',
-  'heli-lavender-mist',
-  'arlo-atlas-oil',
-  'lube-silicone-2oz',
-] as const
-
 export default async function HomePage() {
   const [productOfTheMonth, storefrontProducts] = await Promise.all([
     getResolvedProductOfTheMonth(),
     listStorefrontProducts(),
   ])
-  const productOfTheMonthId = productOfTheMonth?.id || PRODUCT_OF_THE_MONTH_ID
-  const liveById = new Map(storefrontProducts.map((product) => [product.id, product]))
-
-  const featuredTiles = FEATURED_IDS.map((id) => liveById.get(id)).filter(Boolean)
-  const editTiles =
-    featuredTiles.length > 0
-      ? featuredTiles
-      : storefrontProducts.filter((product) => product.id !== productOfTheMonthId).slice(0, 4)
+  const productOfTheMonthId = productOfTheMonth?.id
+  const editTiles = sortCuratedStorefrontProducts(
+    storefrontProducts,
+    productOfTheMonthId ? [productOfTheMonthId] : [],
+  ).slice(0, 4)
 
   return (
     <div className="bg-theme-bg text-theme-text">
@@ -81,7 +71,7 @@ export default async function HomePage() {
       {productOfTheMonth ? (
         <ProductOfTheMonth
           product={productOfTheMonth}
-          offer={{ label: 'This month\'s focus' }}
+          offer={{ label: 'Our house lubricant' }}
         />
       ) : null}
 
@@ -103,8 +93,8 @@ export default async function HomePage() {
                   The Edit
                 </h2>
                 <p className="mt-6 max-w-md text-sm leading-relaxed text-theme-muted sm:text-[0.9375rem]">
-                  A tightly held selection of body-safe essentials — refined formulas, quiet
-                  packaging, nothing ornamental.
+                  A curated scroll by category — house lubes, strokers, and body-safe
+                  pieces held to a quiet standard.
                 </p>
               </div>
               <Link
@@ -141,17 +131,17 @@ export default async function HomePage() {
             id="close-heading"
             className="font-serif text-2xl tracking-tight text-theme-text sm:text-3xl"
           >
-            Begin with the essentials.
+            Shop the collection.
           </h2>
           <p className="mx-auto mt-5 max-w-sm text-sm leading-relaxed text-theme-muted">
-            Body-safe formulations, considered packaging, and a collection held to a quiet
+            Body-safe formulations, considered packaging, and categories held to a quiet
             standard.
           </p>
           <Link
             href="/shop"
             className="mt-10 inline-flex min-h-12 items-center justify-center border border-theme-border px-10 py-3.5 text-[11px] font-medium uppercase tracking-[0.24em] text-theme-text transition-colors duration-300 hover:border-theme-muted hover:bg-theme-surface"
           >
-            Explore the shop
+            Shop the collection
           </Link>
         </div>
       </section>

@@ -1,5 +1,6 @@
 import type { CatalogProduct } from '@/lib/admin-catalog'
 import { gallerySlots, quantityOf } from '@/lib/admin-catalog'
+import { categoryLabel } from '@/lib/categories'
 import { ProductImageFields } from '@/components/admin/product-image-fields'
 
 export const fieldClass =
@@ -91,10 +92,10 @@ export function ProductEditorFields({
 
         <label className="block">
           <span className={labelClass}>Category</span>
-          <select className={fieldClass} name="category" defaultValue={product?.category || categories[0] || 'essentials'} required>
+          <select className={fieldClass} name="category" defaultValue={product?.category || categories[0] || 'lubes'} required>
             {categories.map((category) => (
               <option key={category} value={category}>
-                {category}
+                {categoryLabel(category)}
               </option>
             ))}
           </select>

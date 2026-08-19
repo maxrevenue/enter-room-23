@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
+import { categoryLabel } from '@/lib/categories'
 import { productHref } from '@/lib/products'
 
 export type MonthOffer = {
@@ -23,11 +24,6 @@ type ProductOfTheMonthProps = {
     attributes?: string[]
   } | null
   offer?: MonthOffer | null
-}
-
-function formatCategory(category?: string) {
-  if (!category) return 'The collection'
-  return String(category).replace(/-/g, ' ')
 }
 
 export default function ProductOfTheMonth({ product = null, offer = null }: ProductOfTheMonthProps) {
@@ -71,7 +67,7 @@ export default function ProductOfTheMonth({ product = null, offer = null }: Prod
           </div>
 
           <div className="lg:col-span-4 lg:col-start-9">
-            <p className="label-meta">{formatCategory(product.category)}</p>
+            <p className="label-meta">{categoryLabel(product.category)}</p>
             <h2 id="product-of-month-heading" className="heading-lg mt-5">
               {product.name}
             </h2>

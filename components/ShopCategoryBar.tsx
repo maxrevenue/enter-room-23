@@ -1,13 +1,5 @@
 import Link from 'next/link'
-
-const CATEGORIES = [
-  { slug: 'all', href: '/shop', label: 'All' },
-  { slug: 'essentials', href: '/collections/essentials', label: 'Essentials' },
-  { slug: 'new-arrivals', href: '/collections/new-arrivals', label: 'New Arrivals' },
-  { slug: 'wellness', href: '/collections/wellness', label: 'Wellness' },
-  { slug: 'body', href: '/collections/body', label: 'Body' },
-  { slug: 'toys', href: '/collections/toys', label: 'Toys' },
-] as const
+import { SHOP_CATEGORY_BAR_LINKS } from '@/lib/categories'
 
 type ShopCategoryBarProps = {
   active?: string
@@ -17,7 +9,7 @@ export default function ShopCategoryBar({ active = 'all' }: ShopCategoryBarProps
   return (
     <nav aria-label="Shop categories" className="border-y border-theme-border">
       <ul className="flex items-center gap-2 overflow-x-auto py-3.5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:gap-2.5 sm:py-4 md:flex-wrap md:justify-center">
-        {CATEGORIES.map((category) => {
+        {SHOP_CATEGORY_BAR_LINKS.map((category) => {
           const isActive = active === category.slug
 
           return (
