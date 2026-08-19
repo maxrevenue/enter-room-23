@@ -55,6 +55,14 @@ export function isArchived(product: CatalogProduct) {
   return Boolean(product.hidden || product.archived || product.active === false)
 }
 
+export function visibilityFields(hidden: boolean) {
+  return {
+    hidden,
+    active: !hidden,
+    archived: hidden,
+  }
+}
+
 export function isLowStock(product: CatalogProduct) {
   const quantity = quantityOf(product)
   return quantity != null && quantity > 0 && quantity <= LOW_STOCK_THRESHOLD

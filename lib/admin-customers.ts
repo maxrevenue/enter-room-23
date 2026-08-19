@@ -1,10 +1,13 @@
 import { getRoom23Db } from '@/lib/admin-db'
+import { normalizeCustomerEmail } from '@/lib/admin-customer-links'
 import {
   formatOrderDate,
   formatOrderMoney,
   isRefundedOrCancelled,
   type AdminOrder,
 } from '@/lib/admin-orders'
+
+export { adminCustomerHref, adminCustomersHref, normalizeCustomerEmail } from '@/lib/admin-customer-links'
 
 export const CUSTOMER_AGGREGATION_LIMIT = 5000
 
@@ -16,10 +19,6 @@ export type AdminCustomer = {
   lastOrderAt?: Date | string | null
   lastOrderId?: string
   shippingAddress?: AdminOrder['shippingAddress']
-}
-
-export function normalizeCustomerEmail(email?: string | null) {
-  return String(email || '').trim().toLowerCase()
 }
 
 export function decodeCustomerEmailParam(raw?: string | null) {
@@ -60,15 +59,6 @@ export function customerMatchesQuery(customer: Pick<AdminCustomer, 'email' | 'na
   const needle = String(q || '').trim().toLowerCase()
   if (!needle) return true
   return customer.email.includes(needle) || customer.name.toLowerCase().includes(needle)
-}
-
-export function adminCustomersHref(q = '') {
-  const needle = String(q || '').trim()
-  return needle ? `/admin/customers?q=${encodeURIComponent(needle)}` : '/admin/customers'
-}
-
-export function adminCustomerHref(email: string) {
-  return `/admin/customers/${encodeURIComponent(normalizeCustomerEmail(email))}`
 }
 
 export function formatCustomerSpend(value?: number | null) {

@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { useMemo, useState } from 'react'
 import { useFormStatus } from 'react-dom'
 import { bulkUpdateOrders } from '@/app/admin/actions'
-import { adminCustomerHref } from '@/lib/admin-customers'
+import { adminCustomerHref } from '@/lib/admin-customer-links'
 import { buildPackWaveHref } from '@/lib/admin-pack-wave'
 import type { OrderViewId } from '@/lib/admin-views'
 

@@ -19,11 +19,19 @@ const nextConfig = {
       '@': rootDir,
     },
   },
-  webpack(config, { dev }) {
+  webpack(config, { dev, isServer }) {
     config.resolve.alias = {
       ...(config.resolve.alias || {}),
       '@': rootDir,
     };
+    if (isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        child_process: false,
+        fs: false,
+        'fs/promises': false,
+      };
+    }
     if (dev) {
       config.watchOptions = {
         poll: 2000,

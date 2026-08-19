@@ -18,7 +18,8 @@ describe('admin phase 20 pack wave', () => {
     assert.match(packWave, /export function buildPackWaveHref/)
     assert.match(packWave, /export function aggregatePickList/)
     assert.match(packWave, /export function buildWaveOrderSummaries/)
-    assert.match(packWave, /export async function getAdminOrdersByIds/)
+    const packWaveServer = read('lib/admin-pack-wave.server.ts')
+    assert.match(packWaveServer, /export async function getAdminOrdersByIds/)
     assert.match(packWave, /orderCount/)
   })
 

@@ -8,10 +8,10 @@ import { formatOrderDate } from '@/lib/admin-orders'
 import {
   aggregatePickList,
   buildWaveOrderSummaries,
-  getAdminOrdersByIds,
   PACK_WAVE_LIMIT,
   parsePackWaveIds,
 } from '@/lib/admin-pack-wave'
+import { getAdminOrdersByIds } from '@/lib/admin-pack-wave.server'
 import { PackWavePrintButton } from './print-button'
 
 export const dynamic = 'force-dynamic'

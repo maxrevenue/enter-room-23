@@ -2,7 +2,7 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "main": ".open-next/worker.js",
   "name": "123",
-  "compatibility_date": "2026-08-03",
+  "compatibility_date": "2026-08-18",
   "compatibility_flags": [
     "nodejs_compat",
     "nodejs_compat_populate_process_env"

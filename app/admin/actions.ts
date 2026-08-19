@@ -1466,7 +1466,7 @@ export async function updateRma(formData: FormData) {
     },
   )
 
-  let restockResult: 'applied' | 'already' | 'skip' | undefined
+  let restockResult: 'applied' | 'already' | 'missing' | 'skip' | undefined
   if (statusChanged && nextStatus === 'restocked' && resolution === 'restock') {
     restockResult = await applyRmaRestock(id)
   }

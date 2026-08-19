@@ -4,7 +4,7 @@ export const AUDIT_COLLECTION = 'audit_logs'
 export const AUDIT_ACTOR = 'admin'
 export const AUDIT_LIST_LIMIT = 100
 
-export const AUDIT_ENTITY_TYPES = ['product', 'order', 'coupon', 'settings', 'content'] as const
+export const AUDIT_ENTITY_TYPES = ['product', 'order', 'coupon', 'settings', 'content', 'rma'] as const
 export type AuditEntityType = (typeof AUDIT_ENTITY_TYPES)[number]
 
 export type AuditLog = {

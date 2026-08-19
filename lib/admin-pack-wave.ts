@@ -1,5 +1,14 @@
-import { getRoom23Db } from '@/lib/admin-db'
-import { orderItemCount, type AdminOrder } from '@/lib/admin-orders'
+export type PackWaveOrderItem = {
+  id?: string
+  name?: string
+  qty?: number
+}
+
+export type PackWaveOrder = {
+  orderId: string
+  shippingAddress?: { name?: string } | null
+  items?: PackWaveOrderItem[]
+}
 
 export const PACK_WAVE_LIMIT = 50
 
@@ -18,11 +27,19 @@ export type WaveOrderSummary = {
   packingSlipHref: string
 }
 
+function packWaveItemCount(order: Pick<PackWaveOrder, 'items'>) {
+  if (!Array.isArray(order.items) || order.items.length === 0) return 0
+  return order.items.reduce((sum, item) => {
+    const qty = Number(item?.qty)
+    return sum + (Number.isFinite(qty) && qty > 0 ? qty : 1)
+  }, 0)
+}
+
 function normalizeLineQty(qty?: number) {
   return Math.max(1, Math.floor(Number(qty) || 1))
 }
 
-function lineAggregateKey(item: NonNullable<AdminOrder['items']>[number]) {
+function lineAggregateKey(item: PackWaveOrderItem) {
   const productId = String(item.id || '').trim()
   const name = String(item.name || item.id || 'Item').trim() || 'Item'
   return productId || `name:${name.toLowerCase()}`
@@ -53,26 +70,7 @@ export function buildPackWaveHref(orderIds: string[]) {
   return encoded ? `/admin/pack-wave?ids=${encoded}` : '/admin/pack-wave'
 }
 
-export async function getAdminOrdersByIds(orderIds: string[]): Promise<AdminOrder[]> {
-  const ids = [...new Set(orderIds.map((id) => String(id || '').trim()).filter(Boolean))].slice(
-    0,
-    PACK_WAVE_LIMIT,
-  )
-  if (!ids.length) return []
-
-  const db = await getRoom23Db()
-  if (!db) return []
-
-  const found = await db
-    .collection<AdminOrder>('orders')
-    .find({ orderId: { $in: ids } })
-    .toArray()
-
-  const byId = new Map(found.map((order) => [order.orderId, order]))
-  return ids.map((id) => byId.get(id)).filter((order): order is AdminOrder => order != null)
-}
-
-export function aggregatePickList(orders: AdminOrder[]): PickListLine[] {
+export function aggregatePickList(orders: PackWaveOrder[]): PickListLine[] {
   const map = new Map<
     string,
     { productId: string; name: string; totalQty: number; orderIds: Set<string> }
@@ -111,11 +109,11 @@ export function aggregatePickList(orders: AdminOrder[]): PickListLine[] {
     .sort((a, b) => a.name.localeCompare(b.name, 'en'))
 }
 
-export function buildWaveOrderSummaries(orders: AdminOrder[]): WaveOrderSummary[] {
+export function buildWaveOrderSummaries(orders: PackWaveOrder[]): WaveOrderSummary[] {
   return orders.map((order) => ({
     orderId: order.orderId,
     shipToName: String(order.shippingAddress?.name || '—').trim() || '—',
-    itemCount: orderItemCount(order),
+    itemCount: packWaveItemCount(order),
     packingSlipHref: `/admin/orders/${encodeURIComponent(order.orderId)}/packing-slip`,
   }))
 }
