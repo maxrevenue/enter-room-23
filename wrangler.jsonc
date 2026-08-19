@@ -48,7 +48,13 @@
       },
       "vars": {
         "NEXT_PUBLIC_DEPLOYMENT_ENV": "staging"
-      }
+      },
+      "r2_buckets": [
+        {
+          "binding": "MEDIA",
+          "bucket_name": "room23-media"
+        }
+      ]
     },
     "preview": {
       "name": "enter-room-23-preview",
@@ -59,13 +65,29 @@
       },
       "vars": {
         "NEXT_PUBLIC_DEPLOYMENT_ENV": "production"
-      }
+      },
+      "r2_buckets": [
+        {
+          "binding": "MEDIA",
+          "bucket_name": "room23-media"
+        }
+      ]
     }
   },
 
   "images": {
     "binding": "IMAGES"
   },
+
+  // Product media uploads (Phase 10). Create bucket "room23-media" in Cloudflare R2,
+  // enable public access or attach custom domain, then set MEDIA_PUBLIC_BASE_URL on the Worker.
+  "r2_buckets": [
+    {
+      "binding": "MEDIA",
+      "bucket_name": "room23-media"
+    }
+  ],
+
   "observability": {
     "enabled": true
   }

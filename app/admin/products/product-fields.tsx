@@ -1,5 +1,6 @@
 import type { CatalogProduct } from '@/lib/admin-catalog'
-import { gallerySlots, GALLERY_SLOT_COUNT, quantityOf } from '@/lib/admin-catalog'
+import { gallerySlots, quantityOf } from '@/lib/admin-catalog'
+import { ProductImageFields } from '@/components/admin/product-image-fields'
 
 export const fieldClass =
   'w-full border border-zinc-800 bg-zinc-950 px-4 py-3 text-sm text-zinc-100 outline-none focus:border-zinc-500'
@@ -212,30 +213,7 @@ export function ProductEditorFields({
         </label>
       </div>
 
-      <div className="space-y-6">
-        <label className="block">
-          <span className={labelClass}>Primary image URL</span>
-          <input className={fieldClass} name="image" defaultValue={product?.image || ''} placeholder="https://… or /images/…" />
-        </label>
-        <div>
-          <p className={labelClass}>Gallery</p>
-          <p className="mb-4 text-xs text-zinc-500">{GALLERY_SLOT_COUNT} URL slots. Empty rows are ignored.</p>
-          <div className="space-y-4">
-            {slots.map((slot, index) => (
-              <div key={index} className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                <label className="block">
-                  <span className="mb-2 block text-[10px] uppercase tracking-[0.16em] text-zinc-600">URL {index + 1}</span>
-                  <input className={fieldClass} name={`imageUrl${index}`} defaultValue={slot.url} />
-                </label>
-                <label className="block">
-                  <span className="mb-2 block text-[10px] uppercase tracking-[0.16em] text-zinc-600">Alt {index + 1}</span>
-                  <input className={fieldClass} name={`imageAlt${index}`} defaultValue={slot.alt || ''} />
-                </label>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+      <ProductImageFields productId={product?.id} primaryImage={product?.image || ''} gallery={slots} />
     </>
   )
 }

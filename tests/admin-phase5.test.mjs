@@ -113,6 +113,7 @@ describe('admin phase 5 catalog', () => {
 
   it('exposes full editor fields, gallery slots, and product list polish', () => {
     const fields = read('app/admin/products/product-fields.tsx')
+    const imageFields = read('components/admin/product-image-fields.tsx')
     const list = read('app/admin/products/page.tsx')
     const create = read('app/admin/products/new/page.tsx')
     const edit = read('app/admin/products/[id]/page.tsx')
@@ -120,7 +121,8 @@ describe('admin phase 5 catalog', () => {
     assert.match(fields, /name="tagline"/)
     assert.match(fields, /name="ingredients"/)
     assert.match(fields, /name="hideWhenZero"/)
-    assert.match(fields, /name=\{`imageUrl\$\{index\}`\}/)
+    assert.match(fields, /ProductImageFields/)
+    assert.match(imageFields, /name=\{`imageUrl\$\{index\}`\}/)
     assert.match(create, /ProductEditorFields/)
     assert.match(edit, /ProductEditorFields/)
     assert.match(list, /Hidden \(zero stock\)/)
