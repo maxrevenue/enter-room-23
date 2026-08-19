@@ -34,11 +34,16 @@ import {
 import { normalizeShippingZones, SHIPPING_ZONE_SLOTS, STORE_SETTINGS_ID } from '@/lib/admin-settings'
 import {
   buildOrderStatusUpdate,
+  coerceOrderStatus,
   getAdminOrder,
+  isOpenOrder,
+  isOrderFulfilled,
   isOrderStatus,
+  isRefundedOrCancelled,
   nextQuantityAfterDecrement,
   orderStatusLabel,
   shouldDecrementInventory,
+  type AdminOrder,
 } from '@/lib/admin-orders'
 import { safeInsertOrderEvent } from '@/lib/admin-order-events'
 import { writeAdminAudit } from '@/lib/admin-audit'
@@ -73,6 +78,45 @@ const CATEGORY_VALUES = new Set(productCategories())
 const FULFILLMENT_VALUES = new Set(fulfillmentTypeOptions())
 const VENDOR_VALUES = new Set(vendorTypeOptions())
 const RESERVED_SLUGS = new Set(['new', 'admin', 'shop', 'api', 'products', 'collections'])
+const BULK_ACTION_LIMIT = 50
+
+function parseBulkIds(raw: unknown): { ids: string[]; exceeded: boolean } {
+  let parsed: unknown[] = []
+  if (typeof raw === 'string' && raw.trim()) {
+    try {
+      const data = JSON.parse(raw)
+      if (Array.isArray(data)) parsed = data
+    } catch {
+      parsed = []
+    }
+  }
+  const unique = [...new Set(parsed.map((id) => String(id || '').trim()).filter(Boolean))]
+  return {
+    ids: unique.slice(0, BULK_ACTION_LIMIT),
+    exceeded: unique.length > BULK_ACTION_LIMIT,
+  }
+}
+
+function bulkProductsRedirect(params: Record<string, string>): never {
+  const search = new URLSearchParams(params)
+  redirect(`/admin/products?${search.toString()}`)
+}
+
+function bulkOrdersRedirect(formData: FormData, params: Record<string, string>): never {
+  const search = new URLSearchParams(params)
+  const filter = String(formData.get('filter') || '').trim()
+  const q = String(formData.get('q') || '').trim()
+  if (filter && filter !== 'all') search.set('filter', filter)
+  if (q) search.set('q', q)
+  redirect(`/admin/orders?${search.toString()}`)
+}
+
+function canBulkFulfillOrder(order: AdminOrder) {
+  if (isRefundedOrCancelled(order)) return false
+  if (isOrderFulfilled(order)) return false
+  if (!isOpenOrder(order)) return false
+  return coerceOrderStatus(order.status) === 'paid'
+}
 
 function fromList(formData: FormData) {
   return String(formData.get('from') || '') === 'list'
@@ -1082,4 +1126,212 @@ export async function updateStoreSettings(formData: FormData) {
 
   revalidateAdmin()
   redirect('/admin/settings?saved=1')
+}
+
+export async function bulkUpdateProducts(formData: FormData) {
+  await requireAdmin()
+
+  const { ids, exceeded } = parseBulkIds(formData.get('ids'))
+  if (exceeded) {
+    bulkProductsRedirect({ bulk: 'error', msg: 'Select at most 50 products.' })
+  }
+  if (!ids.length) {
+    bulkProductsRedirect({ bulk: 'error', msg: 'No products selected.' })
+  }
+
+  const action = String(formData.get('action') || '').trim()
+  const db = await getRoom23Db()
+  if (!db) {
+    bulkProductsRedirect({ bulk: 'error', msg: 'Database unavailable.' })
+  }
+
+  let updated = 0
+
+  for (const id of ids) {
+    const product = await getAdminProduct(id)
+    if (!product) continue
+
+    const now = new Date()
+    let $set: Record<string, unknown> = { id, updatedAt: now }
+    let auditAction = 'product.update'
+    let auditMessage = `Updated ${product.name} (bulk)`
+
+    if (action === 'archive') {
+      const wasFeatured = Boolean(product.isProductOfTheMonth || product.isFeatured)
+      $set = {
+        ...$set,
+        ...visibilityFields(true),
+        ...(wasFeatured ? { isProductOfTheMonth: false, isFeatured: false } : {}),
+      }
+      auditAction = 'product.hide'
+      auditMessage = `Archived ${product.name} (bulk)`
+    } else if (action === 'restore') {
+      $set = { ...$set, ...visibilityFields(false) }
+      auditAction = 'product.show'
+      auditMessage = `Restored ${product.name} (bulk)`
+    } else if (action === 'hideWhenZeroOn') {
+      $set.hideWhenZero = true
+      auditMessage = `Enabled hide-when-zero for ${product.name} (bulk)`
+    } else if (action === 'hideWhenZeroOff') {
+      $set.hideWhenZero = false
+      auditMessage = `Disabled hide-when-zero for ${product.name} (bulk)`
+    } else if (action === 'setCategory') {
+      const category = String(formData.get('category') || '').trim()
+      if (!CATEGORY_VALUES.has(category)) {
+        bulkProductsRedirect({ bulk: 'error', msg: 'Invalid category.' })
+      }
+      $set.category = category
+      $set.collection = category
+      auditMessage = `Set category to ${category} for ${product.name} (bulk)`
+    } else {
+      bulkProductsRedirect({ bulk: 'error', msg: 'Unknown bulk action.' })
+    }
+
+    await db.collection('products').updateOne(
+      { id },
+      {
+        $set,
+        $setOnInsert: {
+          name: product.name,
+          slug: product.slug || id,
+          price: product.price,
+          category: product.category,
+          quantity: product.quantity ?? null,
+          isProductOfTheMonth: false,
+          isFeatured: false,
+          createdAt: now,
+        },
+      },
+      { upsert: true },
+    )
+
+    await writeAdminAudit({
+      action: auditAction,
+      entityType: 'product',
+      entityId: id,
+      message: auditMessage,
+      meta: { name: product.name, bulk: true, action },
+    })
+
+    revalidatePath(`/admin/products/${id}`)
+    updated++
+  }
+
+  revalidateAdmin()
+  bulkProductsRedirect({ bulk: 'ok', count: String(updated) })
+}
+
+export async function bulkUpdateOrders(formData: FormData) {
+  await requireAdmin()
+
+  const { ids, exceeded } = parseBulkIds(formData.get('ids'))
+  if (exceeded) {
+    bulkOrdersRedirect(formData, { bulk: 'error', msg: 'Select at most 50 orders.' })
+  }
+  if (!ids.length) {
+    bulkOrdersRedirect(formData, { bulk: 'error', msg: 'No orders selected.' })
+  }
+
+  const action = String(formData.get('action') || '').trim()
+  const db = await getRoom23Db()
+  if (!db) {
+    bulkOrdersRedirect(formData, { bulk: 'error', msg: 'Database unavailable.' })
+  }
+
+  let updated = 0
+  let skipped = 0
+
+  for (const orderId of ids) {
+    const order = await getAdminOrder(orderId)
+    if (!order) {
+      skipped++
+      continue
+    }
+
+    if (action === 'reviewed') {
+      await db.collection('orders').updateOne(
+        { orderId },
+        {
+          $set: {
+            adminReview: false,
+            updatedAt: new Date(),
+          },
+        },
+      )
+
+      await safeInsertOrderEvent({
+        orderId,
+        type: 'reviewed',
+        message: 'Marked as reviewed (bulk)',
+        meta: { adminReview: false, bulk: true },
+        actor: 'admin',
+      })
+
+      revalidateOrder(orderId, order.email)
+      updated++
+      continue
+    }
+
+    if (action === 'fulfilled') {
+      if (!canBulkFulfillOrder(order)) {
+        skipped++
+        continue
+      }
+
+      const status = 'fulfilled'
+      const decrement = shouldDecrementInventory(order, status)
+      if (decrement) {
+        await decrementInventoryForOrder(order)
+      }
+
+      await db.collection('orders').updateOne(
+        { orderId },
+        {
+          $set: {
+            ...buildOrderStatusUpdate(status),
+            ...(decrement ? { inventoryDecremented: true } : {}),
+          },
+        },
+      )
+
+      await writeAdminAudit({
+        action: 'order.status',
+        entityType: 'order',
+        entityId: orderId,
+        message: `Order ${orderId} fulfilled (bulk)`,
+        meta: { from: order.status || 'paid', to: status, bulk: true },
+      })
+
+      const fromStatus = orderStatusLabel(order.status)
+      const toStatus = orderStatusLabel(status)
+      await safeInsertOrderEvent({
+        orderId,
+        type: 'status_changed',
+        message: `Status changed from ${fromStatus} to ${toStatus} (bulk)`,
+        meta: { from: order.status || 'paid', to: status, bulk: true },
+        actor: 'admin',
+      })
+
+      if (decrement) {
+        await safeInsertOrderEvent({
+          orderId,
+          type: 'inventory_decremented',
+          message: 'Inventory decremented on fulfill (bulk)',
+          actor: 'admin',
+        })
+      }
+
+      revalidateOrder(orderId, order.email)
+      updated++
+      continue
+    }
+
+    bulkOrdersRedirect(formData, { bulk: 'error', msg: 'Unknown bulk action.' })
+  }
+
+  revalidateAdmin()
+
+  const query: Record<string, string> = { bulk: 'ok', count: String(updated) }
+  if (skipped > 0) query.skippedCount = String(skipped)
+  bulkOrdersRedirect(formData, query)
 }

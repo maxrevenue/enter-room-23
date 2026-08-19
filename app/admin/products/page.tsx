@@ -1,13 +1,7 @@
 import Link from 'next/link'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
-import {
-  archiveProduct,
-  clearProductOfTheMonth,
-  setProductOfTheMonth,
-  unarchiveProduct,
-  updateQuantity,
-} from '@/app/admin/actions'
+import { ProductsBulkTable } from '@/components/admin/products-bulk-table'
 import { isAdminAuthenticated } from '@/lib/admin-auth'
 import { resolveAdminPassword } from '@/lib/admin-password.server'
 import {
@@ -16,6 +10,7 @@ import {
   isLowStock,
   listAdminProducts,
   LOW_STOCK_THRESHOLD,
+  productCategories,
   productImageUrl,
   quantityOf,
 } from '@/lib/admin-catalog'
@@ -27,15 +22,16 @@ function formatMoney(value: number) {
   return `$${Number(value || 0).toFixed(2)}`
 }
 
-const actionClass =
-  'text-[10px] font-medium uppercase tracking-[0.16em] text-zinc-500 hover:text-zinc-100'
-const qtyInputClass =
-  'w-16 border border-zinc-800 bg-zinc-950 px-2 py-1.5 text-sm text-zinc-100 outline-none focus:border-zinc-500'
-
 export default async function AdminProductsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string; saved?: string }>
+  searchParams: Promise<{
+    error?: string
+    saved?: string
+    bulk?: string
+    count?: string
+    msg?: string
+  }>
 }) {
   if (!(await isAdminAuthenticated(await cookies(), await resolveAdminPassword()))) {
     redirect('/admin/login')
@@ -43,6 +39,35 @@ export default async function AdminProductsPage({
 
   const params = await searchParams
   const products = await listAdminProducts()
+  const categories = productCategories()
+  const bulkCount = Number(params.count)
+  const bulkCountLabel = Number.isFinite(bulkCount) && bulkCount >= 0 ? bulkCount : null
+
+  const rows = products.map((product) => {
+    const archived = isArchived(product)
+    const hiddenByZero = isHiddenByZeroStock(product)
+    const quantity = quantityOf(product)
+    const featured = Boolean(product.isProductOfTheMonth || product.isFeatured)
+    const low = isLowStock(product)
+    const out = quantity === 0
+
+    return {
+      id: product.id,
+      name: product.name,
+      priceLabel: formatMoney(product.price),
+      marginLabel: formatMarginPct(productMarginPct(product)),
+      quantity,
+      category: product.category,
+      statusLabel: archived ? 'Archived' : hiddenByZero ? 'Hidden (zero stock)' : 'Active',
+      featured,
+      archived,
+      hiddenByZero,
+      low,
+      out,
+      lowStockNote: `Low · ${LOW_STOCK_THRESHOLD} or fewer`,
+      imageUrl: productImageUrl(product),
+    }
+  })
 
   return (
     <section>
@@ -59,6 +84,16 @@ export default async function AdminProductsPage({
         </Link>
       </header>
 
+      {params.bulk === 'ok' && bulkCountLabel != null ? (
+        <p className="mb-6 text-sm text-zinc-400" role="status">
+          Bulk update applied to {bulkCountLabel} product{bulkCountLabel === 1 ? '' : 's'}.
+        </p>
+      ) : null}
+      {params.bulk === 'error' && params.msg ? (
+        <p className="mb-6 text-sm text-zinc-400" role="alert">
+          {params.msg}
+        </p>
+      ) : null}
       {params.error === 'db' ? (
         <p className="mb-6 text-sm text-zinc-400" role="alert">
           MongoDB is not available. Product changes were not saved.
@@ -90,130 +125,7 @@ export default async function AdminProductsPage({
         </p>
       ) : null}
 
-      <div className="overflow-x-auto border border-zinc-800">
-        <table className="w-full min-w-[980px] text-left text-sm">
-          <thead className="border-b border-zinc-800 bg-zinc-900 text-[10px] uppercase tracking-[0.18em] text-zinc-500">
-            <tr>
-              <th className="px-4 py-3 font-medium">Image</th>
-              <th className="px-4 py-3 font-medium">Name</th>
-              <th className="px-4 py-3 font-medium">Price</th>
-              <th className="px-4 py-3 font-medium">Margin</th>
-              <th className="px-4 py-3 font-medium">Qty</th>
-              <th className="px-4 py-3 font-medium">Category</th>
-              <th className="px-4 py-3 font-medium">Status</th>
-              <th className="px-4 py-3 font-medium">POTM</th>
-              <th className="px-4 py-3 font-medium">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {products.map((product) => {
-              const archived = isArchived(product)
-              const hiddenByZero = isHiddenByZeroStock(product)
-              const quantity = quantityOf(product)
-              const featured = Boolean(product.isProductOfTheMonth || product.isFeatured)
-              const low = isLowStock(product)
-              const out = quantity === 0
-              const imageUrl = productImageUrl(product)
-              const marginPct = productMarginPct(product)
-
-              return (
-                <tr key={product.id} className="border-b border-zinc-800 last:border-b-0">
-                  <td className="px-4 py-4">
-                    {imageUrl ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={imageUrl}
-                        alt=""
-                        className="h-10 w-10 object-cover border border-zinc-800 bg-zinc-900"
-                      />
-                    ) : (
-                      <div className="flex h-10 w-10 items-center justify-center border border-zinc-800 bg-zinc-900 text-[8px] uppercase tracking-[0.12em] text-zinc-600">
-                        None
-                      </div>
-                    )}
-                  </td>
-                  <td className={`px-4 py-4 ${archived || hiddenByZero ? 'text-zinc-500' : 'text-zinc-100'}`}>
-                    {product.name}
-                  </td>
-                  <td className="px-4 py-4 text-zinc-300">{formatMoney(product.price)}</td>
-                  <td className="px-4 py-4 text-zinc-400">{formatMarginPct(marginPct)}</td>
-                  <td className="px-4 py-4">
-                    <form action={updateQuantity} className="flex items-center gap-2">
-                      <input type="hidden" name="id" value={product.id} />
-                      <input type="hidden" name="from" value="list" />
-                      <input
-                        className={qtyInputClass}
-                        name="quantity"
-                        type="number"
-                        min="0"
-                        step="1"
-                        defaultValue={quantity ?? ''}
-                        aria-label={`Quantity for ${product.name}`}
-                      />
-                      <button type="submit" className={actionClass}>
-                        Save
-                      </button>
-                    </form>
-                    {out ? (
-                      <p className="mt-2 text-[10px] uppercase tracking-[0.16em] text-zinc-500">Out of stock</p>
-                    ) : low ? (
-                      <p className="mt-2 text-[10px] uppercase tracking-[0.16em] text-zinc-500">
-                        Low · {LOW_STOCK_THRESHOLD} or fewer
-                      </p>
-                    ) : null}
-                  </td>
-                  <td className="px-4 py-4 text-zinc-400">{product.category}</td>
-                  <td className="px-4 py-4 text-zinc-400">
-                    {archived ? 'Archived' : hiddenByZero ? 'Hidden (zero stock)' : 'Active'}
-                  </td>
-                  <td className="px-4 py-4 text-zinc-400">{featured ? 'Yes' : '—'}</td>
-                  <td className="px-4 py-4">
-                    <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-                      <Link href={`/admin/products/${encodeURIComponent(product.id)}`} className={actionClass}>
-                        Edit
-                      </Link>
-                      {featured ? (
-                        <form action={clearProductOfTheMonth}>
-                          <input type="hidden" name="id" value={product.id} />
-                          <input type="hidden" name="from" value="list" />
-                          <button type="submit" className={actionClass}>
-                            Clear month
-                          </button>
-                        </form>
-                      ) : archived ? null : (
-                        <form action={setProductOfTheMonth}>
-                          <input type="hidden" name="id" value={product.id} />
-                          <input type="hidden" name="from" value="list" />
-                          <button type="submit" className={actionClass}>
-                            Set month
-                          </button>
-                        </form>
-                      )}
-                      {archived ? (
-                        <form action={unarchiveProduct}>
-                          <input type="hidden" name="id" value={product.id} />
-                          <input type="hidden" name="from" value="list" />
-                          <button type="submit" className={actionClass}>
-                            Restore
-                          </button>
-                        </form>
-                      ) : (
-                        <form action={archiveProduct}>
-                          <input type="hidden" name="id" value={product.id} />
-                          <input type="hidden" name="from" value="list" />
-                          <button type="submit" className={actionClass}>
-                            Archive
-                          </button>
-                        </form>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
-      </div>
+      <ProductsBulkTable products={rows} categories={categories} />
     </section>
   )
 }

@@ -28,15 +28,16 @@ describe('admin phase 4 orders', () => {
   it('filters orders by all / open / fulfilled / refunded-cancelled', () => {
     const helpers = read('lib/admin-orders.ts')
     const listPage = read('app/admin/orders/page.tsx')
+    const bulkTable = read('components/admin/orders-bulk-table.tsx')
     assert.match(helpers, /export const ORDER_FILTERS = \['all', 'open', 'fulfilled', 'closed'\]/)
     assert.match(listPage, /All/)
     assert.match(listPage, /Open/)
     assert.match(listPage, /Fulfilled/)
     assert.match(listPage, /Refunded\/Cancelled/)
     assert.match(listPage, /No orders match this filter/)
-    assert.match(listPage, /order\.email/)
-    assert.match(listPage, /Items/)
-    assert.match(listPage, /Fulfilled/)
+    assert.match(bulkTable, /order\.email/)
+    assert.match(bulkTable, /Items/)
+    assert.match(bulkTable, /Fulfilled/)
   })
 
   it('stores notes, adminReview, and fulfillment markers on dedicated actions', () => {

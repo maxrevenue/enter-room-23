@@ -1,10 +1,10 @@
 import Link from 'next/link'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
+import { OrdersBulkTable } from '@/components/admin/orders-bulk-table'
 import { isAdminAuthenticated } from '@/lib/admin-auth'
 import { resolveAdminPassword } from '@/lib/admin-password.server'
 import { listAdminProducts } from '@/lib/admin-catalog'
-import { adminCustomerHref } from '@/lib/admin-customers'
 import {
   adminOrdersHref,
   formatOrderDate,
@@ -40,7 +40,15 @@ const fieldClass =
 export default async function AdminOrdersPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string; filter?: string; q?: string }>
+  searchParams: Promise<{
+    error?: string
+    filter?: string
+    q?: string
+    bulk?: string
+    count?: string
+    skippedCount?: string
+    msg?: string
+  }>
 }) {
   if (!(await isAdminAuthenticated(await cookies(), await resolveAdminPassword()))) {
     redirect('/admin/login')
@@ -53,6 +61,30 @@ export default async function AdminOrdersPage({
   const productsById = buildProductsByIdMap(products, collectOrderProductIds(orders))
   const now = new Date()
 
+  const bulkCount = Number(params.count)
+  const bulkCountLabel = Number.isFinite(bulkCount) && bulkCount >= 0 ? bulkCount : null
+  const skippedCount = Number(params.skippedCount)
+  const skippedCountLabel = Number.isFinite(skippedCount) && skippedCount > 0 ? skippedCount : null
+
+  const rows = orders.map((order) => {
+    const flags = getOrderRiskFlags(order, productsById, now)
+    return {
+      orderId: order.orderId,
+      email: String(order.email || ''),
+      dateLabel: formatOrderDate(order.createdAt),
+      itemCount: orderItemCount(order),
+      totalLabel: formatOrderMoney(order.totals?.total),
+      statusLabel: orderStatusLabel(order.status),
+      statusBadgeClass: orderStatusBadgeClass(order.status),
+      fulfilledLabel: isOrderFulfilled(order) ? 'Yes' : '—',
+      flags: flags.map((flag) => ({
+        id: flag.id,
+        label: flag.label,
+        chipClass: riskFlagChipClass(flag.severity),
+      })),
+    }
+  })
+
   return (
     <section>
       <header className="mb-10">
@@ -60,6 +92,20 @@ export default async function AdminOrdersPage({
         <h1 className="mt-3 font-serif text-3xl tracking-tight text-zinc-100">Orders</h1>
       </header>
 
+      {params.bulk === 'ok' && bulkCountLabel != null ? (
+        <p className="mb-6 text-sm text-zinc-400" role="status">
+          Bulk update applied to {bulkCountLabel} order{bulkCountLabel === 1 ? '' : 's'}
+          {skippedCountLabel != null
+            ? ` · ${skippedCountLabel} skipped (not eligible or missing)`
+            : ''}
+          .
+        </p>
+      ) : null}
+      {params.bulk === 'error' && params.msg ? (
+        <p className="mb-6 text-sm text-zinc-400" role="alert">
+          {params.msg}
+        </p>
+      ) : null}
       {params.error === 'missing' ? (
         <p className="mb-6 text-sm text-zinc-400" role="alert">
           That order could not be found.
@@ -119,72 +165,7 @@ export default async function AdminOrdersPage({
               : 'No orders match this filter.'}
         </p>
       ) : (
-        <div className="overflow-x-auto border border-zinc-800">
-          <table className="w-full min-w-[960px] text-left text-sm">
-            <thead className="border-b border-zinc-800 bg-zinc-900 text-[10px] uppercase tracking-[0.18em] text-zinc-500">
-              <tr>
-                <th className="px-4 py-3 font-medium">Order</th>
-                <th className="px-4 py-3 font-medium">Email</th>
-                <th className="px-4 py-3 font-medium">Date</th>
-                <th className="px-4 py-3 font-medium">Items</th>
-                <th className="px-4 py-3 font-medium">Total</th>
-                <th className="px-4 py-3 font-medium">Status</th>
-                <th className="px-4 py-3 font-medium">Flags</th>
-                <th className="px-4 py-3 font-medium">Fulfilled</th>
-                <th className="px-4 py-3 font-medium" />
-              </tr>
-            </thead>
-            <tbody>
-              {orders.map((order) => {
-                const flags = getOrderRiskFlags(order, productsById, now)
-                return (
-                  <tr key={order.orderId} className="border-b border-zinc-800 last:border-b-0">
-                    <td className="px-4 py-4 font-medium text-zinc-100">{order.orderId}</td>
-                    <td className="px-4 py-4 text-zinc-400">
-                      {order.email ? (
-                        <Link href={adminCustomerHref(order.email)} className="hover:text-zinc-100">
-                          {order.email}
-                        </Link>
-                      ) : (
-                        '—'
-                      )}
-                    </td>
-                    <td className="px-4 py-4 text-zinc-500">{formatOrderDate(order.createdAt)}</td>
-                    <td className="px-4 py-4 text-zinc-300">{orderItemCount(order)}</td>
-                    <td className="px-4 py-4 text-zinc-300">{formatOrderMoney(order.totals?.total)}</td>
-                    <td className="px-4 py-4">
-                      <span className={orderStatusBadgeClass(order.status)}>
-                        {orderStatusLabel(order.status)}
-                      </span>
-                    </td>
-                    <td className="px-4 py-4">
-                      {flags.length ? (
-                        <div className="flex max-w-[220px] flex-wrap gap-1.5">
-                          {flags.map((flag) => (
-                            <span key={flag.id} className={riskFlagChipClass(flag.severity)}>
-                              {flag.label}
-                            </span>
-                          ))}
-                        </div>
-                      ) : (
-                        <span className="text-zinc-600">—</span>
-                      )}
-                    </td>
-                    <td className="px-4 py-4 text-zinc-400">{isOrderFulfilled(order) ? 'Yes' : '—'}</td>
-                    <td className="px-4 py-4 text-right">
-                      <Link
-                        href={`/admin/orders/${encodeURIComponent(order.orderId)}`}
-                        className="text-[11px] font-medium uppercase tracking-[0.18em] text-zinc-400 hover:text-zinc-100"
-                      >
-                        View
-                      </Link>
-                    </td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
-        </div>
+        <OrdersBulkTable orders={rows} filter={filter} q={q} />
       )}
     </section>
   )
