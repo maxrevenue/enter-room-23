@@ -1,4 +1,21 @@
-import { MongoClient } from 'mongodb'
+import { MongoClient, type Db } from 'mongodb'
+
+export const ORDER_EVENTS_COLLECTION = 'order_events'
+
+export type OrderEventActor = 'admin' | 'system'
+
+export type OrderEventDoc = {
+  orderId: string
+  at: Date
+  type: string
+  message: string
+  meta?: Record<string, unknown>
+  actor?: OrderEventActor
+}
+
+export function orderEventsCollection(db: Db) {
+  return db.collection<OrderEventDoc>(ORDER_EVENTS_COLLECTION)
+}
 
 export async function getRoom23Db() {
   const uri = process.env.MONGODB_URI

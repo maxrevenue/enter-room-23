@@ -37,8 +37,10 @@ import {
   getAdminOrder,
   isOrderStatus,
   nextQuantityAfterDecrement,
+  orderStatusLabel,
   shouldDecrementInventory,
 } from '@/lib/admin-orders'
+import { safeInsertOrderEvent } from '@/lib/admin-order-events'
 import { writeAdminAudit } from '@/lib/admin-audit'
 import { sendOrderConfirmation } from '@/lib/email/order-confirmation'
 import { handleStockAlertAfterQuantityChange, type StockAlertLevel } from '@/lib/admin-stock-alerts'
@@ -695,6 +697,24 @@ export async function updateOrderStatus(formData: FormData) {
     meta: { from: order.status || 'paid', to: status },
   })
 
+  const fromStatus = orderStatusLabel(order.status)
+  const toStatus = orderStatusLabel(status)
+  await safeInsertOrderEvent({
+    orderId: order.orderId,
+    type: 'status_changed',
+    message: `Status changed from ${fromStatus} to ${toStatus}`,
+    meta: { from: order.status || 'paid', to: status },
+    actor: 'admin',
+  })
+  if (decrement) {
+    await safeInsertOrderEvent({
+      orderId: order.orderId,
+      type: 'inventory_decremented',
+      message: 'Inventory decremented on fulfill',
+      actor: 'admin',
+    })
+  }
+
   revalidateOrder(order.orderId, order.email)
   redirectOrder(order.orderId, decrement ? 'saved=status&inventory=1' : 'saved=status')
 }
@@ -715,6 +735,14 @@ export async function updateOrderNotes(formData: FormData) {
       },
     },
   )
+
+  await safeInsertOrderEvent({
+    orderId: order.orderId,
+    type: 'note_updated',
+    message: notes ? 'Internal notes updated' : 'Internal notes cleared',
+    meta: { length: notes.length },
+    actor: 'admin',
+  })
 
   revalidateOrder(order.orderId, order.email)
   redirectOrder(order.orderId, 'saved=notes')
@@ -737,6 +765,14 @@ export async function markOrderReviewed(formData: FormData) {
       },
     },
   )
+
+  await safeInsertOrderEvent({
+    orderId: order.orderId,
+    type: 'reviewed',
+    message: adminReview ? 'Flagged for admin review' : 'Marked as reviewed',
+    meta: { adminReview },
+    actor: 'admin',
+  })
 
   revalidateOrder(order.orderId, order.email)
   redirectOrder(order.orderId, 'saved=reviewed')
@@ -795,6 +831,14 @@ export async function resendOrderEmail(formData: FormData) {
       },
     )
   }
+
+  await safeInsertOrderEvent({
+    orderId: order.orderId,
+    type: 'email_sent',
+    message: `Confirmation email sent to ${email}`,
+    meta: { email },
+    actor: 'admin',
+  })
 
   revalidateOrder(order.orderId, order.email)
   redirectOrder(order.orderId, 'saved=email')

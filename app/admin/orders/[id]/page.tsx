@@ -28,6 +28,11 @@ import {
   getOrderRiskFlags,
   riskFlagChipClass,
 } from '@/lib/admin-risk'
+import {
+  formatOrderEventTime,
+  getOrderTimeline,
+  orderEventTypeLabel,
+} from '@/lib/admin-order-events'
 
 export const dynamic = 'force-dynamic'
 
@@ -75,7 +80,7 @@ export default async function AdminOrderDetailPage({
   const order = await getAdminOrder(decodeURIComponent(id))
   if (!order) notFound()
 
-  const [products] = await Promise.all([listAdminProducts()])
+  const [products, timeline] = await Promise.all([listAdminProducts(), getOrderTimeline(order)])
   const productsById = buildProductsByIdMap(products, collectOrderProductIds([order]))
   const riskFlags = getOrderRiskFlags(order, productsById)
 
@@ -253,6 +258,36 @@ export default async function AdminOrderDetailPage({
           <dd className="font-medium text-zinc-100">{formatOrderMoney(order.totals?.total)}</dd>
         </div>
       </dl>
+
+      <div className="mt-12 border border-zinc-800 bg-zinc-900 px-6 py-8">
+        <p className={labelClass}>Timeline</p>
+        {timeline.length === 0 ? (
+          <p className="mt-4 text-sm text-zinc-400">No events yet.</p>
+        ) : (
+          <ul className="mt-6 space-y-0">
+            {timeline.map((event, index) => (
+              <li
+                key={`${event.type}:${String(event.at)}:${index}`}
+                className="relative border-l border-zinc-800 pb-8 pl-6 last:pb-0"
+              >
+                <span className="absolute left-0 top-1.5 h-2 w-2 -translate-x-1/2 rounded-full bg-zinc-500" />
+                <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                  <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-zinc-500">
+                    {orderEventTypeLabel(event.type)}
+                  </p>
+                  <time className="text-xs text-zinc-600" dateTime={String(event.at)}>
+                    {formatOrderEventTime(event.at)}
+                  </time>
+                </div>
+                <p className="mt-2 text-sm text-zinc-200">{event.message}</p>
+                {event.actor ? (
+                  <p className="mt-1 text-[10px] uppercase tracking-[0.14em] text-zinc-600">{event.actor}</p>
+                ) : null}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
 
       <div className="mt-12 grid grid-cols-1 gap-10 lg:grid-cols-2">
         <form action={updateOrderStatus} className="space-y-6">
