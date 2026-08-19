@@ -57,7 +57,7 @@ describe('admin phase 10 media upload', () => {
     const wrangler = read('wrangler.jsonc')
     const envExample = read('.env.example')
     assert.match(wrangler, /"binding": "MEDIA"/)
-    assert.match(wrangler, /room23-media/)
+    assert.match(wrangler, /room23-m/)
     assert.match(envExample, /MEDIA_PUBLIC_BASE_URL/)
   })
 })

@@ -1,7 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "main": ".open-next/worker.js",
-  "name": "room23-dark-theme",
+  "name": "123",
   "compatibility_date": "2026-08-03",
   "compatibility_flags": [
     "nodejs_compat",
@@ -16,7 +16,7 @@
   "services": [
     {
       "binding": "WORKER_SELF_REFERENCE",
-      "service": "room23-dark-theme"
+      "service": "123"
     }
   ],
 
@@ -52,7 +52,7 @@
       "r2_buckets": [
         {
           "binding": "MEDIA",
-          "bucket_name": "room23-media"
+          "bucket_name": "room23-m"
         }
       ]
     },
@@ -69,7 +69,7 @@
       "r2_buckets": [
         {
           "binding": "MEDIA",
-          "bucket_name": "room23-media"
+          "bucket_name": "room23-m"
         }
       ]
     }
@@ -79,12 +79,12 @@
     "binding": "IMAGES"
   },
 
-  // Product media uploads (Phase 10). Create bucket "room23-media" in Cloudflare R2,
+  // Product media uploads (Phase 10). Create bucket "room23-m" in Cloudflare R2,
   // enable public access or attach custom domain, then set MEDIA_PUBLIC_BASE_URL on the Worker.
   "r2_buckets": [
     {
       "binding": "MEDIA",
-      "bucket_name": "room23-media"
+      "bucket_name": "room23-m"
     }
   ],
 

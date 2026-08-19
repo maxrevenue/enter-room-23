@@ -3,7 +3,7 @@ import { getCloudflareContext } from '@opennextjs/cloudflare'
 /**
  * Admin product media uploads (Cloudflare R2).
  *
- * Wrangler binding: MEDIA → bucket "room23-media" (create in dashboard, enable public access or custom domain).
+ * Wrangler binding: MEDIA → bucket "room23-m" (create in dashboard, enable public access or custom domain).
  * Set MEDIA_PUBLIC_BASE_URL (or NEXT_PUBLIC_MEDIA_BASE_URL) to the public origin, e.g.
  * https://media.room23.net — no trailing slash. Objects are stored at products/{productId}/{uuid}.{ext}.
  */
