@@ -15,6 +15,12 @@ export const metadata: Metadata = {
   alternates: { canonical: '/' },
 }
 
+const storefrontCtaPrimary =
+  'inline-flex min-h-12 items-center justify-center rounded-none bg-primary px-10 py-3.5 text-[11px] font-medium uppercase tracking-[0.24em] text-primary-foreground transition-colors duration-300 hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-theme-border'
+
+const storefrontCtaSecondary =
+  'inline-flex min-h-12 items-center justify-center rounded-none border border-theme-border px-10 py-3.5 text-[11px] font-medium uppercase tracking-[0.24em] text-theme-text transition-colors duration-300 hover:border-theme-muted hover:bg-theme-surface focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-theme-border'
+
 export default async function HomePage() {
   const [productOfTheMonth, storefrontProducts] = await Promise.all([
     getResolvedProductOfTheMonth(),
@@ -30,7 +36,7 @@ export default async function HomePage() {
     <div className="bg-theme-bg text-theme-text">
       <section
         aria-labelledby="hero-title"
-        className="relative flex min-h-[85vh] flex-col items-center justify-center overflow-hidden px-5 py-28 text-center sm:min-h-[88vh] sm:px-8 sm:py-36"
+        className="relative flex min-h-[80vh] flex-col items-center justify-center overflow-hidden px-5 py-16 text-center sm:min-h-[85vh] sm:px-8 md:py-24 lg:py-32"
       >
         <div
           aria-hidden="true"
@@ -48,7 +54,7 @@ export default async function HomePage() {
         <div className="relative z-10 mx-auto flex max-w-3xl flex-col items-center">
           <h1
             id="hero-title"
-            className="font-serif text-[2.85rem] leading-none tracking-[0.32em] text-theme-text sm:text-6xl md:text-7xl lg:text-[5.25rem]"
+            className="font-serif text-[2.85rem] font-light leading-none tracking-[0.32em] text-theme-text sm:text-6xl md:text-7xl lg:text-[5.25rem]"
           >
             ROOM 23
           </h1>
@@ -59,28 +65,20 @@ export default async function HomePage() {
           <p className="mt-7 max-w-sm text-sm font-light leading-relaxed tracking-wide text-theme-muted sm:mt-8 sm:text-base">
             Considered pleasure.
           </p>
-          <Link
-            href="/shop"
-            className="mt-12 inline-flex min-h-12 items-center justify-center bg-primary px-10 py-3.5 text-[11px] font-medium uppercase tracking-[0.24em] text-primary-foreground transition-colors duration-300 hover:bg-primary/90 sm:mt-14"
-          >
+          <Link href="/shop" className={`mt-12 sm:mt-14 ${storefrontCtaPrimary}`}>
             Shop the collection
           </Link>
         </div>
       </section>
 
-      {productOfTheMonth ? (
-        <ProductOfTheMonth
-          product={productOfTheMonth}
-          offer={{ label: 'Our house lubricant' }}
-        />
-      ) : null}
+      {productOfTheMonth ? <ProductOfTheMonth product={productOfTheMonth} /> : null}
 
       <section
         aria-labelledby="featured-heading"
-        className="border-t border-theme-border px-5 py-24 sm:px-8 sm:py-32 md:py-40"
+        className="border-t border-theme-border px-5 py-16 sm:px-8 md:py-24 lg:py-32"
       >
         <div className="mx-auto max-w-6xl">
-          <header className="mb-16 sm:mb-20 md:mb-24">
+          <header className="mb-12 sm:mb-16 md:mb-20">
             <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between md:gap-12">
               <div className="max-w-xl">
                 <p className="text-[10px] font-medium uppercase tracking-[0.3em] text-theme-muted">
@@ -88,7 +86,7 @@ export default async function HomePage() {
                 </p>
                 <h2
                   id="featured-heading"
-                  className="mt-5 font-serif text-3xl tracking-tight text-theme-text sm:text-4xl md:text-[2.75rem]"
+                  className="mt-5 font-serif text-3xl font-light tracking-tight text-theme-text sm:text-4xl md:text-[2.75rem]"
                 >
                   The Edit
                 </h2>
@@ -99,18 +97,18 @@ export default async function HomePage() {
               </div>
               <Link
                 href="/shop"
-                className="inline-flex min-h-12 shrink-0 items-center text-[10px] font-medium uppercase tracking-[0.22em] text-theme-muted transition-colors duration-300 hover:text-theme-text"
+                className="inline-flex min-h-12 shrink-0 items-center rounded-none text-[10px] font-medium uppercase tracking-[0.22em] text-theme-muted transition-colors duration-300 hover:text-theme-text focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-theme-border"
               >
                 View all products
               </Link>
             </div>
             <div
               aria-hidden="true"
-              className="mt-12 h-px w-full bg-theme-border sm:mt-14"
+              className="mt-10 h-px w-full bg-theme-border sm:mt-12"
             />
           </header>
 
-          <ul className="grid grid-cols-1 gap-x-8 gap-y-16 sm:grid-cols-2 sm:gap-y-20 lg:grid-cols-4 lg:gap-x-10 lg:gap-y-16">
+          <ul className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 md:gap-y-12 lg:grid-cols-4 lg:gap-x-8">
             {editTiles.map((product) => (
               <li key={product.id}>
                 <ProductCard product={product} />
@@ -124,12 +122,12 @@ export default async function HomePage() {
 
       <section
         aria-labelledby="close-heading"
-        className="border-t border-theme-border px-5 py-24 text-center sm:px-8 sm:py-32 md:py-36"
+        className="border-t border-theme-border px-5 py-16 text-center sm:px-8 md:py-24 lg:py-32"
       >
         <div className="mx-auto max-w-lg">
           <h2
             id="close-heading"
-            className="font-serif text-2xl tracking-tight text-theme-text sm:text-3xl"
+            className="font-serif text-2xl font-light tracking-tight text-theme-text sm:text-3xl"
           >
             Shop the collection.
           </h2>
@@ -137,10 +135,7 @@ export default async function HomePage() {
             Body-safe formulations, considered packaging, and categories held to a quiet
             standard.
           </p>
-          <Link
-            href="/shop"
-            className="mt-10 inline-flex min-h-12 items-center justify-center border border-theme-border px-10 py-3.5 text-[11px] font-medium uppercase tracking-[0.24em] text-theme-text transition-colors duration-300 hover:border-theme-muted hover:bg-theme-surface"
-          >
+          <Link href="/shop" className={`mt-10 ${storefrontCtaSecondary}`}>
             Shop the collection
           </Link>
         </div>

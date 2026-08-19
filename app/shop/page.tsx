@@ -27,14 +27,14 @@ export default async function ShopPage() {
 
   return (
     <div className="min-h-screen bg-theme-bg text-theme-text">
-      <section className="mx-auto max-w-6xl px-5 py-16 sm:px-8 sm:py-20 md:py-24">
+      <section className="mx-auto max-w-6xl px-5 py-16 sm:px-8 md:py-24 lg:py-32">
         <header className="mb-10 sm:mb-12">
           <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between md:gap-12">
             <div className="max-w-xl">
               <p className="text-[10px] font-medium uppercase tracking-[0.3em] text-theme-muted">
                 The collection
               </p>
-              <h1 className="mt-5 font-serif text-3xl tracking-tight text-theme-text sm:text-4xl md:text-[2.75rem]">
+              <h1 className="mt-5 font-serif text-3xl font-light tracking-tight text-theme-text sm:text-4xl md:text-[2.75rem]">
                 Shop
               </h1>
               <p className="mt-6 max-w-md text-sm leading-relaxed text-theme-muted sm:text-[0.9375rem]">
@@ -55,7 +55,7 @@ export default async function ShopPage() {
             The current edit is being revised. Please check back shortly.
           </p>
         ) : (
-          <div className="mt-12 space-y-20 sm:mt-16 sm:space-y-24">
+          <div className="mt-12 space-y-16 sm:mt-16 sm:space-y-20 md:space-y-24">
             {sections.map((category) => {
               const items = grouped.get(category.id) || []
               return (
@@ -64,7 +64,7 @@ export default async function ShopPage() {
                     <div>
                       <h2
                         id={`shop-${category.id}-heading`}
-                        className="font-serif text-2xl tracking-tight text-theme-text sm:text-3xl"
+                        className="font-serif text-2xl font-light tracking-tight text-theme-text sm:text-3xl"
                       >
                         {category.label}
                       </h2>
@@ -74,12 +74,12 @@ export default async function ShopPage() {
                     </div>
                     <Link
                       href={`/collections/${category.id}`}
-                      className="inline-flex min-h-10 shrink-0 items-center text-[10px] font-medium uppercase tracking-[0.22em] text-theme-muted transition-colors duration-300 hover:text-theme-text"
+                      className="inline-flex min-h-10 shrink-0 items-center rounded-none text-[10px] font-medium uppercase tracking-[0.22em] text-theme-muted transition-colors duration-300 hover:text-theme-text focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-theme-border"
                     >
                       View {category.label.toLowerCase()}
                     </Link>
                   </header>
-                  <ul className="grid grid-cols-1 gap-x-8 gap-y-16 sm:grid-cols-2 sm:gap-y-20 lg:grid-cols-3">
+                  <ul className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 md:gap-y-12 lg:grid-cols-3 lg:gap-x-8">
                     {items.map((product) => (
                       <li key={product.id}>
                         <ProductCard product={product} />

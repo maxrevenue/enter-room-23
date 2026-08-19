@@ -52,11 +52,11 @@ export default async function CollectionPage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen bg-theme-bg text-theme-text">
-      <section className="px-5 py-16 text-center sm:px-8 sm:py-20 md:py-24">
+      <section className="px-5 py-16 text-center sm:px-8 md:py-24 lg:py-32">
         <p className="text-[10px] font-medium uppercase tracking-[0.3em] text-theme-muted">
           {countLabel}
         </p>
-        <h1 className="mt-5 font-serif text-3xl tracking-tight text-theme-text sm:text-4xl md:text-[2.75rem]">
+        <h1 className="mt-5 font-serif text-3xl font-light tracking-tight text-theme-text sm:text-4xl md:text-[2.75rem]">
           {title}
         </h1>
         <p className="mx-auto mt-6 max-w-md text-sm leading-relaxed text-theme-muted sm:text-[0.9375rem]">
@@ -64,7 +64,7 @@ export default async function CollectionPage({ params }: PageProps) {
         </p>
       </section>
 
-      <section className="mx-auto max-w-6xl px-5 pb-16 sm:px-8 sm:pb-20 md:pb-24">
+      <section className="mx-auto max-w-6xl px-5 pb-16 sm:px-8 md:pb-24 lg:pb-32">
         <ShopCategoryBar active={barSlug} />
 
         {products.length === 0 ? (
@@ -74,13 +74,13 @@ export default async function CollectionPage({ params }: PageProps) {
             </p>
             <Link
               href="/shop"
-              className="mt-8 inline-flex min-h-12 items-center justify-center border border-theme-border px-10 py-3.5 text-[11px] font-medium uppercase tracking-[0.24em] text-theme-text transition-colors duration-300 hover:border-theme-muted hover:bg-theme-surface"
+              className="mt-8 inline-flex min-h-12 items-center justify-center rounded-none border border-theme-border px-10 py-3.5 text-[11px] font-medium uppercase tracking-[0.24em] text-theme-text transition-colors duration-300 hover:border-theme-muted hover:bg-theme-surface focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-theme-border"
             >
               Shop the collection
             </Link>
           </div>
         ) : (
-          <ul className="mt-12 grid grid-cols-1 gap-x-8 gap-y-16 sm:mt-16 sm:grid-cols-2 sm:gap-y-20 lg:grid-cols-3">
+          <ul className="mt-12 grid grid-cols-1 gap-x-6 gap-y-10 sm:mt-16 sm:grid-cols-2 md:gap-y-12 lg:grid-cols-3 lg:gap-x-8">
             {products.map((product) => (
               <li key={product.id}>
                 <ProductCard product={product} />

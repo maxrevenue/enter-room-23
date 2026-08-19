@@ -26,7 +26,7 @@ export default function ProductAddToCart({ product }) {
     <button
       type="button"
       onClick={handleAdd}
-      className="inline-flex w-full items-center justify-center gap-2 bg-primary px-6 py-3.5 text-[11px] font-medium uppercase tracking-[0.2em] text-primary-foreground hover:bg-primary/90"
+      className="inline-flex w-full items-center justify-center gap-2 rounded-none bg-primary px-6 py-3.5 text-[11px] font-medium uppercase tracking-[0.2em] text-primary-foreground transition-colors duration-300 hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-theme-border"
     >
       <ShoppingBag className="h-4 w-4" aria-hidden="true" />
       {added ? 'Added to cart' : `Add to cart — $${product.price.toFixed(2)}`}

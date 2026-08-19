@@ -26,6 +26,12 @@ type ProductOfTheMonthProps = {
   offer?: MonthOffer | null
 }
 
+const storefrontCtaPrimary =
+  'inline-flex min-h-11 items-center justify-center rounded-none bg-primary px-7 py-3 text-[11px] font-medium uppercase tracking-[0.2em] text-primary-foreground transition-colors duration-300 hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-theme-border'
+
+const storefrontCtaSecondary =
+  'inline-flex min-h-11 items-center justify-center rounded-none border border-theme-border px-7 py-3 text-[11px] font-medium uppercase tracking-[0.2em] text-theme-text transition-colors duration-300 hover:border-theme-muted hover:bg-theme-surface focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-theme-border'
+
 export default function ProductOfTheMonth({ product = null, offer = null }: ProductOfTheMonthProps) {
   if (!product) return null
 
@@ -40,19 +46,24 @@ export default function ProductOfTheMonth({ product = null, offer = null }: Prod
   return (
     <section
       aria-labelledby="product-of-month-heading"
-      className="border-t border-theme-border px-5 py-24 sm:px-8 sm:py-32 md:py-40"
+      className="border-t border-theme-border px-5 py-16 sm:px-8 md:py-24 lg:py-32"
     >
       <div className="mx-auto max-w-6xl">
-        <header className="mb-10 max-w-md sm:mb-14 lg:mb-20">
-          <p className="label-meta">This month&apos;s focus</p>
-          {offer?.label ? <p className="label-meta mt-3">{offer.label}</p> : null}
+        <header className="mb-10 max-w-md sm:mb-14 lg:mb-16">
+          <p className="text-[10px] font-medium uppercase tracking-[0.3em] text-theme-muted">
+            Product of the Month
+          </p>
         </header>
 
         <div className="grid grid-cols-1 gap-10 sm:gap-12 lg:grid-cols-12 lg:items-end lg:gap-x-8 lg:gap-y-0">
           <div className="lg:col-span-7">
             {imageSrc ? (
-              <Link href={href} className="group block" aria-label={product.name}>
-                <div className="product-frame">
+              <Link
+                href={href}
+                className="group block focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-theme-border"
+                aria-label={product.name}
+              >
+                <div className="product-frame rounded-none">
                   <Image
                     src={imageSrc}
                     alt={imageAlt}
@@ -67,21 +78,26 @@ export default function ProductOfTheMonth({ product = null, offer = null }: Prod
           </div>
 
           <div className="lg:col-span-4 lg:col-start-9">
-            <p className="label-meta">{categoryLabel(product.category)}</p>
-            <h2 id="product-of-month-heading" className="heading-lg mt-5">
+            <p className="text-[10px] font-medium uppercase tracking-[0.28em] text-theme-muted">
+              {categoryLabel(product.category)}
+            </p>
+            <h2
+              id="product-of-month-heading"
+              className="mt-5 font-serif text-3xl font-light tracking-tight text-theme-text sm:text-4xl"
+            >
               {product.name}
             </h2>
 
             {product.tagline ? (
-              <p className="caption mt-4">{product.tagline}</p>
+              <p className="mt-4 text-xs uppercase tracking-[0.18em] text-theme-muted">{product.tagline}</p>
             ) : null}
 
-            <p className="body-sm mt-6 max-w-sm text-muted">{editorial}</p>
+            <p className="mt-6 max-w-sm text-sm leading-relaxed text-theme-muted">{editorial}</p>
 
             {product.attributes?.length ? (
               <ul className="mt-8 flex flex-wrap gap-x-5 gap-y-2">
                 {product.attributes.map((attribute: string) => (
-                  <li key={attribute} className="caption">
+                  <li key={attribute} className="text-[10px] uppercase tracking-[0.18em] text-theme-muted">
                     {attribute}
                   </li>
                 ))}
@@ -90,16 +106,16 @@ export default function ProductOfTheMonth({ product = null, offer = null }: Prod
 
             <div className="mt-10 flex flex-wrap items-baseline gap-x-5 gap-y-2">
               {compareAt ? (
-                <p className="caption line-through">{compareAt}</p>
+                <p className="text-xs uppercase tracking-[0.16em] text-theme-muted line-through">{compareAt}</p>
               ) : null}
-              <p className="body-sm">${product.price.toFixed(2)}</p>
+              <p className="text-sm tracking-wide text-theme-text/90">${product.price.toFixed(2)}</p>
             </div>
 
             <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-              <Link href={href} className="btn-primary">
+              <Link href={href} className={storefrontCtaPrimary}>
                 Acquire Object
               </Link>
-              <Link href={dossierHref} className="btn-secondary">
+              <Link href={dossierHref} className={storefrontCtaSecondary}>
                 Read Dossier
               </Link>
             </div>

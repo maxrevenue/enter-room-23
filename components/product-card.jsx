@@ -21,7 +21,7 @@ export default function ProductCard({ product }) {
     <article className="group flex h-full flex-col">
       <Link
         href={href}
-        className="block focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-theme-muted"
+        className="block focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-theme-border"
       >
         <div className="relative aspect-[4/5] overflow-hidden bg-theme-surface">
           {imageSrc ? (
@@ -31,7 +31,7 @@ export default function ProductCard({ product }) {
               width={800}
               height={1000}
               unoptimized
-              className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+              className="absolute inset-0 h-full w-full object-cover transition-opacity duration-300 ease-out group-hover:opacity-95"
             />
           ) : (
             <div className="flex h-full w-full flex-col items-center justify-center bg-theme-bg">
@@ -42,13 +42,13 @@ export default function ProductCard({ product }) {
           )}
 
           {product.badge && !soldOut ? (
-            <span className="absolute left-3 top-3 text-[10px] font-medium uppercase tracking-[0.2em] text-theme-text/80">
+            <span className="absolute left-3 top-3 text-[10px] font-medium uppercase tracking-[0.28em] text-theme-muted">
               {product.badge}
             </span>
           ) : null}
 
           {soldOut ? (
-            <span className="absolute inset-0 flex items-center justify-center bg-theme-bg/60 text-[10px] font-medium uppercase tracking-[0.22em] text-theme-text/80">
+            <span className="absolute inset-0 flex items-center justify-center bg-theme-bg/60 text-[10px] font-medium uppercase tracking-[0.22em] text-theme-muted">
               Sold out
             </span>
           ) : null}
@@ -58,9 +58,9 @@ export default function ProductCard({ product }) {
       <div className="flex flex-1 flex-col px-0.5 pt-5 sm:pt-6">
         <Link
           href={href}
-          className="block focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-theme-muted"
+          className="block focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-theme-border"
         >
-          <h3 className="font-serif text-[15px] leading-snug tracking-wide text-theme-text transition-colors duration-300 group-hover:text-theme-text sm:text-base">
+          <h3 className="font-serif text-[15px] font-normal leading-snug tracking-wide text-theme-text transition-colors duration-300 group-hover:text-theme-text/90 sm:text-base">
             {product.name}
           </h3>
         </Link>
@@ -72,7 +72,7 @@ export default function ProductCard({ product }) {
         ) : null}
 
         <div className="mt-auto flex items-center justify-between gap-4 pt-5 sm:pt-6">
-          <p className="text-sm tracking-wide text-theme-text/80">{price}</p>
+          <p className="text-sm tracking-wide text-theme-muted">{price}</p>
           <ProductCardActions product={product} />
         </div>
       </div>

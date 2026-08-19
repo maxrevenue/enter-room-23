@@ -100,7 +100,7 @@ export default async function ProductPage({ params, searchParams }: PageProps) {
 
   return (
     <div className="bg-theme-bg text-theme-text">
-      <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14 lg:py-20">
+      <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 md:py-20 lg:py-24">
         <nav className="mb-8 text-[10px] uppercase tracking-[0.2em] text-theme-muted sm:mb-10">
           <Link href="/shop" className="transition-colors hover:text-theme-text/80">
             Shop
@@ -166,10 +166,10 @@ export default async function ProductPage({ params, searchParams }: PageProps) {
             <p className="text-[10px] font-medium uppercase tracking-[0.28em] text-theme-muted">
               {formatCategory(product.category)}
             </p>
-            <h1 className="mt-3 font-serif text-3xl font-normal tracking-tight text-theme-text sm:text-4xl">
+            <h1 className="mt-3 font-serif text-3xl font-light tracking-tight text-theme-text sm:text-4xl">
               {product.name}
             </h1>
-            <p className="mt-4 text-base tracking-wide text-theme-text/80">
+            <p className="mt-4 text-base tracking-wide text-theme-muted">
               {formatPrice(product.price)}
             </p>
 
@@ -201,9 +201,8 @@ export default async function ProductPage({ params, searchParams }: PageProps) {
             </div>
 
             <p className="mt-6 max-w-md text-xs leading-relaxed text-theme-muted">
-              Complimentary standard shipping on orders over $
-              {SITE_CONFIG.freeShippingThreshold.toFixed(0)}. Unopened items may be returned
-              within 14 days.{' '}
+              Complimentary standard shipping on orders over ${SITE_CONFIG.freeShippingThreshold.toFixed(0)}.
+              Unopened items may be returned within 14 days.{' '}
               <Link
                 href="/shipping"
                 className="text-theme-muted underline underline-offset-4 transition-colors hover:text-theme-text/90"
@@ -220,7 +219,7 @@ export default async function ProductPage({ params, searchParams }: PageProps) {
           className="mt-16 grid grid-cols-1 gap-12 border-t border-theme-border pt-12 sm:mt-20 sm:gap-14 sm:pt-16 lg:grid-cols-12"
         >
           <div className="lg:col-span-4">
-            <h2 className="font-serif text-xl tracking-tight text-theme-text sm:text-2xl">
+            <h2 className="font-serif text-xl font-light tracking-tight text-theme-text sm:text-2xl">
               Details
             </h2>
           </div>
@@ -282,10 +281,10 @@ export default async function ProductPage({ params, searchParams }: PageProps) {
 
         {related.length > 0 ? (
           <section className="mt-16 border-t border-theme-border pt-12 sm:mt-20 sm:pt-16">
-            <h2 className="mb-10 font-serif text-xl tracking-tight text-theme-text sm:mb-12 sm:text-2xl">
+            <h2 className="mb-10 font-serif text-xl font-light tracking-tight text-theme-text sm:mb-12 sm:text-2xl">
               You may also like
             </h2>
-            <ul className="grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-8">
+            <ul className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 md:gap-y-12 lg:grid-cols-3 lg:gap-x-8">
               {related.slice(0, 3).map((item) => (
                 <li key={item.id}>
                   <ProductCard product={item} />

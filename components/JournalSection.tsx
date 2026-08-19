@@ -7,7 +7,7 @@ export default function JournalSection() {
   return (
     <section
       aria-labelledby="journal-heading"
-      className="border-t border-theme-border px-5 py-24 sm:px-8 sm:py-32 md:py-40"
+      className="border-t border-theme-border px-5 py-16 sm:px-8 md:py-24 lg:py-32"
     >
       <div className="mx-auto max-w-6xl">
         <header className="mb-16 sm:mb-20 md:mb-24">
@@ -18,7 +18,7 @@ export default function JournalSection() {
               </p>
               <h2
                 id="journal-heading"
-                className="mt-5 font-serif text-3xl tracking-tight text-theme-text sm:text-4xl md:text-[2.75rem]"
+                className="mt-5 font-serif text-3xl font-light tracking-tight text-theme-text sm:text-4xl md:text-[2.75rem]"
               >
                 From the Journal
               </h2>
@@ -28,7 +28,7 @@ export default function JournalSection() {
             </div>
             <Link
               href="/journal"
-              className="inline-flex min-h-12 shrink-0 items-center text-[10px] font-medium uppercase tracking-[0.22em] text-theme-muted transition-colors duration-300 hover:text-theme-text"
+              className="inline-flex min-h-12 shrink-0 items-center rounded-none text-[10px] font-medium uppercase tracking-[0.22em] text-theme-muted transition-colors duration-300 hover:text-theme-text focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-theme-border"
             >
               Read the Journal
             </Link>
@@ -39,7 +39,7 @@ export default function JournalSection() {
           <article className="mb-14 border border-theme-border bg-theme-surface sm:mb-16">
             <Link href={`/journal/${featured.id}`} className="group block p-6 sm:p-10">
               <p className="text-[10px] uppercase tracking-[0.24em] text-theme-muted">{featured.category}</p>
-              <h3 className="mt-5 max-w-2xl font-serif text-2xl leading-snug tracking-wide text-theme-text sm:text-3xl md:text-4xl">
+              <h3 className="mt-5 max-w-2xl font-serif text-2xl font-light leading-snug tracking-wide text-theme-text sm:text-3xl md:text-4xl">
                 {featured.title}
               </h3>
               <p className="mt-5 max-w-2xl text-sm leading-relaxed text-theme-muted sm:text-[0.9375rem]">
@@ -62,7 +62,7 @@ export default function JournalSection() {
             <li key={note.id} className="border-t border-theme-border pt-9 sm:pt-10">
               <Link href={`/journal/${note.id}`} className="group block">
                 <p className="text-[10px] uppercase tracking-[0.24em] text-theme-muted">{note.category}</p>
-                <h3 className="mt-6 font-serif text-xl leading-snug tracking-wide text-theme-text transition-colors duration-300 group-hover:text-theme-text sm:text-[1.4rem]">
+                <h3 className="mt-6 font-serif text-xl font-light leading-snug tracking-wide text-theme-text transition-colors duration-300 group-hover:text-theme-text/90 sm:text-[1.4rem]">
                   {note.title}
                 </h3>
                 <p className="mt-5 text-sm leading-relaxed text-theme-muted">{note.excerpt}</p>

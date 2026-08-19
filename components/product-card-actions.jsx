@@ -28,7 +28,7 @@ export default function ProductCardActions({ product }) {
       type="button"
       onClick={handleQuickAdd}
       disabled={soldOut}
-      className="min-h-11 min-w-[4.75rem] px-1 text-left text-[10px] font-medium uppercase tracking-[0.2em] text-theme-muted transition-colors duration-300 hover:text-theme-text disabled:cursor-not-allowed disabled:text-theme-muted/70 disabled:hover:text-theme-muted/70"
+      className="min-h-11 min-w-[4.75rem] px-1 text-left text-[10px] font-medium uppercase tracking-[0.2em] text-theme-muted transition-colors duration-300 hover:text-theme-text focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-theme-border disabled:cursor-not-allowed disabled:text-theme-muted/70 disabled:hover:text-theme-muted/70"
     >
       {soldOut ? 'Unavailable' : 'Add'}
     </button>
