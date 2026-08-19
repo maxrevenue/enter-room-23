@@ -7,8 +7,8 @@ import {
 import { getRoom23Db } from '@/lib/admin-db'
 import {
   HIGH_VALUE_THRESHOLD,
-  staleOpenCutoff,
 } from '@/lib/admin-risk'
+import { CRITICAL_HOURS, staleOpenCutoff } from '@/lib/admin-sla'
 import {
   openOrdersQuery,
   orderFilterQuery,
@@ -51,7 +51,7 @@ export const ORDER_VIEWS: AdminViewDefinition<OrderViewId>[] = [
   { id: 'open', label: 'Open', params: { view: 'open' } },
   { id: 'unreviewed', label: 'Unreviewed', params: { view: 'unreviewed' } },
   { id: 'high_value', label: 'High value', params: { view: 'high_value' } },
-  { id: 'stale', label: 'Stale · 48h+', params: { view: 'stale' } },
+  { id: 'stale', label: `Stale · ${CRITICAL_HOURS}h+`, params: { view: 'stale' } },
   { id: 'fulfilled', label: 'Fulfilled', params: { view: 'fulfilled' } },
   {
     id: 'refunded_cancelled',
@@ -201,7 +201,7 @@ export function orderViewEmptyMessage(view: OrderViewId, q = '') {
     case 'high_value':
       return `No orders at or above $${HIGH_VALUE_THRESHOLD}.`
     case 'stale':
-      return 'No open orders older than 48 hours.'
+      return `No open orders older than ${CRITICAL_HOURS} hours.`
     case 'fulfilled':
       return 'No fulfilled orders yet.'
     case 'refunded_cancelled':
@@ -240,7 +240,7 @@ export function productViewLabel(view: ProductViewId) {
 
 export {
   isHighValueOrder,
-  isStaleOpenOrder,
   isUnreviewedOpenOrder,
-  staleOpenCutoff,
 } from '@/lib/admin-risk'
+
+export { isStaleOpenOrder, staleOpenCutoff } from '@/lib/admin-sla'

@@ -20,6 +20,7 @@ import {
   getOrderRiskFlags,
   riskFlagChipClass,
 } from '@/lib/admin-risk'
+import { orderAgeDisplay } from '@/lib/admin-sla'
 import {
   adminOrdersViewHref,
   listAdminOrdersForView,
@@ -74,10 +75,13 @@ export default async function AdminOrdersPage({
 
   const rows = orders.map((order) => {
     const flags = getOrderRiskFlags(order, productsById, now)
+    const age = orderAgeDisplay(order, now)
     return {
       orderId: order.orderId,
       email: String(order.email || ''),
       dateLabel: formatOrderDate(order.createdAt),
+      ageLabel: age.label,
+      ageClass: age.className,
       itemCount: orderItemCount(order),
       totalLabel: formatOrderMoney(order.totals?.total),
       statusLabel: orderStatusLabel(order.status),

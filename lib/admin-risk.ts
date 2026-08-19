@@ -8,13 +8,17 @@ import {
 import { couponExpiryDate, listAdminCoupons, type AdminCoupon } from '@/lib/admin-coupons'
 import { orderTimestamp } from '@/lib/admin-customers'
 import {
+  CRITICAL_HOURS,
+  isStaleOpenOrder,
+  slaSortWeight,
+} from '@/lib/admin-sla'
+import {
   isOpenOrder,
   listAdminOrders,
   type AdminOrder,
 } from '@/lib/admin-orders'
 
 export const HIGH_VALUE_THRESHOLD = 150
-export const STALE_OPEN_MS = 48 * 60 * 60 * 1000
 export const COUPON_EXPIRY_WINDOW_MS = 7 * 24 * 60 * 60 * 1000
 export const INBOX_ORDER_LIMIT = 10
 export const INBOX_PRODUCT_LIMIT = 8
@@ -79,20 +83,6 @@ export function riskFlagChipClass(severity: RiskFlagSeverity) {
   return SEVERITY_CHIP_CLASS[severity]
 }
 
-export function staleOpenCutoff(now = new Date()) {
-  return new Date(now.getTime() - STALE_OPEN_MS)
-}
-
-/** Shared staleness rule — swap implementation to admin-sla when Phase 19 lands. */
-export function isStaleOpenOrder(
-  order: Pick<AdminOrder, 'status' | 'fulfilled' | 'fulfillment' | 'createdAt'>,
-  now = new Date(),
-) {
-  if (!isOpenOrder(order)) return false
-  const createdTs = orderTimestamp(order.createdAt)
-  return createdTs > 0 && now.getTime() - createdTs >= STALE_OPEN_MS
-}
-
 export function isHighValueOrder(order: Pick<AdminOrder, 'totals'>) {
   const total = Number(order.totals?.total)
   return Number.isFinite(total) && total >= HIGH_VALUE_THRESHOLD
@@ -151,7 +141,7 @@ export function getOrderRiskFlags(
     }
 
     if (isStaleOpenOrder(order, now)) {
-      flags.push({ id: 'stale_open', label: 'Stale · 48h+', severity: 'low' })
+      flags.push({ id: 'stale_open', label: `Stale · ${CRITICAL_HOURS}h+`, severity: 'low' })
     }
   }
 
@@ -170,8 +160,10 @@ export function getOrderRiskFlags(
   return flags
 }
 
-function sortFlaggedOrders(entries: InboxOrderEntry[]) {
+function sortFlaggedOrders(entries: InboxOrderEntry[], now = new Date()) {
   return [...entries].sort((a, b) => {
+    const slaDelta = slaSortWeight(b.order, now) - slaSortWeight(a.order, now)
+    if (slaDelta !== 0) return slaDelta
     const scoreDelta = b.severityScore - a.severityScore
     if (scoreDelta !== 0) return scoreDelta
     const aTs = orderTimestamp(a.order.createdAt)
@@ -253,6 +245,7 @@ export async function getAdminActionInbox(
         }
       })
       .filter((entry): entry is InboxOrderEntry => entry != null),
+    now,
   ).slice(0, INBOX_ORDER_LIMIT)
 
   return {

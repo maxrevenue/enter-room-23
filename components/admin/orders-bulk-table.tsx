@@ -16,6 +16,8 @@ export type OrderBulkRow = {
   orderId: string
   email: string
   dateLabel: string
+  ageLabel: string
+  ageClass: string
   itemCount: number
   totalLabel: string
   statusLabel: string
@@ -164,6 +166,7 @@ export function OrdersBulkTable({ orders, view, q }: OrdersBulkTableProps) {
               <th className="px-4 py-3 font-medium">Order</th>
               <th className="px-4 py-3 font-medium">Email</th>
               <th className="px-4 py-3 font-medium">Date</th>
+              <th className="px-4 py-3 font-medium">Age</th>
               <th className="px-4 py-3 font-medium">Items</th>
               <th className="px-4 py-3 font-medium">Total</th>
               <th className="px-4 py-3 font-medium">Status</th>
@@ -200,6 +203,7 @@ export function OrdersBulkTable({ orders, view, q }: OrdersBulkTableProps) {
                     )}
                   </td>
                   <td className="px-4 py-4 text-zinc-500">{order.dateLabel}</td>
+                  <td className={`px-4 py-4 tabular-nums ${order.ageClass}`}>{order.ageLabel}</td>
                   <td className="px-4 py-4 text-zinc-300">{order.itemCount}</td>
                   <td className="px-4 py-4 text-zinc-300">{order.totalLabel}</td>
                   <td className="px-4 py-4">

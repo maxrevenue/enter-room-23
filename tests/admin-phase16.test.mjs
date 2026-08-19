@@ -26,14 +26,19 @@ describe('admin phase 16 saved views', () => {
     assert.match(views, /adminProductsViewHref/)
   })
 
-  it('uses shared stale and high-value thresholds from admin-risk', () => {
+  it('uses shared stale threshold from admin-sla and high-value from admin-risk', () => {
     const views = read('lib/admin-views.ts')
+    const sla = read('lib/admin-sla.ts')
     const risk = read('lib/admin-risk.ts')
     assert.match(views, /staleOpenCutoff/)
+    assert.match(views, /CRITICAL_HOURS/)
     assert.match(views, /HIGH_VALUE_THRESHOLD/)
-    assert.match(risk, /export function isStaleOpenOrder/)
-    assert.match(risk, /STALE_OPEN_MS = 48/)
-    assert.match(risk, /isStaleOpenOrder\(order, now\)/)
+    assert.match(sla, /export const WARN_HOURS = 24/)
+    assert.match(sla, /export const CRITICAL_HOURS = 48/)
+    assert.match(sla, /export function slaLevel/)
+    assert.match(sla, /export function isStaleOpenOrder/)
+    assert.match(risk, /from '@\/lib\/admin-sla'/)
+    assert.match(risk, /slaSortWeight/)
   })
 
   it('renders view pills on orders and products list pages', () => {

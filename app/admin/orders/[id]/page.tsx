@@ -35,6 +35,11 @@ import {
   riskFlagChipClass,
 } from '@/lib/admin-risk'
 import {
+  formatOpenForLabel,
+  slaLevel,
+  slaTextClass,
+} from '@/lib/admin-sla'
+import {
   formatOrderEventTime,
   getOrderTimeline,
   orderEventTypeLabel,
@@ -141,7 +146,10 @@ export default async function AdminOrderDetailPage({
     listRmasForOrder(order.orderId),
   ])
   const productsById = buildProductsByIdMap(products, collectOrderProductIds([order]))
-  const riskFlags = getOrderRiskFlags(order, productsById)
+  const now = new Date()
+  const riskFlags = getOrderRiskFlags(order, productsById, now)
+  const openForLabel = formatOpenForLabel(order, now)
+  const openForClass = slaTextClass(slaLevel(order, now))
   const supplierPanel = getOrderSupplierPanelState(order, productsById)
   const marginProductsById = buildMarginProductsByIdMap(products)
   const orderMarginResult = orderMargin(order, marginProductsById)
@@ -162,7 +170,12 @@ export default async function AdminOrderDetailPage({
         </Link>
       </p>
       <div className="mt-3 flex flex-wrap items-end justify-between gap-4">
-        <h1 className="font-serif text-3xl tracking-tight text-zinc-100">{order.orderId}</h1>
+        <div>
+          <h1 className="font-serif text-3xl tracking-tight text-zinc-100">{order.orderId}</h1>
+          {openForLabel ? (
+            <p className={`mt-2 text-sm ${openForClass}`}>{openForLabel}</p>
+          ) : null}
+        </div>
         <div className="flex flex-wrap items-center gap-3">
           <Link
             href={`/admin/orders/${encodeURIComponent(order.orderId)}/packing-slip`}
