@@ -7,7 +7,7 @@
 
 ## 1. Overview
 
-**Room 23** is a premium adult wellness e-commerce storefront. Built as a single-page Next.js application with App Router, deployed on Cloudflare Workers. Features age verification, product catalog, cart, secure checkout via NMI, and privacy-conscious analytics.
+**Room 23** is a premium adult wellness e-commerce storefront. Built as a Next.js application with App Router, deployed on Cloudflare Workers. Features age verification, product catalog, cart, secure checkout via CCBill FlexForms, and privacy-conscious analytics.
 
 ---
 
@@ -22,7 +22,7 @@
 | Icons | Lucide React | latest |
 | Class utilities | `clsx` + `tailwind-merge` | latest |
 | Deployment | Cloudflare Workers (via `@opennextjs/cloudflare`) | latest |
-| Payment Gateway | NMI (Network Merchants Inc.) | REST API |
+| Payment Gateway | CCBill FlexForms | Hosted checkout digest |
 | Transactional Email | Resend | REST API |
 | Testing | Vitest (unit) + Playwright/qabot (E2E) | latest |
 | Package Manager | npm | latest |
@@ -41,22 +41,12 @@
 │   ├── not-found.js              # 404 page
 │   ├── robots.js                 # robots.txt (staging → Disallow: /)
 │   ├── sitemap.js                # XML sitemap
-│   ├── products/page.js          # Product catalog page
-│   ├── faq/page.js               # FAQ page
-│   ├── shipping/page.js          # Shipping information page
-│   ├── contact/page.js           # Contact page
-│   ├── order-confirmed/          # Post-checkout confirmation
-│   │   ├── page.js               # Server component (wraps client)
-│   │   └── order-confirmed-client.js  # Client component: order ID display, cart clearing
-│   ├── journal/                  # Editorial journal routes
-│   ├── shop/                     # Shop catalog
-│   ├── products/                 # Product detail pages
-│   ├── terms/page.js             # Legal: Terms of Service
-│   ├── terms-of-service/page.js  # Legal: Terms of Service (alternate path)
-│   ├── privacy-policy/page.js    # Legal: Privacy Policy
-│   ├── refund-policy/page.js     # Legal: Refund Policy
+│   ├── products/                 # Product detail pages (/products/[slug])
+│   ├── terms/page.tsx            # Legal: Terms of Service
+│   ├── privacy/page.tsx          # Legal: Privacy Policy
+│   ├── shipping/page.tsx         # Shipping & Returns (includes refund policy)
 │   └── api/
-│       ├── checkout/route.js     # POST — process payment via NMI, validate inventory, send confirmation email
+│       ├── checkout/route.js     # POST — validate cart, build CCBill FlexForms URL or finalize mock checkout
 │       ├── analytics/route.js    # POST — server-side PII-sanitized analytics ingestion
 │       └── [[...path]]/route.js  # Catch-all mock API for unhandled routes
 │
@@ -67,7 +57,7 @@
 │   ├── site-footer.jsx           # Footer with links, legal, newsletter CTA
 │   ├── age-gate.jsx              # Age verification dialog (18+, locks entire site until confirmed)
 │   ├── cart-sheet.jsx            # Slide-out cart sidebar with qty controls + checkout trigger
-│   ├── checkout-dialog.jsx       # Full checkout form (contact, shipping, payment) with NMI integration
+│   ├── checkout-form.jsx         # Checkout form (contact, shipping) → CCBill hosted payment
 │   └── json-ld.jsx               # Schema.org structured data for SEO
 │
 ├── lib/                          # Business logic & utilities
@@ -117,17 +107,19 @@
 | Route | File | Type | Notes |
 |---|---|---|---|
 | `/` | `app/page.js` | Server | Landing page with hero + product showcase |
-| `/products` | `app/products/page.js` | Client | Full product catalog with cart integration |
-| `/faq` | `app/faq/page.js` | Client | FAQ accordion |
-| `/shipping` | `app/shipping/page.js` | Client | Shipping policies & info |
-| `/contact` | `app/contact/page.js` | Client | Contact form |
-| `/order-confirmed` | `app/order-confirmed/page.js` | Server→Client | Post-checkout confirmation |
+| `/products` | — | Redirect | 308 → `/shop` |
+| `/privacy-policy` | — | Redirect | 308 → `/privacy` |
+| `/terms-of-service` | — | Redirect | 308 → `/terms` |
+| `/refund-policy` | — | Redirect | 308 → `/shipping` |
+| `/shop` | `app/shop/page.tsx` | Server | Product catalog |
+| `/products/[slug]` | `app/products/[slug]/page.tsx` | Server | Product detail |
+| `/faq` | `app/faq/page.tsx` | Server | FAQ |
+| `/shipping` | `app/shipping/page.tsx` | Server | Shipping & returns |
+| `/contact` | `app/contact/page.tsx` | Server | Contact form |
+| `/order-confirmed` | `app/order-confirmed/page.jsx` | Server→Client | Post-checkout confirmation |
 | `/journal` | `app/journal` | Server | Editorial journal |
-| `/shop` | `app/shop` | Server | Product catalog |
-| `/terms` | `app/terms/page.js` | Server | Terms of Service |
-| `/terms-of-service` | `app/terms-of-service/page.js` | Server | Terms (alternate path) |
-| `/privacy-policy` | `app/privacy-policy/page.js` | Server | Privacy Policy |
-| `/refund-policy` | `app/refund-policy/page.js` | Server | Refund Policy |
+| `/terms` | `app/terms/page.tsx` | Server | Terms of Service |
+| `/privacy` | `app/privacy/page.tsx` | Server | Privacy Policy |
 | `*` (404) | `app/not-found.js` | Server | Custom 404 page |
 | `/api/checkout` | `app/api/checkout/route.js` | API POST | Process payment |
 | `/api/analytics` | `app/api/analytics/route.js` | API POST | Ingest analytics event |
@@ -173,24 +165,21 @@
 ### Checkout Flow
 ```
 Client (CheckoutDialog)                    Server (api/checkout/route.js)
-  │  POST /api/checkout                       │
-  │  { items, idempotencyKey, billing }       │
+  │  { items, shippingAddress, email }          │
   │ ──────────────────────────────────────────>│
-  │                                            │ 1. Validate idempotency key
-  │                                            │ 2. Recalculate subtotal from server-side prices
-  │                                            │ 3. Check inventory (via supplier adapter)
-  │                                            │ 4. Charge via NMI API
-  │                                            │ 5. Submit order to supplier (drop-ship)
-  │                                            │ 6. Send confirmation email (Resend)
-  │                                            │ 7. Fire analytics (non-blocking)
-  │  { orderId, total, status }               │
+  │                                            │ 1. Validate cart against server catalog
+  │                                            │ 2. Recalculate totals server-side
+  │                                            │ 3. Return CCBill FlexForms URL (or mock finalize)
+  │                                            │ 4. On completion: route fulfillment + Resend email
+  │  { orderId, paymentUrl, totals }           │
   │ <──────────────────────────────────────────│
   │                                            │
-  └─ redirect → /order-confirmed?order=xxx
+  └─ redirect → CCBill hosted page → /order-confirmed
 ```
-- **Idempotency**: Client generates `r23-{timestamp}-{random}` key; server checks/rejects duplicates
+- **Idempotency**: Client generates order id; server uses idempotency keys on fulfillment/email
 - **Server-side subtotal recalculation**: Prevents client-side price manipulation
-- **Client never sees** supplier identity, NMI API keys, cost prices, or margins
+- **Client never sees** supplier identity, CCBill salts/keys, cost prices, or margins
+- **Card data** is entered on CCBill's hosted page — never on room23.net
 
 ### Analytics (`lib/analytics.js` + `lib/analytics-client.js`)
 - **Client-side**: `track(event, data)` → fire-and-forget `fetch('/api/analytics', ...)`, never blocks UI
@@ -225,7 +214,7 @@ Real supplier adapters would extend `SupplierAdapter` with live API credentials 
 | Age Gate (18+) | ✅ Complete | Non-dismissable dialog, persisted in cart context |
 | Product Catalog | ✅ Complete | Hardcoded products with images |
 | Shopping Cart | ✅ Complete | Slide-out sheet, qty controls, subtotal |
-| Checkout / Payment | ✅ Complete | NMI integration, idempotency, server-side price validation |
+| Checkout / Payment | ✅ Complete | CCBill FlexForms redirect, idempotency, server-side price validation |
 | Order Confirmation | ✅ Complete | Clears cart, shows order ID, discreet shipping info |
 | Staging Environment | ✅ Complete | Banner, noindex, blocked robots, wrangler env config |
 | Privacy Analytics | ✅ Complete | PII sanitization, fire-and-forget pipeline |
@@ -277,9 +266,10 @@ npx wrangler deploy --env staging   # Deploy to staging
 ```
 
 ### Secrets (never in repo)
-- `NMI_PRIVATE_KEY` — payment gateway
+- `CCBILL_ACCOUNT_NUMBER`, `CCBILL_SUB_ACCOUNT`, `CCBILL_FLEXFORM_ID`, `CCBILL_SALT` — CCBill FlexForms
 - `RESEND_API_KEY` — transactional email
-- `ADMIN_EMAIL` — order notification recipient
+- `ADMIN_PASSWORD` — admin panel cookie gate
+- `MONGODB_URI` — orders/products overlay (optional locally)
 
 Set via `npx wrangler secret put <NAME> --env staging`.
 

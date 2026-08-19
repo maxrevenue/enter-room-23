@@ -75,7 +75,11 @@ describe('merchant readiness', () => {
 
   it('does not leave enterroom23.com on the customer path', () => {
     const nextConfig = read('next.config.js')
+    const middleware = read('middleware.js')
     assert.doesNotMatch(nextConfig, /enterroom23/)
     assert.match(nextConfig, /https:\/\/room23\.net/)
+    assert.match(nextConfig, /\/refund-policy.*\/shipping/)
+    assert.match(middleware, /LEGACY_PATH_REDIRECTS/)
+    assert.match(middleware, /\/products.*\/shop/)
   })
 })

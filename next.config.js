@@ -39,6 +39,10 @@ const nextConfig = {
   },
   async redirects() {
     const retired = [
+      { source: '/products', destination: '/shop', permanent: true },
+      { source: '/privacy-policy', destination: '/privacy', permanent: true },
+      { source: '/terms-of-service', destination: '/terms', permanent: true },
+      { source: '/refund-policy', destination: '/shipping', permanent: true },
       { source: '/vault', destination: '/shop', permanent: true },
       { source: '/collections/vault', destination: '/shop', permanent: true },
       { source: '/collections/vintage', destination: '/shop', permanent: true },

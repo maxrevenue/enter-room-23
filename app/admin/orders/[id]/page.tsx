@@ -250,6 +250,10 @@ export default async function AdminOrderDetailPage({
             Fulfilled sets the fulfillment marker. Refunded and cancelled close the order so it leaves the open
             queue.
           </p>
+          <p className="text-xs text-zinc-500">
+            Card refunds are processed in the CCBill merchant dashboard — not from this panel while underwriting is
+            pending.
+          </p>
           <button type="submit" className={primaryButtonClass}>
             Update status
           </button>
@@ -298,6 +302,20 @@ export default async function AdminOrderDetailPage({
           Resend is unavailable until a customer email, line items, and Resend are configured.
         </p>
       ) : null}
+
+      <div className="mt-10 border border-zinc-800 bg-zinc-900 px-6 py-6">
+        <p className={labelClass}>Refunds</p>
+        <p className="mt-3 text-sm text-zinc-400">
+          Refunds via CCBill dashboard. This admin panel records order status only — it does not issue card refunds.
+        </p>
+        <button
+          type="button"
+          disabled
+          className="mt-4 cursor-not-allowed border border-zinc-800 px-5 py-3 text-[11px] font-medium uppercase tracking-[0.22em] text-zinc-600"
+        >
+          Refunds via CCBill dashboard
+        </button>
+      </div>
     </section>
   )
 }

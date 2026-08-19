@@ -25,6 +25,13 @@ const PRODUCT_CANONICAL_REDIRECTS = new Map(
   buildProductCanonicalRedirects().map((rule) => [rule.source, rule.destination]),
 )
 
+const LEGACY_PATH_REDIRECTS = new Map([
+  ['/products', '/shop'],
+  ['/privacy-policy', '/privacy'],
+  ['/terms-of-service', '/terms'],
+  ['/refund-policy', '/shipping'],
+])
+
 function withSecurityHeaders(response, { noStore = false } = {}) {
   for (const [key, value] of Object.entries(SECURITY_HEADERS)) {
     response.headers.set(key, value)
@@ -71,6 +78,13 @@ export async function middleware(request) {
       url.search = ''
       return withSecurityHeaders(NextResponse.redirect(url), { noStore: true })
     }
+  }
+
+  const legacyPath = LEGACY_PATH_REDIRECTS.get(pathname)
+  if (legacyPath) {
+    const url = request.nextUrl.clone()
+    url.pathname = legacyPath
+    return withSecurityHeaders(NextResponse.redirect(url, 308))
   }
 
   const canonicalPath = PRODUCT_CANONICAL_REDIRECTS.get(pathname)
