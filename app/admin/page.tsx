@@ -12,6 +12,7 @@ import {
 import { couponExpiryDate, listAdminCoupons } from '@/lib/admin-coupons'
 import { formatOrderDate, formatOrderMoney, orderStatusLabel } from '@/lib/admin-orders'
 import { getAdminActionInbox, riskFlagChipClass } from '@/lib/admin-risk'
+import { adminReturnsHref, formatRmaDate, listOpenRmas, rmaStatusLabel } from '@/lib/admin-returns'
 import { getStoreSettings } from '@/lib/admin-settings'
 
 export const dynamic = 'force-dynamic'
@@ -19,6 +20,7 @@ export const dynamic = 'force-dynamic'
 const QUICK_LINKS = [
   { href: '/admin/products', label: 'Products' },
   { href: '/admin/orders', label: 'Orders' },
+  { href: '/admin/returns', label: 'Returns' },
   { href: '/admin/customers', label: 'Customers' },
   { href: '/admin/coupons', label: 'Coupons' },
   { href: '/admin/settings', label: 'Settings' },
@@ -41,6 +43,7 @@ export default async function AdminDashboardPage() {
   ])
 
   const inbox = await getAdminActionInbox(products, now)
+  const openRmas = await listOpenRmas(8)
 
   const activeCount = products.filter((product) => !isArchived(product)).length
   const activeCouponCount = coupons.filter((coupon) => {
@@ -49,7 +52,7 @@ export default async function AdminDashboardPage() {
     return !expires || expires.getTime() >= now.getTime()
   }).length
 
-  const inboxCount = inbox.orders.length + inbox.products.length + inbox.coupons.length
+  const inboxCount = inbox.orders.length + inbox.products.length + inbox.coupons.length + openRmas.length
 
   const stats = [
     { label: 'Products', value: String(activeCount) },
@@ -107,7 +110,7 @@ export default async function AdminDashboardPage() {
             <p className="mt-2 text-sm text-zinc-500">
               {inboxCount === 0
                 ? 'Nothing flagged right now.'
-                : `${inboxCount} item${inboxCount === 1 ? '' : 's'} across orders, inventory, and coupons.`}
+                : `${inboxCount} item${inboxCount === 1 ? '' : 's'} across orders, returns, inventory, and coupons.`}
             </p>
           </div>
         </div>
@@ -206,6 +209,35 @@ export default async function AdminDashboardPage() {
                           <p className="mt-1 text-xs text-zinc-500">Expiring within 7 days</p>
                         </div>
                         <span className={riskFlagChipClass('low')}>{entry.detail}</span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ) : null}
+
+            {openRmas.length > 0 ? (
+              <section>
+                <div className="flex items-center justify-between gap-4 px-6 py-4">
+                  <h3 className="text-[10px] font-medium uppercase tracking-[0.18em] text-zinc-500">Returns</h3>
+                  <Link
+                    href={adminReturnsHref('open')}
+                    className="text-[10px] font-medium uppercase tracking-[0.18em] text-zinc-500 hover:text-zinc-200"
+                  >
+                    View all
+                  </Link>
+                </div>
+                <ul>
+                  {openRmas.map((rma) => (
+                    <li key={rma.id} className="border-t border-zinc-800">
+                      <Link
+                        href={`/admin/returns/${encodeURIComponent(rma.id)}`}
+                        className="block px-6 py-4 hover:bg-zinc-950"
+                      >
+                        <p className="text-sm text-zinc-100">{rma.id}</p>
+                        <p className="mt-1 text-xs text-zinc-500">
+                          {rma.orderId} · {rmaStatusLabel(rma.status)} · {formatRmaDate(rma.createdAt)}
+                        </p>
                       </Link>
                     </li>
                   ))}

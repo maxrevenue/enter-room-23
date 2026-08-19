@@ -50,6 +50,18 @@ import { writeAdminAudit } from '@/lib/admin-audit'
 import { sendOrderConfirmation } from '@/lib/email/order-confirmation'
 import { handleStockAlertAfterQuantityChange, type StockAlertLevel } from '@/lib/admin-stock-alerts'
 import { searchAdminEntities, type AdminSearchResult } from '@/lib/admin-search'
+import {
+  allowedRmaStatusTransitions,
+  applyRmaRestock,
+  generateRmaId,
+  getAdminRma,
+  isRmaResolution,
+  isRmaStatus,
+  parseCreateRmaItems,
+  rmaStatusLabel,
+  type RmaResolution,
+  type RmaStatus,
+} from '@/lib/admin-returns'
 
 async function requireAdmin() {
   const ok = await isAdminAuthenticated(await cookies(), await resolveAdminPassword())
@@ -60,6 +72,7 @@ function revalidateAdmin() {
   revalidatePath('/admin')
   revalidatePath('/admin/products')
   revalidatePath('/admin/orders')
+  revalidatePath('/admin/returns')
   revalidatePath('/admin/suppliers')
   revalidatePath('/admin/customers')
   revalidatePath('/admin/coupons')
@@ -1336,4 +1349,170 @@ export async function bulkUpdateOrders(formData: FormData) {
   const query: Record<string, string> = { bulk: 'ok', count: String(updated) }
   if (skipped > 0) query.skippedCount = String(skipped)
   bulkOrdersRedirect(formData, query)
+}
+
+function revalidateRma(rmaId: string, orderId?: string, email?: string) {
+  revalidateAdmin()
+  revalidatePath('/admin/returns')
+  revalidatePath(`/admin/returns/${encodeURIComponent(rmaId)}`)
+  const oid = String(orderId || '').trim()
+  if (oid) revalidatePath(`/admin/orders/${encodeURIComponent(oid)}`)
+  const customerEmail = String(email || '').trim().toLowerCase()
+  if (customerEmail) revalidatePath(`/admin/customers/${encodeURIComponent(customerEmail)}`)
+}
+
+function redirectRma(rmaId: string, query: string): never {
+  redirect(`/admin/returns/${encodeURIComponent(rmaId)}?${query}`)
+}
+
+export async function createRma(formData: FormData) {
+  await requireAdmin()
+
+  const orderId = String(formData.get('orderId') || '').trim()
+  if (!orderId) redirect('/admin/orders?error=missing')
+
+  const order = await getAdminOrder(orderId)
+  if (!order) redirect('/admin/orders?error=missing')
+
+  const reason = String(formData.get('reason') || '').trim().slice(0, 1000)
+  const items = parseCreateRmaItems(formData, order)
+  if (!reason || items.length === 0) {
+    redirect(`/admin/orders/${encodeURIComponent(orderId)}?error=rma_invalid`)
+  }
+
+  const db = await getRoom23Db()
+  if (!db) redirect(`/admin/orders/${encodeURIComponent(orderId)}?error=db`)
+
+  const now = new Date()
+  const id = generateRmaId(orderId, now)
+  const email = String(order.email || '').trim() || undefined
+
+  await db.collection('rmas').insertOne({
+    id,
+    orderId,
+    email,
+    items,
+    reason,
+    status: 'requested',
+    resolution: 'refund_pending',
+    restockApplied: false,
+    notes: '',
+    createdAt: now,
+    updatedAt: now,
+  })
+
+  await writeAdminAudit({
+    action: 'rma.create',
+    entityType: 'rma',
+    entityId: id,
+    message: `Opened RMA ${id} for order ${orderId}`,
+    meta: { orderId, itemCount: items.length },
+  })
+
+  await safeInsertOrderEvent({
+    orderId,
+    type: 'rma_created',
+    message: `RMA ${id} opened (${items.length} line${items.length === 1 ? '' : 's'})`,
+    meta: { rmaId: id, itemCount: items.length },
+    actor: 'admin',
+  })
+
+  revalidateRma(id, orderId, email)
+  redirect(`/admin/returns/${encodeURIComponent(id)}?saved=created`)
+}
+
+export async function updateRma(formData: FormData) {
+  await requireAdmin()
+
+  const id = String(formData.get('id') || '').trim()
+  if (!id) redirect('/admin/returns?error=missing')
+
+  const rma = await getAdminRma(id)
+  if (!rma) redirect('/admin/returns?error=missing')
+
+  const db = await getRoom23Db()
+  if (!db) redirectRma(id, 'error=db')
+
+  const notes = String(formData.get('notes') ?? rma.notes ?? '')
+    .trim()
+    .slice(0, 2000)
+  const resolutionRaw = String(formData.get('resolution') || rma.resolution || '').trim().toLowerCase()
+  const resolution: RmaResolution | undefined = isRmaResolution(resolutionRaw) ? resolutionRaw : rma.resolution
+
+  const statusRaw = String(formData.get('status') || '').trim().toLowerCase()
+  let nextStatus: RmaStatus = rma.status
+  let statusChanged = false
+
+  if (statusRaw && isRmaStatus(statusRaw) && statusRaw !== rma.status) {
+    const allowed = allowedRmaStatusTransitions(rma.status)
+    if (!allowed.includes(statusRaw)) {
+      redirectRma(id, 'error=invalid_transition')
+    }
+    nextStatus = statusRaw
+    statusChanged = true
+  }
+
+  const now = new Date()
+  await db.collection('rmas').updateOne(
+    { id },
+    {
+      $set: {
+        notes,
+        ...(resolution ? { resolution } : {}),
+        ...(statusChanged ? { status: nextStatus } : {}),
+        updatedAt: now,
+      },
+    },
+  )
+
+  let restockResult: 'applied' | 'already' | 'skip' | undefined
+  if (statusChanged && nextStatus === 'restocked' && resolution === 'restock') {
+    restockResult = await applyRmaRestock(id)
+  }
+
+  if (statusChanged) {
+    await writeAdminAudit({
+      action: 'rma.status',
+      entityType: 'rma',
+      entityId: id,
+      message: `RMA ${id} status ${rma.status} → ${nextStatus}`,
+      meta: { from: rma.status, to: nextStatus, orderId: rma.orderId },
+    })
+
+    await safeInsertOrderEvent({
+      orderId: rma.orderId,
+      type: 'rma_status_changed',
+      message: `RMA ${id} status changed to ${rmaStatusLabel(nextStatus)}`,
+      meta: { rmaId: id, from: rma.status, to: nextStatus },
+      actor: 'admin',
+    })
+
+    if (restockResult === 'applied') {
+      await safeInsertOrderEvent({
+        orderId: rma.orderId,
+        type: 'rma_restocked',
+        message: `RMA ${id} inventory restocked`,
+        meta: { rmaId: id },
+        actor: 'admin',
+      })
+    }
+  } else if (notes !== (rma.notes || '') || resolution !== rma.resolution) {
+    await writeAdminAudit({
+      action: 'rma.update',
+      entityType: 'rma',
+      entityId: id,
+      message: `Updated RMA ${id}`,
+      meta: { orderId: rma.orderId },
+    })
+  }
+
+  revalidateRma(id, rma.orderId, rma.email)
+
+  if (restockResult === 'already') {
+    redirectRma(id, 'saved=1&restock=already')
+  }
+  if (restockResult === 'applied') {
+    redirectRma(id, 'saved=1&restock=1')
+  }
+  redirectRma(id, statusChanged ? 'saved=status' : 'saved=1')
 }

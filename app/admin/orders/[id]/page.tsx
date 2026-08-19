@@ -4,6 +4,7 @@ import { notFound, redirect } from 'next/navigation'
 import {
   markOrderReviewed,
   resendOrderEmail,
+  createRma,
   updateOrderNotes,
   updateOrderStatus,
 } from '@/app/admin/actions'
@@ -42,6 +43,12 @@ import {
   getOrderSupplierPanelState,
   supplierVendorLabel,
 } from '@/lib/admin-suppliers'
+import {
+  formatRmaDate,
+  listRmasForOrder,
+  rmaStatusBadgeClass,
+  rmaStatusLabel,
+} from '@/lib/admin-returns'
 import {
   buildMarginProductsByIdMap,
   formatMarginMoney,
@@ -100,6 +107,9 @@ function flashMessage(query: {
       text: query.supplierMsg || 'Supplier action failed.',
     }
   }
+  if (query.error === 'rma_invalid') {
+    return { role: 'alert' as const, text: 'Select at least one line item and enter a reason to open an RMA.' }
+  }
   return null
 }
 
@@ -125,7 +135,11 @@ export default async function AdminOrderDetailPage({
   const order = await getAdminOrder(decodeURIComponent(id))
   if (!order) notFound()
 
-  const [products, timeline] = await Promise.all([listAdminProducts(), getOrderTimeline(order)])
+  const [products, timeline, orderRmas] = await Promise.all([
+    listAdminProducts(),
+    getOrderTimeline(order),
+    listRmasForOrder(order.orderId),
+  ])
   const productsById = buildProductsByIdMap(products, collectOrderProductIds([order]))
   const riskFlags = getOrderRiskFlags(order, productsById)
   const supplierPanel = getOrderSupplierPanelState(order, productsById)
@@ -515,7 +529,105 @@ export default async function AdminOrderDetailPage({
         </p>
       ) : null}
 
-      <div className="mt-10 border border-zinc-800 bg-zinc-900 px-6 py-6">
+      <div className="mt-12 border border-zinc-800 bg-zinc-900 px-6 py-8">
+        <p className={labelClass}>Returns (RMA)</p>
+        <p className="mt-3 text-sm text-zinc-400">
+          Open a return authorization from selected line items. Refunds are tracked as intent only — process card
+          refunds in the CCBill merchant dashboard.
+        </p>
+
+        {orderRmas.length > 0 ? (
+          <ul className="mt-6 space-y-3 border-b border-zinc-800 pb-6">
+            {orderRmas.map((rma) => (
+              <li key={rma.id} className="flex flex-wrap items-center justify-between gap-3 text-sm">
+                <div>
+                  <Link href={`/admin/returns/${encodeURIComponent(rma.id)}`} className="text-zinc-100 hover:text-zinc-300">
+                    {rma.id}
+                  </Link>
+                  <p className="mt-1 text-xs text-zinc-500">
+                    {formatRmaDate(rma.createdAt)} · {rma.items.length} line{rma.items.length === 1 ? '' : 's'}
+                  </p>
+                </div>
+                <span className={rmaStatusBadgeClass(rma.status)}>{rmaStatusLabel(rma.status)}</span>
+              </li>
+            ))}
+          </ul>
+        ) : null}
+
+        {items.length === 0 ? (
+          <p className="mt-6 text-sm text-zinc-500">No line items available for an RMA.</p>
+        ) : (
+          <form action={createRma} className="mt-6 space-y-6">
+            <input type="hidden" name="orderId" value={order.orderId} />
+            <input type="hidden" name="lineCount" value={items.length} />
+
+            <div className="overflow-x-auto border border-zinc-800">
+              <table className="w-full min-w-[640px] text-left text-sm">
+                <thead className="border-b border-zinc-800 bg-zinc-950 text-[10px] uppercase tracking-[0.18em] text-zinc-500">
+                  <tr>
+                    <th className="px-4 py-3 font-medium">Include</th>
+                    <th className="px-4 py-3 font-medium">Item</th>
+                    <th className="px-4 py-3 font-medium">Return qty</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {items.map((item, index) => {
+                    const maxQty = Math.max(1, Math.floor(Number(item.qty) || 1))
+                    const productId = String(item.id || '').trim()
+                    return (
+                      <tr key={`${productId || item.name || index}`} className="border-b border-zinc-800 last:border-b-0">
+                        <td className="px-4 py-4">
+                          <input
+                            type="checkbox"
+                            name={`include_${index}`}
+                            defaultChecked={Boolean(productId)}
+                            disabled={!productId}
+                            className="h-3.5 w-3.5 accent-zinc-100 disabled:opacity-40"
+                            aria-label={`Include ${item.name || 'item'}`}
+                          />
+                          <input type="hidden" name={`productId_${index}`} value={productId} />
+                          <input type="hidden" name={`name_${index}`} value={String(item.name || productId || 'Item')} />
+                        </td>
+                        <td className="px-4 py-4 text-zinc-100">{item.name || productId || 'Item'}</td>
+                        <td className="px-4 py-4">
+                          <input
+                            className="w-20 border border-zinc-800 bg-zinc-950 px-2 py-1.5 text-sm text-zinc-100 outline-none focus:border-zinc-500"
+                            type="number"
+                            name={`qty_${index}`}
+                            min="1"
+                            max={maxQty}
+                            step="1"
+                            defaultValue={maxQty}
+                            aria-label={`Return quantity for ${item.name || 'item'}`}
+                          />
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
+
+            <label className="block">
+              <span className={labelClass}>Reason</span>
+              <textarea
+                className={`${fieldClass} min-h-24`}
+                name="reason"
+                rows={4}
+                maxLength={1000}
+                required
+                placeholder="Customer reason, condition notes, or internal context"
+              />
+            </label>
+
+            <button type="submit" className={primaryButtonClass}>
+              Create RMA
+            </button>
+          </form>
+        )}
+      </div>
+
+      <div className="mt-12 border border-zinc-800 bg-zinc-900 px-6 py-8">
         <p className={labelClass}>Refunds</p>
         <p className="mt-3 text-sm text-zinc-400">
           Refunds via CCBill dashboard. This admin panel records order status only — it does not issue card refunds.

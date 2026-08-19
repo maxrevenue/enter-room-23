@@ -17,6 +17,9 @@ export const ORDER_EVENT_TYPES = [
   'supplier_tracking',
   'supplier_failed',
   'supplier_inventory_checked',
+  'rma_created',
+  'rma_status_changed',
+  'rma_restocked',
 ] as const
 
 export type OrderEventType = (typeof ORDER_EVENT_TYPES)[number]
@@ -52,6 +55,9 @@ const TYPE_LABELS: Record<OrderEventType, string> = {
   supplier_tracking: 'Tracking',
   supplier_failed: 'Supplier',
   supplier_inventory_checked: 'Supplier stock',
+  rma_created: 'RMA',
+  rma_status_changed: 'RMA',
+  rma_restocked: 'RMA restock',
 }
 
 export function isOrderEventType(value: string): value is OrderEventType {
