@@ -101,7 +101,17 @@ export default async function AdminOrderDetailPage({
       </p>
       <div className="mt-3 flex flex-wrap items-end justify-between gap-4">
         <h1 className="font-serif text-3xl tracking-tight text-zinc-100">{order.orderId}</h1>
-        <span className={orderStatusBadgeClass(order.status)}>{orderStatusLabel(order.status)}</span>
+        <div className="flex flex-wrap items-center gap-3">
+          <Link
+            href={`/admin/orders/${encodeURIComponent(order.orderId)}/packing-slip`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={ghostButtonClass}
+          >
+            Packing slip
+          </Link>
+          <span className={orderStatusBadgeClass(order.status)}>{orderStatusLabel(order.status)}</span>
+        </div>
       </div>
 
       {riskFlags.length ? (
