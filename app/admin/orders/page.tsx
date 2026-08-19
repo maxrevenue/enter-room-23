@@ -3,46 +3,46 @@ import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { isAdminAuthenticated } from '@/lib/admin-auth'
 import { resolveAdminPassword } from '@/lib/admin-password.server'
+import { adminCustomerHref } from '@/lib/admin-customers'
 import {
+  adminOrdersHref,
   formatOrderDate,
   formatOrderMoney,
   isOrderFulfilled,
   listAdminOrders,
-  normalizeOrderFilter,
   orderItemCount,
-  orderStatusClass,
+  orderStatusBadgeClass,
   orderStatusLabel,
-  type OrderListFilter,
+  parseOrderFilter,
+  parseOrderSearch,
+  type OrderFilter,
 } from '@/lib/admin-orders'
 
 export const dynamic = 'force-dynamic'
 
-const FILTERS: Array<{ id: OrderListFilter; label: string }> = [
+const FILTER_TABS: { id: OrderFilter; label: string }[] = [
   { id: 'all', label: 'All' },
   { id: 'open', label: 'Open' },
   { id: 'fulfilled', label: 'Fulfilled' },
   { id: 'closed', label: 'Refunded/Cancelled' },
 ]
 
-function emptyCopy(filter: OrderListFilter) {
-  if (filter === 'open') return 'No open orders.'
-  if (filter === 'fulfilled') return 'No fulfilled orders.'
-  if (filter === 'closed') return 'No refunded or cancelled orders.'
-  return 'No orders yet. Paid checkouts are stored in MongoDB for review here.'
-}
+const fieldClass =
+  'w-full border border-zinc-800 bg-zinc-950 px-4 py-3 text-sm text-zinc-100 outline-none focus:border-zinc-500'
 
 export default async function AdminOrdersPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string; filter?: string }>
+  searchParams: Promise<{ error?: string; filter?: string; q?: string }>
 }) {
   if (!(await isAdminAuthenticated(await cookies(), await resolveAdminPassword()))) {
     redirect('/admin/login')
   }
 
   const params = await searchParams
-  const filter = normalizeOrderFilter(params.filter)
-  const orders = await listAdminOrders(80, filter)
+  const filter = parseOrderFilter(params.filter)
+  const q = parseOrderSearch(params.q)
+  const orders = await listAdminOrders(filter, 100, q)
 
   return (
     <section>
@@ -57,27 +57,58 @@ export default async function AdminOrdersPage({
         </p>
       ) : null}
 
-      <nav aria-label="Order filters" className="mb-8 flex flex-wrap gap-x-6 gap-y-3 border-b border-zinc-800 pb-4">
-        {FILTERS.map((item) => {
-          const active = filter === item.id
-          const href = item.id === 'all' ? '/admin/orders' : `/admin/orders?filter=${item.id}`
+      <form action="/admin/orders" method="get" className="mb-8 flex flex-col gap-3 sm:flex-row">
+        {filter !== 'all' ? <input type="hidden" name="filter" value={filter} /> : null}
+        <label className="block flex-1">
+          <span className="sr-only">Search orders</span>
+          <input
+            className={fieldClass}
+            name="q"
+            defaultValue={q}
+            placeholder="Search order ID, email, or name"
+          />
+        </label>
+        <button
+          type="submit"
+          className="bg-zinc-100 px-5 py-3 text-[11px] font-medium uppercase tracking-[0.24em] text-zinc-950 hover:bg-zinc-200"
+        >
+          Search
+        </button>
+        {q ? (
+          <Link
+            href={adminOrdersHref(filter)}
+            className="inline-flex items-center px-5 py-3 text-[11px] font-medium uppercase tracking-[0.22em] text-zinc-500 hover:text-zinc-100"
+          >
+            Clear
+          </Link>
+        ) : null}
+      </form>
+
+      <nav aria-label="Filter orders" className="mb-8 flex flex-wrap gap-x-8 gap-y-3 border-b border-zinc-800 pb-4">
+        {FILTER_TABS.map((tab) => {
+          const active = tab.id === filter
           return (
             <Link
-              key={item.id}
-              href={href}
-              aria-current={active ? 'page' : undefined}
-              className={`text-[11px] font-medium uppercase tracking-[0.18em] ${
+              key={tab.id}
+              href={adminOrdersHref(tab.id, q)}
+              className={`text-[11px] font-medium uppercase tracking-[0.22em] ${
                 active ? 'text-zinc-100' : 'text-zinc-500 hover:text-zinc-300'
               }`}
             >
-              {item.label}
+              {tab.label}
             </Link>
           )
         })}
       </nav>
 
       {orders.length === 0 ? (
-        <p className="border border-zinc-800 bg-zinc-900 px-6 py-10 text-sm text-zinc-400">{emptyCopy(filter)}</p>
+        <p className="border border-zinc-800 bg-zinc-900 px-6 py-10 text-sm text-zinc-400">
+          {q
+            ? 'No orders match this search.'
+            : filter === 'all'
+              ? 'No orders yet. Paid checkouts are stored in MongoDB for review here.'
+              : 'No orders match this filter.'}
+        </p>
       ) : (
         <div className="overflow-x-auto border border-zinc-800">
           <table className="w-full min-w-[880px] text-left text-sm">
@@ -97,14 +128,20 @@ export default async function AdminOrdersPage({
               {orders.map((order) => (
                 <tr key={order.orderId} className="border-b border-zinc-800 last:border-b-0">
                   <td className="px-4 py-4 font-medium text-zinc-100">{order.orderId}</td>
-                  <td className="px-4 py-4 text-zinc-400">{order.email || '—'}</td>
+                  <td className="px-4 py-4 text-zinc-400">
+                    {order.email ? (
+                      <Link href={adminCustomerHref(order.email)} className="hover:text-zinc-100">
+                        {order.email}
+                      </Link>
+                    ) : (
+                      '—'
+                    )}
+                  </td>
                   <td className="px-4 py-4 text-zinc-500">{formatOrderDate(order.createdAt)}</td>
-                  <td className="px-4 py-4 text-zinc-400">{orderItemCount(order)}</td>
+                  <td className="px-4 py-4 text-zinc-300">{orderItemCount(order)}</td>
                   <td className="px-4 py-4 text-zinc-300">{formatOrderMoney(order.totals?.total)}</td>
                   <td className="px-4 py-4">
-                    <span
-                      className={`inline-flex border px-2 py-1 text-[10px] font-medium uppercase tracking-[0.16em] ${orderStatusClass(order.status)}`}
-                    >
+                    <span className={orderStatusBadgeClass(order.status)}>
                       {orderStatusLabel(order.status)}
                     </span>
                   </td>

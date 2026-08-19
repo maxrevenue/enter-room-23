@@ -134,4 +134,18 @@ describe('checkout completion pipeline', () => {
     assert.equal(result.adminReview, true)
     assert.equal(result.fulfillment.orderId, 'R23-TEST-2')
   })
+
+  it('honors explicit discount amounts over hardcoded promo percents', () => {
+    const items = hydrateCartItems([{ id: 'lube-silicone-2oz', qty: 2 }], (id) => catalog[id])
+    const totals = computeServerTotals(items, {
+      appliedPromo: 'WELCOME10',
+      discountAmount: 5,
+      discountPercent: 0,
+      freeShippingThreshold: 99,
+      flatShippingRate: 5.99,
+    })
+    assert.equal(totals.subtotal, 36)
+    assert.equal(totals.discountAmount, 5)
+    assert.equal(totals.discountPercent, 0)
+  })
 })

@@ -13,14 +13,34 @@ import {
 import { resolveAdminPassword } from '@/lib/admin-password.server'
 import {
   findAdminProductBySlug,
+  fulfillmentTypeOptions,
+  GALLERY_SLOT_COUNT,
   getAdminProduct,
   inventoryStatusFromQuantity,
   isArchived,
   makeProductSlug,
+  normalizeAttributes,
+  normalizeImages,
   productCategories,
+  quantityOf,
+  vendorTypeOptions,
 } from '@/lib/admin-catalog'
 import { getRoom23Db } from '@/lib/admin-db'
-import { getAdminOrder, isOrderStatus, orderStatusPatch } from '@/lib/admin-orders'
+import {
+  isCouponType,
+  normalizeCouponCode,
+  type CouponType,
+} from '@/lib/admin-coupons'
+import { normalizeShippingZones, SHIPPING_ZONE_SLOTS, STORE_SETTINGS_ID } from '@/lib/admin-settings'
+import {
+  buildOrderStatusUpdate,
+  getAdminOrder,
+  isOrderStatus,
+  nextQuantityAfterDecrement,
+  shouldDecrementInventory,
+} from '@/lib/admin-orders'
+import { writeAdminAudit } from '@/lib/admin-audit'
+import { sendOrderConfirmation } from '@/lib/email/order-confirmation'
 
 async function requireAdmin() {
   const ok = await isAdminAuthenticated(await cookies(), await resolveAdminPassword())
@@ -31,13 +51,22 @@ function revalidateAdmin() {
   revalidatePath('/admin')
   revalidatePath('/admin/products')
   revalidatePath('/admin/orders')
+  revalidatePath('/admin/customers')
+  revalidatePath('/admin/coupons')
+  revalidatePath('/admin/analytics')
+  revalidatePath('/admin/audit')
+  revalidatePath('/admin/settings')
   revalidatePath('/')
   revalidatePath('/shop')
+  revalidatePath('/cart')
+  revalidatePath('/checkout')
   revalidatePath('/products', 'layout')
   revalidatePath('/collections', 'layout')
 }
 
 const CATEGORY_VALUES = new Set(productCategories())
+const FULFILLMENT_VALUES = new Set(fulfillmentTypeOptions())
+const VENDOR_VALUES = new Set(vendorTypeOptions())
 const RESERVED_SLUGS = new Set(['new', 'admin', 'shop', 'api', 'products', 'collections'])
 
 function fromList(formData: FormData) {
@@ -80,6 +109,160 @@ function visibilityFields(hidden: boolean) {
   }
 }
 
+function parseFlag(formData: FormData, name: string) {
+  const raw = String(formData.get(name) || '').trim().toLowerCase()
+  return raw === 'on' || raw === '1' || raw === 'true'
+}
+
+function parseText(formData: FormData, name: string) {
+  return String(formData.get(name) || '').trim()
+}
+
+function parseGallery(formData: FormData) {
+  const slots = []
+  for (let index = 0; index < GALLERY_SLOT_COUNT; index += 1) {
+    slots.push({
+      url: parseText(formData, `imageUrl${index}`),
+      alt: parseText(formData, `imageAlt${index}`),
+    })
+  }
+  return normalizeImages(slots)
+}
+
+function parseProductFields(formData: FormData, requiredQuantity: boolean) {
+  const name = parseText(formData, 'name')
+  const slugInput = parseText(formData, 'slug')
+  const slug = makeProductSlug(name, slugInput)
+  const price = parsePrice(formData)
+  const quantity = parseQuantity(formData, requiredQuantity)
+  const category = parseText(formData, 'category')
+  const collection = parseText(formData, 'collection') || category
+  const badge = parseText(formData, 'badge')
+  const tagline = parseText(formData, 'tagline')
+  const shortEditorial = parseText(formData, 'shortEditorial')
+  const description = parseText(formData, 'description')
+  const ingredients = parseText(formData, 'ingredients')
+  const directions = parseText(formData, 'directions')
+  const compatibility = parseText(formData, 'compatibility')
+  const care = parseText(formData, 'care')
+  const discretionNotes = parseText(formData, 'discretionNotes')
+  const attributes = normalizeAttributes(parseText(formData, 'attributes'))
+  const fulfillmentType = parseText(formData, 'fulfillmentType')
+  const vendorType = parseText(formData, 'vendorType')
+  const image = parseText(formData, 'image')
+  const images = parseGallery(formData)
+  const hidden = parseHidden(formData)
+  const hideWhenZero = parseFlag(formData, 'hideWhenZero')
+  const isFeatured = parseFlag(formData, 'isFeatured')
+  const isProductOfTheMonth = parseFlag(formData, 'isProductOfTheMonth')
+
+  return {
+    name,
+    slug,
+    price,
+    quantity,
+    category,
+    collection,
+    badge,
+    tagline,
+    shortEditorial,
+    description,
+    ingredients,
+    directions,
+    compatibility,
+    care,
+    discretionNotes,
+    attributes,
+    fulfillmentType,
+    vendorType,
+    image: image || images[0]?.url || '',
+    images,
+    hidden,
+    hideWhenZero,
+    isFeatured,
+    isProductOfTheMonth,
+  }
+}
+
+function editorialFields(fields: ReturnType<typeof parseProductFields>) {
+  return {
+    collection: fields.collection,
+    badge: fields.badge,
+    tagline: fields.tagline,
+    shortEditorial: fields.shortEditorial,
+    description: fields.description,
+    ingredients: fields.ingredients,
+    directions: fields.directions,
+    compatibility: fields.compatibility,
+    care: fields.care,
+    discretionNotes: fields.discretionNotes,
+    attributes: fields.attributes,
+    fulfillmentType: fields.fulfillmentType,
+    vendorType: fields.vendorType,
+    image: fields.image,
+    images: fields.images,
+    gallery: fields.images,
+    hideWhenZero: fields.hideWhenZero,
+    isFeatured: fields.isProductOfTheMonth ? true : fields.isFeatured,
+  }
+}
+
+function fieldsAreValid(fields: ReturnType<typeof parseProductFields>, requireQuantity: boolean) {
+  if (!fields.name || !fields.slug || RESERVED_SLUGS.has(fields.slug) || fields.price == null) return false
+  if (requireQuantity && fields.quantity == null) return false
+  if (fields.quantity === null) return false
+  if (!CATEGORY_VALUES.has(fields.category)) return false
+  if (!FULFILLMENT_VALUES.has(fields.fulfillmentType)) return false
+  if (!VENDOR_VALUES.has(fields.vendorType)) return false
+  return true
+}
+
+async function applyExclusiveProductOfTheMonth(id: string) {
+  const db = await getRoom23Db()
+  if (!db) return
+  await db.collection('products').updateMany({}, { $set: { isProductOfTheMonth: false, isFeatured: false } })
+  await db.collection('products').updateOne({ id }, { $set: { isProductOfTheMonth: true, isFeatured: true } })
+}
+
+async function decrementInventoryForOrder(order: { orderId: string; items?: Array<{ id?: string; qty?: number }> }) {
+  const db = await getRoom23Db()
+  if (!db) return
+
+  const items = Array.isArray(order.items) ? order.items : []
+  for (const item of items) {
+    const id = String(item?.id || '').trim()
+    if (!id) continue
+    const product = await getAdminProduct(id)
+    if (!product) continue
+    const nextQuantity = nextQuantityAfterDecrement(quantityOf(product), Number(item.qty) || 1)
+    if (nextQuantity == null) continue
+
+    await db.collection('products').updateOne(
+      { id },
+      {
+        $set: {
+          id,
+          quantity: nextQuantity,
+          inventoryStatus: inventoryStatusFromQuantity(nextQuantity, product.inventoryStatus),
+          updatedAt: new Date(),
+        },
+        $setOnInsert: {
+          name: product.name,
+          slug: product.slug || id,
+          price: product.price,
+          category: product.category,
+          ...visibilityFields(isArchived(product)),
+          isProductOfTheMonth: Boolean(product.isProductOfTheMonth),
+          isFeatured: Boolean(product.isFeatured),
+          createdAt: new Date(),
+        },
+      },
+      { upsert: true },
+    )
+    revalidatePath(`/admin/products/${id}`)
+  }
+}
+
 export async function loginAdmin(formData: FormData) {
   const password = String(formData.get('password') || '')
   const expected = await resolveAdminPassword()
@@ -109,20 +292,16 @@ export async function logoutAdmin() {
 export async function createProduct(formData: FormData) {
   await requireAdmin()
 
-  const name = String(formData.get('name') || '').trim()
-  const slug = makeProductSlug(name, String(formData.get('slug') || ''))
-  const price = parsePrice(formData)
-  const quantity = parseQuantity(formData, true)
-  const category = String(formData.get('category') || '').trim()
-  const shortEditorial = String(formData.get('shortEditorial') || '').trim()
-  const hidden = parseHidden(formData)
-
-  if (!name || !slug || RESERVED_SLUGS.has(slug) || price == null || quantity == null || !CATEGORY_VALUES.has(category)) {
+  const fields = parseProductFields(formData, true)
+  if (!fieldsAreValid(fields, true)) {
     redirect('/admin/products/new?error=invalid')
   }
+  if (fields.hidden && fields.isProductOfTheMonth) {
+    redirect('/admin/products/new?error=archived')
+  }
 
-  const existing = await findAdminProductBySlug(slug)
-  if (existing || (await getAdminProduct(slug))) {
+  const existing = await findAdminProductBySlug(fields.slug)
+  if (existing || (await getAdminProduct(fields.slug))) {
     redirect('/admin/products/new?error=duplicate')
   }
 
@@ -131,26 +310,28 @@ export async function createProduct(formData: FormData) {
 
   const now = new Date()
   await db.collection('products').insertOne({
-    id: slug,
-    slug,
-    name,
-    price,
-    quantity,
-    category,
-    collection: category,
-    shortEditorial,
-    inventoryStatus: inventoryStatusFromQuantity(quantity),
-    ...visibilityFields(hidden),
+    id: fields.slug,
+    slug: fields.slug,
+    name: fields.name,
+    price: fields.price,
+    quantity: fields.quantity,
+    category: fields.category,
+    inventoryStatus: inventoryStatusFromQuantity(fields.quantity),
+    ...visibilityFields(fields.hidden),
+    ...editorialFields(fields),
     isProductOfTheMonth: false,
-    isFeatured: false,
     source: 'custom',
     createdAt: now,
     updatedAt: now,
   })
 
+  if (fields.isProductOfTheMonth) {
+    await applyExclusiveProductOfTheMonth(fields.slug)
+  }
+
   revalidateAdmin()
-  revalidatePath(`/admin/products/${slug}`)
-  redirect(`/admin/products/${encodeURIComponent(slug)}?saved=1`)
+  revalidatePath(`/admin/products/${fields.slug}`)
+  redirect(`/admin/products/${encodeURIComponent(fields.slug)}?saved=1`)
 }
 
 export async function updateProduct(formData: FormData) {
@@ -160,17 +341,20 @@ export async function updateProduct(formData: FormData) {
   const product = await getAdminProduct(id)
   if (!product) redirect('/admin/products?error=missing')
 
-  const name = String(formData.get('name') || '').trim()
-  const price = parsePrice(formData)
-  const quantity = parseQuantity(formData, false)
-  const category = String(formData.get('category') || '').trim()
-  const shortEditorial = String(formData.get('shortEditorial') || '').trim()
-
-  if (!name || price == null || !CATEGORY_VALUES.has(category) || quantity === null) {
+  const fields = parseProductFields(formData, true)
+  if (!fieldsAreValid(fields, true)) {
     redirectProduct(formData, id, 'error=invalid')
   }
+  if (fields.hidden && fields.isProductOfTheMonth) {
+    redirectProduct(formData, id, 'error=archived')
+  }
 
-  const nextQuantity = quantity === undefined ? product.quantity ?? null : quantity
+  const slugOwner = await findAdminProductBySlug(fields.slug)
+  if (slugOwner && slugOwner.id !== id) {
+    redirectProduct(formData, id, 'error=duplicate')
+  }
+
+  const nextQuantity = fields.quantity
   const db = await getRoom23Db()
   if (!db) redirectProduct(formData, id, 'error=db')
 
@@ -179,25 +363,49 @@ export async function updateProduct(formData: FormData) {
     {
       $set: {
         id,
-        slug: product.slug || id,
-        name,
-        price,
+        slug: fields.slug || product.slug || id,
+        name: fields.name,
+        price: fields.price,
         quantity: nextQuantity,
         inventoryStatus: inventoryStatusFromQuantity(nextQuantity, product.inventoryStatus),
-        category,
-        shortEditorial,
+        category: fields.category,
         source: product.source || undefined,
+        ...visibilityFields(fields.hidden),
+        ...editorialFields(fields),
+        isProductOfTheMonth: fields.isProductOfTheMonth,
         updatedAt: new Date(),
       },
       $setOnInsert: {
-        ...visibilityFields(Boolean(product.hidden)),
-        isProductOfTheMonth: false,
-        isFeatured: false,
         createdAt: new Date(),
       },
     },
     { upsert: true },
   )
+
+  if (fields.isProductOfTheMonth) {
+    await applyExclusiveProductOfTheMonth(id)
+  }
+
+  const priceChanged = Number(product.price) !== Number(fields.price)
+  const wasHidden = isArchived(product)
+  if (priceChanged) {
+    await writeAdminAudit({
+      action: 'product.price',
+      entityType: 'product',
+      entityId: id,
+      message: `Price for ${fields.name} changed from ${Number(product.price).toFixed(2)} to ${Number(fields.price).toFixed(2)}`,
+      meta: { from: product.price, to: fields.price, name: fields.name },
+    })
+  }
+  if (wasHidden !== fields.hidden) {
+    await writeAdminAudit({
+      action: fields.hidden ? 'product.hide' : 'product.show',
+      entityType: 'product',
+      entityId: id,
+      message: fields.hidden ? `Hid ${fields.name}` : `Restored ${fields.name}`,
+      meta: { hidden: fields.hidden, name: fields.name },
+    })
+  }
 
   revalidateAdmin()
   revalidatePath(`/admin/products/${id}`)
@@ -277,6 +485,14 @@ export async function archiveProduct(formData: FormData) {
     { upsert: true },
   )
 
+  await writeAdminAudit({
+    action: 'product.hide',
+    entityType: 'product',
+    entityId: id,
+    message: `Archived ${product.name}`,
+    meta: { name: product.name },
+  })
+
   revalidateAdmin()
   revalidatePath(`/admin/products/${id}`)
   redirectProduct(formData, id)
@@ -313,6 +529,14 @@ export async function unarchiveProduct(formData: FormData) {
     },
     { upsert: true },
   )
+
+  await writeAdminAudit({
+    action: 'product.show',
+    entityType: 'product',
+    entityId: id,
+    message: `Restored ${product.name}`,
+    meta: { name: product.name },
+  })
 
   revalidateAdmin()
   revalidatePath(`/admin/products/${id}`)
@@ -367,152 +591,380 @@ export async function clearProductOfTheMonth(formData: FormData) {
   redirect(`/admin/products/${encodeURIComponent(id)}?saved=1`)
 }
 
-function redirectOrder(orderId: string, query = 'saved=1'): never {
+function redirectOrder(orderId: string, query: string): never {
   redirect(`/admin/orders/${encodeURIComponent(orderId)}?${query}`)
 }
 
-async function requireOrder(orderId: string) {
+async function requireAdminOrder(formData: FormData) {
+  await requireAdmin()
+  const orderId = String(formData.get('orderId') || '').trim()
+  if (!orderId) redirect('/admin/orders?error=missing')
   const order = await getAdminOrder(orderId)
   if (!order) redirect('/admin/orders?error=missing')
   return order
 }
 
-export async function updateOrder(formData: FormData) {
-  await requireAdmin()
+function revalidateOrder(orderId: string, email?: string) {
+  revalidateAdmin()
+  revalidatePath(`/admin/orders/${orderId}`)
+  const customerEmail = String(email || '').trim().toLowerCase()
+  if (customerEmail) revalidatePath(`/admin/customers/${encodeURIComponent(customerEmail)}`)
+}
 
-  const orderId = String(formData.get('orderId') || '').trim()
-  await requireOrder(orderId)
-
+export async function updateOrderStatus(formData: FormData) {
+  const order = await requireAdminOrder(formData)
   const status = String(formData.get('status') || '').trim()
-  const notes = String(formData.get('notes') || '').trim().slice(0, 2000)
 
-  if (!isOrderStatus(status)) redirectOrder(orderId, 'error=invalid')
+  if (!isOrderStatus(status)) {
+    redirectOrder(order.orderId, 'error=invalid')
+  }
 
   const db = await getRoom23Db()
-  if (!db) redirectOrder(orderId, 'error=db')
+  if (!db) redirectOrder(order.orderId, 'error=db')
+
+  const decrement = shouldDecrementInventory(order, status)
+  if (decrement) {
+    await decrementInventoryForOrder(order)
+  }
 
   await db.collection('orders').updateOne(
-    { orderId },
+    { orderId: order.orderId },
     {
       $set: {
-        notes,
-        ...orderStatusPatch(status),
+        ...buildOrderStatusUpdate(status),
+        ...(decrement ? { inventoryDecremented: true } : {}),
       },
     },
   )
 
-  revalidateAdmin()
-  revalidatePath(`/admin/orders/${orderId}`)
-  redirectOrder(orderId)
-}
+  await writeAdminAudit({
+    action: 'order.status',
+    entityType: 'order',
+    entityId: order.orderId,
+    message: `Order ${order.orderId} status changed from ${order.status || 'paid'} to ${status}`,
+    meta: { from: order.status || 'paid', to: status },
+  })
 
-export async function updateOrderStatus(formData: FormData) {
-  await requireAdmin()
-
-  const orderId = String(formData.get('orderId') || '').trim()
-  await requireOrder(orderId)
-
-  const status = String(formData.get('status') || '').trim()
-  if (!isOrderStatus(status)) redirectOrder(orderId, 'error=invalid')
-
-  const db = await getRoom23Db()
-  if (!db) redirectOrder(orderId, 'error=db')
-
-  await db.collection('orders').updateOne({ orderId }, { $set: orderStatusPatch(status) })
-
-  revalidateAdmin()
-  revalidatePath(`/admin/orders/${orderId}`)
-  redirectOrder(orderId)
+  revalidateOrder(order.orderId, order.email)
+  redirectOrder(order.orderId, decrement ? 'saved=status&inventory=1' : 'saved=status')
 }
 
 export async function updateOrderNotes(formData: FormData) {
-  await requireAdmin()
-
-  const orderId = String(formData.get('orderId') || '').trim()
-  await requireOrder(orderId)
-
+  const order = await requireAdminOrder(formData)
   const notes = String(formData.get('notes') || '').trim().slice(0, 2000)
+
   const db = await getRoom23Db()
-  if (!db) redirectOrder(orderId, 'error=db')
+  if (!db) redirectOrder(order.orderId, 'error=db')
 
   await db.collection('orders').updateOne(
-    { orderId },
-    { $set: { notes, updatedAt: new Date() } },
+    { orderId: order.orderId },
+    {
+      $set: {
+        notes,
+        updatedAt: new Date(),
+      },
+    },
   )
 
-  revalidateAdmin()
-  revalidatePath(`/admin/orders/${orderId}`)
-  redirectOrder(orderId)
+  revalidateOrder(order.orderId, order.email)
+  redirectOrder(order.orderId, 'saved=notes')
 }
 
 export async function markOrderReviewed(formData: FormData) {
-  await requireAdmin()
+  const order = await requireAdminOrder(formData)
+  const raw = String(formData.get('adminReview') || '').trim().toLowerCase()
+  const adminReview = raw === '1' || raw === 'true' || raw === 'on'
 
-  const orderId = String(formData.get('orderId') || '').trim()
-  await requireOrder(orderId)
-
-  const adminReview = String(formData.get('adminReview') || '') === '1'
   const db = await getRoom23Db()
-  if (!db) redirectOrder(orderId, 'error=db')
+  if (!db) redirectOrder(order.orderId, 'error=db')
 
   await db.collection('orders').updateOne(
-    { orderId },
-    { $set: { adminReview, updatedAt: new Date() } },
+    { orderId: order.orderId },
+    {
+      $set: {
+        adminReview,
+        updatedAt: new Date(),
+      },
+    },
   )
 
-  revalidateAdmin()
-  revalidatePath(`/admin/orders/${orderId}`)
-  redirectOrder(orderId)
+  revalidateOrder(order.orderId, order.email)
+  redirectOrder(order.orderId, 'saved=reviewed')
 }
 
 export async function resendOrderEmail(formData: FormData) {
-  await requireAdmin()
-
-  const orderId = String(formData.get('orderId') || '').trim()
-  const order = await requireOrder(orderId)
+  const order = await requireAdminOrder(formData)
   const email = String(order.email || '').trim()
-  const items = (order.items || [])
+  const items = (Array.isArray(order.items) ? order.items : [])
     .map((item) => ({
-      name: String(item.name || item.id || '').trim(),
-      qty: Math.max(1, Math.floor(Number(item.qty) || 1)),
-      price: Number(item.price),
+      name: String(item?.name || item?.id || 'Item').trim() || 'Item',
+      qty: Math.max(1, Math.floor(Number(item?.qty) || 1)),
+      price: Number(item?.price),
     }))
-    .filter((item) => item.name && Number.isFinite(item.price) && item.price >= 0)
+    .filter((item) => Number.isFinite(item.price) && item.price >= 0)
 
-  if (!email || items.length === 0 || !order.totals) {
-    redirectOrder(orderId, 'error=email')
+  if (!email || items.length === 0 || !process.env.RESEND_API_KEY) {
+    redirectOrder(order.orderId, 'error=email')
   }
 
+  const totals = order.totals || {}
+  const subtotal = Number(totals.subtotal)
+  const shipping = Number(totals.shipping)
+  const tax = Number(totals.tax)
+  const total = Number(totals.total)
+  const fallbackSubtotal = items.reduce((sum, item) => sum + item.price * item.qty, 0)
+
   try {
-    const { sendOrderConfirmation } = await import('@/lib/email/order-confirmation.mjs')
-    await sendOrderConfirmation(
-      {
-        orderId: order.orderId,
-        email,
-        items,
-        totals: {
-          subtotal: Number(order.totals.subtotal) || 0,
-          shipping: Number(order.totals.shipping) || 0,
-          tax: order.totals.tax,
-          total: Number(order.totals.total) || 0,
-        },
-        splitFulfillment: Boolean(order.fulfillment?.splitFulfillment),
+    await sendOrderConfirmation({
+      orderId: order.orderId,
+      email,
+      items,
+      totals: {
+        subtotal: Number.isFinite(subtotal) ? subtotal : fallbackSubtotal,
+        shipping: Number.isFinite(shipping) ? shipping : 0,
+        tax: Number.isFinite(tax) ? tax : 0,
+        total: Number.isFinite(total)
+          ? total
+          : fallbackSubtotal + (Number.isFinite(shipping) ? shipping : 0),
       },
-      { idempotencyKey: `order-email:${order.orderId}:admin:${Date.now()}` },
-    )
+      splitFulfillment: Boolean(order.fulfillment?.splitFulfillment),
+    })
   } catch {
-    redirectOrder(orderId, 'error=email')
+    redirectOrder(order.orderId, 'error=email')
   }
 
   const db = await getRoom23Db()
   if (db) {
     await db.collection('orders').updateOne(
-      { orderId },
-      { $set: { emailSent: true, updatedAt: new Date() } },
+      { orderId: order.orderId },
+      {
+        $set: {
+          emailSent: true,
+          updatedAt: new Date(),
+        },
+      },
     )
   }
 
+  revalidateOrder(order.orderId, order.email)
+  redirectOrder(order.orderId, 'saved=email')
+}
+
+function redirectCoupon(code: string, query = 'saved=1'): never {
+  redirect(`/admin/coupons/${encodeURIComponent(code)}?${query}`)
+}
+
+function parseOptionalNumber(formData: FormData, name: string, integer = false) {
+  const raw = String(formData.get(name) ?? '').trim()
+  if (raw === '') return null
+  const value = integer ? Math.floor(Number(raw)) : Number(raw)
+  if (!Number.isFinite(value) || value < 0) return undefined
+  return value
+}
+
+function parseCouponFields(formData: FormData) {
+  const code = normalizeCouponCode(String(formData.get('code') || ''))
+  const type = String(formData.get('type') || '').trim()
+  const value = Number(formData.get('value'))
+  const minOrder = parseOptionalNumber(formData, 'minOrder')
+  const usageLimit = parseOptionalNumber(formData, 'usageLimit', true)
+  const expiresRaw = String(formData.get('expiresAt') || '').trim()
+  const note = String(formData.get('note') || '').trim().slice(0, 500)
+  const expiresAt = expiresRaw ? new Date(expiresRaw) : null
+
+  return {
+    code,
+    type,
+    value,
+    minOrder,
+    usageLimit,
+    expiresAt: expiresAt && !Number.isNaN(expiresAt.getTime()) ? expiresAt : null,
+    note,
+    active: String(formData.get('active') || '').toLowerCase() === 'on',
+  }
+}
+
+function couponFieldsAreValid(fields: ReturnType<typeof parseCouponFields>) {
+  if (!fields.code || fields.code.length < 3) return false
+  if (!isCouponType(fields.type)) return false
+  if (!Number.isFinite(fields.value) || fields.value <= 0) return false
+  if (fields.type === 'percent' && (fields.value < 1 || fields.value > 100)) return false
+  if (fields.minOrder === undefined || fields.usageLimit === undefined) return false
+  return true
+}
+
+export async function createCoupon(formData: FormData) {
+  await requireAdmin()
+  const fields = parseCouponFields(formData)
+  if (!couponFieldsAreValid(fields)) redirect('/admin/coupons/new?error=invalid')
+
+  const db = await getRoom23Db()
+  if (!db) redirect('/admin/coupons/new?error=db')
+
+  const existing = await db.collection('coupons').findOne({ code: fields.code })
+  if (existing) redirect('/admin/coupons/new?error=duplicate')
+
+  const type: CouponType = fields.type === 'fixed' ? 'fixed' : 'percent'
+  const now = new Date()
+  await db.collection('coupons').insertOne({
+    code: fields.code,
+    type,
+    value: fields.value,
+    minOrder: fields.minOrder,
+    usageLimit: fields.usageLimit,
+    usedCount: 0,
+    expiresAt: fields.expiresAt,
+    active: fields.active,
+    note: fields.note,
+    createdAt: now,
+    updatedAt: now,
+  })
+
+  await writeAdminAudit({
+    action: 'coupon.create',
+    entityType: 'coupon',
+    entityId: fields.code,
+    message: `Created coupon ${fields.code}`,
+    meta: { type, value: fields.value, active: fields.active },
+  })
+
   revalidateAdmin()
-  revalidatePath(`/admin/orders/${orderId}`)
-  redirectOrder(orderId, 'saved=email')
+  revalidatePath(`/admin/coupons/${fields.code}`)
+  redirect(`/admin/coupons/${encodeURIComponent(fields.code)}?saved=1`)
+}
+
+export async function updateCoupon(formData: FormData) {
+  await requireAdmin()
+  const originalCode = normalizeCouponCode(String(formData.get('originalCode') || formData.get('code') || ''))
+  const fields = parseCouponFields(formData)
+  if (!originalCode) redirect('/admin/coupons?error=missing')
+  if (!couponFieldsAreValid(fields)) redirectCoupon(originalCode, 'error=invalid')
+
+  const db = await getRoom23Db()
+  if (!db) redirectCoupon(originalCode, 'error=db')
+
+  const current = await db.collection('coupons').findOne({ code: originalCode })
+  if (!current) redirect('/admin/coupons?error=missing')
+
+  const type: CouponType = fields.type === 'fixed' ? 'fixed' : 'percent'
+  await db.collection('coupons').updateOne(
+    { code: originalCode },
+    {
+      $set: {
+        type,
+        value: fields.value,
+        minOrder: fields.minOrder,
+        usageLimit: fields.usageLimit,
+        expiresAt: fields.expiresAt,
+        active: fields.active,
+        note: fields.note,
+        updatedAt: new Date(),
+      },
+    },
+  )
+
+  await writeAdminAudit({
+    action: 'coupon.update',
+    entityType: 'coupon',
+    entityId: originalCode,
+    message: `Updated coupon ${originalCode}`,
+    meta: { type, value: fields.value, active: fields.active },
+  })
+
+  revalidateAdmin()
+  revalidatePath(`/admin/coupons/${originalCode}`)
+  redirectCoupon(originalCode)
+}
+
+export async function deactivateCoupon(formData: FormData) {
+  await requireAdmin()
+  const code = normalizeCouponCode(String(formData.get('code') || ''))
+  if (!code) redirect('/admin/coupons?error=missing')
+
+  const db = await getRoom23Db()
+  if (!db) redirect(`/admin/coupons/${encodeURIComponent(code)}?error=db`)
+
+  const current = await db.collection('coupons').findOne({ code })
+  if (!current) redirect('/admin/coupons?error=missing')
+
+  await db.collection('coupons').updateOne(
+    { code },
+    { $set: { active: false, updatedAt: new Date() } },
+  )
+
+  await writeAdminAudit({
+    action: 'coupon.deactivate',
+    entityType: 'coupon',
+    entityId: code,
+    message: `Deactivated coupon ${code}`,
+  })
+
+  revalidateAdmin()
+  revalidatePath(`/admin/coupons/${code}`)
+  if (fromList(formData)) redirect('/admin/coupons?saved=1')
+  redirectCoupon(code)
+}
+
+export async function updateStoreSettings(formData: FormData) {
+  await requireAdmin()
+
+  const shippingFlatRate = Number(formData.get('shippingFlatRate'))
+  const thresholdRaw = String(formData.get('freeShippingThreshold') ?? '').trim()
+  const freeShippingThreshold = thresholdRaw === '' ? null : Number(thresholdRaw)
+  const supportEmail = String(formData.get('supportEmail') || '').trim()
+  const supportPhone = String(formData.get('supportPhone') || '').trim()
+  const storeOpen = String(formData.get('storeOpen') || '').toLowerCase() === 'on'
+
+  if (!Number.isFinite(shippingFlatRate) || shippingFlatRate < 0) {
+    redirect('/admin/settings?error=invalid')
+  }
+  if (freeShippingThreshold != null && (!Number.isFinite(freeShippingThreshold) || freeShippingThreshold < 0)) {
+    redirect('/admin/settings?error=invalid')
+  }
+  if (!supportEmail || !supportEmail.includes('@')) {
+    redirect('/admin/settings?error=invalid')
+  }
+
+  const zones = []
+  for (let index = 0; index < SHIPPING_ZONE_SLOTS; index += 1) {
+    zones.push({
+      name: String(formData.get(`zoneName${index}`) || ''),
+      countries: String(formData.get(`zoneCountries${index}`) || ''),
+      rate: String(formData.get(`zoneRate${index}`) || ''),
+    })
+  }
+
+  const db = await getRoom23Db()
+  if (!db) redirect('/admin/settings?error=db')
+
+  await db.collection('settings').updateOne(
+    { id: STORE_SETTINGS_ID },
+    {
+      $set: {
+        id: STORE_SETTINGS_ID,
+        storeOpen,
+        supportEmail,
+        supportPhone,
+        shippingFlatRate,
+        freeShippingThreshold,
+        shippingZones: normalizeShippingZones(zones),
+        updatedAt: new Date(),
+      },
+      $setOnInsert: {
+        createdAt: new Date(),
+      },
+    },
+    { upsert: true },
+  )
+
+  await writeAdminAudit({
+    action: 'settings.update',
+    entityType: 'settings',
+    entityId: STORE_SETTINGS_ID,
+    message: 'Updated store settings',
+    meta: { storeOpen, shippingFlatRate, freeShippingThreshold, supportEmail },
+  })
+
+  revalidateAdmin()
+  redirect('/admin/settings?saved=1')
 }

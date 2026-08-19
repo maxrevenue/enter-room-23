@@ -8,6 +8,8 @@
 import { NextResponse } from 'next/server'
 import { SITE_CONFIG } from '@/config/site'
 import { listStorefrontProducts } from '@/lib/admin-catalog'
+import { incrementCouponUsage, validateCoupon } from '@/lib/admin-coupons'
+import { getStoreSettings } from '@/lib/admin-settings'
 import {
   checkoutCustomerSchema,
   computeServerTotals,
@@ -40,11 +42,19 @@ export async function POST(request) {
       return NextResponse.json({ error: 'A valid email and shipping address are required.' }, { status: 400 })
     }
 
+    const settings = await getStoreSettings()
+    if (!settings.storeOpen) {
+      return NextResponse.json({ error: 'The shop is temporarily closed.' }, { status: 403 })
+    }
+
+    const subtotal = items.reduce((sum, item) => sum + item.price * item.qty, 0)
+    const couponResult = body.appliedPromo ? await validateCoupon(body.appliedPromo, subtotal) : { ok: false }
     const totals = computeServerTotals(items, {
-      appliedPromo: body.appliedPromo,
+      discountAmount: couponResult.ok ? couponResult.discountAmount : 0,
+      discountPercent: couponResult.ok && couponResult.coupon.type === 'percent' ? couponResult.coupon.value : 0,
       shippingMethodId: body.shippingMethodId,
-      freeShippingThreshold: SITE_CONFIG.freeShippingThreshold,
-      flatShippingRate: SITE_CONFIG.flatShippingRate,
+      freeShippingThreshold: settings.freeShippingThreshold ?? SITE_CONFIG.freeShippingThreshold,
+      flatShippingRate: settings.shippingFlatRate,
     })
 
     const finalized = await finalizePaidOrder(
@@ -54,12 +64,14 @@ export async function POST(request) {
         shippingAddress: customer.data.shippingAddress,
         items,
         totals,
+        promoCode: couponResult.ok ? couponResult.coupon.code : undefined,
         idempotencyKey: body.idempotencyKey || `checkout:${orderId}`,
       },
       {
         dryRun: process.env.NODE_ENV !== 'production',
       },
     )
+    if (couponResult.ok) await incrementCouponUsage(couponResult.coupon.code)
 
     return NextResponse.json({
       success: true,

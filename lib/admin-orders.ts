@@ -13,8 +13,18 @@ export const CLOSED_ORDER_STATUSES = [
   'completed',
 ]
 
-export const ORDER_LIST_FILTERS = ['all', 'open', 'fulfilled', 'closed'] as const
-export type OrderListFilter = (typeof ORDER_LIST_FILTERS)[number]
+export const FULFILLED_LIKE_STATUSES = [
+  'fulfilled',
+  'shipped',
+  'delivered',
+  'complete',
+  'completed',
+] as const
+
+export const REFUNDED_CANCELLED_STATUSES = ['refunded', 'cancelled', 'canceled'] as const
+
+export const ORDER_FILTERS = ['all', 'open', 'fulfilled', 'closed'] as const
+export type OrderFilter = (typeof ORDER_FILTERS)[number]
 
 export type AdminOrder = {
   orderId: string
@@ -33,157 +43,264 @@ export type AdminOrder = {
   totals?: { subtotal?: number; shipping?: number; tax?: number; total?: number } | null
   status?: string
   notes?: string
-  adminNotes?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   emailSent?: boolean
   adminReview?: boolean
   fulfilled?: boolean
+  inventoryDecremented?: boolean
   fulfillment?: { status?: string; splitFulfillment?: boolean } | null
 }
+
+const STATUS_LABELS: Record<string, string> = {
+  paid: 'Paid',
+  fulfilled: 'Fulfilled',
+  refunded: 'Refunded',
+  cancelled: 'Cancelled',
+  canceled: 'Cancelled',
+  shipped: 'Shipped',
+  delivered: 'Delivered',
+  complete: 'Complete',
+  completed: 'Complete',
+  needs_review: 'Needs review',
+  split: 'Split',
+  routed: 'Routed',
+}
+
+const BADGE_BASE =
+  'inline-flex border px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.16em]'
+
+const STATUS_BADGE_CLASS: Record<string, string> = {
+  paid: `${BADGE_BASE} border-zinc-500 text-zinc-200`,
+  fulfilled: `${BADGE_BASE} border-zinc-300 text-zinc-100`,
+  refunded: `${BADGE_BASE} border-zinc-600 text-zinc-400`,
+  cancelled: `${BADGE_BASE} border-zinc-700 text-zinc-500`,
+  canceled: `${BADGE_BASE} border-zinc-700 text-zinc-500`,
+  shipped: `${BADGE_BASE} border-zinc-400 text-zinc-200`,
+  delivered: `${BADGE_BASE} border-zinc-400 text-zinc-200`,
+  complete: `${BADGE_BASE} border-zinc-400 text-zinc-200`,
+  completed: `${BADGE_BASE} border-zinc-400 text-zinc-200`,
+}
+
+const DEFAULT_BADGE_CLASS = `${BADGE_BASE} border-zinc-700 text-zinc-400`
 
 export function isOrderStatus(value: string): value is OrderStatus {
   return (ORDER_STATUSES as readonly string[]).includes(value)
 }
 
-export function normalizeOrderFilter(value?: string): OrderListFilter {
-  if (value === 'open' || value === 'fulfilled' || value === 'closed') return value
+export function parseOrderFilter(value?: string | string[] | null): OrderFilter {
+  const raw = Array.isArray(value) ? value[0] : value
+  if (raw && (ORDER_FILTERS as readonly string[]).includes(raw)) return raw as OrderFilter
   return 'all'
 }
 
-export function isClosedOrderStatus(status?: string) {
-  return CLOSED_ORDER_STATUSES.includes(String(status || '').toLowerCase())
+export function parseOrderSearch(value?: string | string[] | null) {
+  const raw = Array.isArray(value) ? value[0] : value
+  return String(raw || '').trim().slice(0, 80)
 }
 
-export function isOrderFulfilled(order: AdminOrder) {
-  const status = String(order.status || '').toLowerCase()
+export function escapeRegex(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
+export function orderMatchesSearch(order: Pick<AdminOrder, 'orderId' | 'email' | 'shippingAddress'>, q?: string) {
+  const needle = String(q || '').trim().toLowerCase()
+  if (!needle) return true
+  const name = String(order.shippingAddress?.name || '').toLowerCase()
   return (
-    order.fulfilled === true ||
-    status === 'fulfilled' ||
-    status === 'shipped' ||
-    status === 'delivered' ||
-    String(order.fulfillment?.status || '').toLowerCase() === 'fulfilled'
+    String(order.orderId || '').toLowerCase().includes(needle) ||
+    String(order.email || '').toLowerCase().includes(needle) ||
+    name.includes(needle)
   )
 }
 
-export function isOrderOpen(order: AdminOrder) {
+export function orderSearchQuery(q?: string) {
+  const needle = String(q || '').trim()
+  if (!needle) return {}
+  const regex = { $regex: escapeRegex(needle), $options: 'i' }
+  return {
+    $or: [{ orderId: regex }, { email: regex }, { 'shippingAddress.name': regex }],
+  }
+}
+
+export function buildOrdersListQuery(filter: OrderFilter = 'all', q = '') {
+  const filterQuery = orderFilterQuery(filter)
+  const searchQuery = orderSearchQuery(q)
+  if (!Object.keys(searchQuery).length) return filterQuery
+  if (!Object.keys(filterQuery).length) return searchQuery
+  return { $and: [filterQuery, searchQuery] }
+}
+
+export function adminOrdersHref(filter: OrderFilter = 'all', q = '') {
+  const params = new URLSearchParams()
+  if (filter !== 'all') params.set('filter', filter)
+  if (String(q || '').trim()) params.set('q', String(q).trim())
+  const query = params.toString()
+  return query ? `/admin/orders?${query}` : '/admin/orders'
+}
+
+export function normalizeOrderStatus(status?: string) {
+  return String(status || 'paid').trim().toLowerCase() || 'paid'
+}
+
+export function isClosedOrderStatus(status?: string) {
+  return CLOSED_ORDER_STATUSES.includes(normalizeOrderStatus(status))
+}
+
+export function isOrderFulfilled(order: Pick<AdminOrder, 'status' | 'fulfilled' | 'fulfillment'>) {
+  if (order.fulfilled === true) return true
+  const status = normalizeOrderStatus(order.status)
+  if ((FULFILLED_LIKE_STATUSES as readonly string[]).includes(status)) return true
+  return normalizeOrderStatus(order.fulfillment?.status) === 'fulfilled'
+}
+
+export function isOpenOrder(order: Pick<AdminOrder, 'status' | 'fulfilled' | 'fulfillment'>) {
   return !isClosedOrderStatus(order.status) && order.fulfilled !== true
 }
 
-export function orderItemCount(order: AdminOrder) {
-  if (!Array.isArray(order.items)) return 0
-  return order.items.reduce((sum, item) => sum + Math.max(1, Math.floor(Number(item.qty) || 1)), 0)
+export function isRefundedOrCancelled(order: Pick<AdminOrder, 'status'>) {
+  return (REFUNDED_CANCELLED_STATUSES as readonly string[]).includes(normalizeOrderStatus(order.status))
 }
 
-export function orderNotes(order: AdminOrder) {
-  return String(order.notes || order.adminNotes || '')
+export function coerceOrderStatus(status?: string): OrderStatus {
+  const value = normalizeOrderStatus(status)
+  if (isOrderStatus(value)) return value
+  if ((FULFILLED_LIKE_STATUSES as readonly string[]).includes(value)) return 'fulfilled'
+  if ((REFUNDED_CANCELLED_STATUSES as readonly string[]).includes(value)) return 'cancelled'
+  return 'paid'
 }
 
-export function formatOrderMoney(value?: number) {
+export function orderStatusLabel(status?: string) {
+  const value = normalizeOrderStatus(status)
+  if (STATUS_LABELS[value]) return STATUS_LABELS[value]
+  if (!status) return 'Paid'
+  return value.replace(/[_-]+/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase())
+}
+
+export function orderStatusBadgeClass(status?: string) {
+  return STATUS_BADGE_CLASS[normalizeOrderStatus(status)] || DEFAULT_BADGE_CLASS
+}
+
+export function orderItemCount(order: Pick<AdminOrder, 'items'>) {
+  if (!Array.isArray(order.items) || order.items.length === 0) return 0
+  return order.items.reduce((sum, item) => {
+    const qty = Number(item?.qty)
+    return sum + (Number.isFinite(qty) && qty > 0 ? qty : 1)
+  }, 0)
+}
+
+export function formatOrderMoney(value?: number | null) {
   const amount = Number(value)
   if (!Number.isFinite(amount)) return '—'
   return `$${amount.toFixed(2)}`
 }
 
-export function formatOrderDate(value?: Date | string, withTime = false) {
+export function formatOrderDate(value?: Date | string | null) {
   if (!value) return '—'
   const date = value instanceof Date ? value : new Date(value)
   if (Number.isNaN(date.getTime())) return '—'
-  if (withTime) {
-    return date.toLocaleString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit',
-    })
-  }
   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 }
 
-export function orderStatusLabel(status?: string) {
-  const value = String(status || 'paid').trim() || 'paid'
-  return value.replace(/-/g, ' ')
+export function formatOrderDateTime(value?: Date | string | null) {
+  if (!value) return '—'
+  const date = value instanceof Date ? value : new Date(value)
+  if (Number.isNaN(date.getTime())) return '—'
+  return date.toLocaleString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+  })
 }
 
-export function orderStatusClass(status?: string) {
-  const value = String(status || 'paid').toLowerCase()
-  if (
-    value === 'fulfilled' ||
-    value === 'shipped' ||
-    value === 'delivered' ||
-    value === 'complete' ||
-    value === 'completed'
-  ) {
-    return 'border-zinc-200 bg-zinc-100 text-zinc-950'
-  }
-  if (value === 'cancelled' || value === 'refunded') {
-    return 'border-zinc-800 bg-zinc-950 text-zinc-500'
-  }
-  return 'border-zinc-700 bg-zinc-900 text-zinc-200'
-}
-
-export function orderStatusPatch(status: OrderStatus) {
-  const now = new Date()
-  if (status === 'fulfilled') {
-    return {
-      status,
-      fulfilled: true,
-      fulfillment: { status: 'fulfilled' },
-      updatedAt: now,
-    }
-  }
-  if (status === 'refunded' || status === 'cancelled') {
-    return {
-      status,
-      fulfilled: true,
-      fulfillment: { status },
-      updatedAt: now,
-    }
-  }
+export function openOrdersQuery() {
   return {
-    status,
-    fulfilled: false,
-    fulfillment: { status: 'open' },
-    updatedAt: now,
+    $nor: [{ status: { $in: CLOSED_ORDER_STATUSES } }, { fulfilled: true }],
   }
 }
 
-function orderFilterQuery(filter: OrderListFilter) {
-  if (filter === 'open') {
-    return {
-      $nor: [{ status: { $in: CLOSED_ORDER_STATUSES } }, { fulfilled: true }],
-    }
-  }
+export function orderFilterQuery(filter: OrderFilter = 'all') {
+  if (filter === 'open') return openOrdersQuery()
   if (filter === 'fulfilled') {
     return {
-      $or: [
-        { status: 'fulfilled' },
-        { status: { $in: ['shipped', 'delivered', 'complete', 'completed'] } },
-        { 'fulfillment.status': 'fulfilled' },
-        { fulfilled: true, status: { $nin: ['refunded', 'cancelled'] } },
-      ],
+      $or: [{ status: { $in: [...FULFILLED_LIKE_STATUSES] } }, { fulfilled: true }],
     }
   }
   if (filter === 'closed') {
-    return { status: { $in: ['refunded', 'cancelled'] } }
+    return { status: { $in: [...REFUNDED_CANCELLED_STATUSES] } }
   }
   return {}
 }
 
-export async function listAdminOrders(limit = 80, filter: OrderListFilter = 'all'): Promise<AdminOrder[]> {
+export function shouldDecrementInventory(order: Pick<AdminOrder, 'status' | 'fulfilled' | 'fulfillment' | 'inventoryDecremented'>, nextStatus: string) {
+  if (nextStatus !== 'fulfilled') return false
+  if (order.inventoryDecremented === true) return false
+  if (isOrderFulfilled(order)) return false
+  return true
+}
+
+export function nextQuantityAfterDecrement(current: number | null | undefined, orderedQty: number) {
+  if (typeof current !== 'number' || !Number.isFinite(current)) return null
+  const qty = Math.max(1, Math.floor(Number(orderedQty) || 1))
+  return Math.max(0, Math.floor(current) - qty)
+}
+
+export function buildOrderStatusUpdate(status: OrderStatus) {
+  const now = new Date()
+  const update: Record<string, unknown> = {
+    status,
+    fulfilled: status === 'fulfilled',
+    updatedAt: now,
+  }
+
+  if (status === 'fulfilled') {
+    update['fulfillment.status'] = 'fulfilled'
+  }
+
+  if (status === 'refunded' || status === 'cancelled') {
+    update.fulfilled = false
+  }
+
+  return update
+}
+
+export function orderLineTotal(item?: { qty?: number; price?: number }) {
+  const qty = Number(item?.qty)
+  const price = Number(item?.price)
+  const safeQty = Number.isFinite(qty) && qty > 0 ? qty : 1
+  if (!Number.isFinite(price)) return null
+  return safeQty * price
+}
+
+export async function listAdminOrders(
+  filterOrLimit: OrderFilter | number = 'all',
+  limit = 100,
+  q = '',
+): Promise<AdminOrder[]> {
+  const filter = typeof filterOrLimit === 'number' ? 'all' : filterOrLimit
+  const cap = typeof filterOrLimit === 'number' ? filterOrLimit : limit
+  const search = typeof filterOrLimit === 'number' ? '' : q
   const db = await getRoom23Db()
   if (!db) return []
   return db
     .collection<AdminOrder>('orders')
-    .find(orderFilterQuery(filter))
+    .find(buildOrdersListQuery(filter, search))
     .sort({ createdAt: -1 })
-    .limit(limit)
+    .limit(cap)
     .toArray()
 }
 
 export async function listRecentOpenOrders(limit = 5): Promise<AdminOrder[]> {
-  return listAdminOrders(limit, 'open')
+  const db = await getRoom23Db()
+  if (!db) return []
+  return db
+    .collection<AdminOrder>('orders')
+    .find(openOrdersQuery())
+    .sort({ createdAt: -1 })
+    .limit(limit)
+    .toArray()
 }
 
 export async function getAdminOrder(orderId: string): Promise<AdminOrder | null> {
@@ -195,7 +312,5 @@ export async function getAdminOrder(orderId: string): Promise<AdminOrder | null>
 export async function countOpenOrders(): Promise<number> {
   const db = await getRoom23Db()
   if (!db) return 0
-  return db.collection('orders').countDocuments({
-    $nor: [{ status: { $in: CLOSED_ORDER_STATUSES } }, { fulfilled: true }],
-  })
+  return db.collection('orders').countDocuments(openOrdersQuery())
 }
