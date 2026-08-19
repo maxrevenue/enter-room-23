@@ -9,6 +9,7 @@ import {
 } from '@/app/admin/actions'
 import { isAdminAuthenticated } from '@/lib/admin-auth'
 import { resolveAdminPassword } from '@/lib/admin-password.server'
+import { listAdminProducts } from '@/lib/admin-catalog'
 import { adminCustomerHref } from '@/lib/admin-customers'
 import {
   coerceOrderStatus,
@@ -21,6 +22,12 @@ import {
   orderStatusBadgeClass,
   orderStatusLabel,
 } from '@/lib/admin-orders'
+import {
+  buildProductsByIdMap,
+  collectOrderProductIds,
+  getOrderRiskFlags,
+  riskFlagChipClass,
+} from '@/lib/admin-risk'
 
 export const dynamic = 'force-dynamic'
 
@@ -68,6 +75,10 @@ export default async function AdminOrderDetailPage({
   const order = await getAdminOrder(decodeURIComponent(id))
   if (!order) notFound()
 
+  const [products] = await Promise.all([listAdminProducts()])
+  const productsById = buildProductsByIdMap(products, collectOrderProductIds([order]))
+  const riskFlags = getOrderRiskFlags(order, productsById)
+
   const address = order.shippingAddress
   const items = Array.isArray(order.items) ? order.items : []
   const currentStatus = coerceOrderStatus(order.status)
@@ -87,6 +98,16 @@ export default async function AdminOrderDetailPage({
         <h1 className="font-serif text-3xl tracking-tight text-zinc-100">{order.orderId}</h1>
         <span className={orderStatusBadgeClass(order.status)}>{orderStatusLabel(order.status)}</span>
       </div>
+
+      {riskFlags.length ? (
+        <div className="mt-4 flex flex-wrap gap-2">
+          {riskFlags.map((flag) => (
+            <span key={flag.id} className={riskFlagChipClass(flag.severity)}>
+              {flag.label}
+            </span>
+          ))}
+        </div>
+      ) : null}
 
       {flash ? (
         <p className="mt-6 text-sm text-zinc-400" role={flash.role}>

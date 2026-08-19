@@ -195,7 +195,7 @@ describe('admin phase 8 customers and order search', () => {
     assert.match(actions, /export async function resendOrderEmail/)
     assert.match(detail, /resendOrderEmail/)
     assert.match(detail, /adminCustomerHref/)
-    assert.match(read('app/admin/page.tsx'), /href="\/admin\/customers"/)
+    assert.match(read('app/admin/page.tsx'), /\/admin\/customers/)
     assert.doesNotMatch(read('app/admin/customers/page.tsx'), /useState/)
     assert.doesNotMatch(ordersPage, /useState/)
   })

@@ -3,6 +3,7 @@ import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { isAdminAuthenticated } from '@/lib/admin-auth'
 import { resolveAdminPassword } from '@/lib/admin-password.server'
+import { listAdminProducts } from '@/lib/admin-catalog'
 import { adminCustomerHref } from '@/lib/admin-customers'
 import {
   adminOrdersHref,
@@ -17,6 +18,12 @@ import {
   parseOrderSearch,
   type OrderFilter,
 } from '@/lib/admin-orders'
+import {
+  buildProductsByIdMap,
+  collectOrderProductIds,
+  getOrderRiskFlags,
+  riskFlagChipClass,
+} from '@/lib/admin-risk'
 
 export const dynamic = 'force-dynamic'
 
@@ -42,7 +49,9 @@ export default async function AdminOrdersPage({
   const params = await searchParams
   const filter = parseOrderFilter(params.filter)
   const q = parseOrderSearch(params.q)
-  const orders = await listAdminOrders(filter, 100, q)
+  const [orders, products] = await Promise.all([listAdminOrders(filter, 100, q), listAdminProducts()])
+  const productsById = buildProductsByIdMap(products, collectOrderProductIds(orders))
+  const now = new Date()
 
   return (
     <section>
@@ -111,7 +120,7 @@ export default async function AdminOrdersPage({
         </p>
       ) : (
         <div className="overflow-x-auto border border-zinc-800">
-          <table className="w-full min-w-[880px] text-left text-sm">
+          <table className="w-full min-w-[960px] text-left text-sm">
             <thead className="border-b border-zinc-800 bg-zinc-900 text-[10px] uppercase tracking-[0.18em] text-zinc-500">
               <tr>
                 <th className="px-4 py-3 font-medium">Order</th>
@@ -120,42 +129,59 @@ export default async function AdminOrdersPage({
                 <th className="px-4 py-3 font-medium">Items</th>
                 <th className="px-4 py-3 font-medium">Total</th>
                 <th className="px-4 py-3 font-medium">Status</th>
+                <th className="px-4 py-3 font-medium">Flags</th>
                 <th className="px-4 py-3 font-medium">Fulfilled</th>
                 <th className="px-4 py-3 font-medium" />
               </tr>
             </thead>
             <tbody>
-              {orders.map((order) => (
-                <tr key={order.orderId} className="border-b border-zinc-800 last:border-b-0">
-                  <td className="px-4 py-4 font-medium text-zinc-100">{order.orderId}</td>
-                  <td className="px-4 py-4 text-zinc-400">
-                    {order.email ? (
-                      <Link href={adminCustomerHref(order.email)} className="hover:text-zinc-100">
-                        {order.email}
+              {orders.map((order) => {
+                const flags = getOrderRiskFlags(order, productsById, now)
+                return (
+                  <tr key={order.orderId} className="border-b border-zinc-800 last:border-b-0">
+                    <td className="px-4 py-4 font-medium text-zinc-100">{order.orderId}</td>
+                    <td className="px-4 py-4 text-zinc-400">
+                      {order.email ? (
+                        <Link href={adminCustomerHref(order.email)} className="hover:text-zinc-100">
+                          {order.email}
+                        </Link>
+                      ) : (
+                        '—'
+                      )}
+                    </td>
+                    <td className="px-4 py-4 text-zinc-500">{formatOrderDate(order.createdAt)}</td>
+                    <td className="px-4 py-4 text-zinc-300">{orderItemCount(order)}</td>
+                    <td className="px-4 py-4 text-zinc-300">{formatOrderMoney(order.totals?.total)}</td>
+                    <td className="px-4 py-4">
+                      <span className={orderStatusBadgeClass(order.status)}>
+                        {orderStatusLabel(order.status)}
+                      </span>
+                    </td>
+                    <td className="px-4 py-4">
+                      {flags.length ? (
+                        <div className="flex max-w-[220px] flex-wrap gap-1.5">
+                          {flags.map((flag) => (
+                            <span key={flag.id} className={riskFlagChipClass(flag.severity)}>
+                              {flag.label}
+                            </span>
+                          ))}
+                        </div>
+                      ) : (
+                        <span className="text-zinc-600">—</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-4 text-zinc-400">{isOrderFulfilled(order) ? 'Yes' : '—'}</td>
+                    <td className="px-4 py-4 text-right">
+                      <Link
+                        href={`/admin/orders/${encodeURIComponent(order.orderId)}`}
+                        className="text-[11px] font-medium uppercase tracking-[0.18em] text-zinc-400 hover:text-zinc-100"
+                      >
+                        View
                       </Link>
-                    ) : (
-                      '—'
-                    )}
-                  </td>
-                  <td className="px-4 py-4 text-zinc-500">{formatOrderDate(order.createdAt)}</td>
-                  <td className="px-4 py-4 text-zinc-300">{orderItemCount(order)}</td>
-                  <td className="px-4 py-4 text-zinc-300">{formatOrderMoney(order.totals?.total)}</td>
-                  <td className="px-4 py-4">
-                    <span className={orderStatusBadgeClass(order.status)}>
-                      {orderStatusLabel(order.status)}
-                    </span>
-                  </td>
-                  <td className="px-4 py-4 text-zinc-400">{isOrderFulfilled(order) ? 'Yes' : '—'}</td>
-                  <td className="px-4 py-4 text-right">
-                    <Link
-                      href={`/admin/orders/${encodeURIComponent(order.orderId)}`}
-                      className="text-[11px] font-medium uppercase tracking-[0.18em] text-zinc-400 hover:text-zinc-100"
-                    >
-                      View
-                    </Link>
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                  </tr>
+                )
+              })}
             </tbody>
           </table>
         </div>

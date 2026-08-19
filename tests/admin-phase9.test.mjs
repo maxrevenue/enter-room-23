@@ -267,10 +267,10 @@ describe('admin phase 9 analytics, csv, and audit', () => {
 
     assert.match(layout, /href: '\/admin\/analytics'/)
     assert.match(layout, /href: '\/admin\/audit'/)
-    assert.match(dashboard, /href="\/admin\/analytics"/)
-    assert.match(dashboard, /href="\/admin\/audit"/)
-    assert.match(dashboard, /href="\/admin\/export\/orders"/)
-    assert.match(dashboard, /href="\/admin\/export\/products"/)
+    assert.match(dashboard, /\/admin\/analytics/)
+    assert.match(dashboard, /\/admin\/audit/)
+    assert.match(dashboard, /getAdminActionInbox/)
+    assert.match(dashboard, /Needs attention/)
 
     assert.match(analytics, /getAdminAnalytics/)
     assert.match(analytics, /Top products/)

@@ -266,15 +266,17 @@ export function productsToCsv(products: CatalogProduct[]) {
 
 const EMPTY_WINDOW: AnalyticsWindowSnapshot = { orderCount: 0, revenue: 0 }
 
-export function emptyAdminAnalytics(): AdminAnalytics {
+export function emptyAdminAnalytics(
+  counts: Pick<AdminAnalytics, 'openOrders' | 'lowStock'> = { openOrders: 0, lowStock: 0 },
+): AdminAnalytics {
   return {
     windows: {
       today: { ...EMPTY_WINDOW },
       last7: { ...EMPTY_WINDOW },
       last30: { ...EMPTY_WINDOW },
     },
-    openOrders: 0,
-    lowStock: 0,
+    openOrders: counts.openOrders,
+    lowStock: counts.lowStock,
     topProducts: [],
     recentRefunds: [],
   }
@@ -287,7 +289,7 @@ export async function getAdminAnalytics(now = new Date()): Promise<AdminAnalytic
   const [openOrders, lowStock] = await Promise.all([countOpenOrders(), countLowStockProducts()])
 
   if (!db) {
-    return { ...emptyAdminAnalytics(), openOrders, lowStock }
+    return emptyAdminAnalytics({ openOrders, lowStock })
   }
 
   const [recentOrders, recentRefunds] = await Promise.all([

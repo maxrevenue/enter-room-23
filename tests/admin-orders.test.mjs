@@ -67,16 +67,15 @@ describe('admin phase 4 orders', () => {
     assert.doesNotMatch(detail, /adminNotes/)
   })
 
-  it('adds recent open orders and low-stock lists to the dashboard', () => {
+  it('adds action inbox and attention lists to the dashboard', () => {
     const dashboard = read('app/admin/page.tsx')
-    assert.match(dashboard, /countOpenOrders/)
-    assert.match(dashboard, /countLowStockProducts/)
+    assert.match(dashboard, /getAdminAnalytics/)
+    assert.match(dashboard, /getAdminActionInbox/)
     assert.match(dashboard, /getResolvedProductOfTheMonth/)
-    assert.match(dashboard, /listRecentOpenOrders\(5\)/)
-    assert.match(dashboard, /Recent open orders/)
-    assert.match(dashboard, /Low stock products/)
-    assert.match(dashboard, /\/admin\/orders\/\$\{encodeURIComponent\(order\.orderId\)\}/)
-    assert.match(dashboard, /\/admin\/products\/\$\{encodeURIComponent\(product\.id\)\}/)
+    assert.match(dashboard, /Needs attention/)
+    assert.match(dashboard, /Action inbox/)
+    assert.match(dashboard, /\/admin\/orders\/\$\{encodeURIComponent\(entry\.order\.orderId\)\}|entry\.href/)
+    assert.match(dashboard, /\/admin\/products\/\$\{encodeURIComponent\(product\.id\)\}|entry\.href/)
     assert.doesNotMatch(dashboard, /recharts/i)
   })
 })

@@ -7,18 +7,11 @@ import { getAdminAnalytics } from '@/lib/admin-analytics'
 import {
   getResolvedProductOfTheMonth,
   isArchived,
-  isLowStock,
   listAdminProducts,
-  quantityOf,
 } from '@/lib/admin-catalog'
 import { couponExpiryDate, listAdminCoupons } from '@/lib/admin-coupons'
-import {
-  formatOrderDate,
-  formatOrderMoney,
-  listRecentOpenOrders,
-  orderStatusBadgeClass,
-  orderStatusLabel,
-} from '@/lib/admin-orders'
+import { formatOrderDate, formatOrderMoney, orderStatusLabel } from '@/lib/admin-orders'
+import { getAdminActionInbox, riskFlagChipClass } from '@/lib/admin-risk'
 import { getStoreSettings } from '@/lib/admin-settings'
 
 export const dynamic = 'force-dynamic'
@@ -39,25 +32,24 @@ export default async function AdminDashboardPage() {
   }
 
   const now = new Date()
-  const [products, productOfTheMonth, recentOpenOrders, analytics, settings, coupons] = await Promise.all([
+  const [products, productOfTheMonth, analytics, settings, coupons] = await Promise.all([
     listAdminProducts(),
     getResolvedProductOfTheMonth(),
-    listRecentOpenOrders(8),
     getAdminAnalytics(now),
     getStoreSettings(),
     listAdminCoupons(),
   ])
 
+  const inbox = await getAdminActionInbox(products, now)
+
   const activeCount = products.filter((product) => !isArchived(product)).length
-  const lowStockProducts = products
-    .filter((product) => !isArchived(product) && (isLowStock(product) || quantityOf(product) === 0))
-    .sort((a, b) => (quantityOf(a) ?? 9999) - (quantityOf(b) ?? 9999))
-    .slice(0, 8)
   const activeCouponCount = coupons.filter((coupon) => {
     if (coupon.active === false) return false
     const expires = couponExpiryDate(coupon.expiresAt)
     return !expires || expires.getTime() >= now.getTime()
   }).length
+
+  const inboxCount = inbox.orders.length + inbox.products.length + inbox.coupons.length
 
   const stats = [
     { label: 'Products', value: String(activeCount) },
@@ -106,6 +98,123 @@ export default async function AdminDashboardPage() {
         </div>
       </dl>
 
+      <div className="mt-12 border border-zinc-800 bg-zinc-900">
+        <div className="flex flex-wrap items-end justify-between gap-4 border-b border-zinc-800 px-6 py-5">
+          <div>
+            <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-zinc-500">Action inbox</p>
+            <h2 className="mt-2 font-serif text-2xl text-zinc-100">Needs attention</h2>
+            <p className="mt-2 text-sm text-zinc-500">
+              {inboxCount === 0
+                ? 'Nothing flagged right now.'
+                : `${inboxCount} item${inboxCount === 1 ? '' : 's'} across orders, inventory, and coupons.`}
+            </p>
+          </div>
+        </div>
+
+        {inboxCount === 0 ? (
+          <p className="px-6 py-10 text-sm text-zinc-400">Queue is clear. Open orders, stock, and coupons look healthy.</p>
+        ) : (
+          <div className="divide-y divide-zinc-800">
+            {inbox.orders.length > 0 ? (
+              <section>
+                <div className="flex items-center justify-between gap-4 px-6 py-4">
+                  <h3 className="text-[10px] font-medium uppercase tracking-[0.22em] text-zinc-500">Orders</h3>
+                  <Link
+                    href="/admin/orders?filter=open"
+                    className="text-[10px] font-medium uppercase tracking-[0.18em] text-zinc-500 hover:text-zinc-200"
+                  >
+                    View all
+                  </Link>
+                </div>
+                <ul>
+                  {inbox.orders.map((entry) => (
+                    <li key={entry.order.orderId} className="border-t border-zinc-800">
+                      <Link
+                        href={entry.href}
+                        className="block px-6 py-4 hover:bg-zinc-950"
+                      >
+                        <div className="flex flex-wrap items-start justify-between gap-4">
+                          <div>
+                            <p className="text-sm text-zinc-100">{entry.order.orderId}</p>
+                            <p className="mt-1 text-xs text-zinc-500">
+                              {entry.order.email || 'No email'} · {formatOrderDate(entry.order.createdAt)} ·{' '}
+                              {orderStatusLabel(entry.order.status)} · {formatOrderMoney(entry.order.totals?.total)}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          {entry.flags.map((flag) => (
+                            <span key={flag.id} className={riskFlagChipClass(flag.severity)}>
+                              {flag.label}
+                            </span>
+                          ))}
+                        </div>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ) : null}
+
+            {inbox.products.length > 0 ? (
+              <section>
+                <div className="flex items-center justify-between gap-4 px-6 py-4">
+                  <h3 className="text-[10px] font-medium uppercase tracking-[0.22em] text-zinc-500">Inventory</h3>
+                  <Link
+                    href="/admin/products"
+                    className="text-[10px] font-medium uppercase tracking-[0.18em] text-zinc-500 hover:text-zinc-200"
+                  >
+                    View all
+                  </Link>
+                </div>
+                <ul>
+                  {inbox.products.map((entry) => (
+                    <li key={entry.product.id} className="border-t border-zinc-800">
+                      <Link href={entry.href} className="flex items-center justify-between gap-4 px-6 py-4 hover:bg-zinc-950">
+                        <div>
+                          <p className="text-sm text-zinc-100">{entry.label}</p>
+                          <p className="mt-1 text-xs text-zinc-500">Restock before fulfillment slips</p>
+                        </div>
+                        <span className={riskFlagChipClass(entry.detail === 'Out of stock' ? 'high' : 'medium')}>
+                          {entry.detail}
+                        </span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ) : null}
+
+            {inbox.coupons.length > 0 ? (
+              <section>
+                <div className="flex items-center justify-between gap-4 px-6 py-4">
+                  <h3 className="text-[10px] font-medium uppercase tracking-[0.22em] text-zinc-500">Coupons</h3>
+                  <Link
+                    href="/admin/coupons"
+                    className="text-[10px] font-medium uppercase tracking-[0.18em] text-zinc-500 hover:text-zinc-200"
+                  >
+                    View all
+                  </Link>
+                </div>
+                <ul>
+                  {inbox.coupons.map((entry) => (
+                    <li key={entry.coupon.code} className="border-t border-zinc-800">
+                      <Link href={entry.href} className="flex items-center justify-between gap-4 px-6 py-4 hover:bg-zinc-950">
+                        <div>
+                          <p className="text-sm text-zinc-100">{entry.label}</p>
+                          <p className="mt-1 text-xs text-zinc-500">Expiring within 7 days</p>
+                        </div>
+                        <span className={riskFlagChipClass('low')}>{entry.detail}</span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ) : null}
+          </div>
+        )}
+      </div>
+
       <div className="mt-12 border border-zinc-800 bg-zinc-900 px-6 py-8">
         <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-zinc-500">Product of the Month</p>
         {productOfTheMonth ? (
@@ -129,87 +238,6 @@ export default async function AdminDashboardPage() {
             </Link>
           </div>
         )}
-      </div>
-
-      <div className="mt-12 grid grid-cols-1 gap-8 lg:grid-cols-2">
-        <div className="border border-zinc-800">
-          <div className="flex items-end justify-between gap-4 border-b border-zinc-800 px-6 py-5">
-            <div>
-              <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-zinc-500">Queue</p>
-              <h2 className="mt-2 font-serif text-xl text-zinc-100">Needs attention</h2>
-            </div>
-            <Link
-              href="/admin/orders?filter=open"
-              className="text-[10px] font-medium uppercase tracking-[0.18em] text-zinc-500 hover:text-zinc-200"
-            >
-              View all
-            </Link>
-          </div>
-          {recentOpenOrders.length === 0 ? (
-            <p className="px-6 py-8 text-sm text-zinc-400">No open orders.</p>
-          ) : (
-            <ul>
-              {recentOpenOrders.map((order) => (
-                <li key={order.orderId} className="border-b border-zinc-800 last:border-b-0">
-                  <Link
-                    href={`/admin/orders/${encodeURIComponent(order.orderId)}`}
-                    className="flex items-center justify-between gap-4 px-6 py-4 hover:bg-zinc-900"
-                  >
-                    <div>
-                      <p className="text-sm text-zinc-100">{order.orderId}</p>
-                      <p className="mt-1 text-xs text-zinc-500">
-                        {order.email || '—'} · {formatOrderDate(order.createdAt)}
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm text-zinc-300">{formatOrderMoney(order.totals?.total)}</p>
-                      <span className={`mt-2 ${orderStatusBadgeClass(order.status)}`}>
-                        {orderStatusLabel(order.status)}
-                      </span>
-                    </div>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-
-        <div className="border border-zinc-800">
-          <div className="flex items-end justify-between gap-4 border-b border-zinc-800 px-6 py-5">
-            <div>
-              <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-zinc-500">Inventory</p>
-              <h2 className="mt-2 font-serif text-xl text-zinc-100">Low stock</h2>
-            </div>
-            <Link
-              href="/admin/products"
-              className="text-[10px] font-medium uppercase tracking-[0.18em] text-zinc-500 hover:text-zinc-200"
-            >
-              View all
-            </Link>
-          </div>
-          {lowStockProducts.length === 0 ? (
-            <p className="px-6 py-8 text-sm text-zinc-400">No low-stock products.</p>
-          ) : (
-            <ul>
-              {lowStockProducts.map((product) => {
-                const quantity = quantityOf(product)
-                return (
-                  <li key={product.id} className="border-b border-zinc-800 last:border-b-0">
-                    <Link
-                      href={`/admin/products/${encodeURIComponent(product.id)}`}
-                      className="flex items-center justify-between gap-4 px-6 py-4 hover:bg-zinc-900"
-                    >
-                      <p className="text-sm text-zinc-100">{product.name}</p>
-                      <p className="text-xs uppercase tracking-[0.16em] text-zinc-500">
-                        {quantity == null ? '—' : `${quantity} left`}
-                      </p>
-                    </Link>
-                  </li>
-                )
-              })}
-            </ul>
-          )}
-        </div>
       </div>
     </section>
   )
