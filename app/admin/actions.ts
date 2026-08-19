@@ -39,6 +39,7 @@ import {
   nextQuantityAfterDecrement,
   shouldDecrementInventory,
 } from '@/lib/admin-orders'
+import { writeAdminAudit } from '@/lib/admin-audit'
 import { sendOrderConfirmation } from '@/lib/email/order-confirmation'
 
 async function requireAdmin() {
@@ -52,6 +53,8 @@ function revalidateAdmin() {
   revalidatePath('/admin/orders')
   revalidatePath('/admin/customers')
   revalidatePath('/admin/coupons')
+  revalidatePath('/admin/analytics')
+  revalidatePath('/admin/audit')
   revalidatePath('/admin/settings')
   revalidatePath('/')
   revalidatePath('/shop')
@@ -383,6 +386,27 @@ export async function updateProduct(formData: FormData) {
     await applyExclusiveProductOfTheMonth(id)
   }
 
+  const priceChanged = Number(product.price) !== Number(fields.price)
+  const wasHidden = isArchived(product)
+  if (priceChanged) {
+    await writeAdminAudit({
+      action: 'product.price',
+      entityType: 'product',
+      entityId: id,
+      message: `Price for ${fields.name} changed from ${Number(product.price).toFixed(2)} to ${Number(fields.price).toFixed(2)}`,
+      meta: { from: product.price, to: fields.price, name: fields.name },
+    })
+  }
+  if (wasHidden !== fields.hidden) {
+    await writeAdminAudit({
+      action: fields.hidden ? 'product.hide' : 'product.show',
+      entityType: 'product',
+      entityId: id,
+      message: fields.hidden ? `Hid ${fields.name}` : `Restored ${fields.name}`,
+      meta: { hidden: fields.hidden, name: fields.name },
+    })
+  }
+
   revalidateAdmin()
   revalidatePath(`/admin/products/${id}`)
   redirectProduct(formData, id)
@@ -461,6 +485,14 @@ export async function archiveProduct(formData: FormData) {
     { upsert: true },
   )
 
+  await writeAdminAudit({
+    action: 'product.hide',
+    entityType: 'product',
+    entityId: id,
+    message: `Archived ${product.name}`,
+    meta: { name: product.name },
+  })
+
   revalidateAdmin()
   revalidatePath(`/admin/products/${id}`)
   redirectProduct(formData, id)
@@ -497,6 +529,14 @@ export async function unarchiveProduct(formData: FormData) {
     },
     { upsert: true },
   )
+
+  await writeAdminAudit({
+    action: 'product.show',
+    entityType: 'product',
+    entityId: id,
+    message: `Restored ${product.name}`,
+    meta: { name: product.name },
+  })
 
   revalidateAdmin()
   revalidatePath(`/admin/products/${id}`)
@@ -596,6 +636,14 @@ export async function updateOrderStatus(formData: FormData) {
       },
     },
   )
+
+  await writeAdminAudit({
+    action: 'order.status',
+    entityType: 'order',
+    entityId: order.orderId,
+    message: `Order ${order.orderId} status changed from ${order.status || 'paid'} to ${status}`,
+    meta: { from: order.status || 'paid', to: status },
+  })
 
   revalidateOrder(order.orderId, order.email)
   redirectOrder(order.orderId, decrement ? 'saved=status&inventory=1' : 'saved=status')
@@ -772,6 +820,14 @@ export async function createCoupon(formData: FormData) {
     updatedAt: now,
   })
 
+  await writeAdminAudit({
+    action: 'coupon.create',
+    entityType: 'coupon',
+    entityId: fields.code,
+    message: `Created coupon ${fields.code}`,
+    meta: { type, value: fields.value, active: fields.active },
+  })
+
   revalidateAdmin()
   revalidatePath(`/admin/coupons/${fields.code}`)
   redirect(`/admin/coupons/${encodeURIComponent(fields.code)}?saved=1`)
@@ -807,6 +863,14 @@ export async function updateCoupon(formData: FormData) {
     },
   )
 
+  await writeAdminAudit({
+    action: 'coupon.update',
+    entityType: 'coupon',
+    entityId: originalCode,
+    message: `Updated coupon ${originalCode}`,
+    meta: { type, value: fields.value, active: fields.active },
+  })
+
   revalidateAdmin()
   revalidatePath(`/admin/coupons/${originalCode}`)
   redirectCoupon(originalCode)
@@ -827,6 +891,13 @@ export async function deactivateCoupon(formData: FormData) {
     { code },
     { $set: { active: false, updatedAt: new Date() } },
   )
+
+  await writeAdminAudit({
+    action: 'coupon.deactivate',
+    entityType: 'coupon',
+    entityId: code,
+    message: `Deactivated coupon ${code}`,
+  })
 
   revalidateAdmin()
   revalidatePath(`/admin/coupons/${code}`)
@@ -885,6 +956,14 @@ export async function updateStoreSettings(formData: FormData) {
     },
     { upsert: true },
   )
+
+  await writeAdminAudit({
+    action: 'settings.update',
+    entityType: 'settings',
+    entityId: STORE_SETTINGS_ID,
+    message: 'Updated store settings',
+    meta: { storeOpen, shippingFlatRate, freeShippingThreshold, supportEmail },
+  })
 
   revalidateAdmin()
   redirect('/admin/settings?saved=1')
