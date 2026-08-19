@@ -42,6 +42,7 @@ import {
 import { writeAdminAudit } from '@/lib/admin-audit'
 import { sendOrderConfirmation } from '@/lib/email/order-confirmation'
 import { handleStockAlertAfterQuantityChange, type StockAlertLevel } from '@/lib/admin-stock-alerts'
+import { searchAdminEntities, type AdminSearchResult } from '@/lib/admin-search'
 
 async function requireAdmin() {
   const ok = await isAdminAuthenticated(await cookies(), await resolveAdminPassword())
@@ -309,6 +310,18 @@ export async function logoutAdmin() {
   jar.set(ADMIN_COOKIE_NAME, '', { ...getAdminCookieOptions(), maxAge: 0 })
   jar.delete({ name: ADMIN_COOKIE_NAME, path: '/' })
   redirect('/admin/login')
+}
+
+export type AdminSearchResponse = {
+  ok: boolean
+  results: AdminSearchResult[]
+}
+
+export async function searchAdmin(q: string): Promise<AdminSearchResponse> {
+  const ok = await isAdminAuthenticated(await cookies(), await resolveAdminPassword())
+  if (!ok) return { ok: false, results: [] }
+  const results = await searchAdminEntities(q)
+  return { ok: true, results }
 }
 
 export async function createProduct(formData: FormData) {

@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { cookies } from 'next/headers'
 import { logoutAdmin } from '@/app/admin/actions'
+import { AdminCommandPalette } from '@/components/admin/command-palette'
 import { isAdminAuthenticated } from '@/lib/admin-auth'
 import { resolveAdminPassword } from '@/lib/admin-password.server'
 
@@ -48,6 +49,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-x-8 gap-y-3">
+              <AdminCommandPalette />
               <nav aria-label="Admin">
                 <ul className="flex flex-wrap gap-x-8 gap-y-3">
                   {NAV.map((item) => (
