@@ -7,6 +7,11 @@ import {
   updateOrderNotes,
   updateOrderStatus,
 } from '@/app/admin/actions'
+import {
+  refreshSupplierTracking,
+  submitOrderToSupplier,
+} from '@/app/admin/supplier-actions'
+import { SupplierActionButton } from '@/components/admin/supplier-action-button'
 import { isAdminAuthenticated } from '@/lib/admin-auth'
 import { resolveAdminPassword } from '@/lib/admin-password.server'
 import { listAdminProducts } from '@/lib/admin-catalog'
@@ -33,6 +38,10 @@ import {
   getOrderTimeline,
   orderEventTypeLabel,
 } from '@/lib/admin-order-events'
+import {
+  getOrderSupplierPanelState,
+  supplierVendorLabel,
+} from '@/lib/admin-suppliers'
 
 export const dynamic = 'force-dynamic'
 
@@ -44,7 +53,13 @@ const ghostButtonClass =
 const primaryButtonClass =
   'bg-zinc-100 px-6 py-3 text-[11px] font-medium uppercase tracking-[0.24em] text-zinc-950 hover:bg-zinc-200'
 
-function flashMessage(query: { error?: string; saved?: string; inventory?: string }) {
+function flashMessage(query: {
+  error?: string
+  saved?: string
+  inventory?: string
+  supplier?: string
+  supplierMsg?: string
+}) {
   if (query.error === 'invalid') return { role: 'alert' as const, text: 'Choose a valid status and try again.' }
   if (query.error === 'db') return { role: 'alert' as const, text: 'MongoDB is not available. Changes were not saved.' }
   if (query.error === 'email') {
@@ -61,6 +76,24 @@ function flashMessage(query: { error?: string; saved?: string; inventory?: strin
   if (query.saved === 'reviewed') return { role: 'status' as const, text: 'Review flag updated.' }
   if (query.saved === 'email') return { role: 'status' as const, text: 'Confirmation email sent.' }
   if (query.saved === '1') return { role: 'status' as const, text: 'Saved.' }
+  if (query.supplier === 'submitted') {
+    return {
+      role: 'status' as const,
+      text: query.supplierMsg || 'Supplier order submitted.',
+    }
+  }
+  if (query.supplier === 'tracking') {
+    return {
+      role: 'status' as const,
+      text: query.supplierMsg || 'Tracking refreshed.',
+    }
+  }
+  if (query.supplier === 'error') {
+    return {
+      role: 'alert' as const,
+      text: query.supplierMsg || 'Supplier action failed.',
+    }
+  }
   return null
 }
 
@@ -69,7 +102,13 @@ export default async function AdminOrderDetailPage({
   searchParams,
 }: {
   params: Promise<{ id: string }>
-  searchParams: Promise<{ error?: string; saved?: string; inventory?: string }>
+  searchParams: Promise<{
+    error?: string
+    saved?: string
+    inventory?: string
+    supplier?: string
+    supplierMsg?: string
+  }>
 }) {
   if (!(await isAdminAuthenticated(await cookies(), await resolveAdminPassword()))) {
     redirect('/admin/login')
@@ -83,6 +122,7 @@ export default async function AdminOrderDetailPage({
   const [products, timeline] = await Promise.all([listAdminProducts(), getOrderTimeline(order)])
   const productsById = buildProductsByIdMap(products, collectOrderProductIds([order]))
   const riskFlags = getOrderRiskFlags(order, productsById)
+  const supplierPanel = getOrderSupplierPanelState(order, productsById)
 
   const address = order.shippingAddress
   const items = Array.isArray(order.items) ? order.items : []
@@ -268,6 +308,87 @@ export default async function AdminOrderDetailPage({
           <dd className="font-medium text-zinc-100">{formatOrderMoney(order.totals?.total)}</dd>
         </div>
       </dl>
+
+      <div className="mt-12 border border-zinc-800 bg-zinc-900 px-6 py-8">
+        <p className={labelClass}>Supplier ops</p>
+        {supplierPanel.dropshipGroups.length === 0 ? (
+          <p className="mt-4 text-sm text-zinc-400">No dropship line items on this order.</p>
+        ) : (
+          <div className="mt-6 space-y-6">
+            <div>
+              <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-zinc-500">Dropship groups</p>
+              <ul className="mt-3 space-y-2 text-sm text-zinc-300">
+                {supplierPanel.dropshipGroups.map((group) => (
+                  <li key={group.vendor}>
+                    {supplierVendorLabel(group.vendor)} · {group.items.length} line
+                    {group.items.length === 1 ? '' : 's'}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {supplierPanel.fulfillment.supplierError ? (
+              <p className="text-sm text-zinc-400" role="alert">
+                {supplierPanel.fulfillment.supplierError}
+              </p>
+            ) : null}
+
+            {supplierPanel.submissions.length ? (
+              <dl className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-2">
+                {supplierPanel.submissions.map((submission) => (
+                  <div key={`${submission.vendor}:${submission.supplierOrderId}`} className="sm:col-span-2">
+                    <dt className="text-[10px] font-medium uppercase tracking-[0.18em] text-zinc-500">
+                      {supplierVendorLabel(submission.vendor)}
+                      {submission.mock ? ' · mock' : ''}
+                    </dt>
+                    <dd className="mt-2 text-zinc-200">
+                      ID {submission.supplierOrderId} · {submission.supplierStatus}
+                      {submission.trackingNumber ? (
+                        <>
+                          <br />
+                          {submission.carrier || 'Carrier'} {submission.trackingNumber}
+                          {submission.trackingStatus ? ` · ${submission.trackingStatus}` : ''}
+                        </>
+                      ) : null}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            ) : null}
+
+            <div className="flex flex-wrap gap-3">
+              <form action={submitOrderToSupplier}>
+                <input type="hidden" name="orderId" value={order.orderId} />
+                <SupplierActionButton
+                  label="Submit to supplier"
+                  pendingLabel="Submitting…"
+                  disabled={!supplierPanel.canSubmit}
+                  className={ghostButtonClass}
+                />
+              </form>
+
+              <form action={refreshSupplierTracking}>
+                <input type="hidden" name="orderId" value={order.orderId} />
+                <SupplierActionButton
+                  label="Refresh tracking"
+                  pendingLabel="Refreshing…"
+                  disabled={!supplierPanel.hasSubmission}
+                  className={ghostButtonClass}
+                />
+              </form>
+            </div>
+
+            {!supplierPanel.canSubmit && supplierPanel.hasSubmission ? (
+              <p className="text-xs text-zinc-500">Supplier order already submitted for this order.</p>
+            ) : null}
+            {!supplierPanel.canSubmit && !supplierPanel.hasSubmission ? (
+              <p className="text-xs text-zinc-500">
+                Submit is available for paid/open orders with dropship lines.
+              </p>
+            ) : null}
+          </div>
+        )}
+      </div>
 
       <div className="mt-12 border border-zinc-800 bg-zinc-900 px-6 py-8">
         <p className={labelClass}>Timeline</p>

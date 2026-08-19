@@ -8,6 +8,8 @@ import {
   unarchiveProduct,
   updateProduct,
 } from '@/app/admin/actions'
+import { checkSupplierStock } from '@/app/admin/supplier-actions'
+import { SupplierActionButton } from '@/components/admin/supplier-action-button'
 import { ProductEditorFields } from '@/app/admin/products/product-fields'
 import { isAdminAuthenticated } from '@/lib/admin-auth'
 import { resolveAdminPassword } from '@/lib/admin-password.server'
@@ -24,6 +26,7 @@ import {
   vendorTypeOptions,
 } from '@/lib/admin-catalog'
 import { formatStockAlertSentAt } from '@/lib/admin-stock-alerts'
+import { isDropshipProduct } from '@/lib/admin-suppliers'
 
 export const dynamic = 'force-dynamic'
 
@@ -36,7 +39,7 @@ export default async function AdminProductEditPage({
   searchParams,
 }: {
   params: Promise<{ id: string }>
-  searchParams: Promise<{ error?: string; saved?: string }>
+  searchParams: Promise<{ error?: string; saved?: string; supplier?: string; supplierMsg?: string }>
 }) {
   if (!(await isAdminAuthenticated(await cookies(), await resolveAdminPassword()))) {
     redirect('/admin/login')
@@ -55,6 +58,7 @@ export default async function AdminProductEditPage({
   const out = quantity === 0
   const imageUrl = productImageUrl(product)
   const alertSentAt = formatStockAlertSentAt(product.lowStockAlertSentAt)
+  const dropship = isDropshipProduct(product)
 
   return (
     <section>
@@ -115,6 +119,34 @@ export default async function AdminProductEditPage({
         <p className="mt-6 text-sm text-zinc-400" role="status">
           Saved.
         </p>
+      ) : null}
+      {query.supplier === 'stock' ? (
+        <p className="mt-6 text-sm text-zinc-400" role="status">
+          {query.supplierMsg || 'Supplier stock checked.'}
+        </p>
+      ) : null}
+      {query.supplier === 'error' ? (
+        <p className="mt-6 text-sm text-zinc-400" role="alert">
+          {query.supplierMsg || 'Supplier stock check failed.'}
+        </p>
+      ) : null}
+
+      {dropship ? (
+        <div className="mt-10 border border-zinc-800 bg-zinc-900 px-6 py-6">
+          <p className={labelClass}>Supplier stock</p>
+          <p className="mt-2 text-sm text-zinc-400">
+            Check live dropship availability for {product.supplierSku || product.id}. Uses mock data when API keys
+            are missing.
+          </p>
+          <form action={checkSupplierStock} className="mt-6">
+            <input type="hidden" name="productId" value={product.id} />
+            <SupplierActionButton
+              label="Check supplier stock"
+              pendingLabel="Checking…"
+              className={ghostButtonClass}
+            />
+          </form>
+        </div>
       ) : null}
 
       <form action={updateProduct} className="mt-10 max-w-3xl space-y-10">

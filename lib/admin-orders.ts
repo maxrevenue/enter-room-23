@@ -39,7 +39,14 @@ export type AdminOrder = {
     country?: string
     phone?: string
   } | null
-  items?: Array<{ id?: string; name?: string; qty?: number; price?: number }>
+  items?: Array<{
+    id?: string
+    name?: string
+    qty?: number
+    price?: number
+    vendorType?: string
+    supplierSku?: string
+  }>
   totals?: { subtotal?: number; shipping?: number; tax?: number; total?: number } | null
   status?: string
   notes?: string
@@ -49,7 +56,31 @@ export type AdminOrder = {
   adminReview?: boolean
   fulfilled?: boolean
   inventoryDecremented?: boolean
-  fulfillment?: { status?: string; splitFulfillment?: boolean } | null
+  fulfillment?: {
+    status?: string
+    splitFulfillment?: boolean
+    supplierOrderId?: string
+    supplierStatus?: string
+    submittedAt?: Date | string
+    vendor?: string
+    carrier?: string
+    trackingNumber?: string
+    trackingStatus?: string
+    trackingUpdatedAt?: Date | string
+    supplierError?: string
+    supplierErrorAt?: Date | string
+    supplierSubmissions?: Array<{
+      vendor: string
+      supplierOrderId: string
+      supplierStatus: string
+      submittedAt: string
+      mock?: boolean
+      carrier?: string
+      trackingNumber?: string
+      trackingStatus?: string
+      trackingUpdatedAt?: string
+    }>
+  } | null
 }
 
 const STATUS_LABELS: Record<string, string> = {

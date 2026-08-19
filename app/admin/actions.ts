@@ -55,6 +55,7 @@ function revalidateAdmin() {
   revalidatePath('/admin')
   revalidatePath('/admin/products')
   revalidatePath('/admin/orders')
+  revalidatePath('/admin/suppliers')
   revalidatePath('/admin/customers')
   revalidatePath('/admin/coupons')
   revalidatePath('/admin/analytics')
