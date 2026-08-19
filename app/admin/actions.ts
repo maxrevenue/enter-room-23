@@ -62,6 +62,7 @@ import {
   type RmaResolution,
   type RmaStatus,
 } from '@/lib/admin-returns'
+import { OPS_HANDOFF_ID } from '@/lib/admin-handoff'
 
 async function requireAdmin() {
   const ok = await isAdminAuthenticated(await cookies(), await resolveAdminPassword())
@@ -1515,4 +1516,74 @@ export async function updateRma(formData: FormData) {
     redirectRma(id, 'saved=1&restock=1')
   }
   redirectRma(id, statusChanged ? 'saved=status' : 'saved=1')
+}
+
+export async function updateHandoffNote(formData: FormData) {
+  await requireAdmin()
+
+  const note = String(formData.get('note') || '').trim().slice(0, 2000)
+  const db = await getRoom23Db()
+  if (!db) redirect('/admin?handoff=error&msg=db')
+
+  const now = new Date()
+  await db.collection('settings').updateOne(
+    { id: OPS_HANDOFF_ID },
+    {
+      $set: {
+        id: OPS_HANDOFF_ID,
+        note,
+        updatedAt: now,
+        updatedBy: 'admin',
+      },
+      $setOnInsert: {
+        createdAt: now,
+      },
+    },
+    { upsert: true },
+  )
+
+  await writeAdminAudit({
+    action: 'handoff.update',
+    entityType: 'settings',
+    entityId: OPS_HANDOFF_ID,
+    message: note ? 'Updated shift handoff note' : 'Cleared shift handoff note',
+    meta: { length: note.length },
+  })
+
+  revalidatePath('/admin')
+  redirect(note ? '/admin?handoff=saved' : '/admin?handoff=cleared')
+}
+
+export async function clearHandoffNote() {
+  await requireAdmin()
+
+  const db = await getRoom23Db()
+  if (!db) redirect('/admin?handoff=error&msg=db')
+
+  const now = new Date()
+  await db.collection('settings').updateOne(
+    { id: OPS_HANDOFF_ID },
+    {
+      $set: {
+        id: OPS_HANDOFF_ID,
+        note: '',
+        updatedAt: now,
+        updatedBy: 'admin',
+      },
+      $setOnInsert: {
+        createdAt: now,
+      },
+    },
+    { upsert: true },
+  )
+
+  await writeAdminAudit({
+    action: 'handoff.clear',
+    entityType: 'settings',
+    entityId: OPS_HANDOFF_ID,
+    message: 'Cleared shift handoff note',
+  })
+
+  revalidatePath('/admin')
+  redirect('/admin?handoff=cleared')
 }

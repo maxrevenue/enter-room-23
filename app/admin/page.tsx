@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
+import { clearHandoffNote, updateHandoffNote } from '@/app/admin/actions'
 import { isAdminAuthenticated } from '@/lib/admin-auth'
 import { resolveAdminPassword } from '@/lib/admin-password.server'
 import { getAdminAnalytics } from '@/lib/admin-analytics'
@@ -10,6 +11,12 @@ import {
   listAdminProducts,
 } from '@/lib/admin-catalog'
 import { couponExpiryDate, listAdminCoupons } from '@/lib/admin-coupons'
+import {
+  buildHandoffChecklist,
+  formatHandoffUpdatedAt,
+  getOpsHandoff,
+  HANDOFF_NOTE_MAX,
+} from '@/lib/admin-handoff'
 import { formatOrderDate, formatOrderMoney, orderStatusLabel } from '@/lib/admin-orders'
 import { getAdminActionInbox, riskFlagChipClass } from '@/lib/admin-risk'
 import { adminReturnsHref, formatRmaDate, listOpenRmas, rmaStatusLabel } from '@/lib/admin-returns'
@@ -28,19 +35,34 @@ const QUICK_LINKS = [
   { href: '/admin/audit', label: 'Audit' },
 ]
 
-export default async function AdminDashboardPage() {
+const fieldClass =
+  'w-full border border-zinc-800 bg-zinc-950 px-4 py-3 text-sm text-zinc-100 outline-none focus:border-zinc-500'
+const labelClass = 'mb-2 block text-[10px] font-medium uppercase tracking-[0.22em] text-zinc-500'
+const primaryButtonClass =
+  'bg-zinc-100 px-6 py-3 text-[11px] font-medium uppercase tracking-[0.24em] text-zinc-950 hover:bg-zinc-200'
+const ghostButtonClass =
+  'border border-zinc-700 px-5 py-3 text-[11px] font-medium uppercase tracking-[0.22em] text-zinc-200 hover:border-zinc-500'
+
+export default async function AdminDashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ handoff?: string; msg?: string }>
+}) {
   if (!(await isAdminAuthenticated(await cookies(), await resolveAdminPassword()))) {
     redirect('/admin/login')
   }
 
+  const params = await searchParams
   const now = new Date()
-  const [products, productOfTheMonth, analytics, settings, coupons] = await Promise.all([
+  const [products, productOfTheMonth, analytics, settings, coupons, handoff] = await Promise.all([
     listAdminProducts(),
     getResolvedProductOfTheMonth(),
     getAdminAnalytics(now),
     getStoreSettings(),
     listAdminCoupons(),
+    getOpsHandoff(),
   ])
+  const checklist = await buildHandoffChecklist(productOfTheMonth, now)
 
   const inbox = await getAdminActionInbox(products, now)
   const openRmas = await listOpenRmas(8)
@@ -82,6 +104,86 @@ export default async function AdminDashboardPage() {
         ))}
       </nav>
 
+      {params.handoff === 'saved' ? (
+        <p className="mb-6 text-sm text-zinc-400" role="status">
+          Shift handoff note saved.
+        </p>
+      ) : null}
+      {params.handoff === 'cleared' ? (
+        <p className="mb-6 text-sm text-zinc-400" role="status">
+          Shift handoff note cleared.
+        </p>
+      ) : null}
+      {params.handoff === 'error' && params.msg === 'db' ? (
+        <p className="mb-6 text-sm text-zinc-400" role="alert">
+          MongoDB is not available. The handoff note was not saved.
+        </p>
+      ) : null}
+
+      <div className="mb-12 border border-zinc-800 bg-zinc-900 px-6 py-8">
+        <div className="flex flex-wrap items-end justify-between gap-4 border-b border-zinc-800 pb-6">
+          <div>
+            <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-zinc-500">Shift handoff</p>
+            <h2 className="mt-2 font-serif text-2xl text-zinc-100">Ops note & checklist</h2>
+            <p className="mt-2 text-sm text-zinc-500">
+              Pin context for the next shift. Queues refresh on each load.
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-8 grid grid-cols-1 gap-10 lg:grid-cols-2">
+          <div>
+            <form action={updateHandoffNote} className="space-y-4">
+              <label className="block">
+                <span className={labelClass}>Pinned note</span>
+                <textarea
+                  className={`${fieldClass} min-h-40`}
+                  name="note"
+                  defaultValue={handoff.note}
+                  rows={8}
+                  maxLength={HANDOFF_NOTE_MAX}
+                  placeholder="Outstanding issues, supplier delays, refund follow-ups, CCBill notes…"
+                />
+              </label>
+              <p className="text-xs text-zinc-500">
+                Updated {formatHandoffUpdatedAt(handoff.updatedAt)}
+                {handoff.updatedBy ? ` · ${handoff.updatedBy}` : ''}
+              </p>
+              <div className="flex flex-wrap gap-3">
+                <button type="submit" className={primaryButtonClass}>
+                  Save note
+                </button>
+              </div>
+            </form>
+            <form action={clearHandoffNote} className="mt-3">
+              <button type="submit" className={ghostButtonClass}>
+                Clear note
+              </button>
+            </form>
+          </div>
+
+          <div>
+            <p className={labelClass}>Daily checklist</p>
+            <ul className="mt-4 divide-y divide-zinc-800 border border-zinc-800">
+              {checklist.items.map((item) => (
+                <li key={item.id} className="flex items-center justify-between gap-4 px-4 py-4">
+                  <div>
+                    <p className="text-sm text-zinc-100">{item.label}</p>
+                    <p className="mt-1 font-serif text-xl tracking-tight text-zinc-100">{item.value}</p>
+                  </div>
+                  <Link
+                    href={item.href}
+                    className="text-[10px] font-medium uppercase tracking-[0.18em] text-zinc-500 hover:text-zinc-200"
+                  >
+                    Open
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+
       <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-6">
         {stats.map((stat) => (
           <li key={stat.label} className="border border-zinc-800 bg-zinc-900 px-6 py-8">
@@ -122,7 +224,7 @@ export default async function AdminDashboardPage() {
             {inbox.orders.length > 0 ? (
               <section>
                 <div className="flex items-center justify-between gap-4 px-6 py-4">
-                  <h3 className="text-[10px] font-medium uppercase tracking-[0.22em] text-zinc-500">Orders</h3>
+                  <h3 className="text-[10px] font-medium uppercase tracking-[0.18em] text-zinc-500">Orders</h3>
                   <Link
                     href="/admin/orders?view=open"
                     className="text-[10px] font-medium uppercase tracking-[0.18em] text-zinc-500 hover:text-zinc-200"
@@ -163,7 +265,7 @@ export default async function AdminDashboardPage() {
             {inbox.products.length > 0 ? (
               <section>
                 <div className="flex items-center justify-between gap-4 px-6 py-4">
-                  <h3 className="text-[10px] font-medium uppercase tracking-[0.22em] text-zinc-500">Inventory</h3>
+                  <h3 className="text-[10px] font-medium uppercase tracking-[0.18em] text-zinc-500">Inventory</h3>
                   <Link
                     href="/admin/products?view=low_stock"
                     className="text-[10px] font-medium uppercase tracking-[0.18em] text-zinc-500 hover:text-zinc-200"
@@ -192,7 +294,7 @@ export default async function AdminDashboardPage() {
             {inbox.coupons.length > 0 ? (
               <section>
                 <div className="flex items-center justify-between gap-4 px-6 py-4">
-                  <h3 className="text-[10px] font-medium uppercase tracking-[0.22em] text-zinc-500">Coupons</h3>
+                  <h3 className="text-[10px] font-medium uppercase tracking-[0.18em] text-zinc-500">Coupons</h3>
                   <Link
                     href="/admin/coupons"
                     className="text-[10px] font-medium uppercase tracking-[0.18em] text-zinc-500 hover:text-zinc-200"
@@ -264,7 +366,7 @@ export default async function AdminDashboardPage() {
           <div className="mt-4 flex flex-wrap items-end justify-between gap-4">
             <p className="text-sm text-zinc-400">Not set — choose one</p>
             <Link
-              href="/admin/products"
+              href="/admin/products?view=potm"
               className="text-[11px] font-medium uppercase tracking-[0.18em] text-zinc-400 hover:text-zinc-100"
             >
               Choose product
