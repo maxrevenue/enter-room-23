@@ -1,11 +1,18 @@
 import {
+  buildMarginProductsByIdMap,
+  collectProductIdsFromOrders,
+  marginSnapshotForWindow,
+  aggregateTopProductsByMargin,
+  type TopMarginProductRow,
+} from '@/lib/admin-margin'
+import { getRoom23Db } from '@/lib/admin-db'
+import {
   countLowStockProducts,
   isArchived,
   listAdminProducts,
   quantityOf,
   type CatalogProduct,
 } from '@/lib/admin-catalog'
-import { getRoom23Db } from '@/lib/admin-db'
 import {
   countOpenOrders,
   isOrderStatus,
@@ -25,6 +32,8 @@ export type AnalyticsWindowKey = 'today' | 'last7' | 'last30'
 export type AnalyticsWindowSnapshot = {
   orderCount: number
   revenue: number
+  margin: number
+  marginMissingCogs: number
 }
 
 export type TopProductRow = {
@@ -48,6 +57,7 @@ export type AdminAnalytics = {
   openOrders: number
   lowStock: number
   topProducts: TopProductRow[]
+  topProductsByMargin: TopMarginProductRow[]
   recentRefunds: RefundRow[]
 }
 
@@ -97,6 +107,7 @@ export function snapshotForWindow(
   orders: Array<Pick<AdminOrder, 'status' | 'totals' | 'createdAt'>>,
   since: Date,
   until: Date,
+  productsById?: Map<string, { price?: number; cogs?: number | null }>,
 ): AnalyticsWindowSnapshot {
   let orderCount = 0
   let revenue = 0
@@ -105,7 +116,17 @@ export function snapshotForWindow(
     orderCount += 1
     revenue += orderRevenueTotal(order)
   }
-  return { orderCount, revenue }
+
+  const marginSnapshot = productsById
+    ? marginSnapshotForWindow(orders, productsById, since, until)
+    : { margin: 0, marginMissingCogs: 0 }
+
+  return {
+    orderCount,
+    revenue,
+    margin: marginSnapshot.margin,
+    marginMissingCogs: marginSnapshot.marginMissingCogs,
+  }
 }
 
 export function aggregateTopProducts(
@@ -264,7 +285,7 @@ export function productsToCsv(products: CatalogProduct[]) {
   return toCsv(headers, rows)
 }
 
-const EMPTY_WINDOW: AnalyticsWindowSnapshot = { orderCount: 0, revenue: 0 }
+const EMPTY_WINDOW: AnalyticsWindowSnapshot = { orderCount: 0, revenue: 0, margin: 0, marginMissingCogs: 0 }
 
 export function emptyAdminAnalytics(
   counts: Pick<AdminAnalytics, 'openOrders' | 'lowStock'> = { openOrders: 0, lowStock: 0 },
@@ -278,6 +299,7 @@ export function emptyAdminAnalytics(
     openOrders: counts.openOrders,
     lowStock: counts.lowStock,
     topProducts: [],
+    topProductsByMargin: [],
     recentRefunds: [],
   }
 }
@@ -292,7 +314,7 @@ export async function getAdminAnalytics(now = new Date()): Promise<AdminAnalytic
     return emptyAdminAnalytics({ openOrders, lowStock })
   }
 
-  const [recentOrders, recentRefunds] = await Promise.all([
+  const [recentOrders, recentRefunds, catalog] = await Promise.all([
     db
       .collection<AdminOrder>('orders')
       .find({ createdAt: { $gte: last30 } })
@@ -305,17 +327,22 @@ export async function getAdminAnalytics(now = new Date()): Promise<AdminAnalytic
       .sort({ updatedAt: -1, createdAt: -1 })
       .limit(RECENT_REFUNDS_LIMIT)
       .toArray(),
+    listAdminProducts(),
   ])
+
+  const productIds = collectProductIdsFromOrders(recentOrders)
+  const productsById = buildMarginProductsByIdMap(catalog, productIds)
 
   return {
     windows: {
-      today: snapshotForWindow(recentOrders, today, now),
-      last7: snapshotForWindow(recentOrders, last7, now),
-      last30: snapshotForWindow(recentOrders, last30, now),
+      today: snapshotForWindow(recentOrders, today, now, productsById),
+      last7: snapshotForWindow(recentOrders, last7, now, productsById),
+      last30: snapshotForWindow(recentOrders, last30, now, productsById),
     },
     openOrders,
     lowStock,
     topProducts: aggregateTopProducts(recentOrders, last30, now),
+    topProductsByMargin: aggregateTopProductsByMargin(recentOrders, productsById, last30, now),
     recentRefunds: recentRefunds.map((order) => ({
       orderId: order.orderId,
       email: order.email,

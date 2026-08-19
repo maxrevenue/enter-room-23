@@ -89,6 +89,14 @@ function parsePrice(formData: FormData) {
   return price
 }
 
+function parseCogs(formData: FormData): number | null | undefined {
+  const raw = String(formData.get('cogs') ?? '').trim()
+  if (raw === '') return null
+  const cogs = Number(raw)
+  if (!Number.isFinite(cogs) || cogs < 0) return undefined
+  return cogs
+}
+
 function parseQuantity(formData: FormData, required: boolean) {
   const raw = String(formData.get('quantity') ?? '').trim()
   if (raw === '') return required ? null : undefined
@@ -139,6 +147,7 @@ function parseProductFields(formData: FormData, requiredQuantity: boolean) {
   const slugInput = parseText(formData, 'slug')
   const slug = makeProductSlug(name, slugInput)
   const price = parsePrice(formData)
+  const cogs = parseCogs(formData)
   const quantity = parseQuantity(formData, requiredQuantity)
   const category = parseText(formData, 'category')
   const collection = parseText(formData, 'collection') || category
@@ -165,6 +174,7 @@ function parseProductFields(formData: FormData, requiredQuantity: boolean) {
     name,
     slug,
     price,
+    cogs,
     quantity,
     category,
     collection,
@@ -214,6 +224,7 @@ function editorialFields(fields: ReturnType<typeof parseProductFields>) {
 
 function fieldsAreValid(fields: ReturnType<typeof parseProductFields>, requireQuantity: boolean) {
   if (!fields.name || !fields.slug || RESERVED_SLUGS.has(fields.slug) || fields.price == null) return false
+  if (fields.cogs === undefined) return false
   if (requireQuantity && fields.quantity == null) return false
   if (fields.quantity === null) return false
   if (!CATEGORY_VALUES.has(fields.category)) return false
@@ -347,7 +358,7 @@ export async function createProduct(formData: FormData) {
   if (!db) redirect('/admin/products/new?error=db')
 
   const now = new Date()
-  await db.collection('products').insertOne({
+  const doc: Record<string, unknown> = {
     id: fields.slug,
     slug: fields.slug,
     name: fields.name,
@@ -361,7 +372,10 @@ export async function createProduct(formData: FormData) {
     source: 'custom',
     createdAt: now,
     updatedAt: now,
-  })
+  }
+  if (fields.cogs != null) doc.cogs = fields.cogs
+
+  await db.collection('products').insertOne(doc)
 
   if (fields.isProductOfTheMonth) {
     await applyExclusiveProductOfTheMonth(fields.slug)
@@ -407,29 +421,35 @@ export async function updateProduct(formData: FormData) {
   const db = await getRoom23Db()
   if (!db) redirectProduct(formData, id, 'error=db')
 
-  await db.collection('products').updateOne(
-    { id },
-    {
-      $set: {
-        id,
-        slug: fields.slug || product.slug || id,
-        name: fields.name,
-        price: fields.price,
-        quantity: nextQuantity,
-        inventoryStatus: inventoryStatusFromQuantity(nextQuantity, product.inventoryStatus),
-        category: fields.category,
-        source: product.source || undefined,
-        ...visibilityFields(fields.hidden),
-        ...editorialFields(fields),
-        isProductOfTheMonth: fields.isProductOfTheMonth,
-        updatedAt: new Date(),
-      },
-      $setOnInsert: {
-        createdAt: new Date(),
-      },
+  const update: Record<string, unknown> = {
+    id,
+    slug: fields.slug || product.slug || id,
+    name: fields.name,
+    price: fields.price,
+    quantity: nextQuantity,
+    inventoryStatus: inventoryStatusFromQuantity(nextQuantity, product.inventoryStatus),
+    category: fields.category,
+    source: product.source || undefined,
+    ...visibilityFields(fields.hidden),
+    ...editorialFields(fields),
+    isProductOfTheMonth: fields.isProductOfTheMonth,
+    updatedAt: new Date(),
+  }
+
+  const updateOps: Record<string, unknown> = {
+    $set: update,
+    $setOnInsert: {
+      createdAt: new Date(),
     },
-    { upsert: true },
-  )
+  }
+
+  if (fields.cogs != null) {
+    update.cogs = fields.cogs
+  } else {
+    updateOps.$unset = { cogs: '' }
+  }
+
+  await db.collection('products').updateOne({ id }, updateOps, { upsert: true })
 
   if (fields.isProductOfTheMonth) {
     await applyExclusiveProductOfTheMonth(id)

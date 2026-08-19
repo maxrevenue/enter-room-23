@@ -63,6 +63,20 @@ export function ProductEditorFields({
         </label>
 
         <label className="block">
+          <span className={labelClass}>COGS</span>
+          <input
+            className={fieldClass}
+            name="cogs"
+            type="number"
+            min="0"
+            step="0.01"
+            defaultValue={product?.cogs ?? ''}
+            placeholder="Unit cost"
+          />
+          <span className="mt-2 block text-xs text-zinc-500">Admin-only unit cost for margin reporting.</span>
+        </label>
+
+        <label className="block">
           <span className={labelClass}>Quantity</span>
           <input
             className={fieldClass}

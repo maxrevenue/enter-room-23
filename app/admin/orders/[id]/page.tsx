@@ -42,6 +42,12 @@ import {
   getOrderSupplierPanelState,
   supplierVendorLabel,
 } from '@/lib/admin-suppliers'
+import {
+  buildMarginProductsByIdMap,
+  formatMarginMoney,
+  orderLineMargin,
+  orderMargin,
+} from '@/lib/admin-margin'
 
 export const dynamic = 'force-dynamic'
 
@@ -123,6 +129,8 @@ export default async function AdminOrderDetailPage({
   const productsById = buildProductsByIdMap(products, collectOrderProductIds([order]))
   const riskFlags = getOrderRiskFlags(order, productsById)
   const supplierPanel = getOrderSupplierPanelState(order, productsById)
+  const marginProductsById = buildMarginProductsByIdMap(products)
+  const orderMarginResult = orderMargin(order, marginProductsById)
 
   const address = order.shippingAddress
   const items = Array.isArray(order.items) ? order.items : []
@@ -260,31 +268,37 @@ export default async function AdminOrderDetailPage({
       </dl>
 
       <div className="mt-8 overflow-x-auto border border-zinc-800">
-        <table className="w-full min-w-[640px] text-left text-sm">
+        <table className="w-full min-w-[760px] text-left text-sm">
           <thead className="border-b border-zinc-800 bg-zinc-900 text-[10px] uppercase tracking-[0.18em] text-zinc-500">
             <tr>
               <th className="px-4 py-3 font-medium">Item</th>
               <th className="px-4 py-3 font-medium">Qty</th>
               <th className="px-4 py-3 font-medium">Unit price</th>
               <th className="px-4 py-3 font-medium">Line total</th>
+              <th className="px-4 py-3 font-medium">Line margin</th>
             </tr>
           </thead>
           <tbody>
             {items.length === 0 ? (
               <tr>
-                <td className="px-4 py-6 text-zinc-500" colSpan={4}>
+                <td className="px-4 py-6 text-zinc-500" colSpan={5}>
                   No line items on this order.
                 </td>
               </tr>
             ) : (
-              items.map((item, index) => (
-                <tr key={`${item.id || item.name || index}`} className="border-b border-zinc-800 last:border-b-0">
-                  <td className="px-4 py-4 text-zinc-100">{item.name || item.id || 'Item'}</td>
-                  <td className="px-4 py-4 text-zinc-400">{item.qty || 1}</td>
-                  <td className="px-4 py-4 text-zinc-300">{formatOrderMoney(item.price)}</td>
-                  <td className="px-4 py-4 text-zinc-300">{formatOrderMoney(orderLineTotal(item))}</td>
-                </tr>
-              ))
+              items.map((item, index) => {
+                const product = marginProductsById.get(String(item.id || '').trim())
+                const lineMargin = orderLineMargin(item, product)
+                return (
+                  <tr key={`${item.id || item.name || index}`} className="border-b border-zinc-800 last:border-b-0">
+                    <td className="px-4 py-4 text-zinc-100">{item.name || item.id || 'Item'}</td>
+                    <td className="px-4 py-4 text-zinc-400">{item.qty || 1}</td>
+                    <td className="px-4 py-4 text-zinc-300">{formatOrderMoney(item.price)}</td>
+                    <td className="px-4 py-4 text-zinc-300">{formatOrderMoney(orderLineTotal(item))}</td>
+                    <td className="px-4 py-4 text-zinc-300">{formatMarginMoney(lineMargin.margin)}</td>
+                  </tr>
+                )
+              })
             )}
           </tbody>
         </table>
@@ -306,6 +320,17 @@ export default async function AdminOrderDetailPage({
         <div className="flex items-center justify-between gap-4 border-t border-zinc-800 pt-3">
           <dt className="text-[10px] font-medium uppercase tracking-[0.18em] text-zinc-400">Total</dt>
           <dd className="font-medium text-zinc-100">{formatOrderMoney(order.totals?.total)}</dd>
+        </div>
+        <div className="flex items-center justify-between gap-4 border-t border-zinc-800 pt-3">
+          <dt className="text-[10px] font-medium uppercase tracking-[0.18em] text-zinc-400">Est. margin</dt>
+          <dd className="font-medium text-zinc-100">
+            {formatMarginMoney(orderMarginResult.margin)}
+            {orderMarginResult.missingCogs > 0 ? (
+              <span className="mt-1 block text-xs font-normal text-zinc-500">
+                {orderMarginResult.missingCogs} unit{orderMarginResult.missingCogs === 1 ? '' : 's'} missing COGS
+              </span>
+            ) : null}
+          </dd>
         </div>
       </dl>
 

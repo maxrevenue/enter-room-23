@@ -57,6 +57,7 @@ export default async function AdminDashboardPage() {
     { label: 'Open orders', value: String(analytics.openOrders) },
     { label: 'Product of the Month', value: productOfTheMonth?.name || 'Not set' },
     { label: 'Revenue · 7 days', value: formatOrderMoney(analytics.windows.last7.revenue) },
+    { label: 'Est. margin · 7d', value: formatOrderMoney(analytics.windows.last7.margin) },
   ]
 
   return (
@@ -78,7 +79,7 @@ export default async function AdminDashboardPage() {
         ))}
       </nav>
 
-      <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
+      <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-6">
         {stats.map((stat) => (
           <li key={stat.label} className="border border-zinc-800 bg-zinc-900 px-6 py-8">
             <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-zinc-500">{stat.label}</p>

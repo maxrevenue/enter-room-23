@@ -7,6 +7,7 @@ export const LOW_STOCK_THRESHOLD = 5
 export const GALLERY_SLOT_COUNT = 4
 
 export type CatalogProduct = (typeof PRODUCTS)[number] & {
+  cogs?: number | null
   quantity?: number | null
   hidden?: boolean
   active?: boolean
@@ -43,6 +44,11 @@ export function vendorTypeOptions() {
 export function quantityOf(product: { quantity?: number | null }): number | null {
   if (typeof product.quantity !== 'number' || !Number.isFinite(product.quantity)) return null
   return Math.max(0, Math.floor(product.quantity))
+}
+
+export function cogsOf(product: { cogs?: number | null }): number | null {
+  if (typeof product.cogs !== 'number' || !Number.isFinite(product.cogs) || product.cogs < 0) return null
+  return product.cogs
 }
 
 export function isArchived(product: CatalogProduct) {
@@ -119,12 +125,14 @@ export function gallerySlots(product?: CatalogProduct | null): ProductImage[] {
 
 function applyInventory(product: CatalogProduct): CatalogProduct {
   const quantity = quantityOf(product)
+  const cogs = cogsOf(product)
   const archived = isArchived(product)
   const images = normalizeImages(product.images?.length ? product.images : product.gallery)
   const image = productImageUrl({ ...product, images })
   return {
     ...product,
     quantity,
+    cogs,
     hidden: archived,
     active: !archived,
     archived,
@@ -143,6 +151,7 @@ function buildCustomProduct(doc: ProductDoc): CatalogProduct | null {
   if (!id || !name) return null
 
   const price = Number(doc.price)
+  const cogs = typeof doc.cogs === 'number' && Number.isFinite(doc.cogs) && doc.cogs >= 0 ? doc.cogs : null
   const quantity = quantityOf({ quantity: typeof doc.quantity === 'number' ? doc.quantity : null })
   const category = typeof doc.category === 'string' && doc.category ? doc.category : 'essentials'
   const shortEditorial = typeof doc.shortEditorial === 'string' ? doc.shortEditorial : ''
@@ -162,6 +171,7 @@ function buildCustomProduct(doc: ProductDoc): CatalogProduct | null {
     slug,
     name,
     price: Number.isFinite(price) ? price : 0,
+    cogs,
     quantity,
     category,
     collection: doc.collection || category,

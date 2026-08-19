@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 import { isAdminAuthenticated } from '@/lib/admin-auth'
 import { resolveAdminPassword } from '@/lib/admin-password.server'
 import { getAdminAnalytics, ORDER_EXPORT_STATUSES } from '@/lib/admin-analytics'
+import { formatMarginMoney } from '@/lib/admin-margin'
 import { formatOrderDate, formatOrderMoney, orderStatusBadgeClass, orderStatusLabel } from '@/lib/admin-orders'
 
 export const dynamic = 'force-dynamic'
@@ -30,6 +31,8 @@ export default async function AdminAnalyticsPage() {
     { label: 'Revenue today', value: formatOrderMoney(analytics.windows.today.revenue) },
     { label: 'Revenue · 7 days', value: formatOrderMoney(analytics.windows.last7.revenue) },
     { label: 'Revenue · 30 days', value: formatOrderMoney(analytics.windows.last30.revenue) },
+    { label: 'Est. margin · 7d', value: formatMarginMoney(analytics.windows.last7.margin) },
+    { label: 'Est. margin · 30d', value: formatMarginMoney(analytics.windows.last30.margin) },
     { label: 'Open orders', value: String(analytics.openOrders) },
     { label: 'Low stock', value: String(analytics.lowStock) },
   ]
@@ -57,8 +60,32 @@ export default async function AdminAnalyticsPage() {
 
       <p className="mt-4 text-xs text-zinc-500">
         Revenue sums <span className="text-zinc-400">totals.total</span> for paid and fulfilled orders. Refunded and
-        cancelled orders are excluded.
+        cancelled orders are excluded. Estimated margin uses admin COGS on known line items only.
       </p>
+
+      <div className="mt-10 grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <section className="border border-zinc-800 bg-zinc-900 px-6 py-6">
+          <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-zinc-500">Contribution</p>
+          <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div>
+              <p className="text-xs text-zinc-500">Revenue · 7 days</p>
+              <p className="mt-2 font-serif text-2xl text-zinc-100">{formatOrderMoney(analytics.windows.last7.revenue)}</p>
+            </div>
+            <div>
+              <p className="text-xs text-zinc-500">Est. margin · 7 days</p>
+              <p className="mt-2 font-serif text-2xl text-zinc-100">{formatMarginMoney(analytics.windows.last7.margin)}</p>
+            </div>
+            <div>
+              <p className="text-xs text-zinc-500">Revenue · 30 days</p>
+              <p className="mt-2 font-serif text-2xl text-zinc-100">{formatOrderMoney(analytics.windows.last30.revenue)}</p>
+            </div>
+            <div>
+              <p className="text-xs text-zinc-500">Est. margin · 30 days</p>
+              <p className="mt-2 font-serif text-2xl text-zinc-100">{formatMarginMoney(analytics.windows.last30.margin)}</p>
+            </div>
+          </div>
+        </section>
+      </div>
 
       <div className="mt-10 grid grid-cols-1 gap-4 lg:grid-cols-2">
         <section className="border border-zinc-800 bg-zinc-900">
@@ -93,6 +120,37 @@ export default async function AdminAnalyticsPage() {
         </section>
 
         <section className="border border-zinc-800 bg-zinc-900">
+          <header className="border-b border-zinc-800 px-6 py-5">
+            <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-zinc-500">Catalog</p>
+            <h2 className="mt-2 font-serif text-xl tracking-tight text-zinc-100">Top products by margin · 30 days</h2>
+          </header>
+          {analytics.topProductsByMargin.length === 0 ? (
+            <p className="px-6 py-8 text-sm text-zinc-500">No margin data in the last 30 days.</p>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-sm">
+                <thead className="border-b border-zinc-800 text-[10px] uppercase tracking-[0.18em] text-zinc-500">
+                  <tr>
+                    <th className="px-6 py-3 font-medium">Product</th>
+                    <th className="px-4 py-3 font-medium">Units</th>
+                    <th className="px-6 py-3 font-medium">Margin</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {analytics.topProductsByMargin.map((product) => (
+                    <tr key={`margin:${product.id}`} className="border-b border-zinc-800 last:border-b-0">
+                      <td className="px-6 py-4 text-zinc-100">{product.name}</td>
+                      <td className="px-4 py-4 text-zinc-400">{product.units}</td>
+                      <td className="px-6 py-4 text-zinc-300">{formatMarginMoney(product.margin)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
+
+        <section className="border border-zinc-800 bg-zinc-900 lg:col-span-2">
           <header className="flex items-end justify-between gap-4 border-b border-zinc-800 px-6 py-5">
             <div>
               <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-zinc-500">Exceptions</p>

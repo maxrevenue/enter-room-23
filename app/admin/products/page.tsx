@@ -19,6 +19,7 @@ import {
   productImageUrl,
   quantityOf,
 } from '@/lib/admin-catalog'
+import { formatMarginPct, productMarginPct } from '@/lib/admin-margin'
 
 export const dynamic = 'force-dynamic'
 
@@ -96,6 +97,7 @@ export default async function AdminProductsPage({
               <th className="px-4 py-3 font-medium">Image</th>
               <th className="px-4 py-3 font-medium">Name</th>
               <th className="px-4 py-3 font-medium">Price</th>
+              <th className="px-4 py-3 font-medium">Margin</th>
               <th className="px-4 py-3 font-medium">Qty</th>
               <th className="px-4 py-3 font-medium">Category</th>
               <th className="px-4 py-3 font-medium">Status</th>
@@ -112,6 +114,7 @@ export default async function AdminProductsPage({
               const low = isLowStock(product)
               const out = quantity === 0
               const imageUrl = productImageUrl(product)
+              const marginPct = productMarginPct(product)
 
               return (
                 <tr key={product.id} className="border-b border-zinc-800 last:border-b-0">
@@ -133,6 +136,7 @@ export default async function AdminProductsPage({
                     {product.name}
                   </td>
                   <td className="px-4 py-4 text-zinc-300">{formatMoney(product.price)}</td>
+                  <td className="px-4 py-4 text-zinc-400">{formatMarginPct(marginPct)}</td>
                   <td className="px-4 py-4">
                     <form action={updateQuantity} className="flex items-center gap-2">
                       <input type="hidden" name="id" value={product.id} />

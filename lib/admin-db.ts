@@ -34,6 +34,7 @@ export const PRODUCT_OVERLAY_FIELDS = [
   'name',
   'slug',
   'price',
+  'cogs',
   'quantity',
   'inventoryStatus',
   'category',
@@ -74,6 +75,7 @@ export type ProductDoc = {
   slug?: string
   name?: string
   price?: number
+  cogs?: number
   quantity?: number
   inventoryStatus?: string
   category?: string
