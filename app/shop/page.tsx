@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import ProductCard from '@/components/product-card'
-import ShopCategoryBar from '@/components/ShopCategoryBar'
 import { groupProductsByCategory, STORE_CATEGORIES } from '@/lib/categories'
 import { listStorefrontProducts } from '@/lib/admin-catalog'
 
@@ -47,11 +46,7 @@ export default async function ShopPage() {
             </p>
           </div>
         </header>
-      </section>
 
-      <ShopCategoryBar active="all" />
-
-      <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-8 md:pb-24 lg:pb-32">
         {products.length === 0 ? (
           <p className="mt-16 text-center text-sm leading-relaxed text-theme-muted">
             The current edit is being revised. Please check back shortly.

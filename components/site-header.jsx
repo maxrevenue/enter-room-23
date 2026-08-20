@@ -23,11 +23,8 @@ const DESKTOP_UTILITY_LINKS = [
   { href: '/about', label: 'About' },
 ]
 
-function linkClass(active, compact = false) {
-  const size = compact
-    ? 'text-[10px] tracking-[0.16em] sm:tracking-[0.2em]'
-    : 'text-[11px] tracking-[0.16em] sm:tracking-[0.18em]'
-  return `font-medium uppercase transition-colors duration-300 ${size} ${
+function linkClass(active) {
+  return `font-medium uppercase transition-colors duration-300 text-[11px] tracking-[0.16em] sm:tracking-[0.18em] ${
     active ? 'text-theme-accent' : 'text-theme-muted hover:text-theme-text'
   }`
 }
@@ -127,25 +124,6 @@ export default function SiteHeader() {
             </div>
           </div>
         </div>
-
-        <nav
-          className="hidden border-b border-theme-border bg-theme-bg/95 backdrop-blur-xl md:block"
-          aria-label="Collections"
-        >
-          <ul className="mx-auto flex h-11 max-w-7xl items-center justify-between gap-4 overflow-x-auto px-6">
-            {STORE_NAV_LINKS.map((link) => (
-              <li key={link.href} className="shrink-0">
-                <Link
-                  href={link.href}
-                  className={linkClass(isActive(link.href), true)}
-                  aria-current={isActive(link.href) ? 'page' : undefined}
-                >
-                  {link.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
       </header>
 
       {drawerOpen && (

@@ -162,8 +162,6 @@ export const STORE_NAV_LINKS = [
   },
 ]
 
-export const SHOP_CATEGORY_BAR_LINKS = STORE_NAV_LINKS
-
 export function sortCuratedStorefrontProducts<T extends { id: string; category?: string; name?: string }>(
   products: T[],
   excludeIds: string[] = [],

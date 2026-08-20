@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import ProductCard from '@/components/product-card'
-import ShopCategoryBar from '@/components/ShopCategoryBar'
 import { resolveCollectionSlug } from '@/lib/categories'
 import { listStorefrontProductsByCollection } from '@/lib/admin-catalog'
 import {
@@ -48,7 +47,6 @@ export default async function CollectionPage({ params }: PageProps) {
 
   const title = meta.title || titleFromSlug(resolvedSlug)
   const countLabel = formatCount(products.length)
-  const barSlug = COLLECTIONS[resolvedSlug] ? resolvedSlug : slug
 
   return (
     <main className="min-h-screen bg-theme-bg text-theme-text">
@@ -63,8 +61,6 @@ export default async function CollectionPage({ params }: PageProps) {
           {meta.subtitle}
         </p>
       </section>
-
-      <ShopCategoryBar active={barSlug} />
 
       <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-8 md:pb-24 lg:pb-32">
         {products.length === 0 ? (
