@@ -1,4 +1,4 @@
-import { describe, it, before, after } from 'node:test'
+import { describe, it, before, after, beforeEach } from 'node:test'
 import assert from 'node:assert/strict'
 import {
   copyFileSync,
@@ -20,12 +20,21 @@ function read(rel) {
   return readFileSync(join(root, rel), 'utf8')
 }
 
+function toRequest(input, init) {
+  if (input instanceof Request && init === undefined) return input
+  if (input instanceof Request) return new Request(input, init)
+  const href = typeof input === 'string' ? input : input.href
+  return new Request(href, init)
+}
+
 describe('polsia worker proxy', () => {
-  it('defines an early /polsia hostname rewrite in src/index.js', () => {
+  it('strips /polsia, overrides Host, and rewrites Polsia redirects', () => {
     const source = read('src/index.js')
-    assert.match(source, /url\.pathname\.startsWith\(["']\/polsia["']\)/)
-    assert.match(source, /url\.hostname\s*=\s*["']room23\.polsia\.app["']/)
-    assert.match(source, /return\s+fetch\(url,\s*request\)/)
+    assert.match(source, /pathname === POLSIA_PREFIX \|\| pathname\.startsWith\(`\$\{POLSIA_PREFIX\}\/`\)/)
+    assert.match(source, /headers\.set\(["']Host["'],\s*POLSIA_HOST\)/)
+    assert.match(source, /stripPolsiaPrefix/)
+    assert.match(source, /rewritePolsiaLocation/)
+    assert.match(source, /redirect:\s*["']manual["']/)
     assert.match(source, /openNextHandler\.fetch\(request,\s*env,\s*ctx\)/)
   })
 
@@ -91,6 +100,7 @@ describe('polsia fetch routing behavior', () => {
   let handler
   let proxied
   let originalFetch
+  let upstream
 
   before(async () => {
     tempDir = mkdtempSync(join(tmpdir(), 'polsia-fetch-'))
@@ -112,13 +122,23 @@ describe('polsia fetch routing behavior', () => {
 
     originalFetch = globalThis.fetch
     proxied = []
-    globalThis.fetch = async (url, request) => {
-      const href = typeof url === 'string' ? url : url.href
-      proxied.push({ href, method: request?.method })
-      return new Response('proxied')
+    upstream = async () => new Response('proxied')
+    globalThis.fetch = async (input, init) => {
+      const req = toRequest(input, init)
+      proxied.push({
+        href: req.url,
+        method: req.method,
+        host: req.headers.get('Host'),
+      })
+      return upstream(req)
     }
 
     handler = (await import(pathToFileURL(join(tempDir, 'index.js')).href)).default
+  })
+
+  beforeEach(() => {
+    proxied.length = 0
+    upstream = async () => new Response('proxied')
   })
 
   after(() => {
@@ -128,22 +148,50 @@ describe('polsia fetch routing behavior', () => {
     }
   })
 
-  it('proxies /polsia and /polsia/* to room23.polsia.app', async () => {
+  it('strips /polsia from the proxied pathname', async () => {
+    const rootRes = await handler.fetch(new Request('https://room23.net/polsia'), {}, {})
+    assert.equal(await rootRes.text(), 'proxied')
+    assert.equal(proxied.length, 1)
+    assert.equal(proxied[0].href, 'https://room23.polsia.app/')
+
     proxied.length = 0
-    const res = await handler.fetch(
-      new Request('https://room23.net/polsia/lobby?x=1', { method: 'GET' }),
+    const nested = await handler.fetch(
+      new Request('https://room23.net/polsia/login?next=/app', { method: 'GET' }),
       {},
       {},
     )
-    assert.equal(await res.text(), 'proxied')
+    assert.equal(await nested.text(), 'proxied')
     assert.equal(proxied.length, 1)
-    assert.equal(proxied[0].href, 'https://room23.polsia.app/polsia/lobby?x=1')
+    assert.equal(proxied[0].href, 'https://room23.polsia.app/login?next=/app')
   })
 
-  it('leaves non-polsia storefront paths untouched', async () => {
-    proxied.length = 0
+  it('overrides Host to room23.polsia.app', async () => {
+    await handler.fetch(new Request('https://room23.net/polsia/lobby'), {}, {})
+    assert.equal(proxied.length, 1)
+    assert.equal(proxied[0].host, 'room23.polsia.app')
+  })
+
+  it('rewrites Polsia Location redirects back onto /polsia', async () => {
+    upstream = async () =>
+      new Response(null, {
+        status: 302,
+        headers: { Location: 'https://room23.polsia.app/login' },
+      })
+
+    const res = await handler.fetch(new Request('https://room23.net/polsia'), {}, {})
+    assert.equal(res.status, 302)
+    assert.equal(res.headers.get('Location'), 'https://room23.net/polsia/login')
+  })
+
+  it('falls through to OpenNext for non-polsia storefront paths', async () => {
     const res = await handler.fetch(new Request('https://room23.net/shop'), {}, {})
     assert.equal(await res.text(), 'storefront:/shop')
+    assert.equal(proxied.length, 0)
+  })
+
+  it('does not treat /polsiafoo as a Polsia route', async () => {
+    const res = await handler.fetch(new Request('https://room23.net/polsiafoo'), {}, {})
+    assert.equal(await res.text(), 'storefront:/polsiafoo')
     assert.equal(proxied.length, 0)
   })
 })
