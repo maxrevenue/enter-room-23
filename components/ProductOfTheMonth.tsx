@@ -27,10 +27,10 @@ type ProductOfTheMonthProps = {
 }
 
 const storefrontCtaPrimary =
-  'inline-flex min-h-11 items-center justify-center rounded-none bg-primary px-7 py-3 text-[11px] font-medium uppercase tracking-[0.2em] text-primary-foreground transition-colors duration-300 hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-theme-border'
+  'inline-flex min-h-11 w-full items-center justify-center rounded-none bg-primary px-7 py-3 text-[11px] font-medium uppercase tracking-[0.16em] text-primary-foreground transition-colors duration-300 hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-theme-border sm:w-auto sm:tracking-[0.2em]'
 
 const storefrontCtaSecondary =
-  'inline-flex min-h-11 items-center justify-center rounded-none border border-theme-border px-7 py-3 text-[11px] font-medium uppercase tracking-[0.2em] text-theme-text transition-colors duration-300 hover:border-theme-muted hover:bg-theme-surface focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-theme-border'
+  'inline-flex min-h-11 w-full items-center justify-center rounded-none border border-theme-border px-7 py-3 text-[11px] font-medium uppercase tracking-[0.16em] text-theme-text transition-colors duration-300 hover:border-theme-muted hover:bg-theme-surface focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-theme-border sm:w-auto sm:tracking-[0.2em]'
 
 export default function ProductOfTheMonth({ product = null, offer = null }: ProductOfTheMonthProps) {
   if (!product) return null
@@ -46,11 +46,11 @@ export default function ProductOfTheMonth({ product = null, offer = null }: Prod
   return (
     <section
       aria-labelledby="product-of-month-heading"
-      className="border-t border-theme-border px-5 py-16 sm:px-8 md:py-24 lg:py-32"
+      className="border-t border-theme-border px-4 py-12 sm:px-8 md:py-24 lg:py-32"
     >
       <div className="mx-auto max-w-6xl">
         <header className="mb-10 max-w-md sm:mb-14 lg:mb-16">
-          <p className="text-[10px] font-medium uppercase tracking-[0.3em] text-theme-muted">
+          <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-theme-muted sm:tracking-[0.28em]">
             Product of the Month
           </p>
         </header>

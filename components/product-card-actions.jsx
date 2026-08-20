@@ -2,6 +2,7 @@
 
 import { useCart } from '@/lib/cart-context'
 import { INVENTORY_STATUS } from '@/lib/inventory'
+import { ShoppingBag } from 'lucide-react'
 
 export default function ProductCardActions({ product }) {
   const { addToCart } = useCart()
@@ -28,9 +29,11 @@ export default function ProductCardActions({ product }) {
       type="button"
       onClick={handleQuickAdd}
       disabled={soldOut}
-      className="min-h-11 min-w-[4.75rem] px-1 text-left text-[10px] font-medium uppercase tracking-[0.2em] text-theme-muted transition-colors duration-300 hover:text-theme-text focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-theme-border disabled:cursor-not-allowed disabled:text-theme-muted/70 disabled:hover:text-theme-muted/70"
+      aria-label={soldOut ? 'Unavailable' : 'Add to cart'}
+      className="inline-flex min-h-11 min-w-11 items-center justify-center px-1 text-[10px] font-medium uppercase tracking-[0.16em] text-theme-muted transition-colors duration-300 hover:text-theme-text focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-theme-border disabled:cursor-not-allowed disabled:text-theme-muted/70 disabled:hover:text-theme-muted/70 min-[340px]:min-w-[4.75rem] min-[340px]:justify-end min-[340px]:text-left sm:tracking-[0.2em]"
     >
-      {soldOut ? 'Unavailable' : 'Add'}
+      <ShoppingBag className="h-4 w-4 min-[340px]:hidden" aria-hidden="true" />
+      <span className="hidden min-[340px]:inline">{soldOut ? 'Unavailable' : 'Add'}</span>
     </button>
   )
 }

@@ -52,8 +52,8 @@ export default async function CollectionPage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen bg-theme-bg text-theme-text">
-      <section className="px-5 py-16 text-center sm:px-8 md:py-24 lg:py-32">
-        <p className="text-[10px] font-medium uppercase tracking-[0.3em] text-theme-muted">
+      <section className="px-4 py-12 text-center sm:px-8 md:py-24 lg:py-32">
+        <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-theme-muted sm:tracking-[0.28em]">
           {countLabel}
         </p>
         <h1 className="mt-5 font-serif text-3xl font-light tracking-tight text-theme-text sm:text-4xl md:text-[2.75rem]">
@@ -64,9 +64,9 @@ export default async function CollectionPage({ params }: PageProps) {
         </p>
       </section>
 
-      <section className="mx-auto max-w-6xl px-5 pb-16 sm:px-8 md:pb-24 lg:pb-32">
-        <ShopCategoryBar active={barSlug} />
+      <ShopCategoryBar active={barSlug} />
 
+      <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-8 md:pb-24 lg:pb-32">
         {products.length === 0 ? (
           <div className="mx-auto mt-16 max-w-md text-center">
             <p className="text-sm leading-relaxed text-theme-muted">
@@ -80,7 +80,7 @@ export default async function CollectionPage({ params }: PageProps) {
             </Link>
           </div>
         ) : (
-          <ul className="mt-12 grid grid-cols-1 gap-x-6 gap-y-10 sm:mt-16 sm:grid-cols-2 md:gap-y-12 lg:grid-cols-3 lg:gap-x-8">
+          <ul className="mt-12 grid grid-cols-2 gap-x-3 gap-y-8 sm:mt-16 sm:gap-x-6 sm:gap-y-10 md:gap-y-12 lg:grid-cols-3 lg:gap-x-8">
             {products.map((product) => (
               <li key={product.id}>
                 <ProductCard product={product} />

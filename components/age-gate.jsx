@@ -38,6 +38,11 @@ function AgeGateHuman() {
     Cookies.set('room23_age_verified', 'true', cookieOpts)
     Cookies.set('age_verified', 'true', cookieOpts)
     setStatus('verified')
+    try {
+      window.dispatchEvent(new Event('room23-age-verified'))
+    } catch {
+      /* ignore */
+    }
   }
 
   if (status === 'loading') {
@@ -57,11 +62,11 @@ function AgeGateHuman() {
       >
         <p
           id="age-gate-title"
-          className="mb-2 font-serif text-2xl tracking-[0.25em] text-theme-text"
+          className="mb-2 font-serif text-2xl tracking-[0.12em] text-theme-text sm:tracking-[0.2em]"
         >
           ROOM 23
         </p>
-        <h2 className="mb-5 text-xs font-semibold tracking-[0.2em] text-theme-accent">
+        <h2 className="mb-5 text-xs font-semibold tracking-[0.16em] text-theme-accent sm:tracking-[0.2em]">
           AGE VERIFICATION REQUIRED
         </h2>
         <p

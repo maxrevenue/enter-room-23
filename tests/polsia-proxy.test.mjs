@@ -1,4 +1,4 @@
-import { describe, it, before, after, beforeEach } from 'node:test'
+import { describe, it, before, after } from 'node:test'
 import assert from 'node:assert/strict'
 import {
   copyFileSync,
@@ -20,22 +20,14 @@ function read(rel) {
   return readFileSync(join(root, rel), 'utf8')
 }
 
-function toRequest(input, init) {
-  if (input instanceof Request && init === undefined) return input
-  if (input instanceof Request) return new Request(input, init)
-  const href = typeof input === 'string' ? input : input.href
-  return new Request(href, init)
-}
-
-describe('polsia worker proxy', () => {
-  it('strips /polsia, overrides Host, and rewrites Polsia redirects', () => {
+describe('open-next worker wrapper', () => {
+  it('passes all requests through to openNext with no /polsia proxy', () => {
     const source = read('src/index.js')
-    assert.match(source, /pathname === POLSIA_PREFIX \|\| pathname\.startsWith\(`\$\{POLSIA_PREFIX\}\/`\)/)
-    assert.match(source, /headers\.set\(["']Host["'],\s*POLSIA_HOST\)/)
-    assert.match(source, /stripPolsiaPrefix/)
-    assert.match(source, /rewritePolsiaLocation/)
-    assert.match(source, /redirect:\s*["']manual["']/)
-    assert.match(source, /openNextHandler\.fetch\(request,\s*env,\s*ctx\)/)
+    assert.match(source, /import\s+openNext\s+from\s+["']\.\/opennext-worker\.js["']/)
+    assert.match(source, /return\s+openNext\.fetch\(request,\s*env,\s*ctx\)/)
+    assert.doesNotMatch(source, /pathname\.startsWith/)
+    assert.doesNotMatch(source, /room23\.polsia\.app/)
+    assert.doesNotMatch(source, /headers\.set\(["']Host["']/)
   })
 
   it('leaves wrangler.jsonc main on the OpenNext worker path', () => {
@@ -52,7 +44,7 @@ describe('polsia worker proxy', () => {
   })
 
   it('wraps a generated OpenNext worker without mutating the original handler body', () => {
-    const dir = mkdtempSync(join(tmpdir(), 'polsia-wrap-'))
+    const dir = mkdtempSync(join(tmpdir(), 'opennext-wrap-'))
     const openNextDir = join(dir, '.open-next')
     const srcDir = join(dir, 'src')
     const scriptsDir = join(dir, 'scripts')
@@ -81,9 +73,8 @@ describe('polsia worker proxy', () => {
     })
     assert.equal(result.status, 0, result.stderr || result.stdout)
     assert.equal(readFileSync(join(openNextDir, 'opennext-worker.js'), 'utf8'), originalWorker)
-    assert.match(readFileSync(join(openNextDir, 'worker.js'), 'utf8'), /\/polsia/)
+    assert.match(readFileSync(join(openNextDir, 'worker.js'), 'utf8'), /import\s+openNext\s+from/)
 
-    // Second wrap is idempotent and keeps the OpenNext original intact.
     const result2 = spawnSync(process.execPath, [join(scriptsDir, 'wrap-opennext-worker.mjs')], {
       cwd: dir,
       encoding: 'utf8',
@@ -95,15 +86,14 @@ describe('polsia worker proxy', () => {
   })
 })
 
-describe('polsia fetch routing behavior', () => {
+describe('open-next fetch fallthrough', () => {
   let tempDir
   let handler
-  let proxied
   let originalFetch
-  let upstream
+  let fetchCalls
 
   before(async () => {
-    tempDir = mkdtempSync(join(tmpdir(), 'polsia-fetch-'))
+    tempDir = mkdtempSync(join(tmpdir(), 'opennext-fetch-'))
     writeFileSync(
       join(tempDir, 'opennext-worker.js'),
       [
@@ -121,24 +111,13 @@ describe('polsia fetch routing behavior', () => {
     copyFileSync(join(root, 'src/index.js'), join(tempDir, 'index.js'))
 
     originalFetch = globalThis.fetch
-    proxied = []
-    upstream = async () => new Response('proxied')
-    globalThis.fetch = async (input, init) => {
-      const req = toRequest(input, init)
-      proxied.push({
-        href: req.url,
-        method: req.method,
-        host: req.headers.get('Host'),
-      })
-      return upstream(req)
+    fetchCalls = []
+    globalThis.fetch = async (...args) => {
+      fetchCalls.push(args)
+      return new Response('should-not-proxy')
     }
 
     handler = (await import(pathToFileURL(join(tempDir, 'index.js')).href)).default
-  })
-
-  beforeEach(() => {
-    proxied.length = 0
-    upstream = async () => new Response('proxied')
   })
 
   after(() => {
@@ -148,50 +127,12 @@ describe('polsia fetch routing behavior', () => {
     }
   })
 
-  it('strips /polsia from the proxied pathname', async () => {
-    const rootRes = await handler.fetch(new Request('https://room23.net/polsia'), {}, {})
-    assert.equal(await rootRes.text(), 'proxied')
-    assert.equal(proxied.length, 1)
-    assert.equal(proxied[0].href, 'https://room23.polsia.app/')
-
-    proxied.length = 0
-    const nested = await handler.fetch(
-      new Request('https://room23.net/polsia/login?next=/app', { method: 'GET' }),
-      {},
-      {},
-    )
-    assert.equal(await nested.text(), 'proxied')
-    assert.equal(proxied.length, 1)
-    assert.equal(proxied[0].href, 'https://room23.polsia.app/login?next=/app')
-  })
-
-  it('overrides Host to room23.polsia.app', async () => {
-    await handler.fetch(new Request('https://room23.net/polsia/lobby'), {}, {})
-    assert.equal(proxied.length, 1)
-    assert.equal(proxied[0].host, 'room23.polsia.app')
-  })
-
-  it('rewrites Polsia Location redirects back onto /polsia', async () => {
-    upstream = async () =>
-      new Response(null, {
-        status: 302,
-        headers: { Location: 'https://room23.polsia.app/login' },
-      })
-
-    const res = await handler.fetch(new Request('https://room23.net/polsia'), {}, {})
-    assert.equal(res.status, 302)
-    assert.equal(res.headers.get('Location'), 'https://room23.net/polsia/login')
-  })
-
-  it('falls through to OpenNext for non-polsia storefront paths', async () => {
-    const res = await handler.fetch(new Request('https://room23.net/shop'), {}, {})
-    assert.equal(await res.text(), 'storefront:/shop')
-    assert.equal(proxied.length, 0)
-  })
-
-  it('does not treat /polsiafoo as a Polsia route', async () => {
-    const res = await handler.fetch(new Request('https://room23.net/polsiafoo'), {}, {})
-    assert.equal(await res.text(), 'storefront:/polsiafoo')
-    assert.equal(proxied.length, 0)
+  it('forwards every path to OpenNext, including former /polsia routes', async () => {
+    fetchCalls.length = 0
+    for (const path of ['/shop', '/polsia', '/polsia/login']) {
+      const res = await handler.fetch(new Request(`https://room23.net${path}`), {}, {})
+      assert.equal(await res.text(), `storefront:${path}`)
+    }
+    assert.equal(fetchCalls.length, 0)
   })
 })

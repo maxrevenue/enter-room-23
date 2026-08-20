@@ -10,8 +10,8 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <main className="min-h-screen bg-theme-bg text-theme-text">
-      <section className="mx-auto max-w-4xl px-5 py-16 sm:px-8 sm:py-20 md:py-24">
-        <p className="text-[10px] font-medium uppercase tracking-[0.3em] text-theme-muted">
+      <section className="mx-auto max-w-4xl px-4 py-12 sm:px-8 sm:py-20 md:py-24">
+        <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-theme-muted sm:tracking-[0.28em]">
           Client Services
         </p>
         <h1 className="mt-5 font-serif text-3xl tracking-tight text-theme-text sm:text-4xl md:text-[2.75rem]">

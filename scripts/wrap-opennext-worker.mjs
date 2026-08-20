@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * After `opennextjs-cloudflare build`, wrap the generated Worker so `/polsia`
- * is proxied without changing wrangler.jsonc (main stays `.open-next/worker.js`).
+ * After `opennextjs-cloudflare build`, install the custom Worker entry from
+ * `src/index.js` without changing wrangler.jsonc (main stays `.open-next/worker.js`).
  *
  * Layout after wrap:
  *   .open-next/opennext-worker.js  — original OpenNext entry

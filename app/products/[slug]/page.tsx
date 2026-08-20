@@ -3,6 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { notFound, permanentRedirect } from 'next/navigation'
 import ProductAddToCart from '@/components/product-add-to-cart'
+import ProductStickyBar from '@/components/product-sticky-bar'
 import ProductCard from '@/components/product-card'
 import { SITE_CONFIG } from '@/config/site'
 import { INVENTORY_STATUS } from '@/lib/inventory'
@@ -100,8 +101,8 @@ export default async function ProductPage({ params, searchParams }: PageProps) {
 
   return (
     <div className="bg-theme-bg text-theme-text">
-      <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 md:py-20 lg:py-24">
-        <nav className="mb-8 text-[10px] uppercase tracking-[0.2em] text-theme-muted sm:mb-10">
+      <div className="mx-auto max-w-6xl px-4 py-12 pb-28 sm:px-6 md:py-20 lg:py-24">
+        <nav className="mb-8 text-[10px] uppercase tracking-[0.16em] text-theme-muted sm:mb-10 sm:tracking-[0.2em]">
           <Link href="/shop" className="transition-colors hover:text-theme-text/80">
             Shop
           </Link>
@@ -124,7 +125,7 @@ export default async function ProductPage({ params, searchParams }: PageProps) {
                 />
               ) : (
                 <div className="flex h-full w-full items-center justify-center">
-                  <span className="text-[10px] font-medium uppercase tracking-[0.32em] text-theme-muted/70">
+                  <span className="text-[10px] font-medium uppercase tracking-[0.16em] text-theme-muted/70 sm:tracking-[0.28em]">
                     Room 23
                   </span>
                 </div>
@@ -132,11 +133,11 @@ export default async function ProductPage({ params, searchParams }: PageProps) {
             </div>
 
             {gallery.length > 1 ? (
-              <ul className="mt-3 flex gap-2 sm:mt-4 sm:gap-3">
+              <ul className="mt-3 flex gap-2 overflow-x-auto sm:mt-4 sm:gap-3">
                 {gallery.map((thumb: { url: string; alt: string }, index: number) => {
                   const isActive = index === activeIndex
                   return (
-                    <li key={`${thumb.url}-${index}`} className="w-16 flex-shrink-0 sm:w-20">
+                    <li key={`${thumb.url}-${index}`} className="w-11 flex-shrink-0 sm:w-20">
                       <Link
                         href={`${productHref(product)}?image=${index}`}
                         scroll={false}
@@ -163,7 +164,7 @@ export default async function ProductPage({ params, searchParams }: PageProps) {
           </div>
 
           <div className="flex flex-col lg:pt-2">
-            <p className="text-[10px] font-medium uppercase tracking-[0.28em] text-theme-muted">
+            <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-theme-muted sm:tracking-[0.28em]">
               {formatCategory(product.category)}
             </p>
             <h1 className="mt-3 font-serif text-3xl font-light tracking-tight text-theme-text sm:text-4xl">
@@ -190,9 +191,9 @@ export default async function ProductPage({ params, searchParams }: PageProps) {
               </ul>
             ) : null}
 
-            <div className="mt-10 max-w-md">
+            <div id="pdp-atc" className="mt-10 max-w-md">
               {soldOut ? (
-                <p className="border border-theme-border px-6 py-3.5 text-center text-[11px] uppercase tracking-[0.2em] text-theme-muted">
+                <p className="border border-theme-border px-6 py-3.5 text-center text-[11px] uppercase tracking-[0.16em] text-theme-muted sm:tracking-[0.2em]">
                   Currently unavailable
                 </p>
               ) : (
@@ -280,11 +281,14 @@ export default async function ProductPage({ params, searchParams }: PageProps) {
         </div>
 
         {related.length > 0 ? (
-          <section className="mt-16 border-t border-theme-border pt-12 sm:mt-20 sm:pt-16">
+          <section
+            id="pdp-related"
+            className="mt-16 border-t border-theme-border pt-12 sm:mt-20 sm:pt-16"
+          >
             <h2 className="mb-10 font-serif text-xl font-light tracking-tight text-theme-text sm:mb-12 sm:text-2xl">
               You may also like
             </h2>
-            <ul className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 md:gap-y-12 lg:grid-cols-3 lg:gap-x-8">
+            <ul className="grid grid-cols-2 gap-x-3 gap-y-8 sm:gap-x-6 sm:gap-y-10 md:gap-y-12 lg:grid-cols-3 lg:gap-x-8">
               {related.slice(0, 3).map((item) => (
                 <li key={item.id}>
                   <ProductCard product={item} />
@@ -292,8 +296,11 @@ export default async function ProductPage({ params, searchParams }: PageProps) {
               ))}
             </ul>
           </section>
-        ) : null}
+        ) : (
+          <div id="pdp-related" aria-hidden="true" />
+        )}
       </div>
+      <ProductStickyBar product={product} soldOut={soldOut} />
     </div>
   )
 }

@@ -4,7 +4,6 @@ import { CartProvider } from '@/lib/cart-context'
 import SiteShell from '@/components/site-shell'
 import AgeGate from '@/components/AgeGate'
 import DiscreetNewsletter from '@/components/DiscreetNewsletter'
-import ThemeSwitcher from '@/components/ThemeSwitcher'
 import { DEFAULT_PALETTE, THEME_INIT_SCRIPT } from '@/lib/theme-palettes'
 import './globals.css'
 
@@ -31,6 +30,12 @@ const cormorant = Cormorant_Garamond({
 const DEFAULT_TITLE = 'Premium Adult Wellness - Body-Safe Essentials | Room 23'
 const DEFAULT_DESCRIPTION =
   'Shop body-safe adult wellness essentials from Room 23: refined lubricants, intimate care, and discreet checkout. Considered pleasure. 18+ only.'
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+}
 
 export const metadata = {
   metadataBase: new URL('https://room23.net'),
@@ -94,7 +99,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <SiteShell>{children}</SiteShell>
           <DiscreetNewsletter />
         </CartProvider>
-        <ThemeSwitcher />
       </body>
     </html>
   )

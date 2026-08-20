@@ -3,10 +3,10 @@
 import Link from 'next/link'
 
 const SIZE_STYLES = {
-  sm: { fontSize: '0.85rem', letterSpacing: '0.28em' },
-  md: { fontSize: '1.1rem', letterSpacing: '0.3em' },
-  lg: { fontSize: '1.6rem', letterSpacing: '0.32em' },
-  xl: { fontSize: '2.4rem', letterSpacing: '0.38em' },
+  sm: { fontSize: '0.85rem', letterSpacing: '0.16em' },
+  md: { fontSize: '1.1rem', letterSpacing: '0.18em' },
+  lg: { fontSize: '1.6rem', letterSpacing: '0.24em' },
+  xl: { fontSize: '2.4rem', letterSpacing: '0.28em' },
 }
 
 export default function BrandLogo({

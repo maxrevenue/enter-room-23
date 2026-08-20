@@ -26,9 +26,9 @@ export default async function CollectionsPage() {
   const visibleCollections = collections.filter((collection) => collection.count > 0)
 
   return (
-    <main className="min-h-screen bg-theme-bg px-5 py-16 text-theme-text sm:px-8 md:py-24 lg:py-32">
+    <main className="min-h-screen bg-theme-bg px-4 py-12 text-theme-text sm:px-8 md:py-24 lg:py-32">
       <header className="mx-auto max-w-3xl text-center">
-        <p className="text-[10px] font-medium uppercase tracking-[0.3em] text-theme-muted">The edit</p>
+        <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-theme-muted sm:tracking-[0.28em]">The edit</p>
         <h1 className="mt-4 font-serif text-3xl font-light tracking-tight text-theme-text sm:text-4xl">
           Collections
         </h1>

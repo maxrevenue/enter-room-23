@@ -35,43 +35,43 @@ export default function ProductCard({ product }) {
             />
           ) : (
             <div className="flex h-full w-full flex-col items-center justify-center bg-theme-bg">
-              <span className="text-[10px] font-medium uppercase tracking-[0.32em] text-theme-muted/70">
+              <span className="text-[10px] font-medium uppercase tracking-[0.16em] text-theme-muted/70 sm:tracking-[0.28em]">
                 Room 23
               </span>
             </div>
           )}
 
           {product.badge && !soldOut ? (
-            <span className="absolute left-3 top-3 text-[10px] font-medium uppercase tracking-[0.28em] text-theme-muted">
+            <span className="absolute left-3 top-3 text-[10px] font-medium uppercase tracking-[0.16em] text-theme-muted sm:tracking-[0.28em]">
               {product.badge}
             </span>
           ) : null}
 
           {soldOut ? (
-            <span className="absolute inset-0 flex items-center justify-center bg-theme-bg/60 text-[10px] font-medium uppercase tracking-[0.22em] text-theme-muted">
+            <span className="absolute inset-0 flex items-center justify-center bg-theme-bg/60 text-[10px] font-medium uppercase tracking-[0.16em] text-theme-muted sm:tracking-[0.22em]">
               Sold out
             </span>
           ) : null}
         </div>
       </Link>
 
-      <div className="flex flex-1 flex-col px-0.5 pt-5 sm:pt-6">
+      <div className="flex flex-1 flex-col px-0.5 pt-4 sm:pt-6">
         <Link
           href={href}
           className="block focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-theme-border"
         >
-          <h3 className="font-serif text-[15px] font-normal leading-snug tracking-wide text-theme-text transition-colors duration-300 group-hover:text-theme-text/90 sm:text-base">
+          <h3 className="font-serif text-sm font-normal leading-snug tracking-wide text-theme-text transition-colors duration-300 group-hover:text-theme-text/90 sm:text-base">
             {product.name}
           </h3>
         </Link>
 
         {descriptor ? (
-          <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-theme-muted sm:mt-2.5">
+          <p className="mt-2 line-clamp-1 text-xs leading-relaxed text-theme-muted sm:mt-2.5 sm:line-clamp-2">
             {descriptor}
           </p>
         ) : null}
 
-        <div className="mt-auto flex items-center justify-between gap-4 pt-5 sm:pt-6">
+        <div className="mt-auto flex items-end justify-between gap-2 pt-4 sm:pt-6">
           <p className="text-sm tracking-wide text-theme-muted">{price}</p>
           <ProductCardActions product={product} />
         </div>
