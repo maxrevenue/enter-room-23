@@ -1,11 +1,13 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useCart } from '@/lib/cart-context'
+import { useDialogLock } from '@/lib/use-dialog-lock'
 import { Menu, X, ShoppingBag } from 'lucide-react'
 import BrandLogo from '@/components/brand-logo'
+import { ThemePalettePicker } from '@/components/ThemeSwitcher'
 import { STORE_NAV_LINKS } from '@/lib/categories'
 
 const HOUSE_LINKS = [
@@ -23,26 +25,26 @@ const DESKTOP_UTILITY_LINKS = [
 
 function linkClass(active, compact = false) {
   const size = compact
-    ? 'text-[10px] tracking-[0.2em]'
-    : 'text-[11px] tracking-[0.18em]'
+    ? 'text-[10px] tracking-[0.16em] sm:tracking-[0.2em]'
+    : 'text-[11px] tracking-[0.16em] sm:tracking-[0.18em]'
   return `font-medium uppercase transition-colors duration-300 ${size} ${
     active ? 'text-theme-accent' : 'text-theme-muted hover:text-theme-text'
   }`
 }
 
 export default function SiteHeader() {
-  const { cart, cartOpen, setCartOpen } = useCart()
+  const { cart, cartOpen, setCartOpen, setMenuOpen } = useCart()
   const pathname = usePathname()
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const menuButtonRef = useRef(null)
   const closeButtonRef = useRef(null)
+  const drawerRef = useRef(null)
   const itemCount = cart.reduce((s, i) => s + i.qty, 0)
 
-  const closeDrawer = () => {
+  const closeDrawer = useCallback(() => {
     setDrawerOpen(false)
-    menuButtonRef.current?.focus()
-  }
+  }, [])
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 8)
@@ -55,24 +57,22 @@ export default function SiteHeader() {
   }, [pathname])
 
   useEffect(() => {
-    if (!drawerOpen) return
-    const onKey = (e) => {
-      if (e.key === 'Escape') closeDrawer()
-    }
-    window.addEventListener('keydown', onKey)
-    document.body.style.overflow = 'hidden'
-    closeButtonRef.current?.focus()
-    return () => {
-      window.removeEventListener('keydown', onKey)
-      document.body.style.overflow = ''
-    }
-  }, [drawerOpen])
+    setMenuOpen(drawerOpen)
+    return () => setMenuOpen(false)
+  }, [drawerOpen, setMenuOpen])
+
+  useDialogLock({
+    open: drawerOpen,
+    onClose: closeDrawer,
+    containerRef: drawerRef,
+    initialFocusRef: closeButtonRef,
+  })
 
   const isActive = (href) => pathname === href || pathname?.startsWith(`${href}/`)
 
   return (
     <>
-      <header className="sticky top-0 z-40 w-full">
+      <header className="sticky top-0 z-40 w-full pt-[env(safe-area-inset-top)]">
         <div
           className={`w-full border-b bg-theme-bg/95 backdrop-blur-xl transition-colors duration-300 ${
             scrolled ? 'border-theme-border' : 'border-transparent md:border-theme-border'
@@ -157,11 +157,13 @@ export default function SiteHeader() {
             aria-label="Close menu"
           />
           <nav
+            ref={drawerRef}
             id="site-menu"
             role="dialog"
             aria-modal="true"
             aria-label="Site menu"
-            className="relative flex h-full w-full max-w-xs flex-col border-r border-theme-border bg-theme-bg sm:max-w-sm md:max-w-md"
+            tabIndex={-1}
+            className="relative flex h-full w-full max-w-xs flex-col border-r border-theme-border bg-theme-bg pt-[env(safe-area-inset-top)] sm:max-w-sm md:max-w-md"
           >
             <div className="flex items-center justify-between border-b border-theme-border px-5 py-4 md:px-8">
               <span onClick={closeDrawer}>
@@ -182,7 +184,7 @@ export default function SiteHeader() {
             </div>
 
             <div className="flex flex-1 flex-col overflow-y-auto px-5 py-8 md:px-8 md:py-10">
-              <p className="mb-5 text-[10px] font-medium uppercase tracking-[0.28em] text-theme-muted">
+              <p className="mb-5 text-[10px] font-medium uppercase tracking-[0.16em] text-theme-muted sm:tracking-[0.28em]">
                 Collections
               </p>
               <ul className="flex flex-col">
@@ -219,7 +221,7 @@ export default function SiteHeader() {
               </ul>
 
               <div className="mt-10 border-t border-theme-border pt-8 md:mt-12">
-                <p className="mb-4 text-[10px] font-medium uppercase tracking-[0.28em] text-theme-muted">
+                <p className="mb-4 text-[10px] font-medium uppercase tracking-[0.16em] text-theme-muted sm:tracking-[0.28em]">
                   The house
                 </p>
                 <ul className="flex flex-col">
@@ -243,28 +245,29 @@ export default function SiteHeader() {
               </div>
             </div>
 
-            <div className="border-t border-theme-border px-5 py-8 md:px-8">
-              <p className="mb-6 text-[10px] uppercase leading-relaxed tracking-[0.2em] text-theme-muted">
+            <div className="border-t border-theme-border px-5 py-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] md:px-8">
+              <p className="mb-6 text-[10px] uppercase leading-relaxed tracking-[0.16em] text-theme-muted sm:tracking-[0.2em]">
                 Considered pleasure.
                 <br />
                 For adults 18+ only.
               </p>
-              <div className="flex gap-6">
+              <div className="mb-6 flex gap-6">
                 <Link
                   href="/privacy"
                   onClick={closeDrawer}
-                  className="text-[10px] uppercase tracking-[0.18em] text-theme-muted transition-colors hover:text-theme-text/80"
+                  className="inline-flex min-h-11 items-center text-[10px] uppercase tracking-[0.18em] text-theme-muted transition-colors hover:text-theme-text/80"
                 >
                   Privacy
                 </Link>
                 <Link
                   href="/terms"
                   onClick={closeDrawer}
-                  className="text-[10px] uppercase tracking-[0.18em] text-theme-muted transition-colors hover:text-theme-text/80"
+                  className="inline-flex min-h-11 items-center text-[10px] uppercase tracking-[0.18em] text-theme-muted transition-colors hover:text-theme-text/80"
                 >
                   Terms
                 </Link>
               </div>
+              <ThemePalettePicker />
             </div>
           </nav>
         </div>

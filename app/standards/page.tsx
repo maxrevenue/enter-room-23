@@ -11,9 +11,9 @@ export const metadata: Metadata = {
 
 export default function StandardsPage() {
   return (
-    <main className="min-h-screen bg-theme-bg px-6 py-16 text-theme-text md:py-24">
+    <main className="min-h-screen bg-theme-bg px-4 py-12 text-theme-text md:py-24">
       <article className="mx-auto max-w-3xl">
-        <p className="text-[10px] uppercase tracking-[0.28em] text-theme-muted">Quality</p>
+        <p className="text-[10px] uppercase tracking-[0.16em] text-theme-muted sm:tracking-[0.28em]">Quality</p>
         <h1 className="mt-4 font-serif text-3xl md:text-4xl">Materials &amp; Standards</h1>
         <p className="mt-6 text-sm leading-relaxed text-theme-muted">
           Every piece in the Room 23 edit is selected for body-safe materials, clear care guidance,

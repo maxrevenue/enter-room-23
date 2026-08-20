@@ -16,10 +16,10 @@ export const metadata: Metadata = {
 }
 
 const storefrontCtaPrimary =
-  'inline-flex min-h-12 items-center justify-center rounded-none bg-primary px-10 py-3.5 text-[11px] font-medium uppercase tracking-[0.24em] text-primary-foreground transition-colors duration-300 hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-theme-border'
+  'inline-flex min-h-12 w-full items-center justify-center rounded-none bg-primary px-10 py-3.5 text-[11px] font-medium uppercase tracking-[0.16em] text-primary-foreground transition-colors duration-300 hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-theme-border sm:w-auto sm:tracking-[0.24em]'
 
 const storefrontCtaSecondary =
-  'inline-flex min-h-12 items-center justify-center rounded-none border border-theme-border px-10 py-3.5 text-[11px] font-medium uppercase tracking-[0.24em] text-theme-text transition-colors duration-300 hover:border-theme-muted hover:bg-theme-surface focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-theme-border'
+  'inline-flex min-h-12 w-full items-center justify-center rounded-none border border-theme-border px-10 py-3.5 text-[11px] font-medium uppercase tracking-[0.16em] text-theme-text transition-colors duration-300 hover:border-theme-muted hover:bg-theme-surface focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-theme-border sm:w-auto sm:tracking-[0.24em]'
 
 export default async function HomePage() {
   const [productOfTheMonth, storefrontProducts] = await Promise.all([
@@ -36,7 +36,7 @@ export default async function HomePage() {
     <div className="bg-theme-bg text-theme-text">
       <section
         aria-labelledby="hero-title"
-        className="relative flex min-h-[80vh] flex-col items-center justify-center overflow-hidden px-5 py-16 text-center sm:min-h-[85vh] sm:px-8 md:py-24 lg:py-32"
+        className="relative flex min-h-[58svh] flex-col items-center justify-center overflow-hidden px-4 py-12 text-center sm:min-h-[75vh] sm:px-8 md:min-h-[85vh] md:py-24 lg:py-32"
       >
         <div
           aria-hidden="true"
@@ -54,7 +54,7 @@ export default async function HomePage() {
         <div className="relative z-10 mx-auto flex max-w-3xl flex-col items-center">
           <h1
             id="hero-title"
-            className="font-serif text-[2.85rem] font-light leading-none tracking-[0.32em] text-theme-text sm:text-6xl md:text-7xl lg:text-[5.25rem]"
+            className="font-serif text-[2.35rem] font-light leading-none tracking-[0.12em] text-theme-text sm:text-6xl sm:tracking-[0.24em] md:text-7xl md:tracking-[0.32em] lg:text-[5.25rem]"
           >
             ROOM 23
           </h1>
@@ -75,13 +75,13 @@ export default async function HomePage() {
 
       <section
         aria-labelledby="featured-heading"
-        className="border-t border-theme-border px-5 py-16 sm:px-8 md:py-24 lg:py-32"
+        className="border-t border-theme-border px-4 py-12 sm:px-8 md:py-24 lg:py-32"
       >
         <div className="mx-auto max-w-6xl">
           <header className="mb-12 sm:mb-16 md:mb-20">
             <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between md:gap-12">
               <div className="max-w-xl">
-                <p className="text-[10px] font-medium uppercase tracking-[0.3em] text-theme-muted">
+                <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-theme-muted sm:tracking-[0.28em]">
                   The collection
                 </p>
                 <h2
@@ -108,7 +108,7 @@ export default async function HomePage() {
             />
           </header>
 
-          <ul className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 md:gap-y-12 lg:grid-cols-4 lg:gap-x-8">
+          <ul className="grid grid-cols-2 gap-x-3 gap-y-8 sm:gap-x-6 sm:gap-y-10 md:gap-y-12 lg:grid-cols-4 lg:gap-x-8">
             {editTiles.map((product) => (
               <li key={product.id}>
                 <ProductCard product={product} />
@@ -122,7 +122,7 @@ export default async function HomePage() {
 
       <section
         aria-labelledby="close-heading"
-        className="border-t border-theme-border px-5 py-16 text-center sm:px-8 md:py-24 lg:py-32"
+        className="border-t border-theme-border px-4 py-12 text-center sm:px-8 md:py-24 lg:py-32"
       >
         <div className="mx-auto max-w-lg">
           <h2

@@ -27,11 +27,11 @@ export default async function ShopPage() {
 
   return (
     <div className="min-h-screen bg-theme-bg text-theme-text">
-      <section className="mx-auto max-w-6xl px-5 py-16 sm:px-8 md:py-24 lg:py-32">
-        <header className="mb-10 sm:mb-12">
+      <section className="mx-auto max-w-6xl px-4 py-12 sm:px-8 md:py-24 lg:py-32">
+        <header>
           <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between md:gap-12">
             <div className="max-w-xl">
-              <p className="text-[10px] font-medium uppercase tracking-[0.3em] text-theme-muted">
+              <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-theme-muted sm:tracking-[0.28em]">
                 The collection
               </p>
               <h1 className="mt-5 font-serif text-3xl font-light tracking-tight text-theme-text sm:text-4xl md:text-[2.75rem]">
@@ -47,9 +47,11 @@ export default async function ShopPage() {
             </p>
           </div>
         </header>
+      </section>
 
-        <ShopCategoryBar active="all" />
+      <ShopCategoryBar active="all" />
 
+      <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-8 md:pb-24 lg:pb-32">
         {products.length === 0 ? (
           <p className="mt-16 text-center text-sm leading-relaxed text-theme-muted">
             The current edit is being revised. Please check back shortly.
@@ -79,7 +81,7 @@ export default async function ShopPage() {
                       View {category.label.toLowerCase()}
                     </Link>
                   </header>
-                  <ul className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 md:gap-y-12 lg:grid-cols-3 lg:gap-x-8">
+                  <ul className="grid grid-cols-2 gap-x-3 gap-y-8 sm:gap-x-6 sm:gap-y-10 md:gap-y-12 lg:grid-cols-3 lg:gap-x-8">
                     {items.map((product) => (
                       <li key={product.id}>
                         <ProductCard product={product} />

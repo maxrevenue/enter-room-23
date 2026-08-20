@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import BrandLogo from '@/components/brand-logo'
+import { ThemePalettePicker } from '@/components/ThemeSwitcher'
 import { STORE_CATEGORIES } from '@/lib/categories'
 import { SITE_CONFIG } from '@/lib/constants'
 
@@ -18,13 +19,13 @@ const FOOTER_NAV = [
 
 export default function SiteFooter() {
   return (
-    <footer className="w-full border-t border-theme-border bg-theme-bg text-theme-text">
-      <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8 md:py-20">
+    <footer className="w-full border-t border-theme-border bg-theme-bg pb-[env(safe-area-inset-bottom)] text-theme-text">
+      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-8 md:py-20">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-8">
           <div className="lg:col-span-5">
             <BrandLogo size="md" />
             <p className="mt-6 max-w-sm text-xs leading-relaxed text-theme-muted">
-              Considered pleasure and body-safe wellness. Formulated with precision, 
+              Considered pleasure and body-safe wellness. Formulated with precision,
               packaged with restraint, and delivered in plain, unbranded packaging.
             </p>
             <div className="mt-8 space-y-1.5 text-xs text-theme-muted">
@@ -38,15 +39,15 @@ export default function SiteFooter() {
           <div className="lg:col-span-7">
             <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
               <div>
-                <p className="text-[10px] font-medium uppercase tracking-[0.28em] text-theme-muted">
+                <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-theme-muted sm:tracking-[0.28em]">
                   Navigation
                 </p>
-                <ul className="mt-4 space-y-2.5">
+                <ul className="mt-4 space-y-1">
                   {FOOTER_NAV.slice(0, 4).map((item) => (
                     <li key={item.href}>
                       <Link
                         href={item.href}
-                        className="text-xs text-theme-muted transition-colors hover:text-theme-text"
+                        className="inline-flex min-h-11 items-center text-xs text-theme-muted transition-colors hover:text-theme-text"
                       >
                         {item.label}
                       </Link>
@@ -56,15 +57,15 @@ export default function SiteFooter() {
               </div>
 
               <div>
-                <p className="text-[10px] font-medium uppercase tracking-[0.28em] text-theme-muted">
+                <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-theme-muted sm:tracking-[0.28em]">
                   Categories
                 </p>
-                <ul className="mt-4 space-y-2.5">
+                <ul className="mt-4 space-y-1">
                   {STORE_CATEGORIES.slice(0, 4).map((item) => (
                     <li key={item.id}>
                       <Link
                         href={`/collections/${item.id}`}
-                        className="text-xs text-theme-muted transition-colors hover:text-theme-text"
+                        className="inline-flex min-h-11 items-center text-xs text-theme-muted transition-colors hover:text-theme-text"
                       >
                         {item.label}
                       </Link>
@@ -74,15 +75,15 @@ export default function SiteFooter() {
               </div>
 
               <div>
-                <p className="text-[10px] font-medium uppercase tracking-[0.28em] text-theme-muted">
+                <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-theme-muted sm:tracking-[0.28em]">
                   Information
                 </p>
-                <ul className="mt-4 space-y-2.5">
+                <ul className="mt-4 space-y-1">
                   {FOOTER_NAV.slice(4).map((item) => (
                     <li key={item.href}>
                       <Link
                         href={item.href}
-                        className="text-xs text-theme-muted transition-colors hover:text-theme-text"
+                        className="inline-flex min-h-11 items-center text-xs text-theme-muted transition-colors hover:text-theme-text"
                       >
                         {item.label}
                       </Link>
@@ -99,11 +100,12 @@ export default function SiteFooter() {
             <p>
               &copy; {new Date().getFullYear()} {SITE_CONFIG.legalEntity}. All rights reserved. 18+ only.
             </p>
-            <p className="text-[11px]">
-              Charges will appear on your card statement as:{' '}
-              <span className="font-semibold text-theme-text">{SITE_CONFIG.billingDescriptor}</span>
-            </p>
+            <ThemePalettePicker />
           </div>
+          <p className="mt-4 text-[11px]">
+            Charges will appear on your card statement as:{' '}
+            <span className="font-semibold text-theme-text">{SITE_CONFIG.billingDescriptor}</span>
+          </p>
           <p className="mt-4 text-[10px] leading-relaxed text-theme-muted/80">
             Secure checkout processed by CCBill. Payment details are handled by our PCI-compliant payment processor.
           </p>

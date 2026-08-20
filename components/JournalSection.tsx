@@ -7,13 +7,13 @@ export default function JournalSection() {
   return (
     <section
       aria-labelledby="journal-heading"
-      className="border-t border-theme-border px-5 py-16 sm:px-8 md:py-24 lg:py-32"
+      className="border-t border-theme-border px-4 py-12 sm:px-8 md:py-24 lg:py-32"
     >
       <div className="mx-auto max-w-6xl">
         <header className="mb-16 sm:mb-20 md:mb-24">
           <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between md:gap-12">
             <div className="max-w-xl">
-              <p className="text-[10px] font-medium uppercase tracking-[0.3em] text-theme-muted">
+              <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-theme-muted sm:tracking-[0.28em]">
                 Editorial
               </p>
               <h2

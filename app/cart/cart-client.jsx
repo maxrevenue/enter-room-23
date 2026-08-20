@@ -66,7 +66,7 @@ export default function CartPageClient() {
                     type="button"
                     aria-label={`Remove ${item.name}`}
                     onClick={() => removeItem(item.id)}
-                    className="text-theme-muted hover:text-theme-text"
+                    className="inline-flex h-11 w-11 items-center justify-center text-theme-muted hover:text-theme-text"
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>
@@ -76,7 +76,7 @@ export default function CartPageClient() {
                     type="button"
                     aria-label="Decrease quantity"
                     onClick={() => updateQty(item.id, item.qty - 1)}
-                    className="border border-theme-border p-1.5 text-theme-muted hover:text-theme-text"
+                    className="inline-flex h-11 w-11 items-center justify-center border border-theme-border text-theme-muted hover:text-theme-text"
                   >
                     <Minus className="h-3.5 w-3.5" />
                   </button>
@@ -85,7 +85,7 @@ export default function CartPageClient() {
                     type="button"
                     aria-label="Increase quantity"
                     onClick={() => updateQty(item.id, item.qty + 1)}
-                    className="border border-theme-border p-1.5 text-theme-muted hover:text-theme-text"
+                    className="inline-flex h-11 w-11 items-center justify-center border border-theme-border text-theme-muted hover:text-theme-text"
                   >
                     <Plus className="h-3.5 w-3.5" />
                   </button>

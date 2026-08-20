@@ -197,7 +197,7 @@ export default function CheckoutForm() {
           <input type="text" required autoComplete="name" placeholder="Full name" value={shipping.name} onChange={(e) => setShipping((p) => ({ ...p, name: e.target.value }))} style={fieldStyle} />
           <input type="text" required autoComplete="address-line1" placeholder="Address" value={shipping.line1} onChange={(e) => setShipping((p) => ({ ...p, line1: e.target.value }))} style={fieldStyle} />
           <input type="text" autoComplete="address-line2" placeholder="Apartment, suite (optional)" value={shipping.line2} onChange={(e) => setShipping((p) => ({ ...p, line2: e.target.value }))} style={fieldStyle} />
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 80px 110px', gap: '0.5rem' }}>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-[1fr_5rem_7rem] sm:gap-2">
             <input type="text" required autoComplete="address-level2" placeholder="City" value={shipping.city} onChange={(e) => setShipping((p) => ({ ...p, city: e.target.value }))} style={fieldStyle} />
             <input type="text" required autoComplete="address-level1" placeholder="State" value={shipping.state} onChange={(e) => setShipping((p) => ({ ...p, state: e.target.value }))} style={fieldStyle} />
             <input type="text" required autoComplete="postal-code" placeholder="ZIP" value={shipping.postalCode} onChange={(e) => setShipping((p) => ({ ...p, postalCode: e.target.value }))} style={fieldStyle} />
