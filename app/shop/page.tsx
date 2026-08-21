@@ -26,7 +26,7 @@ export default async function ShopPage() {
 
   return (
     <div className="min-h-screen bg-theme-bg text-theme-text">
-      <section className="mx-auto max-w-6xl px-4 py-12 sm:px-8 md:py-24 lg:py-32">
+      <section className="mx-auto max-w-6xl px-4 py-20 sm:px-8 md:py-28 lg:py-32">
         <header>
           <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between md:gap-12">
             <div className="max-w-xl">

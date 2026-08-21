@@ -46,7 +46,7 @@ export default function ProductOfTheMonth({ product = null, offer = null }: Prod
   return (
     <section
       aria-labelledby="product-of-month-heading"
-      className="border-t border-theme-border px-4 py-12 sm:px-8 md:py-24 lg:py-32"
+      className="border-t border-theme-border px-4 py-20 sm:px-8 md:py-28 lg:py-32"
     >
       <div className="mx-auto max-w-6xl">
         <header className="mb-10 max-w-md sm:mb-14 lg:mb-16">
@@ -70,7 +70,7 @@ export default function ProductOfTheMonth({ product = null, offer = null }: Prod
                     width={800}
                     height={1000}
                     unoptimized
-                    className="absolute inset-0 object-contain"
+                    className="absolute inset-0 h-full w-full object-cover transition-opacity duration-300 group-hover:opacity-95"
                   />
                 </div>
               </Link>

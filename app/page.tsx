@@ -36,7 +36,7 @@ export default async function HomePage() {
     <div className="bg-theme-bg text-theme-text">
       <section
         aria-labelledby="hero-title"
-        className="relative flex min-h-[58svh] flex-col items-center justify-center overflow-hidden px-4 py-12 text-center sm:min-h-[75vh] sm:px-8 md:min-h-[85vh] md:py-24 lg:py-32"
+        className="relative flex min-h-[58svh] flex-col items-center justify-center overflow-hidden px-4 py-20 text-center sm:min-h-[75vh] sm:px-8 md:min-h-[85vh] md:py-28 lg:py-32"
       >
         <div
           aria-hidden="true"
@@ -75,7 +75,7 @@ export default async function HomePage() {
 
       <section
         aria-labelledby="featured-heading"
-        className="border-t border-theme-border px-4 py-12 sm:px-8 md:py-24 lg:py-32"
+        className="border-t border-theme-border px-4 py-20 sm:px-8 md:py-28 lg:py-32"
       >
         <div className="mx-auto max-w-6xl">
           <header className="mb-12 sm:mb-16 md:mb-20">
@@ -122,7 +122,7 @@ export default async function HomePage() {
 
       <section
         aria-labelledby="close-heading"
-        className="border-t border-theme-border px-4 py-12 text-center sm:px-8 md:py-24 lg:py-32"
+        className="border-t border-theme-border px-4 py-20 text-center sm:px-8 md:py-28 lg:py-32"
       >
         <div className="mx-auto max-w-lg">
           <h2

@@ -19,7 +19,7 @@ export default function CategoryNav() {
           <p className="text-[10px] font-medium uppercase tracking-[0.3em] text-theme-muted">Browse</p>
           <h2
             id="categories-heading"
-            className="mt-5 font-serif text-3xl tracking-tight text-theme-text sm:text-4xl"
+            className="mt-5 font-serif text-3xl font-light tracking-tight text-theme-text sm:text-4xl"
           >
             Categories
           </h2>

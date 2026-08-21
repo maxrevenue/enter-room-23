@@ -7,7 +7,7 @@ export default function JournalSection() {
   return (
     <section
       aria-labelledby="journal-heading"
-      className="border-t border-theme-border px-4 py-12 sm:px-8 md:py-24 lg:py-32"
+      className="border-t border-theme-border px-4 py-20 sm:px-8 md:py-28 lg:py-32"
     >
       <div className="mx-auto max-w-6xl">
         <header className="mb-16 sm:mb-20 md:mb-24">

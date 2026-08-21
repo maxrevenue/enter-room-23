@@ -21,7 +21,7 @@ const FOOTER_NAV = [
 export default function SiteFooter() {
   return (
     <footer className="w-full border-t border-theme-border bg-theme-bg pb-[env(safe-area-inset-bottom)] text-theme-text">
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-8 md:py-20">
+      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-8 md:py-24 lg:py-28">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-8">
           <div className="lg:col-span-5">
             <BrandLogo size="md" />
@@ -97,17 +97,17 @@ export default function SiteFooter() {
         </div>
 
         <div className="mt-16 border-t border-theme-border pt-8 text-xs text-theme-muted">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
             <p>
               &copy; {new Date().getFullYear()} {SITE_CONFIG.legalEntity}. All rights reserved. 18+ only.
             </p>
-            <ThemePalettePicker />
+            <ThemePalettePicker className="lg:max-w-md lg:text-right" />
           </div>
-          <p className="mt-4 text-[11px]">
-            Charges will appear on your card statement as:{' '}
-            <span className="font-semibold text-theme-text">{SITE_CONFIG.billingDescriptor}</span>
-          </p>
           <p className="mt-4 text-[10px] leading-relaxed text-theme-muted/80">
+            Charges will appear on your card statement as:{' '}
+            <span className="font-medium text-theme-text">{SITE_CONFIG.billingDescriptor}</span>
+          </p>
+          <p className="mt-3 text-[10px] leading-relaxed text-theme-muted/70">
             Secure checkout processed by CCBill. Payment details are handled by our PCI-compliant payment processor.
           </p>
         </div>

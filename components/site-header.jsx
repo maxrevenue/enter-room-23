@@ -71,8 +71,8 @@ export default function SiteHeader() {
     <>
       <header className="sticky top-0 z-40 w-full pt-[env(safe-area-inset-top)]">
         <div
-          className={`w-full border-b bg-theme-bg/95 backdrop-blur-xl transition-colors duration-300 ${
-            scrolled ? 'border-theme-border' : 'border-transparent md:border-theme-border'
+          className={`w-full bg-theme-bg/95 backdrop-blur-xl transition-colors duration-300 ${
+            scrolled ? 'border-b border-theme-border' : 'border-b border-transparent md:border-theme-border'
           }`}
         >
           <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-3 px-4 sm:h-[4.25rem] sm:px-6">
@@ -123,6 +123,31 @@ export default function SiteHeader() {
               </button>
             </div>
           </div>
+
+          <nav
+            aria-label="Collections"
+            className="border-t border-theme-border/60"
+          >
+            <div className="mx-auto max-w-7xl overflow-x-auto px-4 [-ms-overflow-style:none] [scrollbar-width:none] sm:px-6 [&::-webkit-scrollbar]:hidden">
+              <ul className="flex w-max min-w-full items-center gap-5 py-2.5 sm:gap-7 sm:py-3">
+                {STORE_NAV_LINKS.map((link) => (
+                  <li key={link.href} className="shrink-0">
+                    <Link
+                      href={link.href}
+                      className={`inline-flex min-h-11 items-center whitespace-nowrap text-[10px] font-medium uppercase tracking-[0.14em] transition-colors duration-300 sm:tracking-[0.18em] ${
+                        isActive(link.href)
+                          ? 'text-theme-accent'
+                          : 'text-theme-muted hover:text-theme-text'
+                      }`}
+                      aria-current={isActive(link.href) ? 'page' : undefined}
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </nav>
         </div>
       </header>
 
@@ -229,7 +254,7 @@ export default function SiteHeader() {
                 <br />
                 For adults 18+ only.
               </p>
-              <div className="mb-6 flex gap-6">
+              <div className="mb-6 flex flex-wrap gap-x-6 gap-y-2">
                 <Link
                   href="/privacy"
                   onClick={closeDrawer}

@@ -101,7 +101,7 @@ export default async function ProductPage({ params, searchParams }: PageProps) {
 
   return (
     <div className="bg-theme-bg text-theme-text">
-      <div className="mx-auto max-w-6xl px-4 py-12 pb-28 sm:px-6 md:py-20 lg:py-24">
+      <div className="mx-auto max-w-6xl px-4 py-20 pb-28 sm:px-6 md:py-24 lg:py-28">
         <nav className="mb-8 text-[10px] uppercase tracking-[0.16em] text-theme-muted sm:mb-10 sm:tracking-[0.2em]">
           <Link href="/shop" className="transition-colors hover:text-theme-text/80">
             Shop

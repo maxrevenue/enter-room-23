@@ -50,7 +50,7 @@ export default async function CollectionPage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen bg-theme-bg text-theme-text">
-      <section className="px-4 py-12 text-center sm:px-8 md:py-24 lg:py-32">
+      <section className="px-4 py-20 text-center sm:px-8 md:py-28 lg:py-32">
         <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-theme-muted sm:tracking-[0.28em]">
           {countLabel}
         </p>
@@ -62,7 +62,7 @@ export default async function CollectionPage({ params }: PageProps) {
         </p>
       </section>
 
-      <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-8 md:pb-24 lg:pb-32">
+      <section className="mx-auto max-w-6xl px-4 pb-20 sm:px-8 md:pb-28 lg:pb-32">
         {products.length === 0 ? (
           <div className="mx-auto mt-16 max-w-md text-center">
             <p className="text-sm leading-relaxed text-theme-muted">
