@@ -37,7 +37,7 @@ export default async function ShopPage() {
                 Shop
               </h1>
               <p className="mt-6 max-w-md text-sm leading-relaxed text-theme-muted sm:text-[0.9375rem]">
-                Browse by category — house lubes first, then toys, strokers, and the rest of
+                Browse by category — house silicone first, then strokers, essentials, and the rest of
                 the edit.
               </p>
             </div>

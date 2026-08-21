@@ -23,9 +23,9 @@ export const STORE_CATEGORIES: StoreCategory[] = [
   {
     id: 'lubes',
     label: 'Lubes',
-    subtitle: 'House silicone lubricants and considered topical formulas.',
+    subtitle: 'House platinum silicone — 2oz, 4oz, and 8oz.',
     description:
-      'Medical-grade platinum silicone lubricants and body-safe topical essentials from the Room 23 edit.',
+      'Medical-grade platinum-cure silicone lubricant in three sizes. That is the entire lube edit.',
     sort: 0,
   },
   {
@@ -73,8 +73,9 @@ export const STORE_CATEGORIES: StoreCategory[] = [
   {
     id: 'essentials',
     label: 'Essentials',
-    subtitle: 'Everyday staples that support the collection.',
-    description: 'Supporting essentials that complement the Room 23 edit.',
+    subtitle: 'Topicals, mists, washes, and supporting formulas.',
+    description:
+      'Delay spray, warming serum, body oil, fragrance mist, shower gel, and other supporting pieces — not personal lubricants.',
     sort: 70,
   },
 ]
@@ -87,16 +88,15 @@ export const NEW_ARRIVALS_COLLECTION = {
   sort: 5,
 } as const
 
+/** Old slugs that once dumped into Lubes now resolve to Essentials. */
 const LEGACY_COLLECTION_MAP: Record<string, string> = {
-  essentials: 'lubes',
-  wellness: 'lubes',
-  body: 'lubes',
+  wellness: 'essentials',
+  body: 'essentials',
 }
 
 const LEGACY_CATEGORY_MAP: Record<string, string> = {
-  essentials: 'lubes',
-  wellness: 'lubes',
-  toys: 'toys',
+  wellness: 'essentials',
+  body: 'essentials',
 }
 
 const CATEGORY_BY_ID = new Map(STORE_CATEGORIES.map((entry) => [entry.id, entry]))

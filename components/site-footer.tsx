@@ -7,6 +7,7 @@ import { SITE_CONFIG } from '@/lib/constants'
 const FOOTER_NAV = [
   { href: '/shop', label: 'Shop' },
   { href: '/collections/lubes', label: 'Lubes' },
+  { href: '/collections/essentials', label: 'Essentials' },
   { href: '/collections/strokers', label: 'Strokers' },
   { href: '/journal', label: 'Journal' },
   { href: '/about', label: 'About' },

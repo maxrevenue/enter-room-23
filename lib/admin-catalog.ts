@@ -243,8 +243,9 @@ export async function listAdminProducts(): Promise<CatalogProduct[]> {
     }
   }
 
-  const merged = PRODUCTS.map((product) =>
-    applyInventory({
+  const merged = PRODUCTS.map((product) => {
+    const overlay = pickOverlay(overlays.get(product.id))
+    const next = applyInventory({
       ...product,
       hidden: false,
       active: true,
@@ -253,9 +254,13 @@ export async function listAdminProducts(): Promise<CatalogProduct[]> {
       isProductOfTheMonth: false,
       isFeatured: false,
       quantity: null,
-      ...pickOverlay(overlays.get(product.id)),
-    } as CatalogProduct),
-  )
+      ...overlay,
+    } as CatalogProduct)
+    // Seed taxonomy is authoritative for catalog SKUs (avoids stale DB "lubes" overlays).
+    const category = normalizeCategory(product.category)
+    const collection = normalizeCategory(product.collection || product.category)
+    return { ...next, category, collection }
+  })
 
   return [...merged, ...custom].sort((a, b) => {
     const archivedDelta = Number(isArchived(a)) - Number(isArchived(b))
