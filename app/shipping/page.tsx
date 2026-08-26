@@ -46,9 +46,6 @@ export default function ShippingPage() {
               Due to the personal and intimate nature of adult wellness items, unopened products in their original factory-sealed packaging may be returned within 14 days of delivery for a refund.
             </p>
             <p className="text-sm leading-relaxed text-theme-muted">
-              Customers are responsible for all return shipping costs unless the item received was damaged or defective.
-            </p>
-            <p className="text-sm leading-relaxed text-theme-muted">
               For safety and hygiene compliance, any item that has been opened, unsealed, or used cannot be returned or exchanged. If an item arrives damaged or defective, please contact client support within 48 hours of delivery at{' '}
               <a href={`mailto:${SITE_CONFIG.email}`} className="text-theme-text underline hover:text-theme-accent">
                 {SITE_CONFIG.email}
@@ -58,9 +55,16 @@ export default function ShippingPage() {
           </section>
 
           <section className="space-y-4">
-            <h2 className="font-serif text-xl text-theme-text">Order Cancellation Policy</h2>
+            <h2 className="font-serif text-xl text-theme-text">Return Shipping Costs</h2>
             <p className="text-sm leading-relaxed text-theme-muted">
-              It is possible to cancel an order for a full refund at any time before it has shipped. Unfortunately, we are unable to cancel an order that has already been shipped.
+              Customers are responsible for return shipping costs unless the item is defective or incorrect.
+            </p>
+          </section>
+
+          <section className="space-y-4">
+            <h2 className="font-serif text-xl text-theme-text">Cancellation Policy</h2>
+            <p className="text-sm leading-relaxed text-theme-muted">
+              Orders may be cancelled within 24 hours of placement if they have not yet shipped. Once an order has shipped, it cannot be cancelled but may be returned per our returns policy.
             </p>
           </section>
 
