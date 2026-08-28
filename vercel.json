@@ -3,7 +3,8 @@
   "git": {
     "deploymentEnabled": false
   },
+  "ignoreCommand": "echo 'Production deploys via Cloudflare Workers; skip Vercel build' && exit 0",
   "github": {
-    "enabled": false
+    "silent": true
   }
 }
