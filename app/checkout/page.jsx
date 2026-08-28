@@ -9,14 +9,7 @@ export const metadata = {
 
 export default function CheckoutPage() {
   return (
-    <main className="container-narrow" style={{ paddingTop: '3rem', paddingBottom: '4rem' }}>
-      <p className="last-updated">One-time payment · physical goods</p>
-      <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--text-3xl)', fontWeight: 700, marginBottom: '0.5rem' }}>
-        Checkout
-      </h1>
-      <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem' }}>
-        US shipping only. Payment is completed on CCBill&apos;s hosted page.
-      </p>
+    <main className="container-narrow bg-theme-bg pb-[max(2rem,env(safe-area-inset-bottom))] pt-6 md:pt-8">
       <CheckoutForm />
     </main>
   )

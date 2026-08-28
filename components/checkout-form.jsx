@@ -7,7 +7,7 @@ import { useCart } from '@/lib/cart-context'
 import { SITE_CONFIG } from '@/config/site'
 import CheckoutDisclaimer from '@/components/CheckoutDisclaimer'
 import { SHIPPING_METHODS, DEFAULT_SHIPPING_METHOD, getShippingRate } from '@/lib/shipping'
-import { Lock, ShieldCheck, Check } from 'lucide-react'
+import { Lock, Check, ChevronDown } from 'lucide-react'
 
 const EMPTY_SHIPPING = {
   name: '',
@@ -19,18 +19,96 @@ const EMPTY_SHIPPING = {
   country: 'US',
 }
 
-const fieldStyle = {
-  width: '100%',
-  padding: '0.7rem 0.8rem',
-  borderRadius: 'var(--radius-md)',
-  border: '1px solid var(--border)',
-  backgroundColor: 'var(--color-bg-primary)',
-  color: 'var(--text-primary)',
-  fontSize: 'var(--text-sm)',
+const INPUT_CLASS =
+  'checkout-input w-full min-h-11 px-3.5 py-2.5 text-sm text-theme-text placeholder:text-theme-muted'
+
+function OrderSummaryContent({ cart, subtotal, discountAmount, appliedPromo, tax, shippingCost, total }) {
+  return (
+    <>
+      <div className="space-y-2.5 text-sm text-theme-muted">
+        {cart.map((item) => (
+          <div key={item.id} className="flex justify-between gap-3">
+            <span className="min-w-0 truncate text-theme-text/90">
+              {item.name}
+              {item.qty > 1 ? ` ×${item.qty}` : ''}
+            </span>
+            <span className="shrink-0 tabular-nums">${(item.price * item.qty).toFixed(2)}</span>
+          </div>
+        ))}
+      </div>
+
+      <hr className="my-4 border-theme-border" />
+
+      <div className="space-y-2 text-sm text-theme-muted">
+        <div className="flex justify-between">
+          <span>Subtotal</span>
+          <span className="tabular-nums">${subtotal.toFixed(2)}</span>
+        </div>
+        {discountAmount > 0 && (
+          <div className="flex justify-between text-theme-accent">
+            <span>Discount ({appliedPromo})</span>
+            <span className="tabular-nums">−${discountAmount.toFixed(2)}</span>
+          </div>
+        )}
+        <div className="flex justify-between">
+          <span>Tax (est. 8%)</span>
+          <span className="tabular-nums">${tax.toFixed(2)}</span>
+        </div>
+        <div className="flex justify-between">
+          <span>Shipping</span>
+          <span className="tabular-nums">{shippingCost === 0 ? 'Free' : `$${shippingCost.toFixed(2)}`}</span>
+        </div>
+      </div>
+
+      <div className="mt-4 flex items-baseline justify-between border-t border-theme-border pt-4">
+        <span className="text-sm font-medium text-theme-text">Total</span>
+        <span className="font-syne text-xl font-bold tabular-nums text-theme-text">
+          ${total.toFixed(2)} USD
+        </span>
+      </div>
+    </>
+  )
+}
+
+function MobileOrderSummary({ cart, subtotal, discountAmount, appliedPromo, tax, shippingCost, total }) {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <div className="checkout-summary-mobile lg:hidden">
+      <button
+        type="button"
+        onClick={() => setOpen((value) => !value)}
+        className="flex w-full min-h-11 items-center justify-between gap-3 px-4 py-3 text-left"
+        aria-expanded={open}
+      >
+        <span className="text-sm text-theme-text">
+          Order summary <span className="text-theme-muted">·</span>{' '}
+          <span className="font-semibold tabular-nums">${total.toFixed(2)}</span>
+        </span>
+        <ChevronDown
+          className={`h-4 w-4 shrink-0 text-theme-muted transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+          aria-hidden="true"
+        />
+      </button>
+      {open && (
+        <div className="border-t border-theme-border px-4 py-4">
+          <OrderSummaryContent
+            cart={cart}
+            subtotal={subtotal}
+            discountAmount={discountAmount}
+            appliedPromo={appliedPromo}
+            tax={tax}
+            shippingCost={shippingCost}
+            total={total}
+          />
+        </div>
+      )}
+    </div>
+  )
 }
 
 export default function CheckoutForm() {
-  const { cart, subtotal, clearCart, discountAmount, discountPercent, appliedPromo } = useCart()
+  const { cart, subtotal, clearCart, discountAmount, appliedPromo } = useCart()
   const router = useRouter()
   const [agreedToTerms, setAgreedToTerms] = useState(false)
   const [submitting, setSubmitting] = useState(false)
@@ -107,8 +185,8 @@ export default function CheckoutForm() {
 
   if (cart.length === 0 && !orderPlaced) {
     return (
-      <div className="text-center py-16">
-        <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>Your cart is empty.</p>
+      <div className="py-16 text-center">
+        <p className="mb-6 text-theme-muted">Your cart is empty.</p>
         <Link href="/shop" className="btn-primary">Shop the edit</Link>
       </div>
     )
@@ -116,142 +194,190 @@ export default function CheckoutForm() {
 
   if (orderPlaced) {
     return (
-      <div className="p-6 text-center space-y-4">
-        <div style={{ width: 64, height: 64, borderRadius: '50%', backgroundColor: 'var(--color-success-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto' }}>
-          <Check size={32} style={{ color: 'var(--color-success)' }} />
+      <div className="space-y-4 p-6 text-center">
+        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-theme-accent/10">
+          <Check size={32} className="text-theme-accent" />
         </div>
-        <h2 className="font-syne text-2xl">Thank you for your order</h2>
+        <h2 className="font-syne text-2xl text-theme-text">Thank you for your order</h2>
         {placedOrder?.orderId && (
-          <p style={{ color: 'var(--text-secondary)' }}>Order <strong>#{placedOrder.orderId}</strong></p>
+          <p className="text-theme-muted">
+            Order <strong className="text-theme-text">#{placedOrder.orderId}</strong>
+          </p>
         )}
-        <p style={{ color: 'var(--text-secondary)', fontSize: 'var(--text-sm)' }}>
+        <p className="text-sm text-theme-muted">
           {placedOrder?.emailSent ? 'A confirmation email is on its way.' : 'A confirmation email will follow.'}
         </p>
-        <p style={{ color: 'var(--text-muted)', fontSize: 'var(--text-xs)' }}>
-          Your statement will show <strong>{SITE_CONFIG.billingDescriptor}</strong>.
+        <p className="text-xs text-theme-muted">
+          Your statement will show <strong className="text-theme-text">{SITE_CONFIG.billingDescriptor}</strong>.
         </p>
-        <button onClick={() => router.push('/shop')} className="btn-primary">Continue shopping</button>
+        <button type="button" onClick={() => router.push('/shop')} className="btn-primary">
+          Continue shopping
+        </button>
       </div>
     )
   }
 
+  const summaryProps = {
+    cart,
+    subtotal,
+    discountAmount,
+    appliedPromo,
+    tax,
+    shippingCost,
+    total,
+  }
+
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-sm font-semibold uppercase tracking-[0.06em] mb-3">Order summary</h2>
-        <div className="space-y-2" style={{ color: 'var(--text-secondary)', fontSize: 'var(--text-sm)' }}>
-          {cart.map((item) => (
-            <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span>{item.name}{item.qty > 1 ? ` ×${item.qty}` : ''}</span>
-              <span>${(item.price * item.qty).toFixed(2)} USD</span>
+    <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start lg:gap-10">
+      <div className="space-y-8">
+        <MobileOrderSummary {...summaryProps} />
+
+        <section aria-labelledby="delivery-heading">
+          <h2 id="delivery-heading" className="checkout-section-label">
+            Delivery
+          </h2>
+          <div className="mt-4 space-y-3">
+            <input
+              type="email"
+              required
+              autoComplete="email"
+              placeholder="Email for order confirmation"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className={INPUT_CLASS}
+            />
+            <input
+              type="text"
+              required
+              autoComplete="name"
+              placeholder="Full name"
+              value={shipping.name}
+              onChange={(e) => setShipping((p) => ({ ...p, name: e.target.value }))}
+              className={INPUT_CLASS}
+            />
+            <input
+              type="text"
+              required
+              autoComplete="address-line1"
+              placeholder="Address"
+              value={shipping.line1}
+              onChange={(e) => setShipping((p) => ({ ...p, line1: e.target.value }))}
+              className={INPUT_CLASS}
+            />
+            <input
+              type="text"
+              autoComplete="address-line2"
+              placeholder="Apartment, suite (optional)"
+              value={shipping.line2}
+              onChange={(e) => setShipping((p) => ({ ...p, line2: e.target.value }))}
+              className={INPUT_CLASS}
+            />
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-[1fr_5.5rem_7rem]">
+              <input
+                type="text"
+                required
+                autoComplete="address-level2"
+                placeholder="City"
+                value={shipping.city}
+                onChange={(e) => setShipping((p) => ({ ...p, city: e.target.value }))}
+                className={INPUT_CLASS}
+              />
+              <input
+                type="text"
+                required
+                autoComplete="address-level1"
+                placeholder="State"
+                value={shipping.state}
+                onChange={(e) => setShipping((p) => ({ ...p, state: e.target.value }))}
+                className={INPUT_CLASS}
+              />
+              <input
+                type="text"
+                required
+                autoComplete="postal-code"
+                placeholder="ZIP"
+                value={shipping.postalCode}
+                onChange={(e) => setShipping((p) => ({ ...p, postalCode: e.target.value }))}
+                className={INPUT_CLASS}
+              />
             </div>
-          ))}
-        </div>
-        <hr style={{ margin: '0.75rem 0', border: 'none', borderTop: '1px solid var(--border)' }} />
-        <div className="space-y-1 text-sm" style={{ color: 'var(--text-muted)' }}>
-          <div className="flex justify-between"><span>Subtotal</span><span>${subtotal.toFixed(2)}</span></div>
-          {discountAmount > 0 && (
-            <div className="flex justify-between" style={{ color: 'var(--color-success)' }}>
-              <span>Discount ({appliedPromo})</span><span>−${discountAmount.toFixed(2)}</span>
-            </div>
+            <p className="text-xs text-theme-muted">United States only.</p>
+          </div>
+        </section>
+
+        <section aria-labelledby="shipping-heading">
+          <h2 id="shipping-heading" className="checkout-section-label">
+            Shipping method
+          </h2>
+          <div className="mt-4 space-y-2.5">
+            {SHIPPING_METHODS.map((method) => {
+              const rate = getShippingRate(subtotal, method.id)
+              const selected = shippingMethodId === method.id
+              return (
+                <label
+                  key={method.id}
+                  className={`checkout-shipping-card ${selected ? 'checkout-shipping-card--selected' : ''}`}
+                >
+                  <input
+                    type="radio"
+                    name="shippingMethod"
+                    className="sr-only"
+                    checked={selected}
+                    onChange={() => setShippingMethodId(method.id)}
+                  />
+                  <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-theme-border">
+                    {selected && <span className="h-2 w-2 rounded-full bg-theme-accent" />}
+                  </span>
+                  <span className="min-w-0 flex-1 text-sm">
+                    <strong className="block font-medium text-theme-text">{method.name}</strong>
+                    <span className="text-theme-muted">
+                      {method.delivery} · {rate === 0 ? 'Free' : `$${rate.toFixed(2)}`}
+                    </span>
+                  </span>
+                </label>
+              )
+            })}
+          </div>
+        </section>
+
+        <section aria-labelledby="payment-heading" className="space-y-4">
+          <h2 id="payment-heading" className="checkout-section-label">
+            Payment
+          </h2>
+          <CheckoutDisclaimer
+            agreedToTerms={agreedToTerms}
+            onAgreedChange={setAgreedToTerms}
+            showCheckbox
+          />
+
+          <button
+            type="button"
+            onClick={handlePlaceOrder}
+            disabled={!canSubmit || submitting}
+            className="checkout-cta"
+          >
+            {submitting ? (
+              'Processing…'
+            ) : (
+              <>
+                <Lock size={16} aria-hidden="true" />
+                Continue to secure payment — ${total.toFixed(2)} USD
+              </>
+            )}
+          </button>
+
+          {orderError && (
+            <p className="text-center text-xs text-theme-accent">{orderError}</p>
           )}
-          <div className="flex justify-between"><span>Tax (est. 8%)</span><span>${tax.toFixed(2)}</span></div>
-          <div className="flex justify-between">
-            <span>Shipping</span>
-            <span>{shippingCost === 0 ? 'FREE' : `$${shippingCost.toFixed(2)}`}</span>
-          </div>
+        </section>
+      </div>
+
+      <aside className="hidden lg:block lg:sticky lg:top-24">
+        <div className="checkout-summary-desktop">
+          <h2 className="checkout-section-label mb-4">Order summary</h2>
+          <OrderSummaryContent {...summaryProps} />
         </div>
-        <div className="flex justify-between mt-3">
-          <span className="font-semibold">Total</span>
-          <span className="font-syne text-xl font-bold">${total.toFixed(2)} USD</span>
-        </div>
-      </div>
-
-      <div>
-        <h2 className="text-sm font-semibold uppercase tracking-[0.06em] mb-3">Shipping method</h2>
-        <div className="space-y-2">
-          {SHIPPING_METHODS.map((method) => {
-            const rate = getShippingRate(subtotal, method.id)
-            return (
-              <label key={method.id} className="flex items-start gap-3 p-3 border cursor-pointer" style={{ borderColor: shippingMethodId === method.id ? 'var(--color-border-light)' : 'var(--border)' }}>
-                <input
-                  type="radio"
-                  name="shippingMethod"
-                  checked={shippingMethodId === method.id}
-                  onChange={() => setShippingMethodId(method.id)}
-                />
-                <span className="text-sm">
-                  <strong className="block">{method.name}</strong>
-                  <span style={{ color: 'var(--text-muted)' }}>{method.delivery} · {rate === 0 ? 'Free' : `$${rate.toFixed(2)}`}</span>
-                </span>
-              </label>
-            )
-          })}
-        </div>
-      </div>
-
-      <div>
-        <h2 className="text-sm font-semibold uppercase tracking-[0.06em] mb-3">Delivery</h2>
-        <div className="space-y-3">
-          <input type="email" required autoComplete="email" placeholder="Email for order confirmation" value={email} onChange={(e) => setEmail(e.target.value)} style={fieldStyle} />
-          <input type="text" required autoComplete="name" placeholder="Full name" value={shipping.name} onChange={(e) => setShipping((p) => ({ ...p, name: e.target.value }))} style={fieldStyle} />
-          <input type="text" required autoComplete="address-line1" placeholder="Address" value={shipping.line1} onChange={(e) => setShipping((p) => ({ ...p, line1: e.target.value }))} style={fieldStyle} />
-          <input type="text" autoComplete="address-line2" placeholder="Apartment, suite (optional)" value={shipping.line2} onChange={(e) => setShipping((p) => ({ ...p, line2: e.target.value }))} style={fieldStyle} />
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-[1fr_5rem_7rem] sm:gap-2">
-            <input type="text" required autoComplete="address-level2" placeholder="City" value={shipping.city} onChange={(e) => setShipping((p) => ({ ...p, city: e.target.value }))} style={fieldStyle} />
-            <input type="text" required autoComplete="address-level1" placeholder="State" value={shipping.state} onChange={(e) => setShipping((p) => ({ ...p, state: e.target.value }))} style={fieldStyle} />
-            <input type="text" required autoComplete="postal-code" placeholder="ZIP" value={shipping.postalCode} onChange={(e) => setShipping((p) => ({ ...p, postalCode: e.target.value }))} style={fieldStyle} />
-          </div>
-          <p className="text-xs" style={{ color: 'var(--text-muted)' }}>United States only.</p>
-        </div>
-      </div>
-
-      <CheckoutDisclaimer />
-
-      <div>
-        <h2 className="text-sm font-semibold uppercase tracking-[0.06em] mb-2">Payment</h2>
-        <p className="text-xs leading-6" style={{ color: 'var(--text-muted)' }}>
-          One-time charge for physical goods. Card data is entered on CCBill&apos;s hosted payment page — never on room23.net.
-          The payment page is non-sexual. Your statement shows {SITE_CONFIG.billingDescriptor}.
-        </p>
-      </div>
-
-      <div className="flex gap-6 justify-center flex-wrap">
-        <span className="flex items-center gap-1 text-xs" style={{ color: 'var(--text-muted)' }}><Lock size={12} /> 256-bit SSL</span>
-        <span className="flex items-center gap-1 text-xs" style={{ color: 'var(--text-muted)' }}><ShieldCheck size={12} /> PCI-DSS via CCBill</span>
-      </div>
-
-      <label className="flex items-start gap-3 p-3 border cursor-pointer" style={{ borderColor: agreedToTerms ? 'var(--color-success)' : 'var(--border)' }}>
-        <input
-          type="checkbox"
-          checked={agreedToTerms}
-          onChange={(e) => setAgreedToTerms(e.target.checked)}
-          style={{ marginTop: 2 }}
-        />
-        <span className="text-xs leading-5" style={{ color: 'var(--text-secondary)' }}>
-          I am <strong>18+ years old</strong> and agree to the{' '}
-          <Link href="/terms" target="_blank" className="link-brass">Terms</Link> and{' '}
-          <Link href="/privacy" target="_blank" className="link-brass">Privacy Policy</Link>.
-        </span>
-      </label>
-
-      <button
-        type="button"
-        onClick={handlePlaceOrder}
-        disabled={!canSubmit || submitting}
-        className="btn-primary"
-        style={{ width: '100%', padding: '0.875rem' }}
-      >
-        {submitting ? 'Processing…' : (
-          <>
-            <Lock size={14} /> Continue to secure payment — ${total.toFixed(2)} USD
-          </>
-        )}
-      </button>
-
-      {orderError && (
-        <p className="text-center text-xs" style={{ color: 'var(--color-accent)' }}>{orderError}</p>
-      )}
+      </aside>
     </div>
   )
 }
