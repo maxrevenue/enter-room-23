@@ -2,10 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import ProductAddToCart from '@/components/product-add-to-cart'
-
-function formatPrice(price) {
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(price)
-}
+import { formatPrice } from '@/lib/format-price'
 
 export default function ProductStickyBar({ product, soldOut = false }) {
   const [visible, setVisible] = useState(false)
@@ -48,7 +45,7 @@ export default function ProductStickyBar({ product, soldOut = false }) {
       <div className="mx-auto flex max-w-6xl items-center gap-3">
         <div className="min-w-0 flex-1">
           <p className="truncate font-serif text-sm text-theme-text">{product.name}</p>
-          <p className="text-xs tracking-wide text-theme-muted">{formatPrice(product.price)}</p>
+          <p className="text-xs tabular-nums text-theme-muted">{formatPrice(product.price)}</p>
         </div>
         <div className="shrink-0">
           <ProductAddToCart product={product} compact />

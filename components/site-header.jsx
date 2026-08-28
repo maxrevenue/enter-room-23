@@ -248,12 +248,12 @@ export default function SiteHeader() {
             </div>
 
             <div className="border-t border-theme-border px-5 py-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] md:px-8">
-              <p className="mb-6 text-[10px] uppercase leading-relaxed tracking-[0.16em] text-theme-muted sm:tracking-[0.2em]">
+              <p className="text-[10px] uppercase leading-relaxed tracking-[0.16em] text-theme-muted sm:tracking-[0.2em]">
                 Considered pleasure.
                 <br />
                 For adults 18+ only.
               </p>
-              <div className="mb-6 flex flex-wrap gap-x-6 gap-y-2">
+              <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2">
                 <Link
                   href="/privacy"
                   onClick={closeDrawer}

@@ -2,15 +2,18 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { INVENTORY_STATUS } from '@/lib/inventory'
 import ProductCardActions from '@/components/product-card-actions'
+import { formatPrice } from '@/lib/format-price'
+import { badgeClassName, resolveDisplayBadge } from '@/lib/product-badge'
 import { productHref } from '@/lib/products'
 
-export default function ProductCard({ product }) {
+export default function ProductCard({ product, newBadgeAllowlist = new Set() }) {
   const soldOut =
     product.inventoryStatus === INVENTORY_STATUS.OUT_OF_STOCK ||
     product.badge === 'SOLD OUT'
   const href = productHref(product)
   const price =
-    typeof product.price === 'number' ? `$${product.price.toFixed(2)}` : product.price
+    typeof product.price === 'number' ? formatPrice(product.price) : product.price
+  const displayBadge = resolveDisplayBadge(product, newBadgeAllowlist)
   const descriptor = product.tagline || product.shortEditorial || null
   const imageSrc =
     product.image || product.images?.[0]?.url || product.gallery?.[0]?.url || null
@@ -41,10 +44,8 @@ export default function ProductCard({ product }) {
             </div>
           )}
 
-          {product.badge && !soldOut ? (
-            <span className="absolute left-3 top-3 text-[10px] font-medium uppercase tracking-[0.16em] text-theme-muted sm:tracking-[0.28em]">
-              {product.badge}
-            </span>
+          {displayBadge && !soldOut ? (
+            <span className={badgeClassName(displayBadge)}>{displayBadge}</span>
           ) : null}
 
           {soldOut ? (
@@ -72,7 +73,7 @@ export default function ProductCard({ product }) {
         ) : null}
 
         <div className="mt-auto flex items-end justify-between gap-2 pt-4 sm:pt-6">
-          <p className="text-sm tracking-wide text-theme-muted">{price}</p>
+          <p className="text-sm tabular-nums text-theme-muted">{price}</p>
           <ProductCardActions product={product} />
         </div>
       </div>

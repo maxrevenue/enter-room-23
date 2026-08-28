@@ -4,7 +4,6 @@ import { CartProvider } from '@/lib/cart-context'
 import SiteShell from '@/components/site-shell'
 import AgeGate from '@/components/AgeGate'
 import DiscreetNewsletter from '@/components/DiscreetNewsletter'
-import { DEFAULT_PALETTE } from '@/lib/theme-palettes'
 import './globals.css'
 
 const inter = Inter({
@@ -86,7 +85,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html
       lang="en"
       className={fontVars}
-      data-palette={DEFAULT_PALETTE}
       suppressHydrationWarning
     >
       <body>
