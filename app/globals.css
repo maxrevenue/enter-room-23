@@ -3,43 +3,49 @@
 @tailwind utilities;
 
 /* ===================================================================
-   ROOM 23 — LOCKED BRAND PALETTE
-   Black · Red · Silvery · White · dark luxury only
+   ROOM 23 — BRAND THEME (fixed)
+   Black · Red · Silvery · White — dark luxury only
    =================================================================== */
 
 @layer base {
   :root {
     color-scheme: dark;
 
+    /* Near-black background */
     --background: 0 0% 4%;
-    --foreground: 0 0% 93%;
+    /* Soft off-white primary text */
+    --foreground: 0 0% 92%;
 
     --card: 0 0% 7%;
-    --card-foreground: 0 0% 93%;
+    --card-foreground: 0 0% 92%;
 
     --popover: 0 0% 7%;
-    --popover-foreground: 0 0% 93%;
+    --popover-foreground: 0 0% 92%;
 
+    /* Deep crimson red — CTAs, focus, highlights */
     --primary: 0 68% 40%;
     --primary-foreground: 0 0% 98%;
 
-    --secondary: 0 0% 9%;
-    --secondary-foreground: 0 0% 93%;
+    --secondary: 0 0% 10%;
+    --secondary-foreground: 0 0% 92%;
 
-    --muted: 0 0% 9%;
-    --muted-foreground: 220 8% 62%;
+    --muted: 0 0% 12%;
+    /* Cool silvery gray — secondary text, muted UI */
+    --muted-foreground: 220 6% 58%;
 
-    --accent: 0 0% 12%;
-    --accent-foreground: 0 0% 93%;
+    --accent: 0 0% 14%;
+    --accent-foreground: 0 0% 92%;
 
     --destructive: 0 68% 40%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 220 6% 22%;
-    --input: 220 6% 22%;
+    /* Silvery borders and dividers */
+    --border: 220 5% 18%;
+    --input: 220 5% 18%;
     --ring: 0 68% 40%;
 
     --radius: 0.5rem;
+
     --font-sans: var(--font-inter), 'Inter', ui-sans-serif, system-ui, sans-serif;
     --font-display: var(--font-syne), 'Syne', ui-sans-serif, system-ui, sans-serif;
     --font-heading: var(--font-cormorant), 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
