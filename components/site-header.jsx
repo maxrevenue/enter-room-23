@@ -7,7 +7,6 @@ import { useCart } from '@/lib/cart-context'
 import { useDialogLock } from '@/lib/use-dialog-lock'
 import { Menu, X, ShoppingBag } from 'lucide-react'
 import BrandLogo from '@/components/brand-logo'
-import { ThemePalettePicker } from '@/components/ThemeSwitcher'
 import { STORE_NAV_LINKS } from '@/lib/categories'
 
 const HOUSE_LINKS = [
@@ -270,7 +269,6 @@ export default function SiteHeader() {
                   Terms
                 </Link>
               </div>
-              <ThemePalettePicker />
             </div>
           </nav>
         </div>
