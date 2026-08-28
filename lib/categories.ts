@@ -148,19 +148,88 @@ COLLECTION_META[NEW_ARRIVALS_COLLECTION.id] = {
   description: NEW_ARRIVALS_COLLECTION.description,
 }
 
-export const STORE_NAV_LINKS = [
-  { href: '/shop', label: 'Shop', slug: 'all' },
-  ...STORE_CATEGORIES.map((entry) => ({
-    href: `/collections/${entry.id}`,
-    label: entry.label,
-    slug: entry.id,
-  })),
+export type StoreNavItem = {
+  href: string
+  label: string
+  slug: string
+}
+
+export type StoreNavGroup = {
+  id: string
+  label: string
+  href?: string
+  slug?: string
+  children?: StoreNavItem[]
+}
+
+/** Top-level storefront nav — mains with optional subcategories. */
+export const STORE_NAV_GROUPS: StoreNavGroup[] = [
   {
-    href: `/collections/${NEW_ARRIVALS_COLLECTION.id}`,
-    label: NEW_ARRIVALS_COLLECTION.label,
-    slug: NEW_ARRIVALS_COLLECTION.id,
+    id: 'lubes',
+    label: 'Lubes',
+    href: '/collections/lubes',
+    slug: 'lubes',
+    children: [{ href: '/collections/lubes', label: 'House silicone', slug: 'lubes' }],
+  },
+  {
+    id: 'toys',
+    label: 'Toys',
+    slug: 'toys',
+    children: [
+      { href: '/collections/strokers', label: 'Strokers', slug: 'strokers' },
+      { href: '/collections/vibrators', label: 'Vibrators', slug: 'vibrators' },
+      { href: '/collections/dildos', label: 'Dildos', slug: 'dildos' },
+      { href: '/collections/toys', label: 'All toys', slug: 'toys' },
+    ],
+  },
+  {
+    id: 'essentials',
+    label: 'Essentials',
+    href: '/collections/essentials',
+    slug: 'essentials',
+  },
+  {
+    id: 'shop',
+    label: 'Shop all',
+    href: '/shop',
+    slug: 'all',
   },
 ]
+
+/** Static fallback for nav IA when live product counts are unavailable. */
+export const STOREFRONT_ACTIVE_CATEGORY_SLUGS = ['lubes', 'strokers', 'essentials'] as const
+
+export function resolveStoreNavGroups(
+  activeSlugs: readonly string[] = STOREFRONT_ACTIVE_CATEGORY_SLUGS,
+): StoreNavGroup[] {
+  const active = new Set(activeSlugs)
+
+  return STORE_NAV_GROUPS.flatMap((group) => {
+    if (group.href && !group.children?.length) {
+      return [group]
+    }
+
+    const children = (group.children || []).filter((child) => active.has(child.slug))
+    if (children.length === 0) return []
+
+    if (group.id === 'toys' || children.length > 1) {
+      return [{ ...group, children }]
+    }
+
+    const only = children[0]
+    return [{ ...group, href: only.href, slug: only.slug, children: undefined }]
+  })
+}
+
+export function flattenStoreNavGroups(groups: StoreNavGroup[]): StoreNavItem[] {
+  return groups.map((group) => ({
+    href: group.href || group.children?.[0]?.href || '/shop',
+    label: group.label,
+    slug: group.slug || group.id,
+  }))
+}
+
+export const STORE_NAV_LINKS = flattenStoreNavGroups(resolveStoreNavGroups())
 
 export function sortCuratedStorefrontProducts<T extends { id: string; category?: string; name?: string }>(
   products: T[],

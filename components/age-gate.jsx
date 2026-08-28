@@ -83,14 +83,14 @@ function AgeGateHuman() {
             type="button"
             onClick={handleVerify}
             aria-label="Confirm I am 18 or older and enter the site"
-            className="w-full bg-theme-accent py-3.5 text-sm font-medium uppercase tracking-widest text-theme-bg transition-colors hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-theme-accent focus:ring-offset-2 focus:ring-offset-theme-surface"
+            className="btn-primary w-full py-3.5 text-sm tracking-widest"
           >
             I AM 18+ — ENTER
           </button>
           <a
             href="https://www.google.com"
             aria-label="Exit the site if under 18"
-            className="w-full border border-theme-border py-3 text-xs font-semibold uppercase tracking-widest text-theme-muted transition-colors hover:border-theme-muted hover:text-theme-text focus:outline-none focus:ring-2 focus:ring-theme-muted focus:ring-offset-2 focus:ring-offset-theme-surface"
+            className="btn-secondary w-full py-3 text-xs tracking-widest"
           >
             I AM UNDER 18 — EXIT
           </a>

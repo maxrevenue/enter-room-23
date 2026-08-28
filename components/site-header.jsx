@@ -5,9 +5,9 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useCart } from '@/lib/cart-context'
 import { useDialogLock } from '@/lib/use-dialog-lock'
-import { Menu, X, ShoppingBag } from 'lucide-react'
+import { Menu, X, ShoppingBag, ChevronDown } from 'lucide-react'
 import BrandLogo from '@/components/brand-logo'
-import { STORE_NAV_LINKS } from '@/lib/categories'
+import { resolveStoreNavGroups } from '@/lib/categories'
 
 const HOUSE_LINKS = [
   { href: '/journal', label: 'Journal' },
@@ -22,10 +22,23 @@ const DESKTOP_UTILITY_LINKS = [
   { href: '/about', label: 'About' },
 ]
 
+const NAV_GROUPS = resolveStoreNavGroups()
+
 function linkClass(active) {
   return `font-medium uppercase transition-colors duration-300 text-[11px] tracking-[0.16em] sm:tracking-[0.18em] ${
     active ? 'text-theme-accent' : 'text-theme-muted hover:text-theme-text'
   }`
+}
+
+function stripLinkClass(active) {
+  return `inline-flex min-h-11 items-center whitespace-nowrap text-[10px] font-medium uppercase tracking-[0.14em] transition-colors duration-200 sm:tracking-[0.18em] ${
+    active ? 'text-theme-accent' : 'text-theme-muted hover:text-theme-text'
+  }`
+}
+
+function groupIsActive(group, isActive) {
+  if (group.href && isActive(group.href)) return true
+  return group.children?.some((child) => isActive(child.href)) ?? false
 }
 
 export default function SiteHeader() {
@@ -33,6 +46,7 @@ export default function SiteHeader() {
   const pathname = usePathname()
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [expandedGroup, setExpandedGroup] = useState(null)
   const menuButtonRef = useRef(null)
   const closeButtonRef = useRef(null)
   const drawerRef = useRef(null)
@@ -40,6 +54,7 @@ export default function SiteHeader() {
 
   const closeDrawer = useCallback(() => {
     setDrawerOpen(false)
+    setExpandedGroup(null)
   }, [])
 
   useEffect(() => {
@@ -50,6 +65,7 @@ export default function SiteHeader() {
 
   useEffect(() => {
     setDrawerOpen(false)
+    setExpandedGroup(null)
   }, [pathname])
 
   useEffect(() => {
@@ -65,6 +81,10 @@ export default function SiteHeader() {
   })
 
   const isActive = (href) => pathname === href || pathname?.startsWith(`${href}/`)
+
+  const toggleGroup = (groupId) => {
+    setExpandedGroup((current) => (current === groupId ? null : groupId))
+  }
 
   return (
     <>
@@ -129,21 +149,56 @@ export default function SiteHeader() {
           >
             <div className="mx-auto max-w-7xl overflow-x-auto px-4 [-ms-overflow-style:none] [scrollbar-width:none] sm:px-6 [&::-webkit-scrollbar]:hidden">
               <ul className="flex w-max min-w-full items-center gap-5 py-2.5 sm:gap-7 sm:py-3">
-                {STORE_NAV_LINKS.map((link) => (
-                  <li key={link.href} className="shrink-0">
-                    <Link
-                      href={link.href}
-                      className={`inline-flex min-h-11 items-center whitespace-nowrap text-[10px] font-medium uppercase tracking-[0.14em] transition-colors duration-300 sm:tracking-[0.18em] ${
-                        isActive(link.href)
-                          ? 'text-theme-accent'
-                          : 'text-theme-muted hover:text-theme-text'
-                      }`}
-                      aria-current={isActive(link.href) ? 'page' : undefined}
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
+                {NAV_GROUPS.map((group) => {
+                  const active = groupIsActive(group, isActive)
+
+                  if (!group.children?.length) {
+                    return (
+                      <li key={group.id} className="shrink-0">
+                        <Link
+                          href={group.href}
+                          className={stripLinkClass(active)}
+                          aria-current={active ? 'page' : undefined}
+                        >
+                          {group.label}
+                        </Link>
+                      </li>
+                    )
+                  }
+
+                  return (
+                    <li key={group.id} className="group relative shrink-0">
+                      <button
+                        type="button"
+                        className={`${stripLinkClass(active)} gap-1`}
+                        aria-expanded="false"
+                        aria-haspopup="true"
+                      >
+                        {group.label}
+                        <ChevronDown className="h-3 w-3 stroke-[1.75] transition-transform duration-200 group-hover:rotate-180 group-focus-within:rotate-180" />
+                      </button>
+                      <ul
+                        className="invisible absolute left-0 top-full z-50 min-w-[11rem] border border-theme-border bg-theme-bg py-2 opacity-0 shadow-lg transition-[opacity,visibility] duration-150 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100"
+                        role="menu"
+                      >
+                        {group.children.map((child) => (
+                          <li key={child.href} role="none">
+                            <Link
+                              href={child.href}
+                              role="menuitem"
+                              className={`block px-4 py-2.5 text-[10px] font-medium uppercase tracking-[0.14em] transition-colors duration-150 hover:bg-theme-surface hover:text-theme-text sm:tracking-[0.16em] ${
+                                isActive(child.href) ? 'text-theme-accent' : 'text-theme-muted'
+                              }`}
+                              aria-current={isActive(child.href) ? 'page' : undefined}
+                            >
+                              {child.label}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </li>
+                  )
+                })}
               </ul>
             </div>
           </nav>
@@ -190,36 +245,67 @@ export default function SiteHeader() {
                 Collections
               </p>
               <ul className="flex flex-col">
-                {STORE_NAV_LINKS.map((link) => (
-                  <li key={link.href}>
-                    <Link
-                      href={link.href}
-                      onClick={closeDrawer}
-                      className={`block py-2.5 font-serif text-[1.65rem] leading-none tracking-tight transition-colors md:py-3 md:text-[1.85rem] ${
-                        isActive(link.href)
-                          ? 'text-theme-accent'
-                          : 'text-theme-text hover:text-theme-accent'
-                      }`}
-                      aria-current={isActive(link.href) ? 'page' : undefined}
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-                <li>
-                  <Link
-                    href="/collections"
-                    onClick={closeDrawer}
-                    className={`mt-2 block py-2.5 text-[11px] font-medium uppercase tracking-[0.18em] transition-colors ${
-                      pathname === '/collections'
-                        ? 'text-theme-accent'
-                        : 'text-theme-muted hover:text-theme-text'
-                    }`}
-                    aria-current={pathname === '/collections' ? 'page' : undefined}
-                  >
-                    All collections
-                  </Link>
-                </li>
+                {NAV_GROUPS.map((group) => {
+                  const active = groupIsActive(group, isActive)
+                  const open = expandedGroup === group.id
+
+                  if (!group.children?.length) {
+                    return (
+                      <li key={group.id}>
+                        <Link
+                          href={group.href}
+                          onClick={closeDrawer}
+                          className={`block py-2.5 font-serif text-[1.65rem] leading-none tracking-tight transition-colors md:py-3 md:text-[1.85rem] ${
+                            active ? 'text-theme-accent' : 'text-theme-text hover:text-theme-accent'
+                          }`}
+                          aria-current={active ? 'page' : undefined}
+                        >
+                          {group.label}
+                        </Link>
+                      </li>
+                    )
+                  }
+
+                  return (
+                    <li key={group.id} className="border-b border-theme-border/60 last:border-b-0">
+                      <button
+                        type="button"
+                        onClick={() => toggleGroup(group.id)}
+                        className={`flex w-full items-center justify-between py-2.5 text-left font-serif text-[1.65rem] leading-none tracking-tight transition-colors md:py-3 md:text-[1.85rem] ${
+                          active ? 'text-theme-accent' : 'text-theme-text hover:text-theme-accent'
+                        }`}
+                        aria-expanded={open}
+                      >
+                        {group.label}
+                        <ChevronDown
+                          className={`h-4 w-4 shrink-0 stroke-[1.75] transition-transform duration-200 ${
+                            open ? 'rotate-180' : ''
+                          }`}
+                        />
+                      </button>
+                      {open ? (
+                        <ul className="mb-3 ml-1 flex flex-col gap-1 border-l border-theme-border pl-4">
+                          {group.children.map((child) => (
+                            <li key={child.href}>
+                              <Link
+                                href={child.href}
+                                onClick={closeDrawer}
+                                className={`block py-2 text-[11px] font-medium uppercase tracking-[0.18em] transition-colors ${
+                                  isActive(child.href)
+                                    ? 'text-theme-accent'
+                                    : 'text-theme-muted hover:text-theme-text'
+                                }`}
+                                aria-current={isActive(child.href) ? 'page' : undefined}
+                              >
+                                {child.label}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : null}
+                    </li>
+                  )
+                })}
               </ul>
 
               <div className="mt-10 border-t border-theme-border pt-8 md:mt-12">

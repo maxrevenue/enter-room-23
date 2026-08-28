@@ -16,12 +16,6 @@ export const metadata: Metadata = {
   alternates: { canonical: '/' },
 }
 
-const storefrontCtaPrimary =
-  'inline-flex min-h-12 w-full items-center justify-center rounded-none bg-primary px-10 py-3.5 text-[11px] font-medium uppercase tracking-[0.16em] text-primary-foreground transition-colors duration-300 hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-theme-border sm:w-auto sm:tracking-[0.24em]'
-
-const storefrontCtaSecondary =
-  'inline-flex min-h-12 w-full items-center justify-center rounded-none border border-theme-border px-10 py-3.5 text-[11px] font-medium uppercase tracking-[0.16em] text-theme-text transition-colors duration-300 hover:border-theme-muted hover:bg-theme-surface focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-theme-border sm:w-auto sm:tracking-[0.24em]'
-
 export default async function HomePage() {
   const [productOfTheMonth, storefrontProducts] = await Promise.all([
     getResolvedProductOfTheMonth(),
@@ -67,7 +61,7 @@ export default async function HomePage() {
           <p className="mt-7 max-w-sm text-sm font-light leading-relaxed tracking-wide text-theme-muted sm:mt-8 sm:text-base">
             Considered pleasure.
           </p>
-          <Link href="/shop" className={`mt-12 sm:mt-14 ${storefrontCtaPrimary}`}>
+          <Link href="/shop" className="storefront-cta-primary mt-12 sm:mt-14">
             Shop the collection
           </Link>
         </div>
@@ -137,7 +131,7 @@ export default async function HomePage() {
             Body-safe formulations, considered packaging, and categories held to a quiet
             standard.
           </p>
-          <Link href="/shop" className={`mt-10 ${storefrontCtaSecondary}`}>
+          <Link href="/shop" className="storefront-cta-secondary mt-10">
             Shop the collection
           </Link>
         </div>

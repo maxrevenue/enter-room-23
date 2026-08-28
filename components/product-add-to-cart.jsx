@@ -34,9 +34,7 @@ export default function ProductAddToCart({ product, compact = false }) {
     <button
       type="button"
       onClick={handleAdd}
-      className={`inline-flex items-center justify-center gap-2 rounded-none bg-primary px-6 py-3.5 text-[11px] font-medium uppercase tracking-[0.16em] text-primary-foreground transition-colors duration-300 hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-theme-border sm:tracking-[0.2em] ${
-        compact ? 'min-h-11 min-w-[5.5rem] px-4' : 'w-full'
-      }`}
+      className={`btn-primary ${compact ? 'min-h-11 min-w-[5.5rem] px-4' : 'w-full'} ${added ? '!bg-green-600 active:!bg-green-700' : ''}`}
     >
       <ShoppingBag className="h-4 w-4" aria-hidden="true" />
       {label}

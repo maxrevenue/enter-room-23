@@ -295,21 +295,33 @@ body::before {
     border: none;
     border-radius: 0;
     cursor: pointer;
-    transition: background-color 300ms ease, opacity 300ms ease;
+    transition:
+      background-color 150ms ease,
+      transform 150ms ease,
+      opacity 150ms ease;
   }
 
   .btn-primary:hover {
-    background-color: hsl(var(--primary) / 0.88);
+    background-color: hsl(var(--primary) / 0.9);
+  }
+
+  .btn-primary:active {
+    transform: translateY(1px) scale(0.98);
+    background-color: hsl(0 45% 32%);
   }
 
   .btn-primary:focus-visible {
-    outline: 2px solid hsl(var(--ring));
+    outline: 2px solid hsl(var(--ring) / 0.65);
     outline-offset: 3px;
   }
 
   .btn-primary:disabled {
     opacity: 0.4;
     cursor: not-allowed;
+  }
+
+  .btn-primary:disabled:active {
+    transform: none;
   }
 
   .btn-secondary {
@@ -328,12 +340,114 @@ body::before {
     border: 1px solid hsl(var(--border));
     border-radius: 0;
     cursor: pointer;
-    transition: border-color 300ms ease, color 300ms ease;
+    transition:
+      border-color 150ms ease,
+      color 150ms ease,
+      background-color 150ms ease,
+      transform 150ms ease;
   }
 
   .btn-secondary:hover {
     border-color: hsl(var(--muted-foreground));
-    color: hsl(var(--muted-foreground));
+    color: hsl(var(--foreground));
+    background-color: hsl(var(--secondary));
+  }
+
+  .btn-secondary:active {
+    transform: translateY(1px) scale(0.98);
+    background-color: hsl(var(--muted));
+    border-color: hsl(var(--muted-foreground) / 0.7);
+  }
+
+  .btn-secondary:focus-visible {
+    outline: 2px solid hsl(var(--ring) / 0.65);
+    outline-offset: 3px;
+  }
+
+  .storefront-cta-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.75rem;
+    width: 100%;
+    padding: 0.875rem 1.75rem;
+    background-color: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 0;
+    cursor: pointer;
+    transition:
+      background-color 150ms ease,
+      transform 150ms ease;
+  }
+
+  .storefront-cta-primary:hover {
+    background-color: hsl(var(--primary) / 0.9);
+  }
+
+  .storefront-cta-primary:active {
+    transform: translateY(1px) scale(0.98);
+    background-color: hsl(0 45% 32%);
+  }
+
+  .storefront-cta-primary:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 1px hsl(var(--border));
+  }
+
+  @media (min-width: 640px) {
+    .storefront-cta-primary {
+      width: auto;
+      letter-spacing: 0.2em;
+    }
+  }
+
+  .storefront-cta-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.75rem;
+    width: 100%;
+    padding: 0.875rem 1.75rem;
+    background-color: transparent;
+    color: hsl(var(--foreground));
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    border: 1px solid hsl(var(--border));
+    border-radius: 0;
+    cursor: pointer;
+    transition:
+      border-color 150ms ease,
+      background-color 150ms ease,
+      transform 150ms ease;
+  }
+
+  .storefront-cta-secondary:hover {
+    border-color: hsl(var(--muted-foreground));
+    background-color: hsl(var(--secondary));
+  }
+
+  .storefront-cta-secondary:active {
+    transform: translateY(1px) scale(0.98);
+    background-color: hsl(var(--muted));
+  }
+
+  .storefront-cta-secondary:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 1px hsl(var(--border));
+  }
+
+  @media (min-width: 640px) {
+    .storefront-cta-secondary {
+      width: auto;
+      letter-spacing: 0.2em;
+    }
   }
 
   .btn-brass {
