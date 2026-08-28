@@ -21,7 +21,7 @@ export default function ProductCard({ product, newBadgeAllowlist = new Set() }) 
     product.images?.[0]?.alt || product.gallery?.[0]?.alt || product.name
 
   return (
-    <article className="group flex h-full flex-col">
+    <article className="group flex h-full flex-col overflow-visible">
       <Link
         href={href}
         className="block focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-theme-border"
@@ -56,7 +56,7 @@ export default function ProductCard({ product, newBadgeAllowlist = new Set() }) 
         </div>
       </Link>
 
-      <div className="flex flex-1 flex-col px-0.5 pt-4 sm:pt-6">
+      <div className="flex min-h-[4.5rem] flex-1 flex-col px-0.5 pt-3 sm:min-h-[5rem] sm:pt-5">
         <Link
           href={href}
           className="block focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-theme-border"
@@ -72,7 +72,7 @@ export default function ProductCard({ product, newBadgeAllowlist = new Set() }) 
           </p>
         ) : null}
 
-        <div className="mt-auto flex items-end justify-between gap-2 pt-4 sm:pt-6">
+        <div className="mt-auto flex items-end justify-between gap-2 pt-3 sm:pt-4">
           <p className="text-sm tabular-nums text-theme-muted">{price}</p>
           <ProductCardActions product={product} />
         </div>
