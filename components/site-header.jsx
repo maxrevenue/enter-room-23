@@ -25,20 +25,46 @@ const DESKTOP_UTILITY_LINKS = [
 const NAV_GROUPS = resolveStoreNavGroups()
 
 function linkClass(active) {
-  return `font-medium uppercase transition-colors duration-300 text-[11px] tracking-[0.16em] sm:tracking-[0.18em] ${
+  return `font-medium uppercase transition-colors duration-200 text-[11px] tracking-[0.16em] sm:tracking-[0.18em] ${
     active ? 'text-theme-accent' : 'text-theme-muted hover:text-theme-text'
   }`
 }
 
 function stripLinkClass(active) {
-  return `inline-flex min-h-11 items-center whitespace-nowrap text-[10px] font-medium uppercase tracking-[0.14em] transition-colors duration-200 sm:tracking-[0.18em] ${
-    active ? 'text-theme-accent' : 'text-theme-muted hover:text-theme-text'
+  return `inline-flex min-h-11 w-full items-center justify-center whitespace-nowrap border-b-2 px-0.5 pb-2 text-[9px] font-medium uppercase tracking-[0.12em] transition-[color,border-color] duration-150 active:text-theme-text sm:text-[10px] sm:tracking-[0.14em] md:w-auto md:justify-start md:px-0 md:pb-2.5 md:tracking-[0.18em] ${
+    active
+      ? 'border-theme-accent text-theme-accent'
+      : 'border-transparent text-theme-muted hover:border-theme-border/50 hover:text-theme-text'
+  }`
+}
+
+function drawerMainClass(active) {
+  return `flex w-full items-center justify-between py-2.5 text-left text-[13px] font-medium uppercase tracking-[0.14em] transition-colors duration-150 active:opacity-80 ${
+    active ? 'text-theme-accent' : 'text-theme-text/90 hover:text-theme-text'
+  }`
+}
+
+function drawerSubClass(active) {
+  return `block border-l py-2 pl-3 text-[11px] font-medium uppercase tracking-[0.14em] transition-colors duration-150 ${
+    active
+      ? 'border-theme-accent text-theme-accent'
+      : 'border-theme-border text-theme-muted hover:border-theme-muted hover:text-theme-text'
+  }`
+}
+
+function drawerHouseClass(active) {
+  return `block border-b border-theme-border py-3 text-[11px] font-medium uppercase tracking-[0.14em] transition-colors duration-150 ${
+    active ? 'text-theme-accent' : 'text-theme-text/75 hover:text-theme-text'
   }`
 }
 
 function groupIsActive(group, isActive) {
   if (group.href && isActive(group.href)) return true
   return group.children?.some((child) => isActive(child.href)) ?? false
+}
+
+function primaryChildHref(group) {
+  return group.children?.[0]?.href || '/shop'
 }
 
 export default function SiteHeader() {
@@ -100,7 +126,7 @@ export default function SiteHeader() {
                 ref={menuButtonRef}
                 type="button"
                 onClick={() => setDrawerOpen(true)}
-                className="inline-flex h-11 min-w-11 items-center justify-center text-theme-text/90 transition-colors hover:text-theme-text"
+                className="inline-flex h-11 min-w-11 items-center justify-center text-theme-text/90 transition-colors hover:text-theme-text active:opacity-80"
                 aria-label="Open menu"
                 aria-expanded={drawerOpen}
                 aria-controls="site-menu"
@@ -130,7 +156,7 @@ export default function SiteHeader() {
               <button
                 type="button"
                 onClick={() => setCartOpen(!cartOpen)}
-                className="relative inline-flex h-11 w-11 items-center justify-center text-theme-text/90 transition-colors hover:text-theme-text"
+                className="relative inline-flex h-11 w-11 items-center justify-center text-theme-text/90 transition-colors hover:text-theme-text active:opacity-80"
                 aria-label={`Open cart${itemCount > 0 ? ` (${itemCount} items)` : ''}`}
               >
                 <ShoppingBag className="h-5 w-5 stroke-[1.5]" />
@@ -143,18 +169,15 @@ export default function SiteHeader() {
             </div>
           </div>
 
-          <nav
-            aria-label="Collections"
-            className="border-t border-theme-border/60"
-          >
-            <div className="mx-auto max-w-7xl overflow-x-auto px-4 [-ms-overflow-style:none] [scrollbar-width:none] sm:px-6 [&::-webkit-scrollbar]:hidden">
-              <ul className="flex w-max min-w-full items-center gap-5 py-2.5 sm:gap-7 sm:py-3">
+          <nav aria-label="Collections" className="border-t border-theme-border/60">
+            <div className="mx-auto max-w-7xl px-3 sm:px-6">
+              <ul className="grid grid-cols-4 items-end md:flex md:items-center md:gap-7 md:py-3">
                 {NAV_GROUPS.map((group) => {
                   const active = groupIsActive(group, isActive)
 
                   if (!group.children?.length) {
                     return (
-                      <li key={group.id} className="shrink-0">
+                      <li key={group.id} className="min-w-0">
                         <Link
                           href={group.href}
                           className={stripLinkClass(active)}
@@ -167,35 +190,45 @@ export default function SiteHeader() {
                   }
 
                   return (
-                    <li key={group.id} className="group relative shrink-0">
-                      <button
-                        type="button"
-                        className={`${stripLinkClass(active)} gap-1`}
-                        aria-expanded="false"
-                        aria-haspopup="true"
+                    <li key={group.id} className="min-w-0 md:relative md:shrink-0 md:group">
+                      <Link
+                        href={primaryChildHref(group)}
+                        className={`${stripLinkClass(active)} md:hidden`}
+                        aria-current={active ? 'page' : undefined}
                       >
                         {group.label}
-                        <ChevronDown className="h-3 w-3 stroke-[1.75] transition-transform duration-200 group-hover:rotate-180 group-focus-within:rotate-180" />
-                      </button>
-                      <ul
-                        className="invisible absolute left-0 top-full z-50 min-w-[11rem] border border-theme-border bg-theme-bg py-2 opacity-0 shadow-lg transition-[opacity,visibility] duration-150 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100"
-                        role="menu"
-                      >
-                        {group.children.map((child) => (
-                          <li key={child.href} role="none">
-                            <Link
-                              href={child.href}
-                              role="menuitem"
-                              className={`block px-4 py-2.5 text-[10px] font-medium uppercase tracking-[0.14em] transition-colors duration-150 hover:bg-theme-surface hover:text-theme-text sm:tracking-[0.16em] ${
-                                isActive(child.href) ? 'text-theme-accent' : 'text-theme-muted'
-                              }`}
-                              aria-current={isActive(child.href) ? 'page' : undefined}
-                            >
-                              {child.label}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
+                      </Link>
+
+                      <div className="relative hidden md:block">
+                        <button
+                          type="button"
+                          className={`${stripLinkClass(active)} gap-1 pr-0`}
+                          aria-expanded="false"
+                          aria-haspopup="true"
+                        >
+                          <span>{group.label}</span>
+                          <ChevronDown className="h-3 w-3 shrink-0 stroke-[1.75] opacity-70 transition-transform duration-200 group-hover:rotate-180 group-focus-within:rotate-180" />
+                        </button>
+                        <ul
+                          className="pointer-events-none invisible absolute left-0 top-full z-50 min-w-[11rem] border border-theme-border bg-theme-bg py-2 opacity-0 shadow-lg transition-[opacity,visibility] duration-150 group-hover:pointer-events-auto group-hover:visible group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:visible group-focus-within:opacity-100"
+                          role="menu"
+                        >
+                          {group.children.map((child) => (
+                            <li key={child.href} role="none">
+                              <Link
+                                href={child.href}
+                                role="menuitem"
+                                className={`block px-4 py-2.5 text-[10px] font-medium uppercase tracking-[0.14em] transition-colors duration-150 hover:bg-theme-surface hover:text-theme-text sm:tracking-[0.16em] ${
+                                  isActive(child.href) ? 'text-theme-accent' : 'text-theme-muted'
+                                }`}
+                                aria-current={isActive(child.href) ? 'page' : undefined}
+                              >
+                                {child.label}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                     </li>
                   )
                 })}
@@ -205,11 +238,11 @@ export default function SiteHeader() {
         </div>
       </header>
 
-      {drawerOpen && (
-        <div className="fixed inset-0 z-50 flex">
+      {drawerOpen ? (
+        <div className="fixed inset-0 z-50 overscroll-none">
           <button
             type="button"
-            className="fixed inset-0 bg-black/70"
+            className="absolute inset-0 bg-black/75"
             onClick={closeDrawer}
             aria-label="Close menu"
           />
@@ -220,109 +253,102 @@ export default function SiteHeader() {
             aria-modal="true"
             aria-label="Site menu"
             tabIndex={-1}
-            className="relative flex h-full w-full max-w-xs flex-col border-r border-theme-border bg-theme-bg pt-[env(safe-area-inset-top)] sm:max-w-sm md:max-w-md"
+            className="relative flex h-[100dvh] max-h-[100dvh] w-[min(100%,18.75rem)] flex-col border-r border-theme-border bg-theme-bg shadow-2xl sm:w-80"
           >
-            <div className="flex items-center justify-between border-b border-theme-border px-5 py-4 md:px-8">
-              <span onClick={closeDrawer}>
+            <div className="flex shrink-0 items-center justify-between border-b border-theme-border px-4 pb-3 pt-[max(0.75rem,env(safe-area-inset-top))]">
+              <span onClick={closeDrawer} className="min-w-0">
                 <BrandLogo size="sm" />
               </span>
               <button
                 ref={closeButtonRef}
                 type="button"
                 onClick={closeDrawer}
-                className="inline-flex h-11 min-w-11 items-center justify-center text-theme-muted transition-colors hover:text-theme-text"
+                className="inline-flex h-11 w-11 shrink-0 items-center justify-center text-theme-muted transition-colors hover:text-theme-text active:opacity-80"
                 aria-label="Close menu"
               >
-                <X className="h-5 w-5 stroke-[1.5] md:hidden" />
-                <span className="hidden text-[11px] font-medium uppercase tracking-[0.18em] md:inline">
-                  Close
-                </span>
+                <X className="h-5 w-5 stroke-[1.5]" />
               </button>
             </div>
 
-            <div className="flex flex-1 flex-col overflow-y-auto px-5 py-8 md:px-8 md:py-10">
-              <p className="mb-5 text-[10px] font-medium uppercase tracking-[0.16em] text-theme-muted sm:tracking-[0.28em]">
-                Collections
-              </p>
-              <ul className="flex flex-col">
-                {NAV_GROUPS.map((group) => {
-                  const active = groupIsActive(group, isActive)
-                  const open = expandedGroup === group.id
-
-                  if (!group.children?.length) {
-                    return (
-                      <li key={group.id}>
-                        <Link
-                          href={group.href}
-                          onClick={closeDrawer}
-                          className={`block py-2.5 font-serif text-[1.65rem] leading-none tracking-tight transition-colors md:py-3 md:text-[1.85rem] ${
-                            active ? 'text-theme-accent' : 'text-theme-text hover:text-theme-accent'
-                          }`}
-                          aria-current={active ? 'page' : undefined}
-                        >
-                          {group.label}
-                        </Link>
-                      </li>
-                    )
-                  }
-
-                  return (
-                    <li key={group.id} className="border-b border-theme-border/60 last:border-b-0">
-                      <button
-                        type="button"
-                        onClick={() => toggleGroup(group.id)}
-                        className={`flex w-full items-center justify-between py-2.5 text-left font-serif text-[1.65rem] leading-none tracking-tight transition-colors md:py-3 md:text-[1.85rem] ${
-                          active ? 'text-theme-accent' : 'text-theme-text hover:text-theme-accent'
-                        }`}
-                        aria-expanded={open}
-                      >
-                        {group.label}
-                        <ChevronDown
-                          className={`h-4 w-4 shrink-0 stroke-[1.75] transition-transform duration-200 ${
-                            open ? 'rotate-180' : ''
-                          }`}
-                        />
-                      </button>
-                      {open ? (
-                        <ul className="mb-3 ml-1 flex flex-col gap-1 border-l border-theme-border pl-4">
-                          {group.children.map((child) => (
-                            <li key={child.href}>
-                              <Link
-                                href={child.href}
-                                onClick={closeDrawer}
-                                className={`block py-2 text-[11px] font-medium uppercase tracking-[0.18em] transition-colors ${
-                                  isActive(child.href)
-                                    ? 'text-theme-accent'
-                                    : 'text-theme-muted hover:text-theme-text'
-                                }`}
-                                aria-current={isActive(child.href) ? 'page' : undefined}
-                              >
-                                {child.label}
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
-                      ) : null}
-                    </li>
-                  )
-                })}
-              </ul>
-
-              <div className="mt-10 border-t border-theme-border pt-8 md:mt-12">
-                <p className="mb-4 text-[10px] font-medium uppercase tracking-[0.16em] text-theme-muted sm:tracking-[0.28em]">
-                  The house
+            <div className="flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain px-4 py-5">
+              <section aria-label="Collections">
+                <p className="mb-3 text-[10px] font-medium uppercase tracking-[0.2em] text-theme-muted">
+                  Collections
                 </p>
                 <ul className="flex flex-col">
+                  {NAV_GROUPS.map((group) => {
+                    const active = groupIsActive(group, isActive)
+                    const open = expandedGroup === group.id
+
+                    if (!group.children?.length) {
+                      return (
+                        <li key={group.id} className="border-b border-theme-border/70 last:border-b-0">
+                          <Link
+                            href={group.href}
+                            onClick={closeDrawer}
+                            className={drawerMainClass(active)}
+                            aria-current={active ? 'page' : undefined}
+                          >
+                            {group.label}
+                          </Link>
+                        </li>
+                      )
+                    }
+
+                    return (
+                      <li key={group.id} className="border-b border-theme-border/70 last:border-b-0">
+                        <button
+                          type="button"
+                          onClick={() => toggleGroup(group.id)}
+                          className={drawerMainClass(active)}
+                          aria-expanded={open}
+                        >
+                          <span>{group.label}</span>
+                          <ChevronDown
+                            className={`h-3.5 w-3.5 shrink-0 stroke-[1.75] text-theme-muted transition-transform duration-200 ${
+                              open ? 'rotate-180' : ''
+                            }`}
+                          />
+                        </button>
+                        <div
+                          className={`grid transition-[grid-template-rows] duration-200 ease-out ${
+                            open ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
+                          }`}
+                        >
+                          <div className="overflow-hidden">
+                            <ul className="mb-2 ml-0.5 space-y-0.5 border-t border-theme-border/60 pt-2">
+                              {group.children.map((child) => (
+                                <li key={child.href}>
+                                  <Link
+                                    href={child.href}
+                                    onClick={closeDrawer}
+                                    className={drawerSubClass(isActive(child.href))}
+                                    aria-current={isActive(child.href) ? 'page' : undefined}
+                                  >
+                                    {child.label}
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+                      </li>
+                    )
+                  })}
+                </ul>
+              </section>
+
+              <section aria-label="The house" className="mt-6 border-t border-theme-border pt-5">
+                <p className="mb-3 text-[10px] font-medium uppercase tracking-[0.2em] text-theme-muted">
+                  The house
+                </p>
+                <ul>
                   {HOUSE_LINKS.map((link) => (
                     <li key={link.href}>
                       <Link
                         href={link.href}
                         onClick={closeDrawer}
-                        className={`block border-b border-theme-border py-3.5 text-[11px] font-medium uppercase tracking-[0.18em] transition-colors ${
-                          isActive(link.href)
-                            ? 'text-theme-accent'
-                            : 'text-theme-text/80 hover:text-theme-text'
-                        }`}
+                        className={drawerHouseClass(isActive(link.href))}
                         aria-current={isActive(link.href) ? 'page' : undefined}
                       >
                         {link.label}
@@ -330,35 +356,35 @@ export default function SiteHeader() {
                     </li>
                   ))}
                 </ul>
-              </div>
-            </div>
+              </section>
 
-            <div className="border-t border-theme-border px-5 py-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] md:px-8">
-              <p className="text-[10px] uppercase leading-relaxed tracking-[0.16em] text-theme-muted sm:tracking-[0.2em]">
-                Considered pleasure.
-                <br />
-                For adults 18+ only.
-              </p>
-              <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2">
-                <Link
-                  href="/privacy"
-                  onClick={closeDrawer}
-                  className="inline-flex min-h-11 items-center text-[10px] uppercase tracking-[0.18em] text-theme-muted transition-colors hover:text-theme-text/80"
-                >
-                  Privacy
-                </Link>
-                <Link
-                  href="/terms"
-                  onClick={closeDrawer}
-                  className="inline-flex min-h-11 items-center text-[10px] uppercase tracking-[0.18em] text-theme-muted transition-colors hover:text-theme-text/80"
-                >
-                  Terms
-                </Link>
-              </div>
+              <footer className="mt-auto border-t border-theme-border pt-5 pb-[max(1rem,env(safe-area-inset-bottom))]">
+                <p className="text-[10px] uppercase leading-relaxed tracking-[0.14em] text-theme-muted">
+                  Considered pleasure.
+                  <br />
+                  For adults 18+ only.
+                </p>
+                <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1">
+                  <Link
+                    href="/privacy"
+                    onClick={closeDrawer}
+                    className="inline-flex min-h-10 items-center text-[10px] uppercase tracking-[0.14em] text-theme-muted transition-colors hover:text-theme-text active:text-theme-text"
+                  >
+                    Privacy
+                  </Link>
+                  <Link
+                    href="/terms"
+                    onClick={closeDrawer}
+                    className="inline-flex min-h-10 items-center text-[10px] uppercase tracking-[0.14em] text-theme-muted transition-colors hover:text-theme-text active:text-theme-text"
+                  >
+                    Terms
+                  </Link>
+                </div>
+              </footer>
             </div>
           </nav>
         </div>
-      )}
+      ) : null}
     </>
   )
 }

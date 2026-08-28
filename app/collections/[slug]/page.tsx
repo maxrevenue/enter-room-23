@@ -55,33 +55,37 @@ export default async function CollectionPage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen bg-theme-bg text-theme-text">
-      <section className="px-4 py-20 text-center sm:px-8 md:py-28 lg:py-32">
-        <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-theme-muted sm:tracking-[0.28em]">
-          {countLabel}
-        </p>
-        <h1 className="mt-5 font-serif text-3xl font-light tracking-tight text-theme-text sm:text-4xl md:text-[2.75rem]">
-          {title}
-        </h1>
-        <p className="mx-auto mt-6 max-w-md text-sm leading-relaxed text-theme-muted sm:text-[0.9375rem]">
-          {meta.subtitle}
-        </p>
+      <section className="mx-auto max-w-6xl px-4 pt-8 pb-6 sm:px-8 md:pt-12 md:pb-10">
+        <header className="flex items-end justify-between gap-6 border-b border-theme-border pb-6 md:pb-8">
+          <div className="min-w-0 text-left">
+            <h1 className="font-serif text-2xl font-light tracking-tight text-theme-text sm:text-4xl md:text-[2.75rem]">
+              {title}
+            </h1>
+            <p className="mt-3 max-w-md text-sm leading-relaxed text-theme-muted sm:mt-4 sm:text-[0.9375rem]">
+              {meta.subtitle}
+            </p>
+          </div>
+          <p className="shrink-0 text-[10px] font-medium uppercase tracking-[0.22em] text-theme-muted">
+            {countLabel}
+          </p>
+        </header>
       </section>
 
-      <section className="mx-auto max-w-6xl px-4 pb-20 sm:px-8 md:pb-28 lg:pb-32">
+      <section className="mx-auto max-w-6xl px-4 pb-16 sm:px-8 md:pb-24 lg:pb-28">
         {products.length === 0 ? (
-          <div className="mx-auto mt-16 max-w-md text-center">
+          <div className="mx-auto max-w-md text-center">
             <p className="text-sm leading-relaxed text-theme-muted">
               Browse the full shop for the current edit.
             </p>
             <Link
               href="/shop"
-              className="mt-8 inline-flex min-h-12 items-center justify-center rounded-none border border-theme-border px-10 py-3.5 text-[11px] font-medium uppercase tracking-[0.24em] text-theme-text transition-colors duration-300 hover:border-theme-muted hover:bg-theme-surface focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-theme-border"
+              className="storefront-cta-secondary mt-8"
             >
               Shop the collection
             </Link>
           </div>
         ) : (
-          <ul className="mt-12 grid grid-cols-2 gap-x-3 gap-y-8 sm:mt-16 sm:gap-x-6 sm:gap-y-10 md:gap-y-12 lg:grid-cols-3 lg:gap-x-8">
+          <ul className="grid grid-cols-2 gap-x-3 gap-y-7 sm:gap-x-5 sm:gap-y-9 md:gap-y-10 lg:grid-cols-3 lg:gap-x-8">
             {products.map((product) => (
               <li key={product.id}>
                 <ProductCard product={product} newBadgeAllowlist={newBadgeAllowlist} />
