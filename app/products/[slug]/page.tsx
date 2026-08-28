@@ -6,7 +6,9 @@ import ProductAddToCart from '@/components/product-add-to-cart'
 import ProductStickyBar from '@/components/product-sticky-bar'
 import ProductCard from '@/components/product-card'
 import { SITE_CONFIG } from '@/config/site'
+import { formatPrice } from '@/lib/format-price'
 import { INVENTORY_STATUS } from '@/lib/inventory'
+import { buildNewBadgeAllowlist } from '@/lib/product-badge'
 import { getStorefrontProductBySlug, listStorefrontProducts } from '@/lib/admin-catalog'
 import { PRODUCTS, productHref } from '@/lib/products'
 
@@ -39,10 +41,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       description.length > 155 ? `${description.slice(0, 154).replace(/\s+\S*$/, '')}…` : description,
     alternates: { canonical: `/products/${product.slug}` },
   }
-}
-
-function formatPrice(price: number) {
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(price)
 }
 
 function formatCategory(category?: string) {
@@ -80,6 +78,7 @@ export default async function ProductPage({ params, searchParams }: PageProps) {
   ].filter((section) => section.body)
 
   const liveProducts = await listStorefrontProducts()
+  const newBadgeAllowlist = buildNewBadgeAllowlist(liveProducts)
   const relatedIds = new Set<string>([product.id])
   const related = []
   for (const relatedSlug of product.relatedSlugs || []) {
@@ -170,7 +169,7 @@ export default async function ProductPage({ params, searchParams }: PageProps) {
             <h1 className="mt-3 font-serif text-3xl font-light tracking-tight text-theme-text sm:text-4xl">
               {product.name}
             </h1>
-            <p className="mt-4 text-base tracking-wide text-theme-muted">
+            <p className="mt-4 text-base tabular-nums text-theme-muted">
               {formatPrice(product.price)}
             </p>
 
@@ -291,7 +290,7 @@ export default async function ProductPage({ params, searchParams }: PageProps) {
             <ul className="grid grid-cols-2 gap-x-3 gap-y-8 sm:gap-x-6 sm:gap-y-10 md:gap-y-12 lg:grid-cols-3 lg:gap-x-8">
               {related.slice(0, 3).map((item) => (
                 <li key={item.id}>
-                  <ProductCard product={item} />
+                  <ProductCard product={item} newBadgeAllowlist={newBadgeAllowlist} />
                 </li>
               ))}
             </ul>

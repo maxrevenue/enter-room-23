@@ -4,7 +4,6 @@ import { CartProvider } from '@/lib/cart-context'
 import SiteShell from '@/components/site-shell'
 import AgeGate from '@/components/AgeGate'
 import DiscreetNewsletter from '@/components/DiscreetNewsletter'
-import { DEFAULT_PALETTE, THEME_INIT_SCRIPT } from '@/lib/theme-palettes'
 import './globals.css'
 
 const inter = Inter({
@@ -86,11 +85,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html
       lang="en"
       className={fontVars}
-      data-palette={DEFAULT_PALETTE}
       suppressHydrationWarning
     >
       <body>
-        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
         <AgeGate />
         <a href="#main-content" className="skip-to-content" aria-label="Skip to main content">
           Skip to content

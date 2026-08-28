@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import ProductCard from '@/components/product-card'
 import { groupProductsByCategory, STORE_CATEGORIES } from '@/lib/categories'
+import { buildNewBadgeAllowlist } from '@/lib/product-badge'
 import { listStorefrontProducts } from '@/lib/admin-catalog'
 
 export const dynamic = 'force-dynamic'
@@ -23,6 +24,7 @@ export default async function ShopPage() {
   const grouped = groupProductsByCategory(products)
   const sections = STORE_CATEGORIES.filter((category) => (grouped.get(category.id)?.length ?? 0) > 0)
   const countLabel = formatCount(products.length)
+  const newBadgeAllowlist = buildNewBadgeAllowlist(products)
 
   return (
     <div className="min-h-screen bg-theme-bg text-theme-text">
@@ -79,7 +81,7 @@ export default async function ShopPage() {
                   <ul className="grid grid-cols-2 gap-x-3 gap-y-8 sm:gap-x-6 sm:gap-y-10 md:gap-y-12 lg:grid-cols-3 lg:gap-x-8">
                     {items.map((product) => (
                       <li key={product.id}>
-                        <ProductCard product={product} />
+                        <ProductCard product={product} newBadgeAllowlist={newBadgeAllowlist} />
                       </li>
                     ))}
                   </ul>

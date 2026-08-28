@@ -3,7 +3,8 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import ProductCard from '@/components/product-card'
 import { resolveCollectionSlug } from '@/lib/categories'
-import { listStorefrontProductsByCollection } from '@/lib/admin-catalog'
+import { listStorefrontProducts, listStorefrontProductsByCollection } from '@/lib/admin-catalog'
+import { buildNewBadgeAllowlist } from '@/lib/product-badge'
 import {
   COLLECTIONS,
   getCollection,
@@ -38,8 +39,12 @@ function formatCount(count: number) {
 export default async function CollectionPage({ params }: PageProps) {
   const { slug } = await params
   const resolvedSlug = resolveCollectionSlug(slug)
-  const products = await listStorefrontProductsByCollection(slug)
+  const [products, allProducts] = await Promise.all([
+    listStorefrontProductsByCollection(slug),
+    listStorefrontProducts(),
+  ])
   const meta = getCollection(slug)
+  const newBadgeAllowlist = buildNewBadgeAllowlist(allProducts)
 
   if (!meta || (!COLLECTIONS[resolvedSlug] && products.length === 0)) {
     notFound()
@@ -79,7 +84,7 @@ export default async function CollectionPage({ params }: PageProps) {
           <ul className="mt-12 grid grid-cols-2 gap-x-3 gap-y-8 sm:mt-16 sm:gap-x-6 sm:gap-y-10 md:gap-y-12 lg:grid-cols-3 lg:gap-x-8">
             {products.map((product) => (
               <li key={product.id}>
-                <ProductCard product={product} />
+                <ProductCard product={product} newBadgeAllowlist={newBadgeAllowlist} />
               </li>
             ))}
           </ul>

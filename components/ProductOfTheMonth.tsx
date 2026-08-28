@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { categoryLabel } from '@/lib/categories'
+import { formatPrice } from '@/lib/format-price'
 import { productHref } from '@/lib/products'
 
 export type MonthOffer = {
@@ -41,7 +42,7 @@ export default function ProductOfTheMonth({ product = null, offer = null }: Prod
   const imageAlt = product.images?.[0]?.alt || product.name
   const editorial = product.shortEditorial || product.description
   const compareAt =
-    offer?.compareAtPrice != null ? `$${offer.compareAtPrice.toFixed(2)}` : null
+    offer?.compareAtPrice != null ? formatPrice(offer.compareAtPrice) : null
 
   return (
     <section
@@ -108,7 +109,7 @@ export default function ProductOfTheMonth({ product = null, offer = null }: Prod
               {compareAt ? (
                 <p className="text-xs uppercase tracking-[0.16em] text-theme-muted line-through">{compareAt}</p>
               ) : null}
-              <p className="text-sm tracking-wide text-theme-text/90">${product.price.toFixed(2)}</p>
+              <p className="text-sm tabular-nums text-theme-text/90">{formatPrice(product.price)}</p>
             </div>
 
             <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap">

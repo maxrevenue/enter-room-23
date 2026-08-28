@@ -4,6 +4,7 @@ import JournalSection from '@/components/JournalSection'
 import ProductOfTheMonth from '@/components/ProductOfTheMonth'
 import ProductCard from '@/components/product-card'
 import { sortCuratedStorefrontProducts } from '@/lib/categories'
+import { buildNewBadgeAllowlist } from '@/lib/product-badge'
 import { getResolvedProductOfTheMonth, listStorefrontProducts } from '@/lib/admin-catalog'
 
 export const dynamic = 'force-dynamic'
@@ -31,6 +32,7 @@ export default async function HomePage() {
     storefrontProducts,
     productOfTheMonthId ? [productOfTheMonthId] : [],
   ).slice(0, 4)
+  const newBadgeAllowlist = buildNewBadgeAllowlist(storefrontProducts)
 
   return (
     <div className="bg-theme-bg text-theme-text">
@@ -111,7 +113,7 @@ export default async function HomePage() {
           <ul className="grid grid-cols-2 gap-x-3 gap-y-8 sm:gap-x-6 sm:gap-y-10 md:gap-y-12 lg:grid-cols-4 lg:gap-x-8">
             {editTiles.map((product) => (
               <li key={product.id}>
-                <ProductCard product={product} />
+                <ProductCard product={product} newBadgeAllowlist={newBadgeAllowlist} />
               </li>
             ))}
           </ul>
