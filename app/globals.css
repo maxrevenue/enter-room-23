@@ -3,9 +3,8 @@
 @tailwind utilities;
 
 /* ===================================================================
-   ROOM 23 — PRODUCTION THEME SYSTEM
-   Five palette directions · shadcn/ui HSL tokens · dark luxury only
-   Default: charcoal
+   ROOM 23 — BRAND THEME (fixed)
+   Black · Red · Silver · White — dark luxury only
    =================================================================== */
 
 @layer base {
@@ -13,163 +12,40 @@
   [data-palette='charcoal'] {
     color-scheme: dark;
 
-    --background: 0 0% 5%;
-    --foreground: 43 33% 94%;
+    /* Near-black background */
+    --background: 0 0% 4%;
+    /* Soft off-white primary text */
+    --foreground: 0 0% 92%;
 
-    --card: 0 0% 10%;
-    --card-foreground: 43 33% 94%;
+    --card: 0 0% 7%;
+    --card-foreground: 0 0% 92%;
 
-    --popover: 0 0% 10%;
-    --popover-foreground: 43 33% 94%;
+    --popover: 0 0% 7%;
+    --popover-foreground: 0 0% 92%;
 
-    --primary: 30 32% 55%;
-    --primary-foreground: 0 0% 5%;
+    /* Deep crimson red — CTAs, focus, highlights */
+    --primary: 0 68% 40%;
+    --primary-foreground: 0 0% 98%;
 
-    --secondary: 0 0% 13%;
-    --secondary-foreground: 43 33% 94%;
+    --secondary: 0 0% 10%;
+    --secondary-foreground: 0 0% 92%;
 
-    --muted: 0 0% 13%;
-    --muted-foreground: 25 6% 64%;
+    --muted: 0 0% 12%;
+    /* Cool silvery gray — secondary text, muted UI */
+    --muted-foreground: 220 6% 58%;
 
-    --accent: 0 0% 16%;
-    --accent-foreground: 43 33% 94%;
+    --accent: 0 0% 14%;
+    --accent-foreground: 0 0% 92%;
 
-    --destructive: 0 72% 42%;
-    --destructive-foreground: 43 33% 94%;
+    --destructive: 0 68% 40%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 0 0% 16%;
-    --input: 0 0% 16%;
-    --ring: 30 32% 55%;
+    /* Silvery borders and dividers */
+    --border: 220 5% 18%;
+    --input: 220 5% 18%;
+    --ring: 0 68% 40%;
 
     --radius: 0.5rem;
-  }
-
-  [data-palette='obsidian'] {
-    color-scheme: dark;
-
-    --background: 220 12% 3%;
-    --foreground: 220 8% 88%;
-
-    --card: 220 10% 6%;
-    --card-foreground: 220 8% 88%;
-
-    --popover: 220 10% 6%;
-    --popover-foreground: 220 8% 88%;
-
-    --primary: 215 8% 52%;
-    --primary-foreground: 220 12% 3%;
-
-    --secondary: 220 8% 9%;
-    --secondary-foreground: 220 8% 88%;
-
-    --muted: 220 8% 9%;
-    --muted-foreground: 220 5% 58%;
-
-    --accent: 220 7% 12%;
-    --accent-foreground: 220 8% 88%;
-
-    --destructive: 0 72% 42%;
-    --destructive-foreground: 220 8% 88%;
-
-    --border: 220 7% 13%;
-    --input: 220 7% 13%;
-    --ring: 215 8% 52%;
-  }
-
-  [data-palette='ivory-night'] {
-    color-scheme: dark;
-
-    --background: 35 10% 6%;
-    --foreground: 40 28% 90%;
-
-    --card: 35 12% 10%;
-    --card-foreground: 40 28% 90%;
-
-    --popover: 35 12% 10%;
-    --popover-foreground: 40 28% 90%;
-
-    --primary: 38 25% 52%;
-    --primary-foreground: 35 10% 6%;
-
-    --secondary: 35 10% 13%;
-    --secondary-foreground: 40 28% 90%;
-
-    --muted: 35 10% 13%;
-    --muted-foreground: 30 8% 62%;
-
-    --accent: 35 9% 16%;
-    --accent-foreground: 40 28% 90%;
-
-    --destructive: 0 72% 42%;
-    --destructive-foreground: 40 28% 90%;
-
-    --border: 35 9% 16%;
-    --input: 35 9% 16%;
-    --ring: 38 25% 52%;
-  }
-
-  [data-palette='slate'] {
-    color-scheme: dark;
-
-    --background: 215 18% 8%;
-    --foreground: 210 15% 90%;
-
-    --card: 215 16% 12%;
-    --card-foreground: 210 15% 90%;
-
-    --popover: 215 16% 12%;
-    --popover-foreground: 210 15% 90%;
-
-    --primary: 210 12% 48%;
-    --primary-foreground: 215 18% 8%;
-
-    --secondary: 215 14% 15%;
-    --secondary-foreground: 210 15% 90%;
-
-    --muted: 215 14% 15%;
-    --muted-foreground: 215 10% 58%;
-
-    --accent: 215 12% 18%;
-    --accent-foreground: 210 15% 90%;
-
-    --destructive: 0 72% 42%;
-    --destructive-foreground: 210 15% 90%;
-
-    --border: 215 12% 18%;
-    --input: 215 12% 18%;
-    --ring: 210 12% 48%;
-  }
-
-  [data-palette='noir-rose'] {
-    color-scheme: dark;
-
-    --background: 15 8% 4%;
-    --foreground: 30 12% 88%;
-
-    --card: 15 10% 9%;
-    --card-foreground: 30 12% 88%;
-
-    --popover: 15 10% 9%;
-    --popover-foreground: 30 12% 88%;
-
-    --primary: 12 22% 52%;
-    --primary-foreground: 15 8% 4%;
-
-    --secondary: 15 8% 12%;
-    --secondary-foreground: 30 12% 88%;
-
-    --muted: 15 8% 12%;
-    --muted-foreground: 20 8% 60%;
-
-    --accent: 15 8% 15%;
-    --accent-foreground: 30 12% 88%;
-
-    --destructive: 0 72% 42%;
-    --destructive-foreground: 30 12% 88%;
-
-    --border: 15 8% 15%;
-    --input: 15 8% 15%;
-    --ring: 12 22% 52%;
   }
 
   :root {

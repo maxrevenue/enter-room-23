@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import BrandLogo from '@/components/brand-logo'
-import { ThemePalettePicker } from '@/components/ThemeSwitcher'
 import { STORE_CATEGORIES } from '@/lib/categories'
 import { SITE_CONFIG } from '@/lib/constants'
 
@@ -97,12 +96,9 @@ export default function SiteFooter() {
         </div>
 
         <div className="mt-16 border-t border-theme-border pt-8 text-xs text-theme-muted">
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
-            <p>
-              &copy; {new Date().getFullYear()} {SITE_CONFIG.legalEntity}. All rights reserved. 18+ only.
-            </p>
-            <ThemePalettePicker className="lg:max-w-md lg:text-right" />
-          </div>
+          <p>
+            &copy; {new Date().getFullYear()} {SITE_CONFIG.legalEntity}. All rights reserved. 18+ only.
+          </p>
           <p className="mt-4 text-[10px] leading-relaxed text-theme-muted/80">
             Charges will appear on your card statement as:{' '}
             <span className="font-medium text-theme-text">{SITE_CONFIG.billingDescriptor}</span>
