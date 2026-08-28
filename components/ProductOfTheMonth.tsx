@@ -27,11 +27,8 @@ type ProductOfTheMonthProps = {
   offer?: MonthOffer | null
 }
 
-const storefrontCtaPrimary =
-  'inline-flex min-h-11 w-full items-center justify-center rounded-none bg-primary px-7 py-3 text-[11px] font-medium uppercase tracking-[0.16em] text-primary-foreground transition-colors duration-300 hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-theme-border sm:w-auto sm:tracking-[0.2em]'
-
-const storefrontCtaSecondary =
-  'inline-flex min-h-11 w-full items-center justify-center rounded-none border border-theme-border px-7 py-3 text-[11px] font-medium uppercase tracking-[0.16em] text-theme-text transition-colors duration-300 hover:border-theme-muted hover:bg-theme-surface focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-theme-border sm:w-auto sm:tracking-[0.2em]'
+const storefrontCtaPrimary = 'storefront-cta-primary'
+const storefrontCtaSecondary = 'storefront-cta-secondary'
 
 export default function ProductOfTheMonth({ product = null, offer = null }: ProductOfTheMonthProps) {
   if (!product) return null
