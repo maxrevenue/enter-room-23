@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useCart } from '@/lib/cart-context'
 import { useDialogLock } from '@/lib/use-dialog-lock'
-import { Menu, X, ShoppingBag, ChevronDown } from 'lucide-react'
+import { Menu, X, ShoppingBag, ChevronDown, Lock } from 'lucide-react'
 import BrandLogo from '@/components/brand-logo'
 import { resolveStoreNavGroups } from '@/lib/categories'
 
@@ -107,6 +107,7 @@ export default function SiteHeader() {
   })
 
   const isActive = (href) => pathname === href || pathname?.startsWith(`${href}/`)
+  const isCheckout = pathname?.startsWith('/checkout')
 
   const toggleGroup = (groupId) => {
     setExpandedGroup((current) => (current === groupId ? null : groupId))
@@ -138,9 +139,20 @@ export default function SiteHeader() {
               </button>
             </div>
 
-            <BrandLogo size="md" />
+            {isCheckout ? (
+              <div className="flex flex-col items-center gap-0.5">
+                <BrandLogo size="md" href={null} />
+                <p className="flex items-center gap-1.5 text-[10px] text-theme-muted sm:text-xs">
+                  <Lock className="h-3 w-3 shrink-0" aria-hidden="true" />
+                  Secure checkout
+                </p>
+              </div>
+            ) : (
+              <BrandLogo size="md" />
+            )}
 
             <div className="flex min-w-[2.75rem] flex-1 items-center justify-end gap-6 lg:gap-8">
+              {!isCheckout && (
               <nav className="hidden items-center gap-7 md:flex" aria-label="Utility">
                 {DESKTOP_UTILITY_LINKS.map((link) => (
                   <Link
@@ -153,6 +165,7 @@ export default function SiteHeader() {
                   </Link>
                 ))}
               </nav>
+              )}
               <button
                 type="button"
                 onClick={() => setCartOpen(!cartOpen)}
@@ -169,6 +182,7 @@ export default function SiteHeader() {
             </div>
           </div>
 
+          {!isCheckout && (
           <nav aria-label="Collections" className="border-t border-theme-border/60">
             <div className="mx-auto max-w-7xl px-3 sm:px-6">
               <ul className="grid grid-cols-4 items-end md:flex md:items-center md:gap-7 md:py-3">
@@ -235,6 +249,7 @@ export default function SiteHeader() {
               </ul>
             </div>
           </nav>
+          )}
         </div>
       </header>
 

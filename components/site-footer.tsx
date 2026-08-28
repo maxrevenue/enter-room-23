@@ -17,7 +17,25 @@ const FOOTER_NAV = [
   { href: '/terms', label: 'Terms of Service' },
 ]
 
-export default function SiteFooter() {
+export default function SiteFooter({ minimal = false }: { minimal?: boolean }) {
+  if (minimal) {
+    return (
+      <footer className="w-full border-t border-theme-border bg-theme-bg pb-[env(safe-area-inset-bottom)] text-theme-text">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-4 gap-y-2 px-4 py-5 text-[11px] text-theme-muted">
+          <span>&copy; {new Date().getFullYear()} {SITE_CONFIG.legalEntity}</span>
+          <span aria-hidden="true">&middot;</span>
+          <Link href="/terms" className="transition-colors hover:text-theme-text">
+            Terms
+          </Link>
+          <span aria-hidden="true">&middot;</span>
+          <Link href="/privacy" className="transition-colors hover:text-theme-text">
+            Privacy
+          </Link>
+        </div>
+      </footer>
+    )
+  }
+
   return (
     <footer className="w-full border-t border-theme-border bg-theme-bg pb-[env(safe-area-inset-bottom)] text-theme-text">
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-8 md:py-24 lg:py-28">

@@ -18,7 +18,7 @@ export default function SiteShell({ children }) {
       <div className="flex flex-col min-h-screen">
         <SiteHeader />
         <main id="main-content" className="flex-1" tabIndex={-1}>{children}</main>
-        <SiteFooter />
+        <SiteFooter minimal={pathname?.startsWith('/checkout')} />
       </div>
 
       <CartSheet />
