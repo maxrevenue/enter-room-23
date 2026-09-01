@@ -11,10 +11,13 @@ function isBot(userAgent) {
   return typeof userAgent === 'string' && botRe.test(userAgent)
 }
 
+const source = readFileSync(
+  join(dirname(fileURLToPath(import.meta.url)), '../components/age-gate.jsx'),
+  'utf8',
+)
+
 describe('age gate bot detection', () => {
   it('keeps the exact crawler regex in components/age-gate.jsx', () => {
-    const file = join(dirname(fileURLToPath(import.meta.url)), '../components/age-gate.jsx')
-    const source = readFileSync(file, 'utf8')
     assert.match(
       source,
       /\/bot\|crawler\|spider\|crawling\|googlebot\|bingbot\|slurp\|duckduckbot\|facebookexternalhit\|twitterbot\|linkedinbot\|whatsapp\|telegrambot\/i/,
@@ -35,5 +38,40 @@ describe('age gate bot detection', () => {
     const result =
       typeof navigator !== 'undefined' && botRe.test(navigator.userAgent)
     assert.equal(result, false)
+  })
+})
+
+describe('age gate conversion copy and first paint', () => {
+  it('does not paint an opaque loading splash', () => {
+    assert.doesNotMatch(source, /status === 'loading'/)
+    assert.doesNotMatch(source, /z-\[9999\].*bg-theme-bg/)
+    assert.doesNotMatch(source, /fixed inset-0 z-\[9999\] bg-theme-bg/)
+  })
+
+  it('dims the store instead of covering it', () => {
+    assert.match(source, /bg-black\/70/)
+    assert.match(source, /items-end/)
+    assert.match(source, /sm:items-center/)
+  })
+
+  it('uses calm locked copy', () => {
+    assert.match(source, /This collection is for people 18 and over\./)
+    assert.match(source, /Entering confirms you meet the age requirement where you live/)
+    assert.match(source, />Enter</)
+    assert.match(source, /I’m under 18/)
+    assert.doesNotMatch(source, /AGE VERIFICATION REQUIRED/)
+    assert.doesNotMatch(source, /I AM 18\+/)
+    assert.doesNotMatch(source, /I AM UNDER 18/)
+  })
+
+  it('keeps both verification cookies and the under-18 exit', () => {
+    assert.match(source, /room23_age_verified/)
+    assert.match(source, /age_verified/)
+    assert.match(source, /https:\/\/www\.google\.com/)
+  })
+
+  it('does not dismiss on Escape', () => {
+    assert.match(source, /event\.key === 'Escape'/)
+    assert.match(source, /event\.preventDefault\(\)/)
   })
 })
