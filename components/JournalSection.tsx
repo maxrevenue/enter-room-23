@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { JOURNAL_ARTICLES } from '@/lib/journal'
 
 export default function JournalSection() {
-  const [featured, ...rest] = JOURNAL_ARTICLES
+  const [featured, ...rest] = JOURNAL_ARTICLES.slice(0, 3)
 
   return (
     <section
