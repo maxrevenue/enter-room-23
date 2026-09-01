@@ -23,10 +23,11 @@ export default function CheckoutDisclaimer({
             Card data is entered on CCBill&apos;s hosted payment page — never on room23.net.
           </p>
           <p>
-            Your statement will show{' '}
+            Your statement will read{' '}
             <span className="inline-flex items-center rounded-sm border border-theme-border bg-theme-bg px-2 py-0.5 font-mono text-xs text-theme-text">
               {siteConfig.billingDescriptor}
             </span>
+            .
           </p>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-theme-muted">
             <span className="inline-flex items-center gap-1">

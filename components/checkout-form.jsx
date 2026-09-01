@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useCart } from '@/lib/cart-context'
-import { SITE_CONFIG } from '@/config/site'
+import { PAYMENT_UI, STATEMENT_CHECKOUT } from '@/lib/customer-copy'
 import CheckoutDisclaimer from '@/components/CheckoutDisclaimer'
 import { SHIPPING_METHODS, DEFAULT_SHIPPING_METHOD, getShippingRate } from '@/lib/shipping'
 import { Lock, Check, ChevronDown } from 'lucide-react'
@@ -159,7 +159,12 @@ export default function CheckoutForm() {
       const data = await res.json()
 
       if (!res.ok) {
-        setOrderError(data.error || 'Payment could not be started. Please try again.')
+        const apiError = typeof data.error === 'string' ? data.error : ''
+        if (apiError === 'Internal server error.') {
+          setOrderError(PAYMENT_UI.processorDown)
+        } else {
+          setOrderError(apiError || PAYMENT_UI.soft)
+        }
         setSubmitting(false)
         return
       }
@@ -178,7 +183,7 @@ export default function CheckoutForm() {
       setOrderPlaced(true)
       clearCart()
     } catch {
-      setOrderError('Network error. Please check your connection and try again.')
+      setOrderError(PAYMENT_UI.processorDown)
       setSubmitting(false)
     }
   }
@@ -208,7 +213,7 @@ export default function CheckoutForm() {
           {placedOrder?.emailSent ? 'A confirmation email is on its way.' : 'A confirmation email will follow.'}
         </p>
         <p className="text-xs text-theme-muted">
-          Your statement will show <strong className="text-theme-text">{SITE_CONFIG.billingDescriptor}</strong>.
+          {STATEMENT_CHECKOUT}
         </p>
         <button type="button" onClick={() => router.push('/shop')} className="btn-primary">
           Continue shopping
