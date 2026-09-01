@@ -28,6 +28,17 @@ export default function CheckoutDisclaimer({
               {siteConfig.billingDescriptor}
             </span>
           </p>
+          <p>
+            It is possible to cancel an order that has not yet shipped. Unfortunately, we are unable to cancel an order that has already been shipped.{' '}
+            <Link href="/shipping#cancellation" className="link-brass">
+              Cancellation policy
+            </Link>
+            . Return shipping is the customer&apos;s responsibility unless the item is damaged or incorrect.{' '}
+            <Link href="/shipping#return-shipping" className="link-brass">
+              Who pays return shipping
+            </Link>
+            .
+          </p>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-theme-muted">
             <span className="inline-flex items-center gap-1">
               <Lock className="h-3 w-3" aria-hidden="true" />
@@ -59,10 +70,14 @@ export default function CheckoutDisclaimer({
             I am <strong className="text-theme-text/90">18+ years old</strong> and agree to the{' '}
             <Link href="/terms" target="_blank" className="link-brass">
               Terms
-            </Link>{' '}
-            and{' '}
+            </Link>
+            ,{' '}
             <Link href="/privacy" target="_blank" className="link-brass">
               Privacy Policy
+            </Link>
+            , and{' '}
+            <Link href="/shipping#cancellation" target="_blank" className="link-brass">
+              Cancellation &amp; Returns
             </Link>
             .
           </span>
