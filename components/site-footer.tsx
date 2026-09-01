@@ -118,7 +118,7 @@ export default function SiteFooter({ minimal = false }: { minimal?: boolean }) {
             &copy; {new Date().getFullYear()} {SITE_CONFIG.legalEntity}. All rights reserved. 18+ only.
           </p>
           <p className="mt-4 text-[10px] leading-relaxed text-theme-muted/80">
-            Charges will appear on your card statement as:{' '}
+            Your statement will read{' '}
             <span className="font-medium text-theme-text">{SITE_CONFIG.billingDescriptor}</span>
           </p>
           <p className="mt-3 text-[10px] leading-relaxed text-theme-muted/70">

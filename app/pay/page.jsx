@@ -19,9 +19,9 @@ export default async function PayPage({ searchParams }) {
         Secure payment
       </h1>
       <p style={{ color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: '1.5rem' }}>
-        This is a one-time charge for shipped wellness goods. Card details are entered on CCBill&apos;s
-        payment page. Room 23 never stores full card numbers. The payment screen is non-sexual and
-        shows the descriptor <strong>{SITE_CONFIG.billingDescriptor}</strong>.
+        This is a one-time charge for shipped goods. Card details are entered on CCBill&apos;s
+        payment page. Room 23 never stores full card numbers. Your statement will read{' '}
+        <strong>{SITE_CONFIG.billingDescriptor}</strong>.
       </p>
       {orderId && (
         <p className="text-sm mb-6" style={{ color: 'var(--text-muted)' }}>

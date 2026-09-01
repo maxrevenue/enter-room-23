@@ -32,7 +32,7 @@ export default function ComplianceStrip() {
           {/* Billing descriptor */}
           <div>
             <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
-              Appears as <strong style={{ color: 'var(--bne-brass, var(--accent))', fontWeight: 600 }}>ROOM23 WELLNESS</strong> on your statement
+              Your statement will read <strong style={{ color: 'var(--bne-brass, var(--accent))', fontWeight: 600 }}>ROOM23 WELLNESS</strong>
             </span>
           </div>
 

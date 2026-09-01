@@ -18,7 +18,7 @@ const validInput = {
 
 describe('order confirmation email', () => {
   it('uses a lock-screen-neutral subject', () => {
-    assert.equal(buildOrderSubject('R23-2001'), 'Room 23: Order #R23-2001 Confirmation')
+    assert.equal(buildOrderSubject('R23-2001'), 'Your Room 23 order R23-2001')
     assert.doesNotMatch(buildOrderSubject('R23-2001'), /lube|adult|wellness product/i)
   })
 
@@ -27,7 +27,8 @@ describe('order confirmation email', () => {
     assert.match(text, /Platinum Silicone Lubricant/)
     assert.match(text, /2 ×/)
     assert.match(text, /Delivery total: \$46\.88/)
-    assert.match(text, /Shipped in plain, neutral packaging/)
+    assert.match(text, /plain, unlabeled packaging/)
+    assert.match(text, /ROOM23 WELLNESS/)
     assert.match(text, new RegExp(SUPPORT_EMAIL))
     assert.match(text, new RegExp(REFUND_POLICY_URL.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')))
     assert.match(html, new RegExp(`mailto:${SUPPORT_EMAIL}`))
@@ -64,7 +65,7 @@ describe('order confirmation email', () => {
     assert.equal(result.sent, true)
     assert.equal(sent[0].from, ORDER_FROM)
     assert.equal(sent[0].to, validInput.email)
-    assert.equal(sent[0].subject, 'Room 23: Order #R23-2001 Confirmation')
+    assert.equal(sent[0].subject, 'Your Room 23 order R23-2001')
     assert.equal(sent[0].headers['Idempotency-Key'], 'order-email:R23-2001')
     assert.notEqual(result.emailHash, validInput.email)
   })

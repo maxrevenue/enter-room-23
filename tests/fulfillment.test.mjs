@@ -68,7 +68,7 @@ describe('fulfillment router', () => {
     assert.equal(result.customer.splitFulfillment, true)
     assert.equal(result.customer.shipsSeparately, true)
     assert.match(result.customer.customerNotice, /ship separately/i)
-    assert.match(result.customer.customerNotice, /discreet packaging/i)
+    assert.match(result.customer.customerNotice, /plain, unlabeled packaging/i)
     assert.equal(result.customer.packages.length, 2)
   })
 

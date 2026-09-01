@@ -101,8 +101,9 @@ describe('checkout completion pipeline', () => {
     assert.equal(result.fulfillment.splitFulfillment, true)
     assert.match(result.fulfillment.customerNotice, /ship separately/i)
     assert.equal(sent[0].from, 'Room 23 <orders@room23.net>')
-    assert.equal(sent[0].subject, 'Room 23: Order #R23-TEST-1 Confirmation')
-    assert.match(sent[0].text, /Shipped in plain, neutral packaging|ship separately/i)
+    assert.equal(sent[0].subject, 'Your Room 23 order R23-TEST-1')
+    assert.match(sent[0].text, /plain, unlabeled packaging|ship separately/i)
+    assert.match(sent[0].text, /ROOM23 WELLNESS/)
     assert.doesNotMatch(JSON.stringify(result.fulfillment), /eldorado|williams/i)
   })
 

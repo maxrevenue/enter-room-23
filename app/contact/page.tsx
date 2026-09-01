@@ -18,7 +18,7 @@ export default function ContactPage() {
           Contact Us
         </h1>
         <p className="mt-6 max-w-xl text-sm leading-relaxed text-theme-muted sm:text-[0.9375rem]">
-          Our team is available to assist with order inquiries, product guidance, discrete shipping updates, and billing support.
+          Questions about an order, shipping, or a charge on your statement. Packaging is plain and unlabeled.
         </p>
 
         <div className="mt-12 grid grid-cols-1 gap-10 border-t border-theme-border pt-12 md:grid-cols-2">
@@ -34,7 +34,7 @@ export default function ContactPage() {
                 {SITE_CONFIG.email}
               </a>
               <p className="mt-1 text-xs text-theme-muted">
-                Inquiries are addressed within 24 business hours.
+                We respond within 24 hours on business days.
               </p>
             </div>
 
@@ -71,7 +71,7 @@ export default function ContactPage() {
             </h2>
             <div className="mt-4 space-y-4 text-xs text-theme-muted">
               <p>
-                All transactions on this site are processed securely through our payment provider, CCBill.
+                Your statement will read ROOM23 WELLNESS. It will not include product names. Payments are processed by CCBill.
               </p>
               <div className="rounded border border-theme-border p-4">
                 <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-theme-muted">
@@ -82,7 +82,7 @@ export default function ContactPage() {
                 </p>
               </div>
               <p className="text-[11px] leading-relaxed">
-                Secure checkout processed by CCBill. Payment details are handled by our PCI-compliant payment processor.
+                Card details are handled by our PCI-compliant processor. Room 23 never stores full card numbers.
               </p>
             </div>
           </div>

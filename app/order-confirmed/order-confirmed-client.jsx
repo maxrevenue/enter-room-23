@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { SITE_CONFIG } from '@/config/site'
+import { PACKAGING, STATEMENT_CHECKOUT } from '@/lib/customer-copy'
 
 const PENDING_KEY = 'r23_pending_order'
 
@@ -85,15 +86,15 @@ export default function OrderConfirmedClient() {
               : 'If a confirmation email does not arrive shortly, contact support and we will resend it.'}
           </p>
           <p>
-            {fulfillment?.customerNotice || 'Shipped in plain, neutral packaging.'}
+            {fulfillment?.customerNotice || PACKAGING.notice}
           </p>
           {fulfillment?.splitFulfillment && (
             <p>
-              Items in this order ship in more than one unmarked package.
+              Items in this order ship in more than one unlabeled package.
             </p>
           )}
           <p style={{ color: 'var(--text-muted)', fontSize: 'var(--text-xs)' }}>
-            Your statement will show {SITE_CONFIG.billingDescriptor}.
+            {STATEMENT_CHECKOUT}
           </p>
         </div>
       )}
