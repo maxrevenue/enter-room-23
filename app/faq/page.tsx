@@ -4,7 +4,7 @@ import { SITE_CONFIG } from '@/config/site'
 export const metadata = {
   title: 'FAQ - Shipping, Billing & Discretion',
   description:
-    'Answers on Room 23 billing descriptors, unmarked packaging, US shipping times, age verification, and returns for adult wellness orders.',
+    'Answers on Room 23 billing descriptors, unmarked packaging, cancellations, who pays return shipping, and returns. Charges appear as ROOM23 WELLNESS.',
   alternates: { canonical: '/faq' },
 }
 
@@ -34,6 +34,14 @@ const faqs = [
     a: 'Because we sell premium adult wellness products, we are legally required to ensure all visitors are 18 or older. We respect your privacy implicitly: our age gate does not collect personal data. It simply places a secure, 30-day cookie on your browser so you don’t have to re-verify every time you visit. No tracking, no judgment.',
   },
   {
+  {
+    q: 'Can I cancel an order?',
+    a: 'It is possible to cancel an order that has not yet shipped. Email support@room23.net with your order number and we will refund the original payment method in full. Unfortunately, we are unable to cancel an order that has already been shipped. Unused, sealed items may still be returned within 14 days of delivery. The customer pays return shipping unless the item is damaged, defective, or incorrect.',
+  },
+  {
+    q: 'Who pays for return shipping?',
+    a: 'The customer is responsible for return shipping costs, unless the item is damaged, defective, or incorrect. In those cases Room 23 covers return shipping and will replace or refund the order.',
+  },
     q: 'Can I return an item?',
     a: 'Due to the intimate nature of our collection, opened or used items are strictly final sale and cannot be returned. However, unopened, factory-sealed products may be eligible for return within 14 calendar days of delivery.',
   },

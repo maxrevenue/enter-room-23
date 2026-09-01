@@ -60,7 +60,14 @@ export default function TermsPage() {
           <section className="space-y-3">
             <h2 className="font-serif text-xl text-theme-text">5. Order Cancellations & Refunds</h2>
             <p>
-              For details on cancellations, returns, and damaged shipments, please consult our Shipping & Returns policy. Refunds will be issued back to the original payment instrument via CCBill upon inspection of returned unopened merchandise.
+              It is possible to cancel an order that has not yet shipped. Email {SITE_CONFIG.email} with your order number. We will refund the original payment method in full. Unfortunately, we are unable to cancel an order that has already been shipped.
+            </p>
+            <p>
+              The customer is responsible for return shipping costs unless the item is damaged, defective, or incorrect. Unopened items in original packaging may be returned within 14 days of delivery. Refunds go back to the original payment method via CCBill. See also our{' '}
+              <a href="/shipping#cancellation" className="text-theme-text underline hover:text-theme-accent">
+                Shipping, Returns &amp; Cancellations
+              </a>{' '}
+              page.
             </p>
           </section>
 
